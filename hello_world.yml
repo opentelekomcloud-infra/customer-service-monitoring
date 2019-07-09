@@ -1,0 +1,5 @@
+---
+- hosts: apache
+  tasks:
+    - name: run echo command
+      command: /bin/echo hello world!
