@@ -39,7 +39,7 @@
 
     - name: create virtual host file
       template:
-        src: virtualhost.conf
+        src: templates/virtualhost.conf
         dest: /etc/apache2/sites-available/{{ domain }}.conf
 
     - name: a2ensite {{ domain }}
