@@ -1,17 +1,5 @@
 ---
 - hosts: local
   become: True
-  tasks:
-    - name: update sources list
-      apt_repository:
-        filename: '/etc/apt/sources.list'
-        repo: 'deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main'
-    - name: add key
-      apt_key:
-        keyserver: keyserver.ubuntu.com
-        id: '93C4A3FD7BB9C367'
-    - name: update apt cache
-      apt:
-        name: ansible
-        update_cache: yes
-        state: latest
+  roles:
+    - role: latest_ansible
