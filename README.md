@@ -30,7 +30,7 @@ Inventory consists of following components:
 
 Ansible can be used to provision infrastructure on top of the OpenStack, For that a proper cloud connection should be present on the management host (presumably localhost) - clouds.yaml
 
-Returns token for provided in all.yml cloud:
+Returns token for provided in clouds.yml data:
 ```
     ansible-playbook -i inventory/prod playbooks/scenarios/get_token.yml
 ```
