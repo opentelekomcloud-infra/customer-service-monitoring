@@ -1,0 +1,99 @@
+---
+
+- name: Scenario 1 - basic ecs creation
+  hosts: localhost
+  vars:
+    prefix: kpi-scenario1-
+  tasks:
+    - name: List Keypairs
+      script: list_keypairs.py
+
+    - name: Create Keypair
+      include_role:
+        name: opentelekomcloud.keypair
+
+    - name: Create VPC (Router + Net + Subnet)
+      include_role:
+        name: opentelekomcloud.vpc
+
+    - name: Create SecurityGroup
+      os_security_group:
+        name: "{{ test_security_group_name }}"
+        description: Test Security group created by APImon
+
+    - name: Create SecurityGroupRule
+      os_security_group_rule:
+        security_group: "{{ test_security_group_name }}"
+        protocol: tcp
+        port_range_min: 2208
+        port_range_max: 2209
+        remote_ip_prefix: 0.0.0.0/0
+
+    - name: Create Server with all required resources
+      include_role:
+        name: opentelekomcloud.bastion
+      vars:
+        server_keypair_name: "{{ (prefix + 'KeyPair') }}"
+        server_fqdn: "{{ test_server_fqdn }}"
+
+    - name: Get Server metadata
+      script: get_metadata.py {{ test_server_fqdn }}
+
+    - name: Modify metadata
+      os_server_metadata:
+        name: "{{ test_server_fqdn }}"
+        state: present
+        meta:
+          meta_k1: v1
+          meta_k2: v2
+
+    - name: Delete metadata
+      os_server_metadata:
+        name: "{{ test_server_fqdn }}"
+        state: absent
+        meta:
+          meta_k1:
+          meta_k2:
+
+    - name: Set Tags on the Server
+      os_tag:
+        server: "{{ test_server_fqdn }}"
+        state: present
+        tags:
+          - tag1
+          - tag2
+        mode: set
+
+    - name: Delete Server with all required resources
+      include_role:
+        name: opentelekomcloud.bastion
+      vars:
+        state: absent
+        server_fqdn: "{{ test_server_fqdn }}"
+
+    - name: Delete SecurityGroupRule
+      os_security_group_rule:
+        state: "absent"
+        security_group: "{{ test_security_group_name }}"
+        protocol: tcp
+        port_range_min: 2208
+        port_range_max: 2209
+        remote_ip_prefix: 0.0.0.0/0
+
+    - name: Delete SecurityGroup
+      os_security_group:
+        state: "absent"
+        name: "{{ test_security_group_name }}"
+
+    - name: Delete VPC
+      include_role:
+        name: opentelekomcloud.vpc
+      vars:
+        state: absent
+
+    - name: Delete Keypair
+      include_role:
+        name: opentelekomcloud.keypair
+      vars:
+        keypair_name: "{{ test_keypair_name }}"
+        state: absent

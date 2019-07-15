@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Get list of clouds from OpenStack client config
+      os_client_config:
+        clouds: otc
+    - debug:
+        var: openstack.clouds
