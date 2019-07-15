@@ -1,0 +1,11 @@
+---
+- name: debian install
+  import_tasks: debian_prepare.yml
+  when: ansible_facts['os_family'] == 'Debian'
+- name: install py3 ansible version
+  pip:
+    executable: pip3
+    name:
+      - ansible
+      - ansible-lint
+    state: latest
