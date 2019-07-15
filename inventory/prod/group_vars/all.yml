@@ -1,0 +1,5 @@
+---
+cloud: 'otc'
+test_keypair_name: kpi-test
+test_security_group_name: kpi-test_sg
+test_server_fqdn: kpi-test_scenario.bastion.host

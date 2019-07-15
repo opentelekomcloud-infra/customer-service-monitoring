@@ -1,8 +1,15 @@
 clouds:
- otc:
-   auth:
-     project_name: 'eu-de_rus'
-     auth_url: 'https://iam.eu-de.otc.t-systems.com:443/v3'
-     user_domain_name: 'OTC00000000001000000447'
-   interface: 'public'
-   identity_api_version: 3 # !Important
+  otc:
+    auth:
+      auth_url: 'https://iam.eu-de.otc.t-systems.com:443/v3'
+      project_name: 'eu-de_rus' #required, since otherwise some APIs are not working
+      user_domain_name: 'OTC00000000001000000447'
+    interface: 'public'
+    identity_api_version: '3'
+  otctest:
+    auth:
+      auth_url: 'https://iam.eu-de.otctest.t-systems.com:443/v3'
+      project_name: 'eu-de_TSRU' #required, since otherwise some APIs are not working
+      user_domain_name: 'OTC-EU-DE-00000000001000018125'
+    interface: 'public'
+    identity_api_version: '3'
