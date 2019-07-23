@@ -1,5 +1,5 @@
 ---
 - hosts: apache
   tasks:
-    - name: run echo command
+    - name: run echo command  # noqa 301
       command: /bin/echo hello world!
