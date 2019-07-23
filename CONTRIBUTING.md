@@ -13,8 +13,8 @@
 
 1. Create [new issue](https://gitlab.com/otc-customer-service-monitoring/sandbox/issues) following instructions above
 2. Assign issue to yourself
-3. Create new branch named `feature/feature-short-desc` for features and `fix/issue-short-desc` for bugs.
-    Please stick to `group/short-description` convention for branch naming (slash separator for groups and dashes replacing spaces)
+3. Create new branch named `feature/<feature-short-desc>` for features and `fix/<issue-short-desc>` for bugs.
+    Please stick to `<group>/<short-description>` convention for branch naming (slash separator for groups and dashes replacing spaces)
 4. Push your local changes to remote branch
 5. Create new [merge request](https://gitlab.com/otc-customer-service-monitoring/sandbox/merge_requests)
     (*MR*) with clean title having you issue mentioning your issue:
