@@ -1,0 +1,42 @@
+---
+- name: prerequisites
+  apt:
+    name: "{{ packages }}"
+    update_cache: yes
+  vars:
+    packages:
+    - build-essential
+    - checkinstall
+    - libreadline-gplv2-dev
+    - libncursesw5-dev
+    - libssl-dev
+    - libsqlite3-dev
+    - tk-dev
+    - libgdbm-dev
+    - libc6-dev
+    - libbz2-dev
+    - libffi-dev
+    - zlib1g-dev
+- name: create download directory
+  file:
+    path: "{{ downloads_path }}"
+    state: directory
+- name: download python
+  get_url:
+    dest: "{{ downloads_path }}"
+    url: https://www.python.org/ftp/python/{{ python_version }}/Python-{{ python_version }}.tgz
+- name: extract python
+  unarchive:
+    dest: "{{ downloads_path }}"
+    src: "{{ downloads_path }}Python-{{ python_version }}.tgz"
+- name: configure
+  command: ./configure --enable-optimizations --prefix=/usr/local
+  args:
+    chdir: "{{ python_dir }}"
+- name: make python
+  make:
+    chdir: "{{ python_dir }}"
+- name: install python
+  make:
+    chdir: "{{ python_dir }}"
+    target: install

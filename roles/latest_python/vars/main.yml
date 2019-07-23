@@ -1,0 +1,5 @@
+---
+downloads_path: /tmp/downloads/
+python_version: "3.7.4"
+python_dir: "{{ downloads_path }}Python-{{ python_version }}/"
+min_py_version: "3.7.0"
