@@ -1,16 +1,15 @@
 ---
 - hosts: apache
-  sudo: yes
+  become: true
   vars:
     http_port: 80
     domain: qa-test.com
   tasks:
-    - name: install packages
+    - name: install packages  # noqa 403
       apt:
-        name: "{{ item }}"
+        name: apache2
         update_cache: no
         state: latest
-      with_items: "apache2"
 
     - name: enabled mod_rewrite
       apache2_module:

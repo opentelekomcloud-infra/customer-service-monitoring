@@ -1,0 +1,11 @@
+image: python:3.7
+
+stages:
+  - lint
+
+lint:
+  stage: lint
+  before_script:
+    - pip install ansible-lint
+  script:
+    - ansible-lint */*.yml */*/*.yml

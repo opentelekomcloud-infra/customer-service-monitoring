@@ -29,7 +29,7 @@
   unarchive:
     dest: "{{ downloads_path }}"
     src: "{{ downloads_path }}Python-{{ python_version }}.tgz"
-- name: configure
+- name: configure  # noqa 301
   command: ./configure --enable-optimizations --prefix=/usr/local
   args:
     chdir: "{{ python_dir }}"
