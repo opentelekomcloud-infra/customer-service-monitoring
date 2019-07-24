@@ -1,0 +1,12 @@
+---
+
+- name: Install Python
+  yum:
+    name: python36
+
+- name: Install server
+  pip:
+    name: too-simple-server
+
+- name: Start server
+  shell: python3 -m too-simple-server

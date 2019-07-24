@@ -1,0 +1,31 @@
+---
+- name: Prepare Infrastructure
+  # TODO: implement infrastructure creation
+  # add_host: ...
+
+- name: Setup DB
+  hosts: scn2-db
+  become: yes
+  roles:
+  - role: geerlingguy.postgresql
+  vars:
+    postgresql_locales:
+      - 'en_US.UTF-8'
+    postgresql_version: '10.0'
+    postgresql_databases:
+      - name: {{ PG_DATABASE }}
+    postgresql_users:
+      - name: {{ PG_USERNAME }}
+        password: {{ PG_PASSWORD }}
+
+- name: Start Server
+  hosts: scn2-ecs
+  roles:
+  - too_simple_server
+  vars:
+    pg_db_url: {{ PG_DB_URL }}
+    pg_database: {{ PG_DATABASE }}
+    pg_username: {{ PG_USERNAME }}
+    pg_password: {{ PG_PASSWORD }}
+    debug: False
+
