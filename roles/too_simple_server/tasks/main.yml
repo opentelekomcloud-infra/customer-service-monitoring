@@ -1,12 +1,30 @@
 ---
+- name: Prepare server
+  become: yes
+  block:
+  - name: Install Python
+    yum:
+      name: python36
+  - name: Install server
+    pip:
+      name: too-simple-server
 
-- name: Install Python
-  yum:
-    name: python36
+- name: Configure and start
+  when: server_state == 'present'
+  block:
+  - name: Write configuration
+    template:
+      src: config.yml.j2
+      dest: "{{ server_config }}"
+      force: yes
 
-- name: Install server
-  pip:
-    name: too-simple-server
+  - name: Start server
+    command: "{{ server }} start --config {{ server_config }}"
+    creates:
+      - "{{ server_pid_file }}"
 
-- name: Start server
-  shell: python3 -m too-simple-server
+- name: Stop server
+  command: "{{ server }} stop"
+  removes:
+    - "{{ server_pid_file }}"
+  when: server_state == 'absent'

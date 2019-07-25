@@ -10,6 +10,7 @@ python = "^3.6.1"
 
 ansible = "^2.8"
 ansible-lint = "^4.1"
+jinja2 = "^2.10"
 
 [tool.poetry.dev-dependencies]
 
