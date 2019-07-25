@@ -1,12 +1,13 @@
 [tool.poetry]
-name = "sandbox"
+name = "csm-sandbox"
 version = "0.1.0"
 description = "Sandbox for OTC customer service monitoring"
 authors = []
 license = "Apache-2.0"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.6.1"
+
 ansible = "^2.8"
 ansible-lint = "^4.1"
 
