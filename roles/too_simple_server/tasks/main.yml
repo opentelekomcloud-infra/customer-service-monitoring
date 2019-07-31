@@ -20,11 +20,11 @@
 
   - name: Start server
     command: "{{ server }} start --config {{ server_config }}"
-    creates:
-      - "{{ server_pid_file }}"
+    args:
+      creates: "{{ server_pid_file }}"
 
 - name: Stop server
   command: "{{ server }} stop"
-  removes:
-    - "{{ server_pid_file }}"
+  args:
+    removes: "{{ server_pid_file }}"
   when: server_state == 'absent'

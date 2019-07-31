@@ -1,5 +1,25 @@
 ---
 - name: Prepare Infrastructure
+  hosts: local
+  vars:
+    - prefix: scn2-
+  tasks:
+  - name: Create Keypair
+    include_role:
+      name: opentelekomcloud.keypair
+  - name: Create VPC (Router + Net + Subnet)
+    include_role:
+      name: opentelekomcloud.vpc
+  - name: Create Server with all required resources
+    include_role:
+      name: opentelekomcloud.bastion
+    vars:
+      server_flavor: 's2.medium.1'
+      server_image: 'Standard_CentOS_7_latest'
+      domain_name: 'scn2-ecs'
+      server_keypair_name: "{{ (prefix + 'KeyPair') }}"
+      server_fqdn: "{{ test_server_fqdn }}"
+
   # TODO: implement infrastructure creation
   # add_host: ...
 
@@ -7,7 +27,7 @@
   hosts: scn2-db
   become: yes
   roles:
-  - role: geerlingguy.postgresql
+  - geerlingguy.postgresql
   vars:
     postgresql_locales:
       - 'en_US.UTF-8'
@@ -28,4 +48,3 @@
     pg_username: "{{ PG_USERNAME }}"
     pg_password: "{{ PG_PASSWORD }}"
     debug: False
-
