@@ -16,7 +16,7 @@
     vars:
       server_flavor: 's2.medium.1'
       server_image: 'Standard_CentOS_7_latest'
-      domain_name: 'scn2-ecs'
+      domain_name: 'scn2_ecs'
       server_keypair_name: "{{ (prefix + 'KeyPair') }}"
       server_fqdn: "{{ test_server_fqdn }}"
 
@@ -24,7 +24,7 @@
   # add_host: ...
 
 - name: Setup DB
-  hosts: scn2-db
+  hosts: scn2_db
   become: yes
   roles:
   - geerlingguy.postgresql
@@ -39,7 +39,7 @@
         password: "{{ PG_PASSWORD }}"
 
 - name: Start Server
-  hosts: scn2-ecs
+  hosts: scn2_ecs
   roles:
   - too_simple_server
   vars:

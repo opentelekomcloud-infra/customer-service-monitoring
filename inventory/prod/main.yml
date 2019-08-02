@@ -6,7 +6,7 @@ all:
       ansible_connection: local
       ansible_python_interpreter: '/usr/bin/env python3'
   children:
-    scn2-ecs:  # group, runtime-populated
+    scn2_ecs:  # group, runtime-populated
       hosts:
-    scn2-db:   # group, runtime-populated
+    scn2_db:   # group, runtime-populated
       host:
