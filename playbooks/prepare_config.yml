@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  become: True
+  environment:
+    OS_CLOUD: otc
+  roles:
+    - prepare_configuration
