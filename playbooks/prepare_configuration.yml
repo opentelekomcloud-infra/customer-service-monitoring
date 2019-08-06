@@ -21,3 +21,4 @@
         - { src: '../clouds.yml'}
         - { src: '../secure.yml'}
       when: clouds_result.stat.exists and secure_result.stat.exists
+      
