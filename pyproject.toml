@@ -2,7 +2,7 @@
 name = "csm-sandbox"
 version = "0.1.0"
 description = "Sandbox for OTC customer service monitoring"
-authors = []
+authors = ["OTC Customer service monitoring"]
 license = "Apache-2.0"
 
 [tool.poetry.dependencies]

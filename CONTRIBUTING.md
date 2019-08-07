@@ -11,15 +11,15 @@
 
 ### Adding new functionality or fixing issue:
 
-1. Create [new issue](https://gitlab.com/otc-customer-service-monitoring/sandbox/issues) following instructions above
+1. Create [new issue](https://github.com/opentelekomcloud-infra/csm-sandbox/issues) following instructions above
 2. Assign issue to yourself
 3. Create new branch named `feature/<feature-short-desc>` for features and `fix/<issue-short-desc>` for bugs.
     Please stick to `<group>/<short-description>` convention for branch naming (slash separator for groups and dashes replacing spaces)
 4. Push your local changes to remote branch
-5. Create new [merge request](https://gitlab.com/otc-customer-service-monitoring/sandbox/merge_requests)
-    (*MR*) with clean title having you issue mentioning your issue:
+5. Create new [pull request](https://github.com/opentelekomcloud-infra/csm-sandbox/pulls)
+    (*PR*) with clean title, description mentioning your issue:
     `Implementing #N` for new features, `Fixing #N` or `Fixed #N` for bugfix. Where `N` is your issue number.
-    In case you're using trello cards, attach merge request to the card in trello as link.\
-    **Please note that MR can be merged only if all discussions are solved and it has at least 1 approval**
+    **Please note that PR can be merged only if all discussions are solved and it has at least 1 approval**
 6. If you need to change something after creating merge request — just push new commits to
-    your branch — merge request will be updated accordingly (approvals will be reset)
+    your branch — pull request will be updated accordingly (approvals will be reset)
+7. *For person merging*: branch is to be removed after merge. Merge should be made with **squash commits** option

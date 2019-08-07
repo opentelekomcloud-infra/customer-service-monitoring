@@ -1,5 +1,6 @@
 *.retry
-.idea
+.idea/
+.venv/
 secure.yml
 
 .venv
