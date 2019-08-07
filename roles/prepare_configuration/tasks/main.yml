@@ -9,10 +9,15 @@
     path: ../secure.yml
   register: secure_result
 
-- name: Copy the clouds.yml and secure.yml to /etc/openstack, if it exist
+- name: create directory ~/.config/openstack if it don't exist
+  file:
+    path: ~/.config/openstack
+    state: directory
+
+- name: Copy the clouds.yml and secure.yml to ~/.config/openstack, if it exist
   copy:
     src: "{{ item.src }}"
-    dest: /etc/openstack
+    dest: ~/.config/openstack
   with_items:
     - { src: '../clouds.yml'}
     - { src: '../secure.yml'}
