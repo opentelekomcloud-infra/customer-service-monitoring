@@ -1,0 +1,47 @@
+---
+# Variables for the infrastructure setup
+prefix: kpitest-
+bastion_host_key_name: keyb
+server1_host_key_name: keyserv1
+server2_host_key_name: keyserv2
+loadbalancer_name: kpi_lb
+common_sg_name: "{{ (prefix + 'common-sg') }}"
+bastion_sg_name: "{{ (prefix + 'bastion-sg') }}"
+server1_sg_name: "{{ (prefix + 'server1-sg') }}"
+server2_sg_name: "{{ (prefix + 'server2-sg') }}"
+
+common_sg_rules:
+ - protocol: tcp
+   port_range_min: 22
+   port_range_max: 22
+   remote_group: "{{ bastion_sg_name }}"
+ - protocol: icmp
+   remote_group: "{{ bastion_sg_name }}"
+server1_sg_rules:
+ - protocol: tcp
+   port_range_min: 2205
+   port_range_max: 2206
+   remote_group: "{{ common_sg_name }}"
+ - protocol: tcp
+   port_range_min: 2207
+   port_range_max: 2208
+   remote_group: "{{ common_sg_name }}"
+server2_sg_rules:
+ - protocol: tcp
+   port_range_min: 2209
+   port_range_max: 2210
+
+server1_host_security_groups:
+  - "{{ common_sg_name }}"
+  - "{{ server1_sg_name }}"
+server1_host_network:
+  - net-name: "{{ net_name }}"
+server2_host_security_groups:
+  - "{{ common_sg_name }}"
+  - "{{ server2_sg_name }}"
+server2_host_network: "{{ server1_host_network }}"
+
+net_name: "{{ (prefix + 'otc-net') }}"
+network:
+ - {net-name: "{{ (prefix + 'network') }}"}
+

@@ -1,0 +1,64 @@
+---
+# Provision infrastructure with Ansible
+
+- name: Provision Keypairs
+  hosts: infrastructure
+  tasks:
+    - name: Create Keypairs
+      include_role:
+        name: opentelekomcloud.keypair
+        apply:
+          tags: [keypair]
+      vars:
+        keypair_name: "{{ item }}"
+      loop:
+        - "{{ bastion_host_key_name }}"
+        - "{{ server1_host_key_name }}"
+        - "{{ server2_host_key_name }}"
+
+    - include_role:
+        name: opentelekomcloud.vpc
+        apply:
+          tags: vpc
+      vars:
+        network_name: "{{ net_name }}"
+
+    - include_role:
+        name: opentelekomcloud.bastion
+        apply:
+          tags: bastion
+      vars:
+        security_group: "{{ bastion_sg_name }}"
+        server_keypair_name: "{{bastion_host_key_name}}"
+
+    - name: Create Security groups
+      include_role:
+        name: opentelekomcloud.security_group
+        apply:
+          tags: sg
+      vars:
+        securitygroup_name: "{{ sg.name }}"
+        rules: "{{ sg.rules }}"
+        description: "{{ sg.descr }}"
+      loop:
+        - {name: "{{common_sg_name}}", rules: "{{common_sg_rules}}",
+           descr: "Common SG for KPIteam"}
+        - {name: "{{server1_sg_name}}", rules: "{{server1_sg_rules}}",
+           descr: "Server1 SG for KPIteam"}
+        - {name: "{{server2_sg_name}}", rules: "{{server2_sg_rules}}",
+           descr: "Server2 SG for KPIteam"}
+      loop_control:
+        loop_var: sg
+
+    - name: Create Servers
+      include_role:
+        name: infrastructure
+        tasks_from: manage_{{ item }}.yml
+        apply:
+          tags: servers
+      loop:
+        - server1
+        - server2
+
+# Create ELB for instances
+- import_playbook: create_loadbalancer.yml

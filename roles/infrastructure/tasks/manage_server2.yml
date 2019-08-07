@@ -1,0 +1,19 @@
+---
+# Manage bastion host
+- name: Manage server2 host
+  include_tasks: create_infrastructure.yaml
+  vars:
+    host_server_name: "{{ server2_host_name }}"
+    host_server_fqdn: "{{ server2_host_name }}"
+    host_image: "{{ server2_host_image }}"
+    host_flavor: "{{ server2_host_flavor }}"
+    host_key_name: "{{ server2_host_key_name }}"
+    host_auto_ip: "{{ server2_host_auto_ip }}"
+    host_metadata: "{{ server2_host_metadata }}"
+    host_security_groups: "{{ server2_host_security_groups }}"
+    host_network: "{{ server2_host_network }}"
+    host_data_volume_name: "{{ server2_host_data_volume_name }}"
+    host_data_volume_size: "{{ server2_host_data_volume_size }}"
+    host_data_volume_metadata: "{{ server2_host_data_metadata }}"
+    host_data_volume_type: "{{ server2_host_data_volume_type }}"
+    host_root_volume_size: "{{ server2_host_root_volume_size }}"

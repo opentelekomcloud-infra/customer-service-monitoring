@@ -1,0 +1,57 @@
+---
+# defaults file for roles/infrastructure
+domain_name: kpi.test.com
+image: "Standard_Fedora_30_latest"
+availability_zone: "eu-de-02"
+ssh_user: "kpiguy"
+host_state: "present"
+host_availability_zone: "{{ availability_zone }}"
+
+#bastion_state: "present"
+#bastion_host_image: "{{ image }}"
+#bastion_host_flavor: "s2.medium.4"
+#bastion_ssh_user: "{{ ssh_user }} "
+#bastion_host_name: "{{ ('bastion.' + domain_name) }}"
+#bastion_host_availability_zone: "{{ availability_zone }}"
+#bastion_host_root_volume_size: 12
+#bastion_host_data_volume_name: "kpi_jump_data"
+#bastion_host_data_volume_size: 20
+#bastion_host_data_volume_type: "SSD"
+# Auto attach FIP
+#bastion_host_auto_ip: false
+
+# Server 1
+server1_state: "present"
+server1_host_image: "{{ image }}"
+server1_host_flavor: "s2.medium.4"
+server1_ssh_user: "{{ ssh_user }} "
+server1_host_name: "{{ ('host1.' + domain_name) }}"
+server1_host_availability_zone: "{{ availability_zone }}"
+server1_host_root_volume_size: 12
+server1_host_data_volume_name: "kpi_host1_data"
+server1_host_data_volume_size: 20
+server1_host_data_volume_type: "SSD"
+# Auto attach FIP
+server1_host_auto_ip: false
+server1_host_metadata:
+  host-type: server1
+server2_host_data_metadata:
+  host-type: server1
+
+# Server 2
+server2_state: "present"
+server2_host_image: "{{ image }}"
+server2_host_flavor: "s2.medium.4"
+server2_ssh_user: "{{ ssh_user }} "
+server2_host_name: "{{ ('host2.' + domain_name) }}"
+server2_host_availability_zone: "{{ availability_zone }}"
+server2_host_root_volume_size: 12
+server2_host_data_volume_name: "kpi_host2_data"
+server2_host_data_volume_size: 20
+server2_host_data_volume_type: "SSD"
+# Auto attach FIP
+server2_host_auto_ip: false
+server2_host_metadata:
+  host-type: server2
+server1_host_data_metadata:
+  host-type: server2

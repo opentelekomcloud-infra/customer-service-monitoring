@@ -1,0 +1,79 @@
+---
+- name: Create ELB
+  hosts: infrastructure
+  tasks:
+    - name: Find subnet
+      os_subnets_facts:
+        name: "{{ ( prefix + 'default-subnet') }}"
+      register: subnets
+
+    - set_fact:
+        subnet_id: "{{ subnets.ansible_facts.openstack_subnets[0].id }}"
+
+    - name: Create LB
+      otc_loadbalancer:
+        name: kpi_loadbalancer
+        state: present
+        vip_subnet: "{{ subnet_id }}"
+        auto_public_ip: true
+      register: kpi_loadbalancer
+
+    - name: Create Listeners
+      otc_listener:
+        name: "{{ item.name }}"
+        loadbalancer: "{{ kpi_loadbalancer.id }}"
+        protocol: "{{ item.protocol }}"
+        protocol_port: "{{ item.port }}"
+      register: listener_results
+      loop:
+        - {name: "lsnr_server1", protocol: "TCP", port: 8080}
+        - {name: "lsnr_server2", protocol: "TCP", port: 8080}
+
+    - set_fact:
+        listeners: "{{ listeners| default({}) | combine({ item.item.name: item.id }) }}"
+      with_items: "{{ listener_results.results }}"
+
+    - name: Create pools
+      otc_pool:
+        name: "{{ item.name }}"
+        listener: "{{ item.listener }}"
+        description: "{{ item.descr }}"
+        protocol: "{{ item.protocol }}"
+        lb_algorithm: "{{ item.algo }}"
+        session_persistence:
+          type: SOURCE_IP
+      loop:
+        - {name: "pool_server1", listener: "{{ listeners.lsnr_server1 }}",
+           descr: "Server1 Pool", protocol: "TCP", algo: "SOURCE_IP"}
+        - {name: "pool_server2", listener: "{{ listeners.lsnr_server2 }}",
+           descr: "Server2 Pool", protocol: "TCP", algo: "SOURCE_IP"}
+      register:
+        pool_results
+
+    - set_fact:
+        pools: "{{ pools| default({}) | combine({ item.item.name: item.id }) }}"
+      with_items: "{{ pool_results.results }}"
+
+    - name: Find Server1 data
+      os_server_facts:
+        server: "{{ server1_host_name }}"
+      register: test_server1
+
+    - name: Find Server2 data
+      os_server_facts:
+        server: "{{ server2_host_name }}"
+      register: test_server2
+
+    - name: Register Server1 in the LB
+      otc_member:
+        pool: "{{ pools.pool_server1 }}"
+        address: "{{ test_server1.ansible_facts.openstack_servers[0].private_v4 }}"
+        subnet_id: "{{ subnet_id }}"
+        protocol_port: 8080
+
+    - name: Register Server2 in the LB
+      otc_member:
+        pool: "{{ pools.pool_server2 }}"
+        address: "{{ test_server2.ansible_facts.openstack_servers[0].private_v4 }}"
+        subnet_id: "{{ subnet_id }}"
+        protocol_port: 8080

@@ -1,0 +1,40 @@
+---
+# Mount device attached, but not partitioned and mounted
+# Params:
+#   device: i.e. /dev/vdb
+#   mount_point: /var/lib/influxdb
+
+- name: Get device info
+  parted:
+    device: "{{ device }}"
+  register: device_info
+
+- name: Debug device info
+  debug:
+    var: device_info
+
+- name: Make partition
+  parted:
+    device: "{{ device }}"
+    number: 1
+    state: present
+  register: device_info
+  when:
+    - device_info is defined
+    - (device_info.partitions|length)==0
+
+- name: Create FS
+  filesystem:
+    fstype: ext4
+    device: "{{ ( device + '1') }}"
+  when: device_info.changed|bool
+
+- name: Mount
+  mount:
+    path: "{{ mount_point }}"
+    src: "{{ ( device + '1') }}"
+    state: mounted
+    fstype: ext4
+  # when: device_info.changed|bool
+
+

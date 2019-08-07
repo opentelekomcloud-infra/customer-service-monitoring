@@ -1,0 +1,61 @@
+---
+# tasks file for managing resources in openstack
+
+- when: host_state != 'absent'
+  block:
+
+    - name: Create server
+      os_server:
+        state: "{{ host_state }}"
+        name: "{{ host_server_name }}"
+        image: "{{ host_image }}"
+        flavor: "{{ host_flavor }}"
+        key_name: "{{ host_key_name }}"
+        boot_from_volume: true
+        auto_ip: "{{ host_auto_ip }}"
+        meta: "{{ host_metadata }}"
+        availability_zone: "{{ host_availability_zone }}"
+        security_groups: "{{ host_security_groups }}"
+        nics: "{{ host_network }}"
+        volume_size: "{{ host_root_volume_size }}"
+        terminate_volume: true
+        userdata: |
+          #cloud-config
+          fqdn: {{ host_server_fqdn }}
+          packages:
+          growpart:
+          mode: auto
+          devices: ['/']
+          ignore_growroot_disabled: false
+      register: server
+    
+    - name: Create Data Volume
+      os_volume:
+        state: "{{ host_state }}"
+        display_name: "{{ host_data_volume_name }}"
+        size: "{{ host_data_volume_size }}"
+        volume_type: "{{ host_data_volume_type }}"
+        availability_zone: "{{ host_availability_zone }}"
+        metadata: "{{ host_data_volume_metadata }}"
+      when: data_volume_size is defined
+      register: data_volume
+    
+    - name: Attach Data Volume
+      os_server_volume:
+        state: present
+        server: "{{ server.id }}"
+        volume: "{{ data_volume.id }}"
+      when: data_volume is defined
+
+- when: host_state == 'absent'
+  block:
+
+    - name: Delete host
+      os_server:
+        state: absent
+        name: "{{ host_server_name }}"
+
+    - name: Delete volume
+      os_volume:
+        state: absent
+        display_name: "{{ host_data_volume_name }}"
