@@ -1,6 +1,4 @@
 ---
 - hosts: localhost
-  environment:
-    OS_CLOUD: otc
   roles:
     - prepare_configuration
