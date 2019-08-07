@@ -7,7 +7,8 @@
         name: "{{ ( prefix + 'default-subnet') }}"
       register: subnets
 
-    - set_fact:
+    - name: Set subnet id
+      set_fact:
         subnet_id: "{{ subnets.ansible_facts.openstack_subnets[0].id }}"
 
     - name: Create LB
@@ -29,7 +30,8 @@
         - {name: "lsnr_server1", protocol: "TCP", port: 8080}
         - {name: "lsnr_server2", protocol: "TCP", port: 8080}
 
-    - set_fact:
+    - name: Set listeners ids
+      set_fact:
         listeners: "{{ listeners| default({}) | combine({ item.item.name: item.id }) }}"
       with_items: "{{ listener_results.results }}"
 
@@ -47,10 +49,10 @@
            descr: "Server1 Pool", protocol: "TCP", algo: "SOURCE_IP"}
         - {name: "pool_server2", listener: "{{ listeners.lsnr_server2 }}",
            descr: "Server2 Pool", protocol: "TCP", algo: "SOURCE_IP"}
-      register:
-        pool_results
+      register: pool_results
 
-    - set_fact:
+    - name: Set pools ids
+      set_fact:
         pools: "{{ pools| default({}) | combine({ item.item.name: item.id }) }}"
       with_items: "{{ pool_results.results }}"
 

@@ -1,7 +1,7 @@
 ---
 # Manage bastion host
 - name: Manage server2 host
-  include_tasks: create_infrastructure.yaml
+  include_tasks: create_infrastructure.yml
   vars:
     host_server_name: "{{ server2_host_name }}"
     host_server_fqdn: "{{ server2_host_name }}"

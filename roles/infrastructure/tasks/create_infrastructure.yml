@@ -28,7 +28,7 @@
           devices: ['/']
           ignore_growroot_disabled: false
       register: server
-    
+
     - name: Create Data Volume
       os_volume:
         state: "{{ host_state }}"
@@ -39,7 +39,7 @@
         metadata: "{{ host_data_volume_metadata }}"
       when: data_volume_size is defined
       register: data_volume
-    
+
     - name: Attach Data Volume
       os_server_volume:
         state: present

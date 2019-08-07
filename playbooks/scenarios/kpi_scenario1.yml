@@ -29,7 +29,7 @@
           tags: bastion
       vars:
         security_group: "{{ bastion_sg_name }}"
-        server_keypair_name: "{{bastion_host_key_name}}"
+        server_keypair_name: "{{ bastion_host_key_name }}"
 
     - name: Create Security groups
       include_role:
@@ -41,11 +41,11 @@
         rules: "{{ sg.rules }}"
         description: "{{ sg.descr }}"
       loop:
-        - {name: "{{common_sg_name}}", rules: "{{common_sg_rules}}",
+        - {name: "{{ common_sg_name }}", rules: "{{ common_sg_rules }}",
            descr: "Common SG for KPIteam"}
-        - {name: "{{server1_sg_name}}", rules: "{{server1_sg_rules}}",
+        - {name: "{{ server1_sg_name }}", rules: "{{ server1_sg_rules }}",
            descr: "Server1 SG for KPIteam"}
-        - {name: "{{server2_sg_name}}", rules: "{{server2_sg_rules}}",
+        - {name: "{{ server2_sg_name }}", rules: "{{ server2_sg_rules }}",
            descr: "Server2 SG for KPIteam"}
       loop_control:
         loop_var: sg
