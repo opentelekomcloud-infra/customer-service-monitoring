@@ -5,11 +5,11 @@ if [[ -z $1 ]]; then
     echo "Scenario ID is missing"
 fi
 
-scenario_name="scenario$1"
+target_name="$1"
 project_root=$( sh ./get_project_root.sh )
 
 cd ${project_root}
-scn_folder="${project_root}/scenarios/${scenario_name}"
+scn_folder="${project_root}/scenarios/${target_name}"
 mkdir -p ${scn_folder}
 
 shebang="#!/usr/bin/env bash"
@@ -40,4 +40,4 @@ infra_tf="${scn_folder}/infrastructure.tf"
 if [[ ! -e "${infra_tf}" ]]; then echo "${shebang}" > "${post_b}"; fi
 echo "${tf_template}" > "${infra_tf}"
 
-touch "${project_root}/playbooks/scenarios/${scenario_name}_setup.yml"
+touch "${project_root}/playbooks/scenarios/${target_name}_setup.yml"

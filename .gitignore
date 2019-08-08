@@ -2,3 +2,5 @@
 .idea/
 .venv/
 secure.yml
+*.tfstate
+*.backup
