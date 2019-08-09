@@ -1,0 +1,15 @@
+---
+all:
+  hosts:
+    local:
+      ansible_host: localhost
+      ansible_connection: local
+      ansible_python_interpreter: '/usr/bin/env python3'
+    consul_ecs:
+      ansible_host: "80.158.23.135"
+      ansible_ssh_private_key_file: '~/.ssh/id_rsa_consul'
+  children:
+    scn2_ecs:  # group, runtime-populated
+      hosts:
+    scn2_db:   # group, runtime-populated
+      host:

@@ -1,1 +1,5 @@
 region = "eu-de"
+public_ip = "80.158.23.135"
+tenant_name = "eu-de_rus"
+default_az = "eu-de-01"
+domain_name = "OTC00000000001000000447"

@@ -4,18 +4,18 @@
   register: consul_bin
 
 - name: setup consul
-  group:
-    - name: pepare server
-      yum:
-        name: unzip
-        update_cache: yes
-    - name: download consul
-      get_url:
-        url: 'https://releases.hashicorp.com/consul/1.5.3/consul_1.5.3_linux_amd64.zip'
-        dest: /tmp/consul.zip
-    - name: unpack consul
-      unarchive:
-        remote_src: yes
-        src: /tmp/consul.zip
-        dest: "{{ consul_path }}"
-  when: consul_bin.stat.exists is False
+  when: not consul_bin.stat.exists
+  block:
+  - name: pepare server
+    yum:
+      name: unzip
+      update_cache: yes
+  - name: download consul
+    get_url:
+      url: 'https://releases.hashicorp.com/consul/1.5.3/consul_1.5.3_linux_amd64.zip'
+      dest: /tmp/consul.zip
+  - name: unpack consul
+    unarchive:
+      remote_src: yes
+      src: /tmp/consul.zip
+      dest: "{{ consul_path }}"

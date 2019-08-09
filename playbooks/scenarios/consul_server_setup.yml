@@ -1,5 +1,0 @@
-----
-- name: install consul
-  host: consul_ecs
-  roles:
-    - role: consul_server

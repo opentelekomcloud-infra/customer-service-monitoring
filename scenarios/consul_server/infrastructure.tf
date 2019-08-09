@@ -6,16 +6,19 @@ terraform {
 
 variable "username" {}
 variable "password" {}
+variable "region" {}
 variable "public_key" {}
 variable "public_ip" {}
-variable "region" {}
+variable "tenant_name" {}
+variable "default_az" {}
+variable "domain_name" {}
 
 # Configure the OpenTelekomCloud Provider
 provider "opentelekomcloud" {
   user_name = var.username
   password = var.password
-  domain_name = "OTC00000000001000000447"
-  tenant_name = "eu-de_rus"
+  domain_name = var.domain_name
+  tenant_name = var.tenant_name
   auth_url = "https://iam.eu-de.otc.t-systems.com:443/v3"
 }
 
@@ -36,16 +39,28 @@ resource "opentelekomcloud_compute_keypair_v2" "consul_pub" {
   public_key = var.public_key
 }
 
+resource "opentelekomcloud_compute_secgroup_v2" "ssh_allowed" {
+  description = "ssh allowed"
+  name = "ssh_allowed"
+  rule {
+    ip_protocol = "tcp"
+    from_port = 22
+    to_port = 22
+    cidr = "0.0.0.0/0"
+  }
+}
+
 resource "opentelekomcloud_compute_instance_v2" "consul_host" {
   name = "consul_server"
   image_name = "Standard_CentOS_7_latest"
   flavor_id = "s2.medium.1"
   security_groups = [
-    "default"
+    "default",
+    "ssh_allowed"
   ]
   key_pair = opentelekomcloud_compute_keypair_v2.consul_pub.id
   region = var.region
-  availability_zone = "${var.region}-01"
+  availability_zone = var.default_az
   network {
     uuid = opentelekomcloud_vpc_subnet_v1.consul_subnet.id
   }

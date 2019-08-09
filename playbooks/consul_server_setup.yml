@@ -1,0 +1,4 @@
+---
+- hosts: consul_ecs
+  roles:
+    - role: consul_server
