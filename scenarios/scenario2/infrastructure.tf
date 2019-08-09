@@ -4,8 +4,14 @@ terraform {
   }
 }
 
-variable "password" {}
 variable "username" {}
+variable "password" {}
+variable "postfix" {}
+variable "net_address" {}
+variable "region" {}
+variable "public_key" {
+  default = null
+}
 
 # Configure the OpenTelekomCloud Provider
 provider "opentelekomcloud" {
@@ -18,14 +24,14 @@ provider "opentelekomcloud" {
 
 
 resource "opentelekomcloud_vpc_v1" "vpc" {
-  name = "net_scn2"
-  cidr = "192.168.0.0/16"
+  name = "net_${var.postfix}"
+  cidr = "${var.net_address}.0/16"
 }
 
 resource "opentelekomcloud_vpc_subnet_v1" "subnet" {
-  name = "subnet_scn2"
-  cidr = "192.168.0.0/24"
-  gateway_ip = "192.168.0.1"
+  name = "subnet_${var.postfix}"
+  cidr = "${var.net_address}.0/24"
+  gateway_ip = "${var.net_address}.1"
   vpc_id = opentelekomcloud_vpc_v1.vpc.id
   depends_on = [
     opentelekomcloud_vpc_v1.vpc
@@ -33,18 +39,22 @@ resource "opentelekomcloud_vpc_subnet_v1" "subnet" {
 }
 
 resource "opentelekomcloud_compute_keypair_v2" "pair" {
-  name = "csn2_pair"
+  name = "csn2_${var.postfix}"
+  public_key = var.public_key
 }
 
+resource "opentelekomcloud_networking_floatingip_v2" "public_ip" {}
+
+
 resource "opentelekomcloud_compute_instance_v2" "basic" {
-  name = "scn2_server"
+  name = "${var.postfix}_server"
   image_name = "Standard_CentOS_7_latest"
   flavor_id = "s2.medium.1"
   security_groups = [
     "default"
   ]
-  region = "eu-de_rus"
-  availability_zone = "eu-de-01"
+  region = var.region
+  availability_zone = "${var.region}-01"
   key_pair = opentelekomcloud_compute_keypair_v2.pair.name
 
   depends_on = [
@@ -56,4 +66,9 @@ resource "opentelekomcloud_compute_instance_v2" "basic" {
     uuid = opentelekomcloud_vpc_subnet_v1.subnet.id
   }
 
+}
+
+resource "opentelekomcloud_compute_floatingip_associate_v2" "assign_ip" {
+  floating_ip = opentelekomcloud_networking_floatingip_v2.public_ip.address
+  instance_id = opentelekomcloud_compute_instance_v2.basic.id
 }
