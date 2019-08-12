@@ -32,6 +32,8 @@ resource "opentelekomcloud_vpc_subnet_v1" "consul_subnet" {
   vpc_id = opentelekomcloud_vpc_v1.consul_vpc.id
   gateway_ip = "192.168.0.1"
   name = "consul_subnet"
+  primary_dns = "8.8.8.8"
+  secondary_dns = "8.8.4.4"
 }
 
 resource "opentelekomcloud_compute_keypair_v2" "consul_pub" {
@@ -45,7 +47,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "ssh_allowed" {
   rule {
     ip_protocol = "tcp"
     from_port = 22
-    to_port = 22
+    to_port = 443
     cidr = "0.0.0.0/0"
   }
 }

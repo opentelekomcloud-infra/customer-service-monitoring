@@ -15,7 +15,8 @@
       url: 'https://releases.hashicorp.com/consul/1.5.3/consul_1.5.3_linux_amd64.zip'
       dest: /tmp/consul.zip
   - name: unpack consul
+    become: yes
     unarchive:
       remote_src: yes
       src: /tmp/consul.zip
-      dest: "{{ consul_path }}"
+      dest: "{{ bin_path }}"

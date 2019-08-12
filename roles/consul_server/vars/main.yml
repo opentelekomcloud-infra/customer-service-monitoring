@@ -1,1 +1,2 @@
-consul_path: /usr/local/bin/consul
+bin_path: /usr/local/bin
+consul_path: "{{ bin_path }}/consul"
