@@ -1,0 +1,11 @@
+---
+- name: Start Server
+  hosts: scn2_ecs
+  roles:
+  - too_simple_server
+  vars:
+    pg_db_url: "{{ PG_DB_URL }}"
+    pg_database: "{{ PG_DATABASE }}"
+    pg_username: "{{ PG_USERNAME }}"
+    pg_password: "{{ PG_PASSWORD }}"
+    debug: False
