@@ -21,8 +21,6 @@ variable "psql_version" {}
 variable "psql_username" {}
 variable "psql_flavor" {}
 
-variable "local_only_sg" {}
-
 module "resources" {
   source = "./resources"
 
@@ -42,7 +40,6 @@ module "resources" {
   psql_username = var.psql_username
   psql_flavor = var.psql_flavor
   ecs_local_ip = "${var.net_address}.10"
-  local_only_sg = var.local_only_sg
 }
 
 # Configure the OpenTelekomCloud Provider

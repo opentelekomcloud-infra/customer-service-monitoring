@@ -7,8 +7,6 @@ domain_name = "OTC00000000001000000447"
 default_flavor = "s2.medium.1"
 centos_image = "Standard_CentOS_7_latest"
 
-local_only_sg = "local_only"
-
 psql_flavor = "rds.pg.s1.medium"
 psql_port = 8669
 psql_username = "db_user"
