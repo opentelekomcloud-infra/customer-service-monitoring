@@ -3,9 +3,7 @@ variable "password" {}
 variable "postfix" {}
 variable "net_address" {}
 variable "region" {}
-variable "public_key" {
-  default = null
-}
+variable "public_key" {}
 variable "tenant_name" {}
 variable "default_az" {}
 variable "domain_name" {}

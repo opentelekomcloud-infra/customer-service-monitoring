@@ -20,6 +20,9 @@ variable "psql_password" {}
 variable "psql_version" {}
 variable "psql_username" {}
 variable "psql_flavor" {}
+variable "public_key" {
+  default = null
+}
 
 module "resources" {
   source = "./resources"
@@ -40,6 +43,21 @@ module "resources" {
   psql_username = var.psql_username
   psql_flavor = var.psql_flavor
   ecs_local_ip = "${var.net_address}.10"
+  public_key = var.public_key
+}
+
+output "out-scn2_public_ip" {
+  value = module.resources.scn2_eip
+}
+output "out-db_password" {
+  value = module.resources.db_password
+  sensitive = true
+}
+output "out-db_username" {
+  value = module.resources.db_username
+}
+output "out-db_address" {
+  value = module.resources.db_address
 }
 
 # Configure the OpenTelekomCloud Provider

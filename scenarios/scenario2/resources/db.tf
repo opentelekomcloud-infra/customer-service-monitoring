@@ -41,3 +41,16 @@ resource "opentelekomcloud_rds_instance_v3" "instance" {
     opentelekomcloud_compute_secgroup_v2.local_only
   ]
 }
+
+output "db_username" {
+  value = opentelekomcloud_rds_instance_v3.instance.db[0].user_name
+}
+
+output "db_password" {
+  value = opentelekomcloud_rds_instance_v3.instance.db[0].password
+  sensitive = true
+}
+
+output "db_address" {
+  value = "${opentelekomcloud_rds_instance_v3.instance.private_ips[0]}:${var.psql_port}"
+}

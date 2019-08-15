@@ -1,6 +1,5 @@
 variable "ecs_local_ip" {}
 
-
 resource "opentelekomcloud_compute_keypair_v2" "pair" {
   name = "csn2_${var.postfix}"
   public_key = var.public_key
@@ -19,6 +18,9 @@ resource "opentelekomcloud_vpc_eip_v1" "scn2_eip" {
   }
 }
 
+output "scn2_eip" {
+  value = opentelekomcloud_vpc_eip_v1.scn2_eip.publicip[0].ip_address
+}
 
 resource "opentelekomcloud_compute_secgroup_v2" "scn2_public" {
   description = "Allow external connections to ssh, http, and https ports"

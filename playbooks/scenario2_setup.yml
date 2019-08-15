@@ -1,4 +1,12 @@
 ---
+- name: Register existing settings
+  hosts: local
+  tasks:
+    - name: Register host
+      add_host:
+        host: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+        groups: scn2_ecs
+
 - name: Start Server
   hosts: scn2_ecs
   roles:
