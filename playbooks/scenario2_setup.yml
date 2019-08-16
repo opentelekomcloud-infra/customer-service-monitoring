@@ -2,6 +2,8 @@
 - name: Register existing settings
   hosts: local
   tasks:
+    - name: Wait for host
+      script: wait_for_public_ip.py "{{ lookup('env', 'SERVER_PUBLIC_IP') }}" 120
     - name: Register host
       add_host:
         host: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
