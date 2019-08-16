@@ -5,6 +5,7 @@
   - name: Install Python
     yum:
       name: python36
+      update_cache: yes
   - name: Install server
     pip:
       name: too-simple-server
