@@ -4,7 +4,8 @@
   tasks:
     - name: Wait for host
       script: wait_for_public_ip.py "{{ lookup('env', 'SERVER_PUBLIC_IP') }}" 120
-      executable: python
+      args:
+        executable: python
     - name: Register host
       add_host:
         host: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
