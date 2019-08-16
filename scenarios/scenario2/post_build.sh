@@ -9,5 +9,5 @@ function substr() {
 export PSQL_PASSWORD=$( substr "db_password" )
 export PSQL_USERNAME=$( substr "db_username" )
 export PSQL_ADDRESS=$( substr "db_address" )
-export SERVER_PUBLIC_IP=$( substr "scn2_ecs" )
+export SERVER_PUBLIC_IP=$( substr "scn2_public_ip" )
 
