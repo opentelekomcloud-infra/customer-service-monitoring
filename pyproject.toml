@@ -12,7 +12,6 @@ ansible = "^2.8"
 ansible-lint = "^4.1"
 jinja2 = "^2.10"
 openstacksdk = "^0.31.2"
-otcextensions = "^0.6.7"
 
 [tool.poetry.dev-dependencies]
 
