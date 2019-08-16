@@ -2,7 +2,7 @@
 
 scenario_name="$1"
 
-project_root=$(sh ./core/get_project_root.sh)
+project_root=$(bash ./core/get_project_root.sh)
 
 # first - build infra
 terraform_dir="${project_root}/scenarios/${scenario_name}"
