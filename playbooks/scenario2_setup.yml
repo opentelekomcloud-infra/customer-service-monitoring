@@ -8,7 +8,7 @@
         executable: python
     - name: Register host
       add_host:
-        host: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+        hostname: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
         ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
         ansible_ssh_user: "linux"
         groups: scn2_ecs
