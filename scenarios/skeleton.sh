@@ -34,7 +34,7 @@ function init_if_missing() {
 # initialize terraform + some scripts
 shebang="#!/usr/bin/env bash"
 init_if_missing "pre_build.sh" "${shebang}"
-init_if_missing "post_build.sh" $( cat "./core/post_build_template.sh" )
+init_if_missing "post_build.sh" $( < "./core/post_build_template.sh" )
 init_if_missing "terraform.tfvars" \
 "region = \"eu-de\"
 tenant_name = \"eu-de_rus\"
