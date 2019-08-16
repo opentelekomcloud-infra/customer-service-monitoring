@@ -1,4 +1,4 @@
-server: "python3 -m too-simple-server"
+server: "python3 -m too_simple_server"
 server_pid_file: "/run/web-server.pid"
 server_config_dir: "/opt/too-simple"
 server_config: "{{ server_config_dir }}/config.yml"
