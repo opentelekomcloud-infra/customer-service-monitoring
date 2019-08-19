@@ -1,4 +1,4 @@
-debug: "{{ pg_db_url == null | default('true') }}"
+debug: "{{ not pg_db_url }}"
 server_port: "{{ server_port }}"
 
 pg_db_url: "{{ pg_db_url }}"
