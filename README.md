@@ -1,6 +1,8 @@
 # Sandbox
 POC of the platform KPI monitoring
 
+[![Build Status](https://travis-ci.org/opentelekomcloud-infra/csm-sandbox.svg?branch=master)](https://travis-ci.org/opentelekomcloud-infra/csm-sandbox)
+
 ## Install galaxy roles
 
 Multiple playbooks are using galaxy roles, so it is required to install those.

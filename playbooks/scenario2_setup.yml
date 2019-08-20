@@ -1,0 +1,25 @@
+---
+- name: Register existing settings
+  hosts: local
+  tasks:
+    - name: Wait for host
+      script: wait_for_public_ip.py "{{ lookup('env', 'SERVER_PUBLIC_IP') }}" 120
+      args:
+        executable: python
+    - name: Register host
+      add_host:
+        hostname: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
+        ansible_ssh_user: "linux"
+        groups: scn2_ecs
+
+- name: Start Server
+  hosts: scn2_ecs
+  roles:
+  - too_simple_server
+  vars:
+    pg_db_url: "{{ lookup('env', 'PSQL_ADDRESS') }}"
+    pg_database: "entities"
+    pg_username: "{{ lookup('env', 'PSQL_USERNAME') }}"
+    pg_password: "{{ lookup('env', 'PSQL_PASSWORD') }}"
+    debug: False
