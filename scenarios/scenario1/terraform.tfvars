@@ -1,0 +1,8 @@
+region = "eu-de"
+tenant_name = "eu-de_rus"
+default_az = "eu-de-01"
+domain_name = "OTC00000000001000000447"
+postfix = "scn2"
+net_address = "192.168.0"
+default_flavor = "s2.medium.1"
+centos_image = "Standard_CentOS_7_latest"
