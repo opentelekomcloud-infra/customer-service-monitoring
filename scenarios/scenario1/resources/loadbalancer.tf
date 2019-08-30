@@ -33,9 +33,20 @@ resource "opentelekomcloud_lb_pool_v2" "pool" {
 }
 
 # Add multip instances to pool
-resource "opentelekomcloud_lb_member_v2" "members" {
-  count           = 2
-  address         = ["${var.ecs_local_ip_0}", "${var.ecs_local_ip_1}"]
+resource "opentelekomcloud_lb_member_v2" "member_0" {
+  count           = 1
+  address         = "${var.ecs_local_ip_0}"
+  protocol_port   = 80
+  pool_id         = "${opentelekomcloud_lb_pool_v2.pool.id}"
+  subnet_id       = "${opentelekomcloud_vpc_subnet_v1.subnet.vpc_id}"
+  depends_on      = [
+      "opentelekomcloud_lb_pool_v2.pool"
+    ]
+}
+
+resource "opentelekomcloud_lb_member_v2" "member_1" {
+  count           = 1
+  address         = "${var.ecs_local_ip_1}"
   protocol_port   = 80
   pool_id         = "${opentelekomcloud_lb_pool_v2.pool.id}"
   subnet_id       = "${opentelekomcloud_vpc_subnet_v1.subnet.vpc_id}"
@@ -53,6 +64,7 @@ resource "opentelekomcloud_lb_monitor_v2" "monitor" {
   timeout         = 2
   max_retries     = 2
   depends_on      = [
-      "opentelekomcloud_lb_member_v2.members"
+      "opentelekomcloud_lb_member_v2.member_0",
+      "opentelekomcloud_lb_member_v2.member_1"
     ]
 }
