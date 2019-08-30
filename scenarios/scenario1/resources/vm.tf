@@ -50,9 +50,7 @@ resource "opentelekomcloud_compute_instance_v2" "basic_0" {
   image_name = var.centos_image
   flavor_id = var.default_flavor
   security_groups = [
-    opentelekomcloud_compute_secgroup_v2.http.id,
-    opentelekomcloud_compute_secgroup_v2.https.id,
-    opentelekomcloud_compute_secgroup_v2.ssh.id,
+    opentelekomcloud_compute_secgroup_v2.http_https_ssh.id
   ]
 
   region = var.region
@@ -62,9 +60,7 @@ resource "opentelekomcloud_compute_instance_v2" "basic_0" {
   depends_on = [
     opentelekomcloud_vpc_subnet_v1.subnet,
     opentelekomcloud_compute_keypair_v2.pair_0,
-    opentelekomcloud_compute_secgroup_v2.http,
-    opentelekomcloud_compute_secgroup_v2.https,
-    opentelekomcloud_compute_secgroup_v2.ssh,
+    opentelekomcloud_compute_secgroup_v2.http_https_ssh
   ]
 
   network {
@@ -84,9 +80,7 @@ resource "opentelekomcloud_compute_instance_v2" "basic_1" {
   image_name = var.centos_image
   flavor_id = var.default_flavor
   security_groups = [
-    opentelekomcloud_compute_secgroup_v2.http.id,
-    opentelekomcloud_compute_secgroup_v2.https.id,
-    opentelekomcloud_compute_secgroup_v2.ssh.id,
+    opentelekomcloud_compute_secgroup_v2.http_https_ssh.id
   ]
 
   region = var.region
@@ -96,9 +90,7 @@ resource "opentelekomcloud_compute_instance_v2" "basic_1" {
   depends_on = [
     opentelekomcloud_vpc_subnet_v1.subnet,
     opentelekomcloud_compute_keypair_v2.pair_1,
-    opentelekomcloud_compute_secgroup_v2.http,
-    opentelekomcloud_compute_secgroup_v2.https,
-    opentelekomcloud_compute_secgroup_v2.ssh,
+    opentelekomcloud_compute_secgroup_v2.http_https_ssh
   ]
 
   network {
