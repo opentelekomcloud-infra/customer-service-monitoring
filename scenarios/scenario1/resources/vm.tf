@@ -45,7 +45,7 @@ output "scn1_eip_1" {
   value = opentelekomcloud_vpc_eip_v1.scn1_eip_1.publicip[0].ip_address
 }
 
-resource "openstack_networking_port_v2" "port_0" {
+resource "opentelekomcloud_networking_port_v2" "port_0" {
   count              = 1
   name               = "port-http-0"
   network_id         = opentelekomcloud_networking_network_v2.generic.id
@@ -80,7 +80,7 @@ resource "opentelekomcloud_compute_floatingip_associate_v2" "assign_ip_0" {
   instance_id = opentelekomcloud_compute_instance_v2.basic_0.id
 }
 
-resource "openstack_networking_port_v2" "port_1" {
+resource "opentelekomcloud_networking_port_v2" "port_1" {
   count              = 1
   name               = "port-http-1"
   network_id         = opentelekomcloud_networking_network_v2.generic.id

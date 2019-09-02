@@ -40,7 +40,7 @@ resource "opentelekomcloud_networking_router_v2" "generic" {
 # Subnet http configuration
 resource "opentelekomcloud_networking_subnet_v2" "subnet" {
   name                = "net_${var.postfix}_subnet"
-  network_id          = openstack_networking_network_v2.generic.id
+  network_id          = opentelekomcloud_networking_network_v2.generic.id
   cidr                = "${var.net_address}.0/24"
   dns_nameservers     = "8.8.8.8"
 }
