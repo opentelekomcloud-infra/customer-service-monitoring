@@ -1,6 +1,0 @@
----
-- name: Resource Manager
-  include_tasks: "manage_{{ item }}.yml"
-  loop:
-    - server1
-    - server2
