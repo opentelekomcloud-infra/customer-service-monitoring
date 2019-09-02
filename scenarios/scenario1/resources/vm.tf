@@ -51,7 +51,7 @@ resource "opentelekomcloud_networking_port_v2" "port_0" {
   network_id         = opentelekomcloud_networking_network_v2.generic.id
   admin_state_up     = true
   security_group_ids = opentelekomcloud_compute_secgroup_v2.http_https_ssh
-  fixed_ip           = {
+  fixed_ip {
     subnet_id        = opentelekomcloud_networking_subnet_v2.subnet.id
   }
 }
@@ -86,7 +86,7 @@ resource "opentelekomcloud_networking_port_v2" "port_1" {
   network_id         = opentelekomcloud_networking_network_v2.generic.id
   admin_state_up     = true
   security_group_ids = opentelekomcloud_compute_secgroup_v2.http_https_ssh
-  fixed_ip           = {
+  fixed_ip {
     subnet_id        = opentelekomcloud_networking_subnet_v2.subnet.id
   }
 }

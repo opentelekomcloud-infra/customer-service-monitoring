@@ -26,21 +26,31 @@ resource "opentelekomcloud_networking_subnet_v2" "subnet" {
   cidr       = "${var.net_address}.0/24"
 } */
 
+#### NETWORK CONFIGURATION ####
+
+# Router creation
+resource "opentelekomcloud_networking_router_v2" "generic" {
+  name                = "router"
+  external_network_id = "f67f0d72-0ddf-11e4-9d95-e1f29f417e2f"
+}
+
 # Network creation
 resource "opentelekomcloud_networking_network_v2" "generic" {
   name                = "network-generic"
 }
 
-# Router creation
-resource "opentelekomcloud_networking_router_v2" "generic" {
-  name                = "router"
-  external_network_id = opentelekomcloud_networking_network_v2.generic.id
-}
+#### HTTP SUBNET ####
 
 # Subnet http configuration
 resource "opentelekomcloud_networking_subnet_v2" "subnet" {
-  name                = "net_${var.postfix}_subnet"
-  network_id          = opentelekomcloud_networking_network_v2.generic.id
-  cidr                = "${var.net_address}.0/24"
-  dns_nameservers     = "8.8.8.8"
+  name                = "${var.postfix}_subnet"
+  network_id          = "${opentelekomcloud_networking_network_v2.generic.id}"
+  cidr                = "${var.net_address}.0/16"
+  dns_nameservers     =  ["8.8.8.8", "8.8.8.4"]
+}
+
+# Router interface configuration
+resource "opentelekomcloud_networking_router_interface_v2" "http" {
+  router_id           = "${opentelekomcloud_networking_router_v2.generic.id}"
+  subnet_id           = "${opentelekomcloud_networking_subnet_v2.subnet.id}"
 }
