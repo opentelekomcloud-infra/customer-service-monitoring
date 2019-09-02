@@ -45,6 +45,18 @@ output "scn1_eip_1" {
   value = opentelekomcloud_vpc_eip_v1.scn1_eip_1.publicip[0].ip_address
 }
 
+resource "opentelekomcloud_networking_port_v2" "port_0" {
+  name               = "port_0"
+  network_id         = "${opentelekomcloud_networking_network_v2.network.id}"
+  admin_state_up     = "true"
+  security_group_ids = ["${opentelekomcloud_compute_secgroup_v2.http_https_ssh.id}"]
+
+  fixed_ip {
+    "subnet_id"  = "${opentelekomcloud_networking_subnet_v2.subnet.id}"
+    "ip_address" = var.ecs_local_ip_0
+  }
+}
+
 resource "opentelekomcloud_compute_instance_v2" "basic_0" {
   name = "${var.postfix}_server_0"
   image_name = var.centos_image
@@ -64,8 +76,7 @@ resource "opentelekomcloud_compute_instance_v2" "basic_0" {
   ]
 
   network {
-    uuid = opentelekomcloud_networking_subnet_v2.subnet.id
-    fixed_ip_v4 = var.ecs_local_ip_0
+    port = "${opentelekomcloud_networking_port_v2.port_1.id}"
   }
 
 }
@@ -73,6 +84,18 @@ resource "opentelekomcloud_compute_instance_v2" "basic_0" {
 resource "opentelekomcloud_compute_floatingip_associate_v2" "assign_ip_0" {
   floating_ip = opentelekomcloud_vpc_eip_v1.scn1_eip_0.publicip[0].ip_address
   instance_id = opentelekomcloud_compute_instance_v2.basic_0.id
+}
+
+resource "opentelekomcloud_networking_port_v2" "port_1" {
+  name               = "port_1"
+  network_id         = "${opentelekomcloud_networking_network_v2.network.id}"
+  admin_state_up     = "true"
+  security_group_ids = ["${opentelekomcloud_compute_secgroup_v2.http_https_ssh.id}"]
+
+  fixed_ip {
+    "subnet_id"  = "${opentelekomcloud_networking_subnet_v2.subnet.id}"
+    "ip_address" = var.ecs_local_ip_1
+  }
 }
 
 resource "opentelekomcloud_compute_instance_v2" "basic_1" {
@@ -94,8 +117,7 @@ resource "opentelekomcloud_compute_instance_v2" "basic_1" {
   ]
 
   network {
-    uuid = opentelekomcloud_networking_subnet_v2.subnet.id
-    fixed_ip_v4 = var.ecs_local_ip_1
+    port = "${opentelekomcloud_networking_port_v2.port_1.id}"
   }
 
 }
