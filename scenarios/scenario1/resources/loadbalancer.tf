@@ -27,7 +27,7 @@ resource "opentelekomcloud_lb_listener_v2" "listener" {
   name            = "listener_http"
   protocol        = "TCP"
   protocol_port   = 80
-  loadbalancer_id = "${opentelekomcloud_lb_loadbalancer_v2.loadbalancer.id}"
+  loadbalancer_id = opentelekomcloud_lb_loadbalancer_v2.loadbalancer.id
   depends_on      = [
       opentelekomcloud_lb_loadbalancer_v2.loadbalancer
     ]
@@ -47,7 +47,7 @@ resource "opentelekomcloud_lb_pool_v2" "pool" {
 # Add multip instances to pool
 resource "opentelekomcloud_lb_member_v2" "members" {
   count           = 2
-  address         = "${element(opentelekomcloud_compute_instance_v2.http.*.access_ip_v4, count.index)}"
+  address         = opentelekomcloud_compute_instance_v2.http.*.access_ip_v4[count.index]
   protocol_port   = 80
   pool_id         = opentelekomcloud_lb_pool_v2.pool.id
   subnet_id       = opentelekomcloud_networking_subnet_v2.subnet.id
