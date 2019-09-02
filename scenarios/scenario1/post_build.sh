@@ -6,5 +6,4 @@ function substr() {
     echo $( echo "${output}" | grep -E "${var_name} =" | grep -oE "\"(.+)\"" | sed -e 's/^"//' -e 's/"$//' )
 }
 
-export SERVER_PUBLIC_IP_0=$( substr "scn1_public_ip_0" )
-export SERVER_PUBLIC_IP_1=$( substr "scn1_public_ip_1" )
+export LOADBALANCER_PUBLIC_IP_0=$( substr "scn1_lb_fip" )

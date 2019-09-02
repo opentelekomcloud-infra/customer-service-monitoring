@@ -15,7 +15,7 @@ variable "centos_image" {}
 variable "net_address" {}
 variable "postfix" {}
 variable "public_key" {
-  default = null
+  default = ""
 }
 
 module "resources" {
@@ -32,16 +32,14 @@ module "resources" {
   net_address = var.net_address
   public_key = var.public_key
   postfix = var.postfix
-  ecs_local_ip_0 = "${var.net_address}.10"
-  ecs_local_ip_1 = "${var.net_address}.11"
+  ecs_local_ips = [
+    "${var.net_address}.10",
+    "${var.net_address}.11"
+  ]
 }
 
-output "out-scn1_public_ip_0" {
-  value = module.resources.scn1_eip_0
-}
-
-output "out-scn1_public_ip_1" {
-  value = module.resources.scn1_eip_1
+output "out-scn1_lb_fip" {
+  value = module.resources.scn1_lb_fip
 }
 
 # Configure the OpenTelekomCloud Provider
