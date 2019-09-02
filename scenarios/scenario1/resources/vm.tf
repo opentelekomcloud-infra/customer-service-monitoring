@@ -58,13 +58,13 @@ resource "opentelekomcloud_compute_instance_v2" "basic_0" {
   key_pair = opentelekomcloud_compute_keypair_v2.pair_0.name
 
   depends_on = [
-    opentelekomcloud_vpc_subnet_v1.subnet,
+    opentelekomcloud_networking_subnet_v2.subnet,
     opentelekomcloud_compute_keypair_v2.pair_0,
     opentelekomcloud_compute_secgroup_v2.http_https_ssh
   ]
 
   network {
-    uuid = opentelekomcloud_vpc_subnet_v1.subnet.id
+    uuid = opentelekomcloud_networking_subnet_v2.subnet.id
     fixed_ip_v4 = var.ecs_local_ip_0
   }
 
@@ -88,13 +88,13 @@ resource "opentelekomcloud_compute_instance_v2" "basic_1" {
   key_pair = opentelekomcloud_compute_keypair_v2.pair_1.name
 
   depends_on = [
-    opentelekomcloud_vpc_subnet_v1.subnet,
+    opentelekomcloud_networking_subnet_v2.subnet,
     opentelekomcloud_compute_keypair_v2.pair_1,
     opentelekomcloud_compute_secgroup_v2.http_https_ssh
   ]
 
   network {
-    uuid = opentelekomcloud_vpc_subnet_v1.subnet.id
+    uuid = opentelekomcloud_networking_subnet_v2.subnet.id
     fixed_ip_v4 = var.ecs_local_ip_1
   }
 

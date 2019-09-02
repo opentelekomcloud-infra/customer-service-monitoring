@@ -3,7 +3,7 @@
 # Create loadbalancer
 resource "opentelekomcloud_lb_loadbalancer_v2" "loadbalancer" {
   name            = "elastic_loadbalancer_http"
-  vip_subnet_id   = "${opentelekomcloud_vpc_subnet_v1.subnet.vpc_id}"
+  vip_subnet_id   = opentelekomcloud_networking_subnet_v2.subnet.id
   depends_on      = [
     "opentelekomcloud_compute_instance_v2.basic_0",
     "opentelekomcloud_compute_instance_v2.basic_1"
@@ -38,7 +38,7 @@ resource "opentelekomcloud_lb_member_v2" "member_0" {
   address         = "${var.ecs_local_ip_0}"
   protocol_port   = 80
   pool_id         = "${opentelekomcloud_lb_pool_v2.pool.id}"
-  subnet_id       = "${opentelekomcloud_vpc_subnet_v1.subnet.vpc_id}"
+  subnet_id       = opentelekomcloud_networking_subnet_v2.subnet.id
   depends_on      = [
       "opentelekomcloud_lb_pool_v2.pool"
     ]
@@ -49,7 +49,7 @@ resource "opentelekomcloud_lb_member_v2" "member_1" {
   address         = "${var.ecs_local_ip_1}"
   protocol_port   = 80
   pool_id         = "${opentelekomcloud_lb_pool_v2.pool.id}"
-  subnet_id       = "${opentelekomcloud_vpc_subnet_v1.subnet.vpc_id}"
+  subnet_id       = opentelekomcloud_networking_subnet_v2.subnet.id
   depends_on      = [
       "opentelekomcloud_lb_pool_v2.pool"
     ]
