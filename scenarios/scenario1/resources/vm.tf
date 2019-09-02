@@ -52,8 +52,8 @@ resource "opentelekomcloud_networking_port_v2" "port_0" {
   security_group_ids = ["${opentelekomcloud_compute_secgroup_v2.http_https_ssh.id}"]
 
   fixed_ip {
-    "subnet_id"  = "${opentelekomcloud_networking_subnet_v2.subnet.id}"
-    "ip_address" = var.ecs_local_ip_0
+    subnet_id  = "${opentelekomcloud_networking_subnet_v2.subnet.id}"
+    ip_address = var.ecs_local_ip_0
   }
 }
 
@@ -93,8 +93,8 @@ resource "opentelekomcloud_networking_port_v2" "port_1" {
   security_group_ids = ["${opentelekomcloud_compute_secgroup_v2.http_https_ssh.id}"]
 
   fixed_ip {
-    "subnet_id"  = "${opentelekomcloud_networking_subnet_v2.subnet.id}"
-    "ip_address" = var.ecs_local_ip_1
+    subnet_id  = "${opentelekomcloud_networking_subnet_v2.subnet.id}"
+    ip_address = var.ecs_local_ip_1
   }
 }
 
