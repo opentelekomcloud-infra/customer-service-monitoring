@@ -13,6 +13,7 @@ variable "domain_name" {}
 variable "default_flavor" {}
 variable "centos_image" {}
 variable "net_address" {}
+variable "postfix" {}
 variable "public_key" {
   default = null
 }
