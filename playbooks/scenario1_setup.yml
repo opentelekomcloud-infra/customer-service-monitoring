@@ -1,1 +1,49 @@
 ---
+- name: Register existing settings
+  hosts: local
+  tasks:
+    - name: Wait for host
+      script: wait_for_public_ip.py "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP_0') }}" 120
+      args:
+        executable: python3
+    - name: Register host
+      add_host:
+        hostname: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP_0') }}"
+        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
+        ansible_ssh_user: "linux"
+        groups: scn1_ecs
+
+- name: Setup Servers
+  hosts: scn1_ecs
+  tasks:
+    - name: Open port to basic0
+      command: ssh -L 2210:192.168.0.10:22 -N -o GatewayPorts=yes
+
+    - name: Add a host alias that we reach through a tunnel (Ansible 1.9 and older)
+      add_host:
+        hostname: basic0
+        ansible_ssh_host: 192.168.0.10
+        ansible_ssh_port: 22
+
+    - name: Open port to basic1
+      command: ssh -L 2211:192.168.0.11:22 -N -o GatewayPorts=yes
+
+    - name: Add a host alias that we reach through a tunnel (Ansible 1.9 and older)
+      add_host:
+        hostname: basic1
+        ansible_ssh_host: 192.168.0.11
+        ansible_ssh_port: 22
+
+- name: Start Simple Server on basic0
+  hosts: basic0
+  roles:
+    - too_simple_server
+  vars:
+    debug: True
+
+- name: Start Simple Server on basic1
+  hosts: basic1
+  roles:
+    - too_simple_server
+  vars:
+    debug: True

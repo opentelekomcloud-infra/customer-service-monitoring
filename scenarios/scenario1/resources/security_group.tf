@@ -1,7 +1,7 @@
 # Acces group, open input port 80, 443 and ssh port
 resource "opentelekomcloud_compute_secgroup_v2" "http_https_ssh" {
   description = "Allow external connections to ssh, http, and https ports"
-  name = "scn2_public"
+  name = "scn1_public"
 
   rule {
     cidr = "0.0.0.0/0"
