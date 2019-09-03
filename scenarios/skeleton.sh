@@ -50,6 +50,15 @@ tf_template="terraform {
   required_providers {
     opentelekomcloud = \">= 1.11.0\"
   }
+
+  backend \"s3\" {  # use OBS for remote state
+    key = \"terraform_state/${target_name}\"
+    endpoint =  \"obs.eu-de.otc.t-systems.com\"
+    bucket = \"obs-csm\"
+    region = \"eu-de\"
+    skip_region_validation = true
+    skip_credentials_validation = true
+  }
 }
 
 variable \"username\" {}
