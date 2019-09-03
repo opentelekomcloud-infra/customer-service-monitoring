@@ -20,9 +20,14 @@ Installing of terraform for linux can be done using `install_terraform.sh`
 
 Existing scenario infrastructure build can be triggered using `scenarios/build.sh`
 
+**!NB** Terraform is using OBS for storing remote state
+Following variables have to be set: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
+
 E.g. for scenario 2 following should be used:
 ```bash
 cd scenarios
+export AWS_ACCESS_KEY_ID=myau_id
+export AWS_SECRET_ACCESS_KEY=sekret_myau
 ./build.sh scenario2
 ```
 This script perform the following actions:
