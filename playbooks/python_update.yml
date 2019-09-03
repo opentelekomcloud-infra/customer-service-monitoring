@@ -3,4 +3,3 @@
   become: True
   roles:
     - role: latest_python
-

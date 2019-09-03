@@ -1,8 +1,0 @@
----
-
-- name: Test 1 - obtain token
-  hosts: localhost
-  ignore_errors: yes
-  tasks:
-    - name: Get token
-      script: get_token.py

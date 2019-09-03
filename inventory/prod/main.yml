@@ -5,8 +5,3 @@ all:
       ansible_host: localhost
       ansible_connection: local
       ansible_python_interpreter: '/usr/bin/env python3'
-  children:
-    scn2_ecs:  # group, runtime-populated
-      hosts:
-    scn2_db:   # group, runtime-populated
-      host:
