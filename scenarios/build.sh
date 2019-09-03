@@ -15,4 +15,4 @@ terraform apply -auto-approve -input=false || exit 2
 if [[ -e ${post_build} ]]; then source "${post_build}"; fi # here goes setting up env variables
 # second - configure build infra
 cd "${project_root}" || exit 1
-ansible-playbook -i "inventory/prod" "playbooks/${scenario_name}_setup.yml"
+ansible-playbook -i "inventory/${scenario_name}" "playbooks/${scenario_name}_setup.yml"
