@@ -1,5 +1,0 @@
----
-all:
-  children:
-    scn2_ecs:  # group, runtime-populated
-      hosts:

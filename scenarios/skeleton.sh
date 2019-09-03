@@ -46,11 +46,6 @@ password = \"\""
 # create empty ansible playbook
 target_dir="${project_root}/playbooks" init_if_missing "${target_name}_setup.yml" "---"
 
-# create empty ansible inventory
-inventory_dir="${project_root}/inventory/${target_name}"
-mkdir -p "${inventory_dir}"
-target_dir="${inventory_dir}" init_if_missing "main.yml" "---"
-
 tf_template="terraform {
   required_providers {
     opentelekomcloud = \">= 1.11.0\"
