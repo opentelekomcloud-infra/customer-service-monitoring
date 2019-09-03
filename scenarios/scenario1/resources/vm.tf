@@ -14,7 +14,7 @@ resource "opentelekomcloud_compute_instance_v2" "http" {
   flavor_name        = var.default_flavor
   key_pair           = opentelekomcloud_compute_keypair_v2.pair.name
   network {
-    port             = "${element(opentelekomcloud_networking_port_v2.http.*.id, count.index)}"
+    port             = opentelekomcloud_networking_port_v2.http.*.id[count.index]
   }
 }
 
@@ -27,6 +27,6 @@ resource "opentelekomcloud_networking_port_v2" "http" {
   security_group_ids = [opentelekomcloud_compute_secgroup_v2.http_https_ssh.id]
   fixed_ip {
     subnet_id = opentelekomcloud_networking_subnet_v2.subnet.id
-    ip_address = element(var.ecs_local_ips, count.index)
+    ip_address = var.ecs_local_ips[count.index]
   }
 }
