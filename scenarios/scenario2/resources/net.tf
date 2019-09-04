@@ -13,8 +13,3 @@ resource "opentelekomcloud_vpc_subnet_v1" "subnet" {
     opentelekomcloud_vpc_v1.vpc
   ]
 }
-
-resource "opentelekomcloud_compute_secgroup_v2" "local_only" {
-  description = "Sec group with only local access"
-  name = "local_only"
-}
