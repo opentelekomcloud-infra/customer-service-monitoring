@@ -27,11 +27,11 @@
 
     - name: Open port to basic0
       command: ssh linux@192.168.0.10 -i ~/.ssh/scn1_instance_rsa -L 2210:localhost:22 -fN -o StrictHostKeyChecking=no
-      tags: skip_ansible_lint
+      register: results
 
     - name: Open port to basic1
       command: ssh linux@192.168.0.11 -i ~/.ssh/scn1_instance_rsa -L 2211:localhost:22 -fN -o StrictHostKeyChecking=no
-      tags: skip_ansible_lint
+      register: results
 
     - name: Add a host alias that we reach through a tunnel
       add_host:
