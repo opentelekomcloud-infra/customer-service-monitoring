@@ -3,10 +3,11 @@
 start_dir=$( pwd )
 local_dir=$( dirname "$0" )
 project_root=$2
-cd "${project_root}" || exit 1
 
+cd "${local_dir}/.."
 output="$(terraform output)"
 
+cd "${project_root}" || exit 1
 function get_value() {
     var_name=$1
     echo $( echo "${output}" | grep -E "${var_name} =" | grep -oE "\"(.+)\"" | sed -e 's/^"//' -e 's/"$//' )
@@ -14,7 +15,7 @@ function get_value() {
 server_ip=$( get_value "scn2_public_ip" )
 
 function run_test() {
-    poetry run python ${local_dir}/main.py ${server_ip}
+    poetry run python ${local_dir}/main.py "${server_ip}"
 }
 
 run_test || exit $?
