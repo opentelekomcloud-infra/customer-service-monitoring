@@ -1,7 +1,10 @@
+variable "loadbalancer_local_ip" {}
+
 # Create loadbalancer
 resource "opentelekomcloud_lb_loadbalancer_v2" "loadbalancer" {
   name            = "elastic_loadbalancer_http"
   vip_subnet_id   = opentelekomcloud_networking_subnet_v2.subnet.id
+  vip_address     = var.loadbalancer_local_ip
   depends_on      = [
     opentelekomcloud_compute_instance_v2.http
   ]

@@ -44,10 +44,16 @@ module "resources" {
     "${var.net_address}.10",
     "${var.net_address}.11"
   ]
+  bastion_local_ip = "${var.net_address}.12"
+  loadbalancer_local_ip= "${var.net_address}.13"
 }
 
 output "out-scn1_lb_fip" {
   value = module.resources.scn1_lb_fip
+}
+
+output "out-scn1_bastion_fip" {
+  value = module.resources.scn1_bastion_fip
 }
 
 # Configure the OpenTelekomCloud Provider

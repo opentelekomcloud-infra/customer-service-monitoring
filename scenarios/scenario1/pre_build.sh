@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-file_name="scn2_instance_rsa"
+file_name="scn1_instance_rsa"
 export RSA_PRIVATE_KEY="$( pwd )/${file_name}"
 
 yes y | ssh-keygen -qf "${RSA_PRIVATE_KEY}" -t rsa -N ''
