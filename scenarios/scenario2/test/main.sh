@@ -3,8 +3,10 @@
 start_dir=$( pwd )
 local_dir=$( dirname "$0" )
 project_root=$2
+echo "Project root: ${project_root}"
 
 cd "${local_dir}/.."
+echo "Local directory: $(pwd)"
 output="$(terraform output)"
 
 cd "${project_root}" || exit 1
