@@ -29,7 +29,7 @@ def check_server(base_url):
     entity_location = response.headers["Location"]
 
     entity = session.get(entity_location)
-    assert response.status_code == 200
+    assert entity.status_code == 200
     assert entity.json() == data
 
 

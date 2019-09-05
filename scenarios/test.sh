@@ -16,11 +16,11 @@ if [[ $? != 0 ]]; then
 fi
 cd ${project_root}
 poetry install
-alias python="poetry run python"
+poetry run python --version
 # end venv preparation
 
 scenario_dir="${project_root}/scenarios/${scenario_name}"
 cd ${scenario_dir} || exit 1
 output="$( terraform show | grep "out-" )"
 
-python test/main.py
+poetry run python test/main.py
