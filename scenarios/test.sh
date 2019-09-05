@@ -28,4 +28,4 @@ scenario_dir="${project_root}/scenarios/${scenario_name}"
 cd ${scenario_dir} || exit 1
 output="$( terraform show | grep "out-" )"
 
-poetry run bash test/main.sh
+poetry run bash test/main.sh "${project_root}"

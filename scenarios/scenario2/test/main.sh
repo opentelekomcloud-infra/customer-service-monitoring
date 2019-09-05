@@ -2,7 +2,7 @@
 
 start_dir=$( pwd )
 local_dir=$( dirname "$0" )
-project_root=$( ./../../core/get_project_root.sh )
+project_root=$2
 cd "${project_root}" || exit 1
 
 output="$(terraform output)"
@@ -14,7 +14,7 @@ function get_value() {
 server_ip=$( get_value "scn2_public_ip" )
 
 function run_test() {
-    poetry run python ./main.py ${server_ip}
+    poetry run python ${local_dir}/main.py ${server_ip}
 }
 
 run_test || exit $?
