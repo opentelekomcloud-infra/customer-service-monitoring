@@ -15,6 +15,7 @@
 
 - name: Start Server
   hosts: scn2_ecs
+  become: yes
   roles:
   - too_simple_server
   vars:
@@ -23,3 +24,4 @@
     pg_username: "{{ lookup('env', 'PSQL_USERNAME') }}"
     pg_password: "{{ lookup('env', 'PSQL_PASSWORD') }}"
     debug: False
+    server_port: 80

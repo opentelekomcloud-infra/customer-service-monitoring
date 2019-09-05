@@ -14,6 +14,17 @@ data opentelekomcloud_rds_flavors_v3 "flavours" {
   instance_mode = "single"
 }
 
+resource "opentelekomcloud_compute_secgroup_v2" "db_local" {
+  description = "Sec group with only local access"
+  name = "local_only"
+  rule {
+    from_port = var.psql_port
+    ip_protocol = "tcp"
+    to_port = var.psql_port
+    cidr = opentelekomcloud_vpc_subnet_v1.subnet.cidr
+  }
+}
+
 resource "opentelekomcloud_rds_instance_v3" "instance" {
   availability_zone = [
     var.default_az
@@ -25,7 +36,7 @@ resource "opentelekomcloud_rds_instance_v3" "instance" {
     port = var.psql_port
   }
   name = "scn2-rds"
-  security_group_id = opentelekomcloud_compute_secgroup_v2.local_only.id
+  security_group_id = opentelekomcloud_compute_secgroup_v2.db_local.id
   subnet_id = opentelekomcloud_vpc_subnet_v1.subnet.id
   vpc_id = opentelekomcloud_vpc_v1.vpc.id
   volume {
@@ -38,7 +49,7 @@ resource "opentelekomcloud_rds_instance_v3" "instance" {
     keep_days = 1
   }
   depends_on = [
-    opentelekomcloud_compute_secgroup_v2.local_only
+    opentelekomcloud_compute_secgroup_v2.db_local
   ]
 }
 
