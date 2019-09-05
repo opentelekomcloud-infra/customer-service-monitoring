@@ -10,7 +10,7 @@ resource "opentelekomcloud_vpc_eip_v1" "scn2_eip" {
   bandwidth {
     name = "scn2_limit"
     share_type = "PER"
-    size = 1
+    size = 10
   }
 
   publicip {
