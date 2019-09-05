@@ -13,15 +13,4 @@
         ansible_ssh_user: "linux"
         groups: scn2_ecs
 
-- name: Start Server
-  hosts: scn2_ecs
-  become: yes
-  roles:
-  - too_simple_server
-  vars:
-    pg_db_url: "{{ lookup('env', 'PSQL_ADDRESS') }}"
-    pg_database: "entities"
-    pg_username: "{{ lookup('env', 'PSQL_USERNAME') }}"
-    pg_password: "{{ lookup('env', 'PSQL_PASSWORD') }}"
-    debug: False
-    server_port: 80
+- include_playbook: scenario2_server_start.yml

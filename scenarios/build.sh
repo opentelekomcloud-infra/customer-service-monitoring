@@ -2,6 +2,11 @@
 
 scenario_name="$1"
 
+if [[ -z ${scenario_name} ]]; then
+    echo "Scenario name is missing"
+    exit 2
+fi
+
 project_root=$(bash ./core/get_project_root.sh)
 
 # first - build infra

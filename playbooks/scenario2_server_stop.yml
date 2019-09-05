@@ -1,0 +1,8 @@
+---
+- name: Stop Server
+  hosts: scn2_ecs
+  become: yes
+  roles:
+  - too_simple_server
+  vars:
+    server_state: absent

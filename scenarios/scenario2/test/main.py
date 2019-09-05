@@ -1,18 +1,10 @@
 """Check if server is working"""
 
-import json
 import random
 import string
-import subprocess
+import sys
 
-from ocomone import Resources
 from ocomone.session import BaseUrlSession
-
-SCENARIO_ROOT = Resources(__file__, "./..")
-
-
-def _get_output_value(state, key):
-    return state["outputs"][f"out-{key}"]["value"]
 
 
 def _rand_str():
@@ -33,17 +25,5 @@ def check_server(base_url):
     assert entity.json() == data
 
 
-def main():
-    done = subprocess.run("terraform state pull",
-                          shell=True,
-                          stdout=subprocess.PIPE,
-                          universal_newlines=True,
-                          cwd=SCENARIO_ROOT.resource_root)
-    done.check_returncode()
-    state = json.loads(done.stdout)
-    server_ip = _get_output_value(state, "scn2_public_ip")
-    check_server(f"http://{server_ip}:80/")
-
-
 if __name__ == '__main__':
-    main()
+    check_server(f"http://{sys.argv[1]}:80/")
