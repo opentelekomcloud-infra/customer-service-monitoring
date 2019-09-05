@@ -4,7 +4,7 @@ region = "eu-de"
 tenant_name = "eu-de_rus"
 default_az = "eu-de-01"
 domain_name = "OTC00000000001000000447"
-default_flavor = "s2.medium.1"
+default_flavor = "c3.large.2"
 centos_image = "Standard_CentOS_7_latest"
 
 psql_flavor = "rds.pg.s1.medium"
