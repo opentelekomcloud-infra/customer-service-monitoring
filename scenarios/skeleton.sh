@@ -15,10 +15,11 @@ fi
 target_name="$1"
 project_root=$(sh ./core/get_project_root.sh)
 
-cd "${project_root}" || exit 2
 target_dir="${project_root}/scenarios/${target_name}"
 mkdir -p "${target_dir}"
 
+# initialize terraform + some scripts
+shebang="#!/usr/bin/env bash"
 function init_if_missing() {
     f_path="${target_dir}/$1"
     data="$2"
@@ -31,10 +32,35 @@ function init_if_missing() {
 
 }
 
-# initialize terraform + some scripts
-shebang="#!/usr/bin/env bash"
+# init pre-/post-build scripts
 init_if_missing "pre_build.sh" "${shebang}"
 init_if_missing "post_build.sh" $( < "./core/post_build_template.sh" )
+
+# init tests
+mkdir -p "${target_dir}/test"
+
+init_if_missing "test/main.sh" "${shebang}
+start_dir=\$( pwd )
+local_dir=\$( cd \$( dirname \"\$0\" ); pwd )
+project_root=\$1
+echo \"Project root: \${project_root}\"
+
+
+scenario_dir=\$(cd \"\${local_dir}/..\"; pwd)
+echo \"Scenario directory: \${scenario_dir}\"
+cd \"\${scenario_dir}\" || exit 1
+# source ./pre_build.sh
+
+cd \"\${project_root}\" || exit 1
+
+function run_test() {
+    poetry run python \"\${local_dir}/main.py\"  # <arguments>
+}
+
+cd \${start_dir}"
+init_if_missing "test/main.py" ""
+
+# init terraform configuration
 init_if_missing "terraform.tfvars" \
 "region = \"eu-de\"
 tenant_name = \"eu-de_rus\"
