@@ -6,19 +6,17 @@
       script: wait_for_public_ip.py "{{ lookup('env', 'BASTION_PUBLIC_IP') }}" 120
       args:
         executable: python3
-    - name: Register host
+
+    - name: Register bastion host
       add_host:
         hostname: "{{ lookup('env', 'BASTION_PUBLIC_IP') }}"
         ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
         ansible_ssh_user: "linux"
         groups: scn1_ecs
 
-- name: Register nodes
-  hosts: local
-  tasks:
-    - name: Add a host alias that we reach through a tunnel
+    - name: Add a host alias to basic0 that we reach through a tunnel
       add_host:
-        hostname: basic10
+        hostname: basic0
         ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
         ansible_ssh_user: "linux"
         ansible_host: 192.168.0.10
@@ -28,9 +26,9 @@
     - debug:
         var: result
 
-    - name: Add a host alias that we reach through a tunnel
+    - name: Add a host alias to basic1 that we reach through a tunnel
       add_host:
-        hostname: basic11
+        hostname: basic1
         ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
         ansible_ssh_user: "linux"
         ansible_host: 192.168.0.11
@@ -40,7 +38,12 @@
     - debug:
         var: result
 
-- name: Setup Bastion
+    - name: Gather forwards from inventory variable
+      set_fact:
+        forwardings_list: "{{ (item[:5] == 'basic') |ternary (forwardings_list | default([]) | union([{'name': item, 'ip': hostvars[item].ansible_host, 'port': hostvars[item].ansible_port}]) , forwardings_list | default([]))}}"
+      with_items: "{{ groups.scn1_nodes }}"
+
+- name: Copy ssh keys to Bastion
   hosts: scn1_ecs
   become: true
   tasks:
@@ -53,34 +56,17 @@
         - scn1_instance_rsa
         - scn1_instance_rsa.pub
 
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
+- name: Setup portforwarding on Bastion
+  hosts: scn1_ecs
+  become: true
+  roles:
+    - scenario1_portforwarding
+  vars:
+    debug: True
 
-    - name: Install xinetd
-      apt:
-        name: xinetd
-        state: latest
-
-    - name: Gather forwards from forward_port inventory variable
-      set_fact:
-        forwardings_list: "{{ (item[:5] == 'basic') |ternary (forwardings_list | default([]) | union([{'name': item, 'ip': hostvars[item].ansible_host, 'port': hostvars[item].ansible_port}]) , forwardings_list | default([]))}}"
-      with_items: "{{ groups.scn1_nodes }}"
-
-    - name: Configure xinetd forwards
-      template:
-        src: 'templates/xinetd_forward.conf'
-        dest: '/etc/xinetd.d/{{ item.name }}'
-        owner: root
-        group: root
-        mode: '0644'
-      with_items: "{{ forwardings_list }}"
-      notify:
-      - reload xinetd
-
-  handlers:
-    - name: Reload xinetd
-      service:
-        name: xinetd
-        state: reloaded
+- name: Start Simple Server on basic0 and basic1
+  hosts: scn1_nodes
+  roles:
+    - too_simple_server
+  vars:
+    debug: True
