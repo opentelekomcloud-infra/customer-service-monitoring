@@ -1,23 +1,20 @@
 #!/usr/bin/env bash
 
 start_dir=$( pwd )
-local_dir=$( dirname "$0" )
-project_root=$2
+local_dir=$( cd $( dirname "$0" ); pwd )
+project_root=$1
 echo "Project root: ${project_root}"
 
-cd "${local_dir}/.."
-echo "Local directory: $(pwd)"
-output="$(terraform output)"
+
+scenario_dir=$(cd "${local_dir}/.."; pwd)
+echo "Scenario directory: ${scenario_dir}"
+cd "${scenario_dir}" || exit 1
+source ./pre_build.sh
 
 cd "${project_root}" || exit 1
-function get_value() {
-    var_name=$1
-    echo $( echo "${output}" | grep -E "${var_name} =" | grep -oE "\"(.+)\"" | sed -e 's/^"//' -e 's/"$//' )
-}
-server_ip=$( get_value "scn2_public_ip" )
 
 function run_test() {
-    poetry run python ${local_dir}/main.py "${server_ip}"
+    poetry run python ${local_dir}/main.py "${SERVER_PUBLIC_IP}"
 }
 
 run_test || exit $?
@@ -31,8 +28,7 @@ if [[ $? == 0 ]]; then
     exit 2
 fi
 
-ansible-playbook -i "inventory/prod" "playbooks/scenario2_server_start.yml"
+ansible-playbook -i "inventory/prod" "playbooks/scenario2_setup.yml"
 run_test || exit $?
 
 cd ${start_dir}
-exit

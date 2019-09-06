@@ -19,7 +19,7 @@
 - name: Configure and start
   when: server_state == 'present'
   block:
-  - name: Allow port 80
+  - name: 'Allow port 80'
     become: yes
     iptables:
       chain: IN_public_allow  # centos specific

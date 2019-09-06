@@ -1,4 +1,3 @@
----
 - name: Register existing settings
   hosts: local
   tasks:
@@ -9,8 +8,18 @@
     - name: Register host
       add_host:
         hostname: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
-        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
         ansible_ssh_user: "linux"
         groups: scn2_ecs
 
-- include_playbook: scenario2_server_start.yml
+- name: Start Server
+  hosts: scn2_ecs
+  become: yes
+  roles:
+  - too_simple_server
+  vars:
+    pg_db_url: "{{ lookup('env', 'PSQL_ADDRESS') }}"
+    pg_database: "entities"
+    pg_username: "{{ lookup('env', 'PSQL_USERNAME') }}"
+    pg_password: "{{ lookup('env', 'PSQL_PASSWORD') }}"
+    debug: False
+    server_port: 80

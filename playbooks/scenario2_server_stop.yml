@@ -1,4 +1,13 @@
 ---
+- name: Register host
+  hosts: local
+  tasks:
+   - name: Register host
+     add_host:
+       hostname: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+       ansible_ssh_user: "linux"
+       groups: scn2_ecs
+
 - name: Stop Server
   hosts: scn2_ecs
   become: yes
