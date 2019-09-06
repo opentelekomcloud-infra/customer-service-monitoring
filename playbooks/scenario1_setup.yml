@@ -38,10 +38,29 @@
     - debug:
         var: result
 
-    - name: Gather forwards from inventory variable
-      set_fact:
-        forwardings_list: "{{ (item[:5] == 'basic') |ternary (forwardings_list | default([]) | union([{'name': item, 'ip': hostvars[item].ansible_host, 'port': hostvars[item].ansible_port}]) , forwardings_list | default([]))}}"
-      with_items: "{{ groups.scn1_nodes }}"
+    - name: basic0 host after tunneling
+      add_host:
+        hostname: basic0t
+        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
+        ansible_ssh_user: "linux"
+        ansible_host: "{{ lookup('env', 'BASTION_PUBLIC_IP') }}"
+        ansible_port: 2210
+        groups: scn1_tunnel
+      register: result
+    - debug:
+        var: result
+
+    - name: basic1 host after tunneling
+      add_host:
+        hostname: basic1t
+        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
+        ansible_ssh_user: "linux"
+        ansible_host: "{{ lookup('env', 'BASTION_PUBLIC_IP') }}"
+        ansible_port: 2211
+        groups: scn1_tunnel
+      register: result
+    - debug:
+        var: result
 
 - name: Copy ssh keys to Bastion
   hosts: scn1_ecs
@@ -56,6 +75,11 @@
         - scn1_instance_rsa
         - scn1_instance_rsa.pub
 
+    - name: Gather forwards from inventory variable
+      set_fact:
+        forwardings_list: "{{ (item[:5] == 'basic') |ternary (forwardings_list | default([]) | union([{'name': item, 'ip': hostvars[item].ansible_host, 'port': hostvars[item].ansible_port}]) , forwardings_list | default([]))}}"
+      with_items: "{{ groups.scn1_nodes }}"
+
 - name: Setup portforwarding on Bastion
   hosts: scn1_ecs
   become: true
@@ -65,7 +89,8 @@
     debug: True
 
 - name: Start Simple Server on basic0 and basic1
-  hosts: scn1_nodes
+  hosts: scn1_tunnel
+  become: true
   roles:
     - too_simple_server
   vars:

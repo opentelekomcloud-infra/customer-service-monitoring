@@ -10,5 +10,7 @@ all:
       hosts:
     scn1_nodes:
       hosts:
+    scn1_tunnel:
+      hosts:
     scn2_ecs:  # group, runtime-populated
       hosts:
