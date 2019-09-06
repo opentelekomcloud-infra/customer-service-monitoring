@@ -9,3 +9,4 @@ variable "default_az" {}
 variable "domain_name" {}
 variable "default_flavor" {}
 variable "centos_image" {}
+variable "debian_image" {}

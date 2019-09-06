@@ -8,5 +8,7 @@ all:
   children:
     scn1_ecs:  # group, runtime-populated
       hosts:
+    scn1_nodes:
+      hosts:
     scn2_ecs:  # group, runtime-populated
       hosts:

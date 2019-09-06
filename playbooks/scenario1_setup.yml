@@ -13,10 +13,38 @@
         ansible_ssh_user: "linux"
         groups: scn1_ecs
 
-- name: Setup Servers
-  hosts: scn1_ecs
+- name: Register nodes
+  hosts: local
   tasks:
-    - name: ensure private key and public one are present on Bastion
+    - name: Add a host alias that we reach through a tunnel
+      add_host:
+        hostname: basic10
+        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
+        ansible_ssh_user: "linux"
+        ansible_host: 192.168.0.10
+        ansible_port: 2210
+        groups: scn1_nodes
+      register: result
+    - debug:
+        var: result
+
+    - name: Add a host alias that we reach through a tunnel
+      add_host:
+        hostname: basic11
+        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
+        ansible_ssh_user: "linux"
+        ansible_host: 192.168.0.11
+        ansible_port: 2211
+        groups: scn1_nodes
+      register: result
+    - debug:
+        var: result
+
+- name: Setup Bastion
+  hosts: scn1_ecs
+  become: true
+  tasks:
+    - name: Ensure private key and public one are present on Bastion
       copy:
         src: "{{ lookup('env','HOME') }}/csm-sandbox/scenarios/scenario1/{{ item }}"
         dest: "~/.ssh"
@@ -25,40 +53,34 @@
         - scn1_instance_rsa
         - scn1_instance_rsa.pub
 
-    - name: Open port to basic0
-      command: ssh linux@192.168.0.10 -i ~/.ssh/scn1_instance_rsa -L 2210:localhost:22 -fN -o StrictHostKeyChecking=no
-      register: results
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
 
-    - name: Open port to basic1
-      command: ssh linux@192.168.0.11 -i ~/.ssh/scn1_instance_rsa -L 2211:localhost:22 -fN -o StrictHostKeyChecking=no
-      register: results
+    - name: Install xinetd
+      apt:
+        name: xinetd
+        state: latest
 
-    - name: Add a host alias that we reach through a tunnel
-      add_host:
-        hostname: 192.168.0.10
-        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
-        ansible_ssh_user: "linux"
-        ansible_host: "{{ lookup('env', 'BASTION_PUBLIC_IP') }}"
-        ansible_port: 2210
+    - name: Gather forwards from forward_port inventory variable
+      set_fact:
+        forwardings_list: "{{ (item[:5] == 'basic') |ternary (forwardings_list | default([]) | union([{'name': item, 'ip': hostvars[item].ansible_host, 'port': hostvars[item].ansible_port}]) , forwardings_list | default([]))}}"
+      with_items: "{{ groups.scn1_nodes }}"
 
-    - name: Add a host alias that we reach through a tunnel
-      add_host:
-        hostname: 192.168.0.11
-        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
-        ansible_ssh_user: "linux"
-        ansible_host: "{{ lookup('env', 'BASTION_PUBLIC_IP') }}"
-        ansible_port: 2211
+    - name: Configure xinetd forwards
+      template:
+        src: 'templates/xinetd_forward.conf'
+        dest: '/etc/xinetd.d/{{ item.name }}'
+        owner: root
+        group: root
+        mode: '0644'
+      with_items: "{{ forwardings_list }}"
+      notify:
+      - reload xinetd
 
-- name: Start Simple Server on basic0
-  hosts: 192.168.0.10
-  roles:
-    - too_simple_server
-  vars:
-    debug: True
-
-- name: Start Simple Server on basic1
-  hosts: 192.168.0.11
-  roles:
-    - too_simple_server
-  vars:
-    debug: True
+  handlers:
+    - name: Reload xinetd
+      service:
+        name: xinetd
+        state: reloaded

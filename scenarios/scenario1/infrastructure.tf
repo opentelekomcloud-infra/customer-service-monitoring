@@ -20,6 +20,7 @@ variable "default_az" {}
 variable "domain_name" {}
 variable "default_flavor" {}
 variable "centos_image" {}
+variable "debian_image" {}
 variable "net_address" {}
 variable "postfix" {}
 variable "public_key" {
@@ -37,6 +38,7 @@ module "resources" {
   domain_name = var.domain_name
   default_flavor = var.default_flavor
   centos_image = var.centos_image
+  debian_image = var.debian_image
   net_address = var.net_address
   public_key = var.public_key
   postfix = var.postfix
