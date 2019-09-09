@@ -1,5 +1,0 @@
----
-- name: reload xinetd
-  service:
-    name: xinetd
-    state: reloaded

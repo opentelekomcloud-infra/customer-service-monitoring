@@ -8,10 +8,13 @@
   apt:
     name: xinetd
     state: latest
+  tags: skip_ansible_lint
 
 - name: Gather forwards from inventory variable
   set_fact:
-    forwardings_list: "{{ (item[:10] == 'scn1_basic') |ternary (forwardings_list | default([]) | union([{'name': item, 'ip': hostvars[item].ansible_host, 'port': hostvars[item].ansible_port}]) , forwardings_list | default([])) }}"
+    forwardings_list: "{{ (item[:10] == 'scn1_basic') |ternary (forwardings_list | default([]) |
+    union([{'name': item, 'ip': hostvars[item].ansible_host, 'port': hostvars[item].ansible_port}]) ,
+     forwardings_list | default([])) }}"
   with_items: "{{ groups.scn1_gatewayed }}"
   tags: skip_ansible_lint
 
