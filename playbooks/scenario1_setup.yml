@@ -17,10 +17,11 @@
     - name: Add a host alias to basic0 that we reach through a tunnel
       add_host:
         hostname: basic0
+        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
         ansible_ssh_user: "linux"
-        ansible_host: "{{ lookup('env', 'BASTION_PUBLIC_IP') }}"
-        ansible_port: 2210
-        groups: scn1_tunneled
+        ansible_host: 192.168.0.10
+        ansible_port: 22
+        groups: scn1_gatewayed
       register: result
     - debug:
         var: result
@@ -28,10 +29,11 @@
     - name: Add a host alias to basic1 that we reach through a tunnel
       add_host:
         hostname: basic1
+        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
         ansible_ssh_user: "linux"
-        ansible_host: "{{ lookup('env', 'BASTION_PUBLIC_IP') }}"
-        ansible_port: 2211
-        groups: scn1_tunneled
+        ansible_host: 192.168.0.11
+        ansible_port: 22
+        groups: scn1_gatewayed
       register: result
     - debug:
         var: result
@@ -44,15 +46,11 @@
   vars:
     debug: True
 
-- name: Copy ssh keys to nodes
-  hosts: scn1_tunneled
-  become: true
-  tasks:
-    - name: Ensure private key and public one are present on nodes
-      copy:
-        src: "{{ lookup('env','HOME') }}/csm-sandbox/scenarios/scenario1/{{ item }}"
-        dest: "~/.ssh"
-        mode: 0600
-      with_items:
-        - scn1_instance_rsa
-        - scn1_instance_rsa.pub
+- name: Start Server
+  hosts: scn1_gatewayed
+  become: yes
+  roles:
+  - too_simple_server
+  vars:
+    debug: True
+    server_port: 80

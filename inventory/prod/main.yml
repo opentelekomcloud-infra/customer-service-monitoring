@@ -5,22 +5,10 @@ all:
       ansible_host: localhost
       ansible_connection: local
       ansible_python_interpreter: '/usr/bin/env python3'
-    scn1_basic0:
-      ansible_ssh_user: "linux"
-      ansible_host: 192.168.0.10
-      ansible_port: 2210
-    scn1_basic1:
-      ansible_ssh_user: "linux"
-      ansible_host: 192.168.0.11
-      ansible_port: 2211
   children:
     scn1_ecs:  # group, runtime-populated
       hosts:
     scn1_gatewayed:
-      hosts:
-        scn1_basic0:
-        scn1_basic1:
-    scn1_tunneled:
       hosts:
     scn2_ecs:  # group, runtime-populated
       hosts:
