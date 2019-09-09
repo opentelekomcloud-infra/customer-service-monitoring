@@ -17,11 +17,10 @@
     - name: Add a host alias to basic0 that we reach through a tunnel
       add_host:
         hostname: basic0
-        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
         ansible_ssh_user: "linux"
-        ansible_host: 192.168.0.10
+        ansible_host: "{{ lookup('env', 'BASTION_PUBLIC_IP') }}"
         ansible_port: 2210
-        groups: scn1_nodes
+        groups: scn1_tunneled
       register: result
     - debug:
         var: result
@@ -29,56 +28,13 @@
     - name: Add a host alias to basic1 that we reach through a tunnel
       add_host:
         hostname: basic1
-        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
-        ansible_ssh_user: "linux"
-        ansible_host: 192.168.0.11
-        ansible_port: 2211
-        groups: scn1_nodes
-      register: result
-    - debug:
-        var: result
-
-    - name: basic0 host after tunneling
-      add_host:
-        hostname: basic0t
-        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
-        ansible_ssh_user: "linux"
-        ansible_host: "{{ lookup('env', 'BASTION_PUBLIC_IP') }}"
-        ansible_port: 2210
-        groups: scn1_tunnel
-      register: result
-    - debug:
-        var: result
-
-    - name: basic1 host after tunneling
-      add_host:
-        hostname: basic1t
-        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
         ansible_ssh_user: "linux"
         ansible_host: "{{ lookup('env', 'BASTION_PUBLIC_IP') }}"
         ansible_port: 2211
-        groups: scn1_tunnel
+        groups: scn1_tunneled
       register: result
     - debug:
         var: result
-
-- name: Copy ssh keys to Bastion
-  hosts: scn1_ecs
-  become: true
-  tasks:
-    - name: Ensure private key and public one are present on Bastion
-      copy:
-        src: "{{ lookup('env','HOME') }}/csm-sandbox/scenarios/scenario1/{{ item }}"
-        dest: "~/.ssh"
-        mode: 0600
-      with_items:
-        - scn1_instance_rsa
-        - scn1_instance_rsa.pub
-
-    - name: Gather forwards from inventory variable
-      set_fact:
-        forwardings_list: "{{ (item[:5] == 'basic') |ternary (forwardings_list | default([]) | union([{'name': item, 'ip': hostvars[item].ansible_host, 'port': hostvars[item].ansible_port}]) , forwardings_list | default([]))}}"
-      with_items: "{{ groups.scn1_nodes }}"
 
 - name: Setup portforwarding on Bastion
   hosts: scn1_ecs
@@ -88,10 +44,15 @@
   vars:
     debug: True
 
-- name: Start Simple Server on basic0 and basic1
-  hosts: scn1_tunnel
+- name: Copy ssh keys to nodes
+  hosts: scn1_tunneled
   become: true
-  roles:
-    - too_simple_server
-  vars:
-    debug: True
+  tasks:
+    - name: Ensure private key and public one are present on nodes
+      copy:
+        src: "{{ lookup('env','HOME') }}/csm-sandbox/scenarios/scenario1/{{ item }}"
+        dest: "~/.ssh"
+        mode: 0600
+      with_items:
+        - scn1_instance_rsa
+        - scn1_instance_rsa.pub
