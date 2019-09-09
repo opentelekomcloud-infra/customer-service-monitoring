@@ -9,7 +9,7 @@ echo "Project root: ${project_root}"
 scenario_dir=$(cd "${local_dir}/.."; pwd)
 echo "Scenario directory: ${scenario_dir}"
 cd "${scenario_dir}" || exit 1
-source ./pre_build.sh
+source ./post_build.sh
 
 cd "${project_root}" || exit 1
 
