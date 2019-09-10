@@ -17,6 +17,7 @@ resource "opentelekomcloud_compute_instance_v2" "http" {
   network {
     port             = opentelekomcloud_networking_port_v2.http.*.id[count.index]
   }
+  admin_pass = "scn1p@sswD"
 }
 
 # Create network port
@@ -42,6 +43,7 @@ resource "opentelekomcloud_compute_instance_v2" "bastion" {
   network {
     port             = opentelekomcloud_networking_port_v2.bastion_port.id
   }
+  admin_pass = "scn1p@sswD"
 }
 
 # Create network port

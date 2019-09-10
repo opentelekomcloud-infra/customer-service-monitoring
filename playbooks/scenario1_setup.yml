@@ -48,7 +48,7 @@
 
 - name: Start Server
   hosts: scn1_gatewayed
-  become: yes
+  become: true
   roles:
   - too_simple_server
   vars:
