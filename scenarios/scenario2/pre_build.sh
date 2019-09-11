@@ -2,6 +2,7 @@
 
 file_name="scn2_instance_rsa"
 export RSA_PRIVATE_KEY="$( pwd )/${file_name}"
+ssh-add -d "${RSA_PRIVATE_KEY}"
 yes y | ssh-keygen -qf "${RSA_PRIVATE_KEY}" -t rsa -N ''
 ssh-add "${RSA_PRIVATE_KEY}"
 

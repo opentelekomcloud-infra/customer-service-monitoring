@@ -17,11 +17,11 @@ def check_server(base_url):
 
     data = {"data": _rand_str()}
     response = session.post("/entity", json=data, timeout=2)
-    assert response.status_code == 201
+    assert response.status_code == 201, f"Actual status code is {response.status_code}"
     entity_location = response.headers["Location"]
 
     entity = session.get(entity_location)
-    assert entity.status_code == 200
+    assert entity.status_code == 200, f"Actual status code is {response.status_code}"
     assert entity.json() == data
 
 
