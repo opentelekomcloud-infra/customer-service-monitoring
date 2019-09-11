@@ -10,14 +10,12 @@
     - name: Register bastion host
       add_host:
         hostname: "{{ lookup('env', 'BASTION_PUBLIC_IP') }}"
-        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
         ansible_ssh_user: "linux"
         groups: scn1_ecs
 
     - name: Add a host alias to basic0 that we reach through a tunnel
       add_host:
         hostname: basic0
-        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
         ansible_ssh_user: "linux"
         ansible_host: 192.168.0.10
         ansible_port: 22
@@ -29,7 +27,6 @@
     - name: Add a host alias to basic1 that we reach through a tunnel
       add_host:
         hostname: basic1
-        ansible_ssh_private_key_file: "{{ lookup('env', 'RSA_PRIVATE_KEY') }}"
         ansible_ssh_user: "linux"
         ansible_host: 192.168.0.11
         ansible_port: 22
