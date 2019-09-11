@@ -10,7 +10,7 @@ data  "opentelekomcloud_networking_network_v2" "extnet" {
 # Router creation
 resource "opentelekomcloud_networking_router_v2" "generic" {
   name                = "router"
-  external_gateway = "${data.opentelekomcloud_networking_network_v2.extnet.id}"
+  external_gateway = data.opentelekomcloud_networking_network_v2.extnet.id
   enable_snat         = true
 }
 
