@@ -1,4 +1,4 @@
 ---
 # Special SSH for accessing hosts behing Bastion/Jump
 
-ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q linux@{{ lookup("env", "BASTION_PUBLIC_IP") }} -o PasswordAuthentication=no -i {{ lookup("env", "RSA_PRIVATE_KEY") }}"'
+ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q linux@{{ lookup("env", "BASTION_PUBLIC_IP") }} -i {{ lookup("env", "RSA_PRIVATE_KEY") }} -o PasswordAuthentication=no -o IdentitiesOnly=yes"'
