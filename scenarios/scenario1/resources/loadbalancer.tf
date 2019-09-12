@@ -49,7 +49,7 @@ resource "opentelekomcloud_lb_pool_v2" "pool" {
 
 # Add multip instances to pool
 resource "opentelekomcloud_lb_member_v2" "members" {
-  count           = 2
+  count           = var.nodes_count
   address         = opentelekomcloud_compute_instance_v2.http.*.access_ip_v4[count.index]
   protocol_port   = 80
   pool_id         = opentelekomcloud_lb_pool_v2.pool.id

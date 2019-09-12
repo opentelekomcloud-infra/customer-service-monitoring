@@ -1,5 +1,5 @@
-variable "ecs_local_ips" {}
 variable "bastion_local_ip" {}
+variable "nodes_count" {}
 
 resource "opentelekomcloud_compute_keypair_v2" "pair" {
   name = "kp_${var.postfix}"
@@ -8,7 +8,7 @@ resource "opentelekomcloud_compute_keypair_v2" "pair" {
 
 # Create instance
 resource "opentelekomcloud_compute_instance_v2" "http" {
-  count              = 2
+  count              = var.nodes_count
   name               = "basic_${count.index}"
   image_name         = var.centos_image
   flavor_name        = var.default_flavor
@@ -21,14 +21,14 @@ resource "opentelekomcloud_compute_instance_v2" "http" {
 
 # Create network port
 resource "opentelekomcloud_networking_port_v2" "http" {
-  count              = 2
+  count              = var.nodes_count
   name               = "port_${count.index}"
   network_id         = opentelekomcloud_networking_network_v2.generic.id
   admin_state_up     = true
   security_group_ids = [opentelekomcloud_compute_secgroup_v2.http_https_ssh.id]
   fixed_ip {
     subnet_id = opentelekomcloud_networking_subnet_v2.subnet.id
-    ip_address = var.ecs_local_ips[count.index]
+    ip_address = "${var.net_address}.${count.index + 10}"
   }
 }
 

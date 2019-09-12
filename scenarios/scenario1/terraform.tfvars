@@ -7,3 +7,4 @@ net_address = "192.168.0"
 default_flavor = "s2.medium.1"
 centos_image = "Standard_CentOS_7_latest"
 debian_image = "Standard_Debian_9_latest"
+nodes_count = 3

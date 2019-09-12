@@ -23,6 +23,7 @@ variable "centos_image" {}
 variable "debian_image" {}
 variable "net_address" {}
 variable "postfix" {}
+variable "nodes_count" {}
 variable "public_key" {
   default = ""
 }
@@ -42,12 +43,9 @@ module "resources" {
   net_address = var.net_address
   public_key = var.public_key
   postfix = var.postfix
-  ecs_local_ips = [
-    "${var.net_address}.10",
-    "${var.net_address}.11"
-  ]
-  bastion_local_ip = "${var.net_address}.12"
-  loadbalancer_local_ip= "${var.net_address}.13"
+  nodes_count = var.nodes_count
+  bastion_local_ip = "${var.net_address}.2"
+  loadbalancer_local_ip= "${var.net_address}.3"
 }
 
 output "out-scn1_lb_fip" {

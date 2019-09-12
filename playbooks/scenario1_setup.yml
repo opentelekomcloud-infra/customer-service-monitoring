@@ -18,7 +18,6 @@
         hostname: basic0
         ansible_ssh_user: "linux"
         ansible_host: 192.168.0.10
-        ansible_port: 22
         groups: scn1_gatewayed
       register: result
     - debug:
@@ -29,19 +28,20 @@
         hostname: basic1
         ansible_ssh_user: "linux"
         ansible_host: 192.168.0.11
-        ansible_port: 22
         groups: scn1_gatewayed
       register: result
     - debug:
         var: result
 
-- name: Setup portforwarding on Bastion
-  hosts: scn1_ecs
-  become: true
-  roles:
-    - scenario1_portforwarding
-  vars:
-    debug: True
+    - name: Add a host alias to basic2 that we reach through a tunnel
+      add_host:
+        hostname: basic2
+        ansible_ssh_user: "linux"
+        ansible_host: 192.168.0.12
+        groups: scn1_gatewayed
+      register: result
+    - debug:
+        var: result
 
 - name: Start Server
   hosts: scn1_gatewayed
