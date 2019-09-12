@@ -1,0 +1,33 @@
+---
+- name: Register existing settings
+  hosts: local
+  tasks:
+
+    - name: Add a host basic0 to inventory
+      add_host:
+        hostname: basic0
+        ansible_ssh_user: "linux"
+        ansible_host: 192.168.0.10
+        groups: scn1_gatewayed
+      register: result
+    - debug:
+        var: result
+
+    - name: Add a host basic1 to inventory
+      add_host:
+        hostname: basic1
+        ansible_ssh_user: "linux"
+        ansible_host: 192.168.0.11
+        groups: scn1_gatewayed
+      register: result
+    - debug:
+        var: result
+
+- name: Stop server on node
+  hosts: "{{ groups.scn1_gatewayed | random }}"
+  become: yes
+  roles:
+  - too_simple_server
+  vars:
+    server_state: absent
+

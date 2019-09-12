@@ -18,7 +18,7 @@ resource "opentelekomcloud_networking_router_v2" "generic" {
 resource "opentelekomcloud_networking_subnet_v2" "subnet" {
   name                = "${var.postfix}_subnet"
   network_id          = opentelekomcloud_networking_network_v2.generic.id
-  cidr                = "${var.net_address}.0/16"
+  cidr                = "${var.net_address}.0/0"
   dns_nameservers     =  ["8.8.8.8", "8.8.8.4"]
 }
 

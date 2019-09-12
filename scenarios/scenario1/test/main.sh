@@ -18,3 +18,17 @@ function run_test() {
 }
 
 run_test || exit $?
+
+cd ${project_root}
+ansible-playbook -i "inventory/prod" "playbooks/scenario1_stop_server_on_random_node.yml"
+
+run_test
+if [[ $? == 0 ]]; then
+    echo "LoadBalancer not working. Something gone wrong."
+    exit 2
+fi
+
+ansible-playbook -i "inventory/prod" "playbooks/scenario1_setup.yml"
+run_test || exit $?
+
+cd ${start_dir}
