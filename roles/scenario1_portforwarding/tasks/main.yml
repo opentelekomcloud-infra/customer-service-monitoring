@@ -1,11 +1,9 @@
 ---
-- name: Update apt cache
-  apt:
-    update_cache: yes
-    cache_valid_time: 3600
 
 - name: Install xinetd
   apt:
+    update_cache: yes
+    cache_valid_time: 3600
     name: xinetd
     state: latest
   tags: skip_ansible_lint
