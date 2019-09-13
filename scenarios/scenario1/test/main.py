@@ -19,9 +19,6 @@ def check_loadbalance(base_url):
     assert response.status_code == 200, f"Actual status code is {response.status_code}"
     first_request = response.headers["Server"]
 
-    sleep(10)
-    session.close()
-    session = BaseUrlSession(base_url)
     response = session.get("/", timeout=2)
     assert response.status_code == 200, f"Actual status code is {response.status_code}"
     second_request = response.headers["Server"]
