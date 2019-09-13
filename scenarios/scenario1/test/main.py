@@ -22,7 +22,7 @@ def check_loadbalance(base_url):
     response = session.get("/", timeout=2)
     assert response.status_code == 200, f"Actual status code is {response.status_code}"
     second_request = response.headers["Server"]
-    assert first_request != second_request, f"Requests Load balanced by ROUND ROBIN"
+    assert first_request != second_request, f"Requests not Load balanced by ROUND ROBIN"
 
 if __name__ == '__main__':
     check_loadbalance(f"http://{sys.argv[1]}:80/")
