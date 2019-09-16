@@ -1,0 +1,13 @@
+---
+- name: Register existing settings
+  hosts: local
+  tasks:
+
+- name: Stop server on node
+  hosts: "{{ groups.scn1_gatewayed | random }}"
+  become: yes
+  roles:
+  - too_simple_server
+  vars:
+    server_state: absent
+

@@ -20,8 +20,10 @@ variable "default_az" {}
 variable "domain_name" {}
 variable "default_flavor" {}
 variable "centos_image" {}
+variable "debian_image" {}
 variable "net_address" {}
 variable "postfix" {}
+variable "nodes_count" {}
 variable "public_key" {
   default = ""
 }
@@ -37,17 +39,21 @@ module "resources" {
   domain_name = var.domain_name
   default_flavor = var.default_flavor
   centos_image = var.centos_image
+  debian_image = var.debian_image
   net_address = var.net_address
   public_key = var.public_key
   postfix = var.postfix
-  ecs_local_ips = [
-    "${var.net_address}.10",
-    "${var.net_address}.11"
-  ]
+  nodes_count = var.nodes_count
+  bastion_local_ip = "${var.net_address}.2"
+  loadbalancer_local_ip= "${var.net_address}.3"
 }
 
 output "out-scn1_lb_fip" {
   value = module.resources.scn1_lb_fip
+}
+
+output "out-scn1_bastion_fip" {
+  value = module.resources.scn1_bastion_fip
 }
 
 # Configure the OpenTelekomCloud Provider

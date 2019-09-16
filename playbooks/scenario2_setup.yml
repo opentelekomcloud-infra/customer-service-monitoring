@@ -4,10 +4,11 @@
     - name: Wait for host
       script: wait_for_public_ip.py "{{ lookup('env', 'SERVER_PUBLIC_IP') }}" 120
       args:
-        executable: python
+        executable: python3
     - name: Register host
       add_host:
-        hostname: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+        hostname: web_server
+        ansible_ssh_host: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
         ansible_ssh_user: "linux"
         groups: scn2_ecs
 

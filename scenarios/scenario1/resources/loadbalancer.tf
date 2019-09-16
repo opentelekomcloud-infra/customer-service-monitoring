@@ -1,7 +1,10 @@
+variable "loadbalancer_local_ip" {}
+
 # Create loadbalancer
 resource "opentelekomcloud_lb_loadbalancer_v2" "loadbalancer" {
   name            = "elastic_loadbalancer_http"
   vip_subnet_id   = opentelekomcloud_networking_subnet_v2.subnet.id
+  vip_address     = var.loadbalancer_local_ip
   depends_on      = [
     opentelekomcloud_compute_instance_v2.http
   ]
@@ -46,7 +49,7 @@ resource "opentelekomcloud_lb_pool_v2" "pool" {
 
 # Add multip instances to pool
 resource "opentelekomcloud_lb_member_v2" "members" {
-  count           = 2
+  count           = var.nodes_count
   address         = opentelekomcloud_compute_instance_v2.http.*.access_ip_v4[count.index]
   protocol_port   = 80
   pool_id         = opentelekomcloud_lb_pool_v2.pool.id
