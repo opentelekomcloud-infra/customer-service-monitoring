@@ -13,26 +13,6 @@
         ansible_ssh_user: "linux"
         groups: scn1_ecs
 
-    - name: Add a host alias to basic0 that we reach through a tunnel
-      add_host:
-        hostname: basic0
-        ansible_ssh_user: "linux"
-        ansible_host: 192.168.0.10
-        groups: scn1_gatewayed
-      register: result
-    - debug:
-        var: result
-
-    - name: Add a host alias to basic1 that we reach through a tunnel
-      add_host:
-        hostname: basic1
-        ansible_ssh_user: "linux"
-        ansible_host: 192.168.0.11
-        groups: scn1_gatewayed
-      register: result
-    - debug:
-        var: result
-
 - name: Start Server
   hosts: scn1_gatewayed
   become: true
