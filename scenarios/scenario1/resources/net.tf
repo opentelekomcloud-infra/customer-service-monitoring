@@ -31,6 +31,6 @@ resource "opentelekomcloud_networking_router_interface_v2" "http" {
 resource "opentelekomcloud_networking_router_route_v2" "router_route_1" {
   depends_on       = ["opentelekomcloud_networking_router_interface_v2.http"]
   router_id        = opentelekomcloud_networking_router_v2.generic.id
-  destination_cidr = "0.0.0.0/0"
+  destination_cidr = "0.0.0.0/24"
   next_hop         = var.bastion_local_ip
 }
