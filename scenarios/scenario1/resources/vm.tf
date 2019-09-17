@@ -10,7 +10,7 @@ resource "opentelekomcloud_compute_keypair_v2" "pair" {
 resource "opentelekomcloud_compute_instance_v2" "http" {
   count              = var.nodes_count
   name               = "basic_${count.index}"
-  image_name         = var.centos_image
+  image_name         = var.debian_image
   flavor_name        = var.default_flavor
   key_pair           = opentelekomcloud_compute_keypair_v2.pair.name
   user_data          = file("${path.cwd}/scripts/first_boot.sh")
