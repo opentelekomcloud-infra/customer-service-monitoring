@@ -14,21 +14,11 @@ source ./post_build.sh
 cd "${project_root}" || exit 1
 
 function run_test() {
-    poetry run python ${local_dir}/main.py "${LOADBALANCER_PUBLIC_IP}"
+    poetry run python ${local_dir}/continious.py "${LOADBALANCER_PUBLIC_IP}"
 }
 
-run_test || exit $?
+log_path="/var/log/scenario1/"
+sudo mkdir -p ${log_path}
+sudo chown ${USERNAME} ${log_path}
 
-cd ${project_root}
-ansible-playbook -i "inventory/prod" "playbooks/scenario1_stop_server_on_random_node.yml"
-
-run_test
-if [[ $? == 0 ]]; then
-    echo "LoadBalancer not working. Something gone wrong."
-    exit 2
-fi
-
-ansible-playbook -i "inventory/prod" "playbooks/scenario1_setup.yml"
-run_test || exit $?
-
-cd ${start_dir}
+run_test >> ${log_path}/execution.log &

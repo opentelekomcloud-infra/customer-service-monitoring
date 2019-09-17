@@ -6,10 +6,8 @@ authors = ["OTC Customer service monitoring"]
 license = "Apache-2.0"
 
 [tool.poetry.dependencies]
-python = "^3.6.1"
+python = "^3.7"
 
-ansible = "^2.8"
-ansible-lint = "^4.1"
 jinja2 = "^2.10"
 ocomone = "^0.3.1"
 requests = "^2.22"
