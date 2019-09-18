@@ -2,43 +2,35 @@
 - name: Prepare server
   become: yes
   block:
-  - name: Add yum repo
-    yum:
-      name: epel-release
-  - name: Install Python
-    yum:
-      name:
-        - python36
-        - python36-pip
-      update_cache: yes
-  - name: Install server
-    pip:
-      name: too-simple-server
-      executable: pip3
+  - name: Download too-simple-server
+    get_url:
+      url: "{{ download_path }}"
+      dest: /tmp/
+
+  - name: Extract too-simple-server into /usr/bin/
+    unarchive:
+      src: "/tmp/{{ server }}.tar.gz"
+      dest: /usr/bin/
+      remote_src: yes
 
 - name: Configure and start
   when: server_state == 'present'
   block:
-  - name: 'Allow port 80'
-    become: yes
-    iptables:
-      chain: IN_public_allow  # centos specific
-      protocol: tcp
-      destination_port: 80
-      jump: ACCEPT
+
   - name: Create config dir
     become: yes
     file:
       mode: 0777
       path: "{{ server_config_dir }}"
       state: directory
+
   - name: Write configuration
     template:
       src: config.yml.j2
       dest: "{{ server_config }}"
       force: yes
   - name: Start server
-    command: "{{ server }} start --config {{ server_config }}"
+    command: "{{ server }} --config {{ server_config }}"
     args:
       creates: "{{ server_pid_file }}"
 

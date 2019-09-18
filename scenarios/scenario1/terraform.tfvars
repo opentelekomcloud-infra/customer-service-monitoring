@@ -4,6 +4,6 @@ default_az = "eu-de-01"
 domain_name = "OTC00000000001000000447"
 postfix = "scn1"
 net_address = "192.168.0"
-default_flavor = "s2.medium.1"
+default_flavor = "s2.large.2"
 debian_image = "Standard_Debian_9_latest"
 nodes_count = 2

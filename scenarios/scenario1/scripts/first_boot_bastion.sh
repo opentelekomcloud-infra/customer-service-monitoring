@@ -19,5 +19,4 @@ echo 'net.ipv4.ip_forward=1' | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p /etc/sysctl.conf
 
 #configure SNAT
-sudo iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/16 -j SNAT --to 192.168.0.10
-sudo iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/16 -j SNAT --to 192.168.0.11
+sudo iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/16 -j SNAT --to 192.168.0.2
