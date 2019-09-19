@@ -1,35 +1,45 @@
 ---
+- name: Install docker + influx + grafana
+  become: yes
+  block:
+  - name: Install required system packages
+    apt:
+      name: "{{ item }}"
+      state: latest
+      update_cache: yes
+    loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
 
-- name: Install required system packages
-  apt:
-    name: "{{ item }}"
-    state: latest
-    update_cache: yes
-  loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+  - name: Add Docker GPG apt Key
+    apt_key:
+      url: https://download.docker.com/linux/debian/gpg
+      state: present
 
-- name: Add Docker GPG apt Key
-  apt_key:
-    url: https://download.docker.com/linux/debian/gpg
-    state: present
+  - name: Add Docker Repository
+    apt_repository:
+      repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
+      state: present
 
-- name: Add Docker Repository
-  apt_repository:
-    repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
-    state: present
+  - name: Update apt and install docker-ce
+    apt:
+      update_cache: yes
+      name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
 
-- name: Update apt and install docker-ce
-  apt:
-    update_cache: yes
-    name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
+  - name: ensure nginx is at the latest version
+    apt:
+      name: nginx
+      state: latest
 
-- name: ensure nginx is at the latest version
-  apt:
-    name: nginx
-    state: latest
-
-
-
-- name: start nginx
-  service:
+  - name: start nginx
+    service:
       name: nginx
       state: started
+
+  - name: copy the nginx config file
+    copy:
+      src: "{{ nginx_config }}"
+      dest: /etc/nginx/sites-enabled/{{ nginx_config }}
+
+  - name: restart nginx
+    service:
+      name: nginx
+      state: restarted
