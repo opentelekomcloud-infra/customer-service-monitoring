@@ -3,15 +3,9 @@
   hosts: local
   tasks:
     - name: Wait for host
-      script: wait_for_public_ip.py "{{ lookup('env', 'BASTION_PUBLIC_IP') }}" 120
+      script: wait_for_public_ip.py {{ hostvars.bastion.ansible_host }} 120
       args:
         executable: python3
-
-    - name: Register bastion host
-      add_host:
-        hostname: "{{ lookup('env', 'BASTION_PUBLIC_IP') }}"
-        ansible_ssh_user: "linux"
-        groups: scn1_ecs
 
 - name: Start Server
   hosts: scn1_gatewayed
