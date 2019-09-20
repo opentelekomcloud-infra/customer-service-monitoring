@@ -8,13 +8,12 @@ import telegraf
 import wrapt
 
 TGF_MEASUREMENT = "LB_TIMING"
-TGF_TAGS = ("CSM", "LB")
 
 
 @wrapt.decorator
 def report(wrapped, instance: "Client" = None, args=(), kwargs=None):
     stat = wrapped(*args, **kwargs)
-    instance.t_client.metric(TGF_MEASUREMENT, stat, tags=TGF_TAGS)
+    instance.t_client.metric(TGF_MEASUREMENT, stat)
     return stat
 
 
@@ -25,7 +24,7 @@ class Client:
     def __init__(self, url: str, tgf_address):
         self.url = url
         host, port = tgf_address.split(":", 1)
-        self.t_client = telegraf.client.TelegrafClient(host, port)
+        self.t_client = telegraf.client.TelegrafClient(host, int(port))
         self._next_boom = 0
 
     @report
