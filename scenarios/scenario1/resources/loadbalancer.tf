@@ -64,8 +64,8 @@ resource "opentelekomcloud_lb_monitor_v2" "monitor" {
   name            = "monitor_http"
   pool_id         = opentelekomcloud_lb_pool_v2.pool.id
   type            = "TCP"
-  delay           = 2
-  timeout         = 2
+  delay           = 1
+  timeout         = 1
   max_retries     = 2
   depends_on      = [
       opentelekomcloud_lb_member_v2.members
