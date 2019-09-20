@@ -41,10 +41,10 @@
       name: nginx
       state: started
 
-  - name: copy the nginx config file
+  - name: copy the nginx config files
     copy:
-      src: "{{ nginx_config }}"
-      dest: /etc/nginx/sites-enabled/{{ nginx_config }}
+      src: nginx_config/
+      dest: /etc/nginx/sites-enabled/
 
   - name: copy ssl keys to nginx
     copy:

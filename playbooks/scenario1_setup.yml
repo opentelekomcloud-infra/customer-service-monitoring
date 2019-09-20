@@ -7,16 +7,16 @@
       args:
         executable: python3
 
-#- name: Start Server
-#  hosts: scn1_gatewayed
-#  become: true
-#  roles:
-#  - too_simple_server
-#  vars:
-#    debug: True
-#    server_port: 80
+- name: Start Server
+  hosts: scn1_gatewayed
+  become: true
+  roles:
+  - too_simple_server
+  vars:
+    debug: True
+    server_port: 80
 
-- name: Instal docker
+- name: Instal Grafana suite on Bastion
   hosts: bastion
   become: true
   roles:
