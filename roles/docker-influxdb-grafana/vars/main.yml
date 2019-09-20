@@ -1,1 +1,2 @@
 nginx_config: grafana.conf
+docker_configs_folder: influx_grafana_telegraf

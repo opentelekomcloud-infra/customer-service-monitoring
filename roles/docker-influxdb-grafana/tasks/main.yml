@@ -1,5 +1,5 @@
 ---
-- name: Install docker + influx + grafana
+- name: Install docker + influx + grafana + nginx
   become: yes
   block:
   - name: Install required system packages
@@ -24,6 +24,13 @@
       update_cache: yes
       name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
 
+  - name: install pip if not exist
+    include_tasks: "install_pip.yml"
+
+  - name: Install Docker Module for Python
+    pip:
+      name: ['docker', 'docker-compose']
+
   - name: ensure nginx is at the latest version
     apt:
       name: nginx
@@ -43,3 +50,16 @@
     service:
       name: nginx
       state: restarted
+
+  - name: copy the docker config files
+    copy:
+      src: "{{ docker_configs_folder }}"
+      dest: /tmp/
+
+  - name: Create and start docker instances
+    docker_compose:
+      project_src: /tmp/{{ docker_configs_folder }}
+    register: output
+
+  - debug:
+      var: output
