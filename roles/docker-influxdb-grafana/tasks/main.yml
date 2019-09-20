@@ -46,6 +46,11 @@
       src: "{{ nginx_config }}"
       dest: /etc/nginx/sites-enabled/{{ nginx_config }}
 
+  - name: copy ssl keys to nginx
+    copy:
+      src: nginx_keys/
+      dest: /etc/sslcerts/live/
+
   - name: restart nginx
     service:
       name: nginx
