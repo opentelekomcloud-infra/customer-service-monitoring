@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+ssh-keygen -f "${home}/.ssh/known_hosts" -R csm.outcatcher.com
 file_name="scn1_instance_rsa"
 export RSA_PRIVATE_KEY="$( pwd )/${file_name}"
 ssh-add -d "${RSA_PRIVATE_KEY}"

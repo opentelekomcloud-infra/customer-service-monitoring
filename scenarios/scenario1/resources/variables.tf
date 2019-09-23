@@ -9,4 +9,10 @@ variable "default_az" {}
 variable "domain_name" {}
 variable "default_flavor" {}
 variable "debian_image" {}
-variable "bastion_eip" { default = "80.158.7.120" }
+variable "bastion_eip" {
+  default = "80.158.7.120"
+}
+variable "volume_bastion" {
+  type    = number
+  default = 10
+}

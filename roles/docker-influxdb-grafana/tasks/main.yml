@@ -5,7 +5,7 @@
   - name: Install required system packages
     apt:
       name: "{{ item }}"
-      state: latest
+      state: "{{ python_packges_state }}"
       update_cache: yes
     loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
 
@@ -34,7 +34,7 @@
   - name: ensure nginx is at the latest version
     apt:
       name: nginx
-      state: latest
+      state: "{{ nginx_state }}"
 
   - name: start nginx
     service:
