@@ -34,7 +34,7 @@ resource "opentelekomcloud_networking_port_v2" "http" {
 
 # Create Bastion instance
 
-# Get the uiid of image
+# Get the uuid of image
 data "opentelekomcloud_images_image_v2" "current_deb_image" {
   name        = var.debian_image
   most_recent = true
