@@ -27,7 +27,7 @@ class Client:
     def __init__(self, url: str, tgf_address):
         self.url = url
         host, port = tgf_address.split(":", 1)
-        self.t_client = telegraf.client.TelegrafClient(host, int(port), tags={"lb": "load_balancing"})
+        self.t_client = telegraf.client.HttpClient(host, int(port), tags={"lb": "load_balancing"})
         self._next_boom = 0
 
     @report
