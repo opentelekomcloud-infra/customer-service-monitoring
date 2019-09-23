@@ -15,3 +15,9 @@
   vars:
     debug: True
     server_port: 80
+
+- name: Instal Grafana suite on Bastion
+  hosts: bastion
+  become: true
+  roles:
+  - docker-influxdb-grafana

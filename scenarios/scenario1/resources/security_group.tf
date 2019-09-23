@@ -15,6 +15,12 @@ resource "opentelekomcloud_compute_secgroup_v2" "http_https_ssh" {
     ip_protocol = "tcp"
     to_port = 22
   }
+  rule {
+    cidr = "0.0.0.0/0"
+    from_port = 443
+    ip_protocol = "tcp"
+    to_port = 443
+  }
 }
 
 resource "opentelekomcloud_compute_secgroup_v2" "local_only" {

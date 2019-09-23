@@ -20,3 +20,6 @@ sudo sysctl -p /etc/sysctl.conf
 
 #configure SNAT
 sudo iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/16 -j SNAT --to 192.168.0.2
+
+#generate Diffie-Hellman for TLS
+sudo openssl dhparam -out /etc/sslcerts/live/dhparams.pem 2048
