@@ -33,6 +33,13 @@ resource "opentelekomcloud_networking_port_v2" "http" {
 }
 
 # Create Bastion instance
+
+# Get the uuid of image
+data "opentelekomcloud_images_image_v2" "current_deb_image" {
+  name        = var.debian_image
+  most_recent = true
+}
+
 resource "opentelekomcloud_compute_instance_v2" "bastion" {
   name               = "bastion"
   image_name         = var.debian_image
@@ -41,6 +48,14 @@ resource "opentelekomcloud_compute_instance_v2" "bastion" {
   user_data          = file("${path.cwd}/scripts/first_boot_bastion.sh")
   network {
     port             = opentelekomcloud_networking_port_v2.bastion_port.id
+  }
+    # Install system in volume
+  block_device {
+    volume_size           = var.volume_bastion
+    destination_type      = "volume"
+    delete_on_termination = true
+    source_type           = "image"
+    uuid                  = data.opentelekomcloud_images_image_v2.current_deb_image.id
   }
 }
 

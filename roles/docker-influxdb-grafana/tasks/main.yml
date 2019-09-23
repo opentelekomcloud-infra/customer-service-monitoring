@@ -1,0 +1,70 @@
+---
+- name: Install docker + influx + grafana + nginx
+  become: yes
+  block:
+  - name: Install required system packages
+    apt:
+      name: "{{ item }}"
+      state: "{{ python_packages_state }}"
+      update_cache: yes
+    loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+
+  - name: Add Docker GPG apt Key
+    apt_key:
+      url: https://download.docker.com/linux/debian/gpg
+      state: present
+
+  - name: Add Docker Repository
+    apt_repository:
+      repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
+      state: present
+
+  - name: Update apt and install docker-ce
+    apt:
+      update_cache: yes
+      name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
+
+  - name: install pip if not exist
+    include_tasks: "install_pip.yml"
+
+  - name: Install Docker Module for Python
+    pip:
+      name: ['docker', 'docker-compose']
+
+  - name: ensure nginx is at the latest version
+    apt:
+      name: nginx
+      state: "{{ nginx_state }}"
+
+  - name: start nginx
+    service:
+      name: nginx
+      state: started
+
+  - name: copy the nginx config files
+    copy:
+      src: nginx_config/
+      dest: /etc/nginx/sites-enabled/
+
+  - name: copy ssl keys to nginx
+    copy:
+      src: nginx_keys/
+      dest: /etc/sslcerts/live/
+
+  - name: restart nginx
+    service:
+      name: nginx
+      state: restarted
+
+  - name: copy the docker config files
+    copy:
+      src: "{{ docker_configs_folder }}"
+      dest: /tmp/
+
+  - name: Create and start docker instances
+    docker_compose:
+      project_src: /tmp/{{ docker_configs_folder }}
+    register: output
+
+  - debug:
+      var: output
