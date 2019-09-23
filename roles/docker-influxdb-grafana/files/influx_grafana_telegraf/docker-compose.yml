@@ -1,5 +1,5 @@
 influxdb:
-  image: influxdb:latest
+  image: influxdb:alpine
   container_name: influxdb
   ports:
     - "8083:8083"
@@ -13,7 +13,7 @@ influxdb:
     - /srv/docker/influxdb/data:/var/lib/influxdb
 
 telegraf:
-  image: telegraf:latest
+  image: telegraf:alpine
   container_name: telegraf
   links:
     - influxdb
