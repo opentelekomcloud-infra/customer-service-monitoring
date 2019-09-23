@@ -41,10 +41,19 @@
       name: nginx
       state: started
 
-  - name: copy the nginx config files
+  - name: replace the nginx default config
     copy:
-      src: nginx_config/
+      src: nginx_config/default
+      dest: /etc/nginx/sites-available/
+      force: yes
+
+  - name: copy the nginx config files for grafana and telegraf
+    copy:
+      src: "{{ item }}"
       dest: /etc/nginx/sites-enabled/
+    with_items:
+      - "nginx_config/grafana_nginx.conf"
+      - "nginx_config/telegraf_nginx.conf"
 
   - name: copy ssl keys to nginx
     copy:
