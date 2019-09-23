@@ -58,7 +58,7 @@ resource "opentelekomcloud_networking_port_v2" "bastion_port" {
 
 # Assign FIP to bastion
 resource opentelekomcloud_compute_floatingip_associate_v2 "floatingip_associate_bastion" {
-  floating_ip = var.bastion_eip
+  floating_ip = terraform.workspace == "default" ? var.bastion_eip : ""
   instance_id = opentelekomcloud_compute_instance_v2.bastion.id
 }
 

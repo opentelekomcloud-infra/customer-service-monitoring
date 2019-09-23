@@ -7,13 +7,16 @@ import requests
 import telegraf
 import wrapt
 
-TGF_MEASUREMENT = "LB_TIMING"
+LB_TIMING = "LB_TIMING"
+LB_TIMING_SRV = "SRV_TIMING_{}"
 
 
 @wrapt.decorator
 def report(wrapped, instance: "Client" = None, args=(), kwargs=None):
     stat = wrapped(*args, **kwargs)
-    instance.t_client.metric(TGF_MEASUREMENT, stat)
+    srv, time_ms = stat
+    instance.t_client.metric(LB_TIMING, [time_ms])
+    instance.t_client.metric(LB_TIMING_SRV.format(srv), [time_ms])
     return stat
 
 
@@ -24,7 +27,7 @@ class Client:
     def __init__(self, url: str, tgf_address):
         self.url = url
         host, port = tgf_address.split(":", 1)
-        self.t_client = telegraf.client.TelegrafClient(host, int(port))
+        self.t_client = telegraf.client.TelegrafClient(host, int(port), tags={"lb": "load_balancing"})
         self._next_boom = 0
 
     @report
