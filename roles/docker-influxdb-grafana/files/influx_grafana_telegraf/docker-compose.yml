@@ -17,6 +17,8 @@ telegraf:
   container_name: telegraf
   links:
     - influxdb
+  ports:
+    - "8080:8080"
   volumes:
     - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
 

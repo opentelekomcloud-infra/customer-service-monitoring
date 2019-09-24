@@ -43,8 +43,16 @@
 
   - name: copy the nginx config files
     copy:
-      src: nginx_config/
+      src: nginx_config/{{ item }}_nginx.conf
       dest: /etc/nginx/sites-enabled/
+    with_items:
+    - telegraf
+    - grafana
+
+  - name: copy nginx ssl config
+    copy:
+      src: nginx_config/ssl_nginx.conf
+      dest: /etc/nginx/
 
   - name: copy ssl keys to nginx
     copy:
