@@ -2,21 +2,30 @@
 import os
 import time
 from argparse import ArgumentParser
+from threading import Thread
 
 import requests
-import telegraf
 import wrapt
+from influx_line_protocol import Metric, MetricCollection
+from ocomone.session import BaseUrlSession
 
-LB_TIMING = "LB_TIMING"
-LB_TIMING_SRV = "SRV_TIMING_{}"
+LB_TIMING = "lb_timing"
 
 
 @wrapt.decorator
 def report(wrapped, instance: "Client" = None, args=(), kwargs=None):
     stat = wrapped(*args, **kwargs)
     srv, time_ms = stat
-    instance.t_client.metric(LB_TIMING, [time_ms])
-    instance.t_client.metric(LB_TIMING_SRV.format(srv), [time_ms])
+    metrics = MetricCollection()
+    lb_timing = Metric(LB_TIMING)
+    lb_timing.add_value("elapsed", time_ms)
+    lb_timing.add_tag("server", srv)
+    metrics.append(lb_timing)
+
+    def _post_data():
+        instance.session.post("/telegraf", data=str(metrics))
+
+    Thread(target=_post_data, daemon=True).start()
     return stat
 
 
@@ -26,8 +35,7 @@ class Client:
 
     def __init__(self, url: str, tgf_address):
         self.url = url
-        host, port = tgf_address.split(":", 1)
-        self.t_client = telegraf.client.HttpClient(host, int(port), tags={"lb": "load_balancing"})
+        self.session = BaseUrlSession(tgf_address)
         self._next_boom = 0
 
     @report
