@@ -9,7 +9,7 @@
 
   - name: Extract too-simple-server into /usr/bin/
     unarchive:
-      src: "/tmp/{{ server }}.tar.gz"
+      src: "/tmp/{{ server_archive_name }}"
       dest: /usr/bin/
       remote_src: yes
 
