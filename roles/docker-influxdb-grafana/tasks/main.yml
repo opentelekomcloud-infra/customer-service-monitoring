@@ -46,7 +46,6 @@
       src: nginx_config/{{ item }}_nginx.conf
       dest: /etc/nginx/sites-enabled/
     with_items:
-    - telegraf
     - grafana
 
   - name: copy nginx ssl config
