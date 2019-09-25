@@ -46,6 +46,11 @@
       src: nginx_config/
       dest: /etc/nginx/sites-enabled/
 
+  - name: copy nginx ssl config
+    copy:
+      src: nginx_config/ssl_nginx.conf
+      dest: /etc/nginx/
+
   - name: copy ssl keys to nginx
     copy:
       src: nginx_keys/
