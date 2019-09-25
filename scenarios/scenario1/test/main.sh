@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# This is script starting continuous monitoring of load balancer nodes
 
 start_dir=$( pwd )
 local_dir=$( cd $( dirname "$0" ); pwd )
@@ -14,7 +15,7 @@ source ./post_build.sh
 cd "${project_root}" || exit 1
 
 function run_test() {
-    poetry run python ${local_dir}/continious.py "${LOADBALANCER_PUBLIC_IP}"
+    poetry run python ${local_dir}/continious.py "${LOADBALANCER_PUBLIC_IP}" --telegraf https://csm.outcatcher.com
 }
 
 log_path="/var/log/scenario1/"
