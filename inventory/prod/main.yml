@@ -13,7 +13,7 @@ all:
       ansible_host: 192.168.0.11
     bastion:
       ansible_ssh_user: "linux"
-      ansible_host: csm.outcatcher.com
+      ansible_host:	"ecs-{{ lookup('env', 'BASTION_PUBLIC_IP') | replace('.','-')}}.reverse.open-telekom-cloud.com"
   children:
     scn1_ecs:  # group, runtime-populated
       hosts:
