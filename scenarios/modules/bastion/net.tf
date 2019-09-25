@@ -1,0 +1,6 @@
+# Network creation
+resource "opentelekomcloud_networking_router_route_v2" "router_route_1" {
+  router_id        = var.router_id
+  destination_cidr = "0.0.0.0/24"
+  next_hop         = var.bastion_local_ip
+}
