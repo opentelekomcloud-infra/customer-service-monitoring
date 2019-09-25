@@ -1,31 +1,31 @@
 module "resources" {
   source = "./resources"
 
-  centos_image = var.centos_image
+  centos_image   = var.centos_image
   default_flavor = var.default_flavor
-  net_address = var.net_address
-  postfix = var.postfix
-  public_key = var.public_key
-  region = var.region
+  net_address    = var.net_address
+  postfix        = var.postfix
+  public_key     = var.public_key
+  region         = var.region
 }
 
 module "postgresql" {
   source = "../modules/postgresql"
 
-  az = var.default_az
+  az            = var.default_az
   instance_name = "scn2-db"
-  network_id = module.resources.vpc_id
+  network_id    = module.resources.vpc_id
   psql_password = var.psql_password
-  psql_port = var.psql_port
-  subnet_cidr = module.resources.subnet.cidr
-  subnet_id = module.resources.subnet.id
+  psql_port     = var.psql_port
+  subnet_cidr   = module.resources.subnet.cidr
+  subnet_id     = module.resources.subnet.id
 }
 
 output "out-scn2_public_ip" {
   value = module.resources.scn2_eip
 }
 output "out-db_password" {
-  value = module.postgresql.db_password
+  value     = module.postgresql.db_password
   sensitive = true
 }
 output "out-db_username" {
