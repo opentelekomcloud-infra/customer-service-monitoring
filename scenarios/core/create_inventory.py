@@ -47,10 +47,8 @@ class TerraformInventory:
             }
         }
         path = (os.path.pardir + "/inventory/prod/{}.yml".format(self.args.scenario))
-        f = open(path, "w+")
-        for i in yaml.dump(self.inv_output, default_flow_style=False):
-            f.write(i)
-        f.close()
+        with open(path, "w+") as f:
+            f.write(yaml.safe_dump(self.inv_output, default_flow_style=False))
         return print("File written to: {}".format(path))
 
     def get_tf_instances(self):
