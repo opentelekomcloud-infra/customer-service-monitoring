@@ -5,4 +5,4 @@ python:
 install:
   - pip install ansible-lint
 script:
-  - ansible-lint */*.yml */*/*.yml
+  - ansible-lint playbooks/*.yml
