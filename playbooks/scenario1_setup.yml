@@ -8,7 +8,7 @@
         executable: python3
 
 - name: Start Server
-  hosts: scn1_gatewayed
+  hosts: gatewayed
   become: true
   roles:
   - too_simple_server

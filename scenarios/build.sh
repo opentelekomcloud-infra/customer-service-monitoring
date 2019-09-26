@@ -9,10 +9,13 @@ fi
 
 project_root=$(bash ./core/get_project_root.sh)
 
-# first - build infra
+ first - build infra
 terraform_dir="${project_root}/scenarios/${scenario_name}"
 pre_build="./pre_build.sh"
 post_build="./post_build.sh"
+
+# create inventory file after build infrastructure
+python3 ./core/create_inventory.py -s ${scenario_name}
 
 cd "${terraform_dir}" || exit 1
 if [[ -e ${pre_build} ]]; then source "${pre_build}"; fi
