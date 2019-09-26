@@ -20,8 +20,10 @@ if [[ -e ${pre_build} ]]; then source "${pre_build}"; fi
 terraform apply -auto-approve -input=false || exit
 
 # create inventory file after build infrastructure
+cd "${project_root}/scenarios" || exit 1
 python3 ./core/create_inventory.py -s ${scenario_name}
 
+cd "${terraform_dir}" || exit 1
 if [[ -e ${post_build} ]]; then source "${post_build}"; fi # here goes setting up env variables
 # second - configure build infra
 cd "${project_root}" || exit 1
