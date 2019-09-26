@@ -22,11 +22,9 @@ module "bastion" {
   bastion_eip      = var.bastion_eip
   default_flavor   = var.default_flavor
   key_pair         = local.key_pair
-  nodes_count      = "2"
-  addr_3_octets    = var.addr_3_octets
-  network_id       = module.network.network_id
-  subnet_id        = module.network.subnet_id
-  router_id        = module.network.router_id
+  network          = module.network.network
+  subnet           = module.network.subnet
+  router           = module.network.router
   name             = "${local.workspace_prefix}bastion"
 }
 
@@ -38,11 +36,11 @@ module "resources" {
   net_address           = var.addr_3_octets
   key_pair_name         = local.key_pair.key_name
   nodes_count           = var.nodes_count
-  bastion_local_ip      = "${var.addr_3_octets}.2"
+  bastion_local_ip      = module.bastion.bastion_ip
   loadbalancer_local_ip = "${var.addr_3_octets}.3"
   bastion_sec_group_id  = module.bastion.basion_group_id
-  network_id            = module.network.network_id
-  subnet_id             = module.network.subnet_id
+  network_id            = module.network.network.id
+  subnet_id             = module.network.subnet.id
 }
 
 output "out-scn1_lb_fip" {

@@ -29,14 +29,14 @@ resource "opentelekomcloud_networking_router_interface_v2" "http" {
   subnet_id = opentelekomcloud_networking_subnet_v2.subnet.id
 }
 
-output "subnet_id" {
-  value = opentelekomcloud_networking_subnet_v2.subnet.id
+output "subnet" {
+  value = opentelekomcloud_networking_subnet_v2.subnet
 }
 
-output "network_id" {
-  value = opentelekomcloud_networking_network_v2.network.id
+output "network" {
+  value = opentelekomcloud_networking_network_v2.network
 }
 
-output "router_id" {
-  value = opentelekomcloud_networking_router_v2.router.id
+output "router" {
+  value = opentelekomcloud_networking_router_v2.router
 }

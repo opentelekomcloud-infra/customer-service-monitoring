@@ -10,7 +10,7 @@ resource "opentelekomcloud_compute_instance_v2" "http" {
   image_name  = var.debian_image
   flavor_name = var.default_flavor
   key_pair    = var.key_pair_name
-  user_data   = file("${path.cwd}/scripts/first_boot.sh")
+  user_data   = file("${path.module}/first_boot.sh")
   network {
     port = opentelekomcloud_networking_port_v2.http.*.id[count.index]
   }

@@ -7,14 +7,21 @@ variable "key_pair" {
 variable "name" {
   default = "bastion"
 }
-variable "router_id" {}
 variable "default_flavor" {}
 variable "debian_image" {}
 variable "bastion_eip" {}
-variable "network_id" {}
-variable "subnet_id" {}
-variable "addr_3_octets" {}
+variable "network" {}
+variable "subnet" {}
+variable "router" {}
 variable "volume_bastion" {
   type    = number
   default = 10
+}
+
+variable "bastion_local_ip" {
+  default = ""
+}
+variable "nodes_count" {
+  type    = number
+  default = 2
 }

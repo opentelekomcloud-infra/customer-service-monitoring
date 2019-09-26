@@ -19,7 +19,7 @@ echo 'net.ipv4.ip_forward=1' | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p /etc/sysctl.conf
 
 #configure SNAT
-sudo iptables -t nat -A POSTROUTING -o eth0 -s ${addr_3_octets}.0/16 -j SNAT --to ${addr_3_octets}.2
+sudo iptables -t nat -A POSTROUTING -o eth0 -s ${cidr} -j SNAT --to ${bastion_address}
 
 #generate Diffie-Hellman for TLS
 sudo openssl dhparam -out /etc/sslcerts/live/dhparams.pem 2048
