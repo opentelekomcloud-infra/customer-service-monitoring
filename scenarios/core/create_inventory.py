@@ -17,7 +17,7 @@ def parse_params():
 
 
 def get_tfstate(scenario_name):
-    filename = os.getcwd() + "/" + scenario_name + "/.terraform/terraform.tfstate"
+    filename = '{}/{}/.terraform/terraform.tfstate'.format(os.getcwd(), scenario_name)
     return json.load(open(filename))
 
 
@@ -38,18 +38,18 @@ class TerraformInventory:
         for name, attributes, self.group in self.get_tf_instances():
             self.hosts_vars[name] = attributes
             self.hosts[name] = ''
-        self.inv_output["all"] = {
+        self.inv_output['all'] = {
             'hosts': self.hosts_vars,
             'children': {
                 self.group['group']: {
-                    "hosts": self.hosts
+                    'hosts': self.hosts
                 }
             }
         }
-        path = (os.path.pardir + "/inventory/prod/{}.yml".format(self.args.scenario))
-        with open(path, "w+") as f:
-            f.write(yaml.safe_dump(self.inv_output, default_flow_style=False))
-        return print("File written to: {}".format(path))
+        path = '{}/inventory/prod/{}.yml'.format(os.path.pardir, self.args.scenario)
+        with open(path, 'w+') as file:
+            file.write(yaml.safe_dump(self.inv_output, default_flow_style=False))
+        return print('File written to: {}'.format(path))
 
     def get_tf_instances(self):
         tfstate = get_tfstate(self.args.scenario)
@@ -73,9 +73,6 @@ class TerraformInventory:
                     group.update(attributes['tag'])
 
                     yield name, attributes, group
-
-                else:
-                    continue
 
 
 if __name__ == '__main__':
