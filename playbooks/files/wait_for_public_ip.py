@@ -12,6 +12,7 @@ def main(ip, timeout):
 
 
 if __name__ == '__main__':
+    print("Arguments provided: ", sys.argv)
     if len(sys.argv) == 1:
         raise AttributeError("No positional arguments given to wait script")
     address = sys.argv[1]

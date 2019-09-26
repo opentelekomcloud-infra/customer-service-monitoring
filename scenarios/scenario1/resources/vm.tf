@@ -14,6 +14,7 @@ resource "opentelekomcloud_compute_instance_v2" "http" {
   network {
     port = opentelekomcloud_networking_port_v2.http.*.id[count.index]
   }
+  tag                = { "group": "gatewayed" }
 }
 
 # Create network port
