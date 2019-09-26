@@ -4,21 +4,23 @@ from argparse import ArgumentParser
 import json
 import yaml
 
-version = '0.1'
+version = '0.2'
 
 
 def parse_params():
     parser = ArgumentParser('OpenTelekomCloud Terraform inventory')
-    parser.add_argument('--scenario', '-s', action='store', dest='scenario',
-                        help='Terraform scenario name in which directory search terraform.tfstate', default='scenario1')
+    parser.add_argument('state', help='Terraform state file')
+    parser.add_argument('--name', default=None)
     parser.add_argument('--version', '-v', action='store_true', help='Show version')
     args = parser.parse_args()
+    if args.name is None:
+        args.name = args.state
     return args
 
 
-def get_tfstate(scenario_name):
-    filename = '{}/{}/.terraform/terraform.tfstate'.format(os.getcwd(), scenario_name)
-    return json.load(open(filename))
+def get_tfstate(state_file):
+    return json.load(open(state_file))
+
 
 
 class TerraformInventory:
@@ -46,13 +48,14 @@ class TerraformInventory:
                 }
             }
         }
-        path = '{}/inventory/prod/{}.yml'.format(os.path.pardir, self.args.scenario)
+        path = '{}/inventory/prod/{}.yml'.format(
+            os.path.abspath("{}/../..".format(os.path.dirname(__file__))), self.args.name)
         with open(path, 'w+') as file:
             file.write(yaml.safe_dump(self.inv_output, default_flow_style=False))
         return print('File written to: {}'.format(path))
 
     def get_tf_instances(self):
-        tfstate = get_tfstate(self.args.scenario)
+        tfstate = get_tfstate(self.args.state)
         for resource in tfstate['resources']:
 
             if resource['type'] == 'opentelekomcloud_compute_instance_v2' and resource['name'] != 'bastion':
