@@ -1,0 +1,6 @@
+---
+- name: Instal Grafana suite on Bastion
+  hosts: bastion
+  become: true
+  roles:
+  - docker-influxdb-grafana

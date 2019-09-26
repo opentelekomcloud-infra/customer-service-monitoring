@@ -1,4 +1,0 @@
----
-# Special SSH for accessing hosts behing Bastion/Jump
-
-ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q linux@csm.outcatcher.com -o PasswordAuthentication=no -o StrictHostKeyChecking=no"'

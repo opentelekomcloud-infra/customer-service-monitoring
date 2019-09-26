@@ -5,23 +5,13 @@ all:
       ansible_host: localhost
       ansible_connection: local
       ansible_python_interpreter: '/usr/bin/env python3'
-    basic0:
-      ansible_ssh_user: "linux"
-      ansible_host: 192.168.0.10
-    basic1:
-      ansible_ssh_user: "linux"
-      ansible_host: 192.168.0.11
     bastion:
       ansible_ssh_user: "linux"
-      ansible_host: csm.outcatcher.com
+      ansible_host:	"ecs-{{ lookup('env', 'BASTION_PUBLIC_IP') | replace('.','-')}}.reverse.open-telekom-cloud.com"
   children:
     scn1_ecs:  # group, runtime-populated
       hosts:
         bastion:
-    scn1_gatewayed:
-      hosts:
-        basic0:
-        basic1:
     scn2_ecs:  # group, runtime-populated
       hosts:
         web_server:
