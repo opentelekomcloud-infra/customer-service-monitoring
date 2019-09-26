@@ -17,7 +17,6 @@ module "network" {
 module "bastion" {
   source = "../modules/bastion"
 
-  bastion_local_ip = "${var.addr_3_octets}.2"
   debian_image     = var.debian_image
   bastion_eip      = var.bastion_eip
   default_flavor   = var.default_flavor

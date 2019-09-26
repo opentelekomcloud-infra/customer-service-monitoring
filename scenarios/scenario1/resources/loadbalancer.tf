@@ -1,5 +1,3 @@
-variable "loadbalancer_local_ip" {}
-
 # Create loadbalancer
 resource "opentelekomcloud_lb_loadbalancer_v2" "loadbalancer" {
   name          = "elastic_loadbalancer_http"
