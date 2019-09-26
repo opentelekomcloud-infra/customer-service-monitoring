@@ -43,7 +43,7 @@
 
   - name: copy the nginx config files
     copy:
-      src: nginx_config/
+      src: nginx_config/grafana_nginx.conf
       dest: /etc/nginx/sites-enabled/
 
   - name: copy nginx ssl config
