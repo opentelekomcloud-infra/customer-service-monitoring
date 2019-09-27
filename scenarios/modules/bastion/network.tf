@@ -37,10 +37,10 @@ output "basion_group_id" {
 
 # Create network port
 resource "opentelekomcloud_networking_port_v2" "bastion_port" {
-  name           = "${var.name}_port"
-  network_id     = var.network.id
-  admin_state_up = true
-  security_group_ids = [ opentelekomcloud_compute_secgroup_v2.basion_group.id ]
+  name               = "${var.name}_port"
+  network_id         = var.network.id
+  admin_state_up     = true
+  security_group_ids = [opentelekomcloud_compute_secgroup_v2.basion_group.id]
   fixed_ip {
     subnet_id  = var.subnet.id
     ip_address = local.bastion_ip
