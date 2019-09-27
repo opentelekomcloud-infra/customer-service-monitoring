@@ -72,7 +72,7 @@ password = \"\""
 # create empty ansible playbook
 target_dir="${project_root}/playbooks" init_if_missing "${target_name}_setup.yml" "---"
 
-tf_template="terraform {
+init_if_missing "settings.tf" "terraform {
   required_providers {
     opentelekomcloud = \">= 1.11.0\"
   }
@@ -87,13 +87,6 @@ tf_template="terraform {
   }
 }
 
-variable \"username\" {}
-variable \"password\" {}
-variable \"region\" {}
-variable \"tenant_name\" {}
-variable \"default_az\" {}
-variable \"domain_name\" {}
-
 # Configure the OpenTelekomCloud Provider
 provider \"opentelekomcloud\" {
   user_name = var.username
@@ -102,6 +95,13 @@ provider \"opentelekomcloud\" {
   tenant_name = var.tenant_name
   auth_url = \"https://iam.eu-de.otc.t-systems.com:443/v3\"
 }"
-init_if_missing "infrastructure.tf" "${tf_template}"
+
+init_if_missing "variables.tf" "variable \"username\" {}
+variable \"password\" {}
+variable \"region\" {}
+variable \"tenant_name\" {}
+variable \"default_az\" {}
+variable \"domain_name\" {}"
+
 cd "${target_dir}" || exit 2
 terraform init
