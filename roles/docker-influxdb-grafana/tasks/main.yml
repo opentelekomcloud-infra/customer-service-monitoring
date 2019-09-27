@@ -66,6 +66,12 @@
       src: "{{ docker_configs_folder }}"
       dest: /tmp/
 
+  - name: Download wait-for-it.sh
+    get_url:
+      url: https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+      dest: /tmp/{{ docker_configs_folder }}
+      attr: 0755
+
   - name: Create and start docker instances
     docker_compose:
       project_src: /tmp/{{ docker_configs_folder }}

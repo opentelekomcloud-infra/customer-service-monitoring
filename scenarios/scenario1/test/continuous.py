@@ -23,7 +23,8 @@ def report(wrapped, instance: "Client" = None, args=(), kwargs=None):
     metrics.append(lb_timing)
 
     def _post_data():
-        instance.session.post("/telegraf", data=str(metrics))
+        res = instance.session.post("/telegraf", data=str(metrics))
+        assert res.status_code == 204, f"Status is {res.status_code}"
 
     Thread(target=_post_data, daemon=True).start()
     return stat
