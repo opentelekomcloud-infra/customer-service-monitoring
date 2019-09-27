@@ -17,11 +17,14 @@ LB_TIMING = "lb_timing"
 def report(wrapped, instance: "Client" = None, args=(), kwargs=None):
     stat = wrapped(*args, **kwargs)
     srv, time_ms = stat
+    client = requests.get("http://ipecho.net/plain").text
+    if client == "":
+        client = socket.gethostname()
     metrics = MetricCollection()
     lb_timing = Metric(LB_TIMING)
     lb_timing.add_value("elapsed", time_ms)
     lb_timing.add_tag("server", srv)
-    lb_timing.add_tag("hostname", socket.gethostbyname(socket.gethostname()))
+    lb_timing.add_tag("client", socket.gethostname())
     metrics.append(lb_timing)
 
     def _post_data():
