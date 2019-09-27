@@ -1,5 +1,6 @@
 """Stable continuous load to of the server"""
 import os
+import socket
 import time
 from argparse import ArgumentParser
 from threading import Thread
@@ -20,6 +21,7 @@ def report(wrapped, instance: "Client" = None, args=(), kwargs=None):
     lb_timing = Metric(LB_TIMING)
     lb_timing.add_value("elapsed", time_ms)
     lb_timing.add_tag("server", srv)
+    lb_timing.add_tag("hostname", socket.gethostbyname(socket.gethostname()))
     metrics.append(lb_timing)
 
     def _post_data():
