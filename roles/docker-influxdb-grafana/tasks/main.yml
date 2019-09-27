@@ -43,7 +43,7 @@
 
   - name: copy the nginx config files
     copy:
-      src: nginx_config/
+      src: nginx_config/grafana_nginx.conf
       dest: /etc/nginx/sites-enabled/
 
   - name: copy nginx ssl config
@@ -65,6 +65,12 @@
     copy:
       src: "{{ docker_configs_folder }}"
       dest: /tmp/
+
+  - name: Download wait-for-it.sh
+    get_url:
+      url: https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+      dest: /tmp/{{ docker_configs_folder }}
+      mode: u+x
 
   - name: Create and start docker instances
     docker_compose:

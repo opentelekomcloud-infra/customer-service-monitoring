@@ -1,5 +1,3 @@
-variable "ecs_local_ip" {}
-
 resource "opentelekomcloud_compute_keypair_v2" "pair" {
   name = "csn2_${var.postfix}"
   public_key = var.public_key
@@ -66,7 +64,7 @@ resource "opentelekomcloud_compute_instance_v2" "basic" {
 
   network {
     uuid = opentelekomcloud_vpc_subnet_v1.subnet.id
-    fixed_ip_v4 = var.ecs_local_ip
+    fixed_ip_v4 = "${var.net_address}.10"
   }
 
 }

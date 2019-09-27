@@ -7,7 +7,7 @@ all:
       ansible_python_interpreter: '/usr/bin/env python3'
     bastion:
       ansible_ssh_user: "linux"
-      ansible_host:	"ecs-{{ lookup('env', 'BASTION_PUBLIC_IP') | replace('.','-')}}.reverse.open-telekom-cloud.com"
+      ansible_host: "ecs-{{ lookup('env', 'BASTION_PUBLIC_IP') | replace('.','-')}}.reverse.open-telekom-cloud.com"
   children:
     scn1_ecs:  # group, runtime-populated
       hosts:

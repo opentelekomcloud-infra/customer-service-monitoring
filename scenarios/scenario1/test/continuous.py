@@ -1,5 +1,6 @@
 """Stable continuous load to of the server"""
 import os
+import socket
 import time
 from argparse import ArgumentParser
 from threading import Thread
@@ -16,14 +17,19 @@ LB_TIMING = "lb_timing"
 def report(wrapped, instance: "Client" = None, args=(), kwargs=None):
     stat = wrapped(*args, **kwargs)
     srv, time_ms = stat
+    client = requests.get("http://ipecho.net/plain").text
+    if client == "":
+        client = socket.gethostname()
     metrics = MetricCollection()
     lb_timing = Metric(LB_TIMING)
     lb_timing.add_value("elapsed", time_ms)
     lb_timing.add_tag("server", srv)
+    lb_timing.add_tag("client", client)
     metrics.append(lb_timing)
 
     def _post_data():
-        instance.session.post("/telegraf", data=str(metrics))
+        res = instance.session.post("/telegraf", data=str(metrics))
+        assert res.status_code == 204, f"Status is {res.status_code}"
 
     Thread(target=_post_data, daemon=True).start()
     return stat
