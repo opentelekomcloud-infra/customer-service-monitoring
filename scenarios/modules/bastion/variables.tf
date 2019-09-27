@@ -21,7 +21,3 @@ variable "volume_bastion" {
 variable "bastion_local_ip" {
   default = ""
 }
-variable "nodes_count" {
-  type    = number
-  default = 2
-}
