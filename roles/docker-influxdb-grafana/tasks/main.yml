@@ -70,7 +70,7 @@
     get_url:
       url: https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
       dest: /tmp/{{ docker_configs_folder }}
-      attr: 0755
+      mode: u+x
 
   - name: Create and start docker instances
     docker_compose:
