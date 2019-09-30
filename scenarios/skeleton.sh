@@ -54,7 +54,7 @@ cd \"\${scenario_dir}\" || exit 1
 cd \"\${project_root}\" || exit 1
 
 function run_test() {
-    poetry run python \"\${local_dir}/main.py\"  # <arguments>
+    python \"\${local_dir}/main.py\"  # <arguments>
 }
 
 cd \${start_dir}"

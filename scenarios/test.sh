@@ -8,18 +8,15 @@ if [[ -z ${scenario_name} ]]; then
 fi
 
 project_root=$(bash ./core/get_project_root.sh)
-
-# prepare virtual environment
-poetry --version > /dev/null
-if [[ $? != 0 ]]; then
-    curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-fi
 cd ${project_root}
-poetry install
-poetry run python --version
-# end venv preparation
+
+if [[ ! -d ".venv" ]]; then
+    python3 -m venv .venv || exit 3
+fi
+source .venv/bin/activate
+
 
 scenario_dir="${project_root}/scenarios/${scenario_name}"
 cd ${scenario_dir} || exit 1
 
-poetry run bash ./test/main.sh "${project_root}"
+bash ./test/main.sh "${project_root}"
