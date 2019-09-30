@@ -17,14 +17,11 @@ LB_TIMING = "lb_timing"
 def report(wrapped, instance: "Client" = None, args=(), kwargs=None):
     stat = wrapped(*args, **kwargs)
     srv, time_ms = stat
-    client = requests.get("http://ipecho.net/plain").text
-    if client == "":
-        client = socket.gethostname()
     metrics = MetricCollection()
     lb_timing = Metric(LB_TIMING)
     lb_timing.add_value("elapsed", time_ms)
     lb_timing.add_tag("server", srv)
-    lb_timing.add_tag("client", client)
+    lb_timing.add_tag("client", instance.client)
     metrics.append(lb_timing)
 
     def _post_data():
@@ -41,6 +38,7 @@ class Client:
 
     def __init__(self, url: str, tgf_address):
         self.url = url
+        self.client = requests.get("http://ipecho.net/plain").text or socket.gethostname()
         self.session = BaseUrlSession(tgf_address)
         self._next_boom = 0
 
