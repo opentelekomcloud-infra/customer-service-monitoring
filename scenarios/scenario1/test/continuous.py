@@ -1,6 +1,9 @@
 """Stable continuous load to of the server"""
+import logging
 import os
+import re
 import socket
+import sys
 import time
 from argparse import ArgumentParser
 from threading import Thread
@@ -8,9 +11,14 @@ from threading import Thread
 import requests
 import wrapt
 from influx_line_protocol import Metric, MetricCollection
+from ocomone.logging import setup_logger
 from ocomone.session import BaseUrlSession
+from requests import Timeout
 
 LB_TIMING = "lb_timing"
+
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
 
 
 @wrapt.decorator
@@ -32,14 +40,24 @@ def report(wrapped, instance: "Client" = None, args=(), kwargs=None):
     return stat
 
 
-class Client:
-    _url: str
-    boom_limit = 30 * 60  # 30 min
+RE_URL = re.compile(r"^https?://.+$")
 
+
+class Client:
     def __init__(self, url: str, tgf_address):
+
+        if RE_URL.fullmatch(url) is None:
+            url = f"http://{url}"
         self.url = url
-        self.client = requests.get("http://ipecho.net/plain").text or socket.gethostname()
+
+        try:
+            public_ip = requests.get("http://ipecho.net/plain", timeout=2).text
+        except Timeout:
+            public_ip = ""
+
+        self.client = public_ip or socket.gethostname()
         self.session = BaseUrlSession(tgf_address)
+        self._tgf_address = tgf_address
         self._next_boom = 0
 
     @report
@@ -50,9 +68,14 @@ class Client:
         return stat
 
     def run(self):
+        LOGGER.info(f"Started monitoring of {self.url} (telegraf at {self._tgf_address})")
         while True:
-            print(self.get())
-            time.sleep(0.5)
+            try:
+                LOGGER.debug(self.get())
+                time.sleep(0.5)
+            except KeyboardInterrupt:
+                LOGGER.info("Monitoring Stopped")
+                sys.exit(0)
 
 
 if __name__ == '__main__':
@@ -62,5 +85,7 @@ if __name__ == '__main__':
     AGP.add_argument("--telegraf", help=f"Address of telegraf server for reporting. "
                                         f"Default is taken from TGF_ADDRESS variable ('{tgf_default}')",
                      default=tgf_default)
+    AGP.add_argument("--log-dir", "-l", help="Directory to write log file to", default=".")
     ARGS = AGP.parse_args()
+    setup_logger(LOGGER, "continuous", log_dir=ARGS.log_dir, log_format="%(message)s")
     Client(ARGS.target, ARGS.telegraf).run()
