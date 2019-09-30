@@ -14,7 +14,7 @@ source ./post_build.sh
 cd "${project_root}" || exit 1
 
 function run_test() {
-    poetry run python ${local_dir}/main.py "${SERVER_PUBLIC_IP}"
+    python ${local_dir}/main.py "${SERVER_PUBLIC_IP}"
 }
 
 run_test || exit $?
