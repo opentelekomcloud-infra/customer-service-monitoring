@@ -13,4 +13,4 @@ variable "nodes_count" {
   default = 2
 }
 variable "public_key" { default = "" }
-variable "bastion_eip" { default = "80.158.7.120" }
+variable "bastion_eip" {}
