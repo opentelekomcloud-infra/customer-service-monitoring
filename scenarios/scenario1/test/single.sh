@@ -45,7 +45,7 @@ function telegraf_report() {
     infl_row="lb_down_test,client=${public_ip},reason=${reason} state=${result} $(date +%s%N)"
     status_code=$( curl -X -o /dev/null -q POST https://csm.outcatcher.com/telegraf -d ${infl_row} -w "%{http_code}" )
     if [[ status_code != 204 ]]; then
-        echo "Can report status to telegraf"
+        echo "Can't report status to telegraf"
         exit 3
     fi
 }
@@ -73,4 +73,5 @@ fi
 
 start_stop_rand_node start
 ./${file_name} || telegraf_report fail $? && exit 1
+telegraf_report pass 0
 destroy
