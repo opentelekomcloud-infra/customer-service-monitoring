@@ -19,7 +19,7 @@ if [[ $? != 0 ]]; then
 fi
 
 function build() {
-    source ${scenario_dir}/../build.sh scenario1
+    source ${scenario_dir}/../build.sh scenario1 -var "bastion_eip=80.158.3.174"
 }
 
 function destroy() {
@@ -28,13 +28,13 @@ function destroy() {
 
 function start_stop_rand_node() {
     if [[ $1 == "stop" ]]; then
-        playbook=playbooks/scenario1_stop_server_on_random_node.yml
+        playbook=scenario1_stop_server_on_random_node.yml
     else
-        playbook=playbooks/scenario1_setup.yml
+        playbook=scenario1_setup.yml
     fi
     cur_dir=$( pwd )
     cd ${project_root}
-    ansible-playbook -i inventory/prod ${playbook}
+    ansible-playbook -i inventory/prod playbooks/${playbook}
     cd ${cur_dir}
 }
 
@@ -58,12 +58,10 @@ tar xf ${archive}
 
 destroy  # cleanup if previous infra still exists
 build
-./load_balancer_test || not_balanced && exit 1
-
-alias not_balanced="telegraf_report fail \$?"
+./${file_name} || telegraf_report fail $? && exit 1
 
 start_stop_rand_node stop
-./load_balancer_test
+./${file_name}
 test_result=$?
 if [[ ${test_result} == 0 ]]; then
     telegraf_report fail multiple_nodes
@@ -74,5 +72,5 @@ elif [[ ${test_result} != 101 ]]; then
 fi
 
 start_stop_rand_node start
-./load_balancer_test || not_balanced && exit 1
+./${file_name} || telegraf_report fail $? && exit 1
 destroy
