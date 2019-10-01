@@ -9,8 +9,12 @@ variable "bastion_local_ip" {}
 variable "nodes_count" {}
 variable "key_pair_name" {}
 variable "disc_volume" {
-  type = number
+  type    = number
   default = 5
 }
 
 variable "loadbalancer_local_ip" {}
+
+locals {
+  workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
+}
