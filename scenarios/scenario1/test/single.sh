@@ -2,7 +2,7 @@
 
 start_dir=$( pwd )
 local_dir=$( cd $( dirname "$0" ); pwd )
-project_root=$( ${local_dir}/../../core/get_project_root.sh )
+project_root=$( bash ${local_dir}/../../core/get_project_root.sh )
 echo "Project root: ${project_root}"
 
 
