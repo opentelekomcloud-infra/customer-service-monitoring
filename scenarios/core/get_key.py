@@ -16,23 +16,19 @@ def parse_params():
     return args
 
 
-class GetKey:
-    def __init__(self):
-        self.args = parse_params()
-        self.copy_key_from_s3()
-
-    def copy_key_from_s3(self):
-        session = Session(aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
-                          aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY'])
-        s3 = session.resource('s3', endpoint_url=api_endpoint)
-        try:
-            s3.Bucket(bucket).download_file(self.args.key, self.args.output)
-        except ClientError as e:
-            if e.response['Error']['Code'] == "404":
-                print("The object does not exist.")
-            else:
-                raise
+def copy_key_from_s3():
+    args = parse_params()
+    session = Session(aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
+                      aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY'])
+    s3 = session.resource('s3', endpoint_url=api_endpoint)
+    try:
+        s3.Bucket(bucket).download_file(args.key, args.output)
+    except ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            print("The object does not exist.")
+        else:
+            raise
 
 
 if __name__ == '__main__':
-    GetKey()
+    copy_key_from_s3()
