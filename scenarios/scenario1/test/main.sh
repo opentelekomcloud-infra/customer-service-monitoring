@@ -10,16 +10,21 @@ echo "Project root: ${project_root}"
 scenario_dir=$(cd "${local_dir}/.."; pwd)
 echo "Scenario directory: ${scenario_dir}"
 cd "${scenario_dir}" || exit 1
+terraform init || exit $?
 source ./post_build.sh
 
 cd "${project_root}" || exit 1
 
+log_path="/var/log/scenario1"
+
+sudo mkdir -p ${log_path}
+username=$(whoami)
+sudo chown ${username} ${log_path}
+
+
 function run_test() {
-    poetry run python ${local_dir}/continious.py "${LOADBALANCER_PUBLIC_IP}" --telegraf https://csm.outcatcher.com
+    echo "Logs will be written to ${log_path}"
+    python ${local_dir}/continuous.py "${LOADBALANCER_PUBLIC_IP}" --telegraf https://csm.outcatcher.com --log-dir ${log_path}
 }
 
-log_path="/var/log/scenario1/"
-sudo mkdir -p ${log_path}
-sudo chown ${USERNAME} ${log_path}
-
-run_test >> ${log_path}/execution.log &
+run_test > /dev/null &
