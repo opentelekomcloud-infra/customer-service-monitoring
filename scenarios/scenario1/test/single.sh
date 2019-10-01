@@ -19,6 +19,7 @@ bastion_eip="80.158.3.174"
 
 function build() {
     cur_dir=$(pwd)
+    terraform plan -out plan.json
     cd ${scenario_dir}/..
     ./build.sh scenario1 -var "bastion_eip=${bastion_eip}"
     cd ${cur_dir}
@@ -58,7 +59,9 @@ start_test="./${file_name} ${bastion_eip}"
 wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v0.1/lb_test-0.1-linux.tar.gz
 tar xf ${archive}
 
+echo Destroy old infrastructure
 destroy  # cleanup if previous infra still exists
+echo "Rebuild new infrastructure (used workspace: $(terraform workspace show)"
 build
 ${start_test} || telegraf_report fail $? && exit 1
 
