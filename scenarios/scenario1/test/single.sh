@@ -15,10 +15,12 @@ ws_name="single"
 
 terraform workspace select ${ws_name} || terraform workspace new ${ws_name} || exit $?
 
+bastion_eip="80.158.3.174"
+
 function build() {
     cur_dir=$(pwd)
     cd ${scenario_dir}/..
-    source ./build.sh scenario1 -var "bastion_eip=80.158.3.174"
+    ./build.sh scenario1 -var "bastion_eip=${bastion_eip}"
     cd ${cur_dir}
 }
 
@@ -52,16 +54,16 @@ function telegraf_report() {
 
 archive=lb_test.tgz
 file_name=load_balancer_test
-
+alias start_test="./${file_name} ${bastion_eip}"
 wget -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v0.1/lb_test-0.1-linux.tar.gz
 tar xf ${archive}
 
 destroy  # cleanup if previous infra still exists
 build
-./${file_name} || telegraf_report fail $? && exit 1
+start_test || telegraf_report fail $? && exit 1
 
 start_stop_rand_node stop
-./${file_name}
+start_test
 test_result=$?
 if [[ ${test_result} == 0 ]]; then
     telegraf_report fail multiple_nodes
@@ -72,6 +74,6 @@ elif [[ ${test_result} != 101 ]]; then
 fi
 
 start_stop_rand_node start
-./${file_name} || telegraf_report fail $? && exit 1
+start_test || telegraf_report fail $? && exit 1
 telegraf_report pass 0
 destroy
