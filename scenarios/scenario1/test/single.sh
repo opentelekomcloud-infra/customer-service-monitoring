@@ -2,7 +2,7 @@
 
 start_dir=$( pwd )
 local_dir=$( cd $( dirname "$0" ); pwd )
-project_root=$1
+project_root=$( ./../../core/get_project_root.sh )
 echo "Project root: ${project_root}"
 
 
@@ -13,13 +13,13 @@ terraform init || exit $?
 
 ws_name="single"
 
-terraform workspace select ${ws_name}
-if [[ $? != 0 ]]; then
-    terraform workspace new ${ws_name} || exit $?
-fi
+terraform workspace select ${ws_name} || terraform workspace new ${ws_name} || exit $?
 
 function build() {
-    source ${scenario_dir}/../build.sh scenario1 -var "bastion_eip=80.158.3.174"
+    cur_dir=$(pwd)
+    cd ${scenario_dir}/..
+    source ./build.sh scenario1 -var "bastion_eip=80.158.3.174"
+    cd ${cur_dir}
 }
 
 function destroy() {
