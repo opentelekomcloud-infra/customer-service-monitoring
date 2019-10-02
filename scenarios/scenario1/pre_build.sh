@@ -7,7 +7,7 @@ file_name="scn1_instance_rsa"
 export RSA_PRIVATE_KEY="$( pwd )/${file_name}"
 ssh-add -d "${RSA_PRIVATE_KEY}"
 
-python3 "${parent_dir}/core/get_key.py" -k "key/${file_name}" -o ${file_name}
+python3 "${parent_dir}/core/get_key.py" -k "key/${file_name}" -o ${RSA_PRIVATE_KEY}
 sudo chmod 600 ${file_name}
 
 ssh-add "${RSA_PRIVATE_KEY}" || exit 3
