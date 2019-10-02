@@ -52,7 +52,6 @@ function telegraf_report() {
 }
 
 archive=lb_test-0.1.tgz
-file_name=load_balancer_test
 if [[ ! -e ${archive} ]]; then
     wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v0.1/lb_test-0.1-linux.tar.gz
     tar xf ${archive}
@@ -62,7 +61,7 @@ prepare
 echo Preparation Finished
 echo Bastion at ${BASTION_PUBLIC_IP}
 echo LB at ${LOADBALANCER_PUBLIC_IP}
-start_test="./${file_name} ${LOADBALANCER_PUBLIC_IP}"
+start_test="./load_balancer_test ${LOADBALANCER_PUBLIC_IP}"
 echo Starting test...
 
 function test_should_pass() {
