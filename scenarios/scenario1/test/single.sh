@@ -67,10 +67,23 @@ destroy  # cleanup if previous infra still exists
 echo "Rebuild new infrastructure (used workspace: $(terraform workspace show)"
 build
 echo Build Finished
+echo Created bastion at ${BASTION_PUBLIC_IP}
 echo Created LB at ${LOADBALANCER_PUBLIC_IP}
 start_test="./${file_name} ${LOADBALANCER_PUBLIC_IP}"
 echo Starting test...
-${start_test} || telegraf_report fail $? && exit 1
+
+function test_should_pass() {
+    res=$?
+    if [[ res != 0 ]]; then
+        telegraf_report fail res
+        echo Test failed
+        exit res
+    fi
+    echo Test passed
+}
+
+${start_test}
+test_should_pass
 
 start_stop_rand_node stop
 ${start_test}
@@ -84,6 +97,7 @@ elif [[ ${test_result} != 101 ]]; then
 fi
 
 start_stop_rand_node start
-${start_test} || telegraf_report fail $? && exit 1
+${start_test}
+test_should_pass
 telegraf_report pass 0
 destroy
