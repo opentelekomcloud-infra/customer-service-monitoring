@@ -17,20 +17,14 @@ terraform workspace select ${ws_name} || terraform workspace new ${ws_name} || e
 
 bastion_eip="80.158.3.174"
 
-function build() {
-    terraform plan -out plan.json
+function prepare() {
     cur_dir=$(pwd)
-    cd ${scenario_dir}/..
-    bash build.sh scenario1 -var "bastion_eip=${bastion_eip}"
     cd ${scenario_dir}
+    source ./pre_build.sh
     source ./post_build.sh
     cd ${cur_dir}
 }
 
-function destroy() {
-    echo "Destroy infrastructure"
-    terraform destroy --auto-approve
-}
 
 function start_stop_rand_node() {
     if [[ $1 == "stop" ]]; then
@@ -51,24 +45,23 @@ function telegraf_report() {
     public_ip="$( curl http://ipecho.net/plain -s )"
     infl_row="lb_down_test,client=${public_ip},reason=${reason} state=${result} $(date +%s%N)"
     status_code=$( curl -q -o /dev/null -X POST https://csm.outcatcher.com/telegraf -d "${infl_row}" -w "%{http_code}" )
-    if [[ status_code != 204 ]]; then
-        echo "Can't report status to telegraf"
+    if [[ ${status_code} != 204 ]]; then
+        echo "Can't report status to telegraf ($status_code)"
         exit 3
     fi
 }
 
-archive=lb_test.tgz
+archive=lb_test-0.1.tgz
 file_name=load_balancer_test
-wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v0.1/lb_test-0.1-linux.tar.gz
-tar xf ${archive}
+if [[ ! -e ${archive} ]]; then
+    wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v0.1/lb_test-0.1-linux.tar.gz
+    tar xf ${archive}
+fi
 
-echo Destroy old infrastructure
-destroy  # cleanup if previous infra still exists
-echo "Rebuild new infrastructure (used workspace: $(terraform workspace show)"
-build
-echo Build Finished
-echo Created bastion at ${BASTION_PUBLIC_IP}
-echo Created LB at ${LOADBALANCER_PUBLIC_IP}
+prepare
+echo Preparation Finished
+echo Bastion at ${BASTION_PUBLIC_IP}
+echo LB at ${LOADBALANCER_PUBLIC_IP}
 start_test="./${file_name} ${LOADBALANCER_PUBLIC_IP}"
 echo Starting test...
 
@@ -100,4 +93,3 @@ start_stop_rand_node start
 ${start_test}
 test_should_pass
 telegraf_report pass 0
-destroy
