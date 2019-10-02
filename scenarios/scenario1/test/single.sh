@@ -18,11 +18,8 @@ terraform workspace select ${ws_name} || terraform workspace new ${ws_name} || e
 bastion_eip="80.158.3.174"
 
 function build() {
-    cur_dir=$(pwd)
     terraform plan -out plan.json
-    cd "${scenario_dir}/.." || exit 1
-    source ./build.sh scenario1 -var "bastion_eip=${bastion_eip}" || ( destroy && exit 2 )
-    cd ${cur_dir}
+    source "${scenario_dir}/../build.sh" scenario1 -var "bastion_eip=${bastion_eip}"
 }
 
 function destroy() {
