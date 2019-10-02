@@ -66,7 +66,7 @@ echo Starting test...
 
 function test_should_pass() {
     res=$?
-    if [[ res != 0 ]]; then
+    if [[ ${res} != 0 ]]; then
         telegraf_report fail ${res}
         echo Test failed
         exit ${res}
