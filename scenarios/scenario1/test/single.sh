@@ -59,7 +59,6 @@ function telegraf_report() {
 
 archive=lb_test.tgz
 file_name=load_balancer_test
-start_test="./${file_name} ${LOADBALANCER_PUBLIC_IP}"
 wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v0.1/lb_test-0.1-linux.tar.gz
 tar xf ${archive}
 
@@ -68,6 +67,8 @@ destroy  # cleanup if previous infra still exists
 echo "Rebuild new infrastructure (used workspace: $(terraform workspace show)"
 build
 echo Build Finished
+echo Created LB at ${LOADBALANCER_PUBLIC_IP}
+start_test="./${file_name} ${LOADBALANCER_PUBLIC_IP}"
 echo Starting test...
 ${start_test} || telegraf_report fail $? && exit 1
 
