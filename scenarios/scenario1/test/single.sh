@@ -19,7 +19,8 @@ bastion_eip="80.158.3.174"
 
 function build() {
     terraform plan -out plan.json
-    source "${scenario_dir}/../build.sh" scenario1 -var "bastion_eip=${bastion_eip}"
+    bash "${scenario_dir}/../build.sh" scenario1 -var "bastion_eip=${bastion_eip}"
+    source "${scenario_dir}/post_build.sh"
 }
 
 function destroy() {
