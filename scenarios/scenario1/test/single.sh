@@ -21,7 +21,7 @@ function build() {
     cur_dir=$(pwd)
     terraform plan -out plan.json
     cd ${scenario_dir}/..
-    ./build.sh scenario1 -var "bastion_eip=${bastion_eip}"
+    ./build.sh scenario1 -var "bastion_eip=${bastion_eip}" || destroy && exit 2
     cd ${cur_dir}
 }
 
