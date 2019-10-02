@@ -21,7 +21,7 @@ function build() {
     cur_dir=$(pwd)
     terraform plan -out plan.json
     cd ${scenario_dir}/..
-    ./build.sh scenario1 -var "bastion_eip=${bastion_eip}" || destroy && exit 2
+    source ./build.sh scenario1 -var "bastion_eip=${bastion_eip}" || destroy && exit 2
     cd ${cur_dir}
 }
 
@@ -55,7 +55,7 @@ function telegraf_report() {
 
 archive=lb_test.tgz
 file_name=load_balancer_test
-start_test="./${file_name} ${bastion_eip}"
+start_test="./${file_name} ${LOADBALANCER_PUBLIC_IP}"
 wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v0.1/lb_test-0.1-linux.tar.gz
 tar xf ${archive}
 
