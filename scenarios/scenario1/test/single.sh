@@ -50,7 +50,7 @@ function telegraf_report() {
     echo Report result: ${result}\(${reason}\)
     public_ip="$( curl http://ipecho.net/plain -s )"
     infl_row="lb_down_test,client=${public_ip},reason=${reason} state=${result} $(date +%s%N)"
-    status_code=$( curl -X -o /dev/null -q POST https://csm.outcatcher.com/telegraf -d "${infl_row}" -w "%{http_code}" )
+    status_code=$( curl -q -o /dev/null -X POST https://csm.outcatcher.com/telegraf -d "${infl_row}" -w "%{http_code}" )
     if [[ status_code != 204 ]]; then
         echo "Can't report status to telegraf"
         exit 3
@@ -75,9 +75,9 @@ echo Starting test...
 function test_should_pass() {
     res=$?
     if [[ res != 0 ]]; then
-        telegraf_report fail res
+        telegraf_report fail ${res}
         echo Test failed
-        exit res
+        exit ${res}
     fi
     echo Test passed
 }
