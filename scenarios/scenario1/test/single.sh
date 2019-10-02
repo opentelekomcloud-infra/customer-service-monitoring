@@ -21,6 +21,11 @@ function prepare() {
     cur_dir=$(pwd)
     cd ${scenario_dir}
     bash ./pre_build.sh
+    file=tmp_state
+    terraform state pull > ${file} || exit $?
+    source "${project_root}/.venv/bin/activate"
+    python3 "${project_root}/scenarios/core/create_inventory.py" ${file} --name "scenario1-single"
+    deactivate
     source ./post_build.sh
     cd ${cur_dir}
 }
@@ -43,17 +48,18 @@ function telegraf_report() {
     reason=$2
     echo Report result: ${result}\(${reason}\)
     public_ip="$( curl http://ipecho.net/plain -s )"
-    infl_row="lb_down_test,client=${public_ip},reason=${reason} state=${result} $(date +%s%N)"
+    infl_row="lb_down_test,client=${public_ip},reason=${reason} state=\"${result}\""
     status_code=$( curl -q -o /dev/null -X POST https://csm.outcatcher.com/telegraf -d "${infl_row}" -w "%{http_code}" )
-    if [[ ${status_code} != 204 ]]; then
+    if [[ "${status_code}" != "204" ]]; then
         echo "Can't report status to telegraf ($status_code)"
         exit 3
     fi
 }
 
-archive=lb_test-0.1.tgz
+version=0.1
+archive=lb_test-${version}.tgz
 if [[ ! -e ${archive} ]]; then
-    wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v0.1/lb_test-0.1-linux.tar.gz
+    wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v${version}/lb_test-${version}-linux.tar.gz
     tar xf ${archive}
 fi
 
