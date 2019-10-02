@@ -44,6 +44,7 @@ function start_stop_rand_node() {
 function telegraf_report() {
     result=$1
     reason=$2
+    echo Report result: ${result}\(${reason}\)
     public_ip="$( curl http://ipecho.net/plain -s )"
     infl_row="lb_down_test,client=${public_ip},reason=${reason} state=${result} $(date +%s%N)"
     status_code=$( curl -X -o /dev/null -q POST https://csm.outcatcher.com/telegraf -d "${infl_row}" -w "%{http_code}" )
@@ -63,6 +64,8 @@ echo Destroy old infrastructure
 destroy  # cleanup if previous infra still exists
 echo "Rebuild new infrastructure (used workspace: $(terraform workspace show)"
 build
+echo Build Finished
+echo Starting test...
 ${start_test} || telegraf_report fail $? && exit 1
 
 start_stop_rand_node stop
