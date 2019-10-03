@@ -4,7 +4,7 @@
   tasks:
 
 - name: Stop server on node
-  hosts: "{{ groups.scn1_gatewayed | random }}"
+  hosts: "{{ groups.gatewayed | random }}"
   become: yes
   roles:
   - too_simple_server

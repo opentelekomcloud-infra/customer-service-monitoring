@@ -13,7 +13,7 @@
     forwardings_list: "{{ (item[:10] == 'scn1_basic') |ternary (forwardings_list | default([]) |
     union([{'name': item, 'ip': hostvars[item].ansible_host, 'port': hostvars[item].ansible_port}]) ,
      forwardings_list | default([])) }}"
-  with_items: "{{ groups.scn1_gatewayed }}"
+  with_items: "{{ groups.gatewayed }}"
   tags: skip_ansible_lint
 
 - name: Configure xinetd forwards
