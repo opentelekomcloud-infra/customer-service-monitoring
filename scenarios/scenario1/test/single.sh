@@ -32,7 +32,7 @@ function prepare() {
 
 
 function start_stop_rand_node() {
-    if [[ $1 == "stop" ]]; then
+    if [[ "$1" == "stop" ]]; then
         playbook=scenario1_stop_server_on_random_node.yml
     else
         playbook=scenario1_setup.yml

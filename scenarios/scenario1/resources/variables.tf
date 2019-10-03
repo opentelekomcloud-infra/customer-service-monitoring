@@ -14,6 +14,7 @@ variable "disc_volume" {
 }
 
 variable "loadbalancer_local_ip" {}
+variable "loadbalancer_public_ip" {}
 
 locals {
   workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
