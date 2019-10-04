@@ -15,7 +15,7 @@ ws_name="single"
 
 terraform workspace select ${ws_name} || terraform workspace new ${ws_name} || exit $?
 
-bastion_eip="80.158.3.174"
+lb_host="ecs-80-158-23-240.reverse.open-telekom-cloud.com"
 
 function prepare() {
     cur_dir=$(pwd)
@@ -65,9 +65,8 @@ fi
 
 prepare
 echo Preparation Finished
-echo Bastion at ${BASTION_PUBLIC_IP}
-echo LB at ${LOADBALANCER_PUBLIC_IP}
-start_test="./load_balancer_test ${LOADBALANCER_PUBLIC_IP}"
+echo LB at ${lb_host}
+start_test="./load_balancer_test ${lb_host} 300"
 echo Starting test...
 
 function test_should_pass() {
