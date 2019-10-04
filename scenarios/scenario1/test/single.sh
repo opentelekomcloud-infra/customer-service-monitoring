@@ -25,6 +25,7 @@ function start_stop_rand_node() {
     cd ${project_root}
     ansible-playbook -i inventory/prod playbooks/${playbook}
     cd ${cur_dir}
+    sleep 3s
 }
 
 function prepare() {
@@ -41,7 +42,8 @@ function prepare() {
     cd ${cur_dir}
 }
 
-telegraf="https://csm.outcatcher.com/telegraf"
+csm_host="https://csm.outcatcher.com"
+telegraf="${csm_host}telegraf"
 
 function telegraf_report() {
     result=$1
@@ -93,10 +95,12 @@ elif [[ ${test_result} != 101 ]]; then
     telegraf_report fail ${test_result}
     exit ${test_result}
 fi
-python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${telegraf} || exit $?  # check that LB excludes not working node in some time
+python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} --nodes 1 || exit $?  # check that LB excludes not working node in some time
 
 start_stop_rand_node start
+python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} --nodes 2 || exit $?  # check that LB excludes not working node in some time
 ${start_test}
+
 test_should_pass
 telegraf_report pass 0
 deactivate
