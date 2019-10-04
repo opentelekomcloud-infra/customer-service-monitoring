@@ -2,14 +2,26 @@
 - name: Prepare server
   become: yes
   block:
+  - name: Check if server archive already downloaded
+    stat:
+      path: "{{ archive_dir }}"
+    register: existing_file
+
+  - name: Compare checksum
+    set_fact:
+      force_new_download: "{{ existing_file.stat.md5 != md5sum }}"
+    when: existing_file.stat.exists
+
   - name: Download too-simple-server
     get_url:
       url: "{{ download_path }}"
       dest: /tmp/
+      checksum: "md5:{{ md5sum }}"
+      force:  "{{ force_new_download | default ('false') }}"
 
   - name: Extract too-simple-server into /usr/bin/
     unarchive:
-      src: "/tmp/{{ server_archive_name }}"
+      src: "{{ archive_dir }}"
       dest: /usr/bin/
       remote_src: yes
 
