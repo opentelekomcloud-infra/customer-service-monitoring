@@ -11,7 +11,7 @@ from continuous import Client, add_common_arguments
 def parse_args():
     agp = ArgumentParser(description="Script for monitor server downtime due to single node service dead")
     add_common_arguments(agp)
-    agp.add_argument("--nodes", type=int, help="Expected number of nodes")
+    agp.add_argument("--nodes", type=int, default=None, help="Expected number of nodes")
     args = agp.parse_args()
     return args
 
@@ -44,7 +44,15 @@ def main():
     end_time = time.monotonic() + timeout
     print("Started waiting for loadbalancer to re-balance nodes")
     nodes = set()
-    while success_count < max_success_count:
+
+    if args.nodes is None:
+        def _should_continue():
+            return success_count < max_success_count
+    else:
+        def _should_continue():
+            return len(nodes) < args.nodes
+
+    while _should_continue():
         try:
             resp = requests.get(client.url, headers={"Connection": "close"}, timeout=1)
             if resp.status_code == 200:
@@ -55,10 +63,8 @@ def main():
         else:
             success_count += 1
         finally:
-            _check_timeout(f"No re-balancing is done after {timeout} seconds")
-    if len(nodes) > args.nodes:
-        raise AssertionError(f"Too many nodes running: {len(nodes)} instead of {args.nodes}")
-    print("LB rebalanced nodes")
+            _check_timeout(f"No re-balancing is done after {timeout} seconds. Nodes: {nodes}")
+    print(f"LB rebalanced nodes: ({nodes})")
 
 
 if __name__ == '__main__':
