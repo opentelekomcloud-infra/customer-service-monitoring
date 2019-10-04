@@ -34,12 +34,14 @@ function prepare() {
     file=tmp_state
     terraform state pull > ${file} || exit $?
     source "${project_root}/.venv/bin/activate"
+    export PYTHONPATH="${PYTHONPATH}:${scenario_dir}/test"
     python3 "${project_root}/scenarios/core/create_inventory.py" ${file} --name "scenario1-single"
-    deactivate
     source ./post_build.sh
     start_stop_rand_node start  # check that all nodes are running before test
     cd ${cur_dir}
 }
+
+telegraf="https://csm.outcatcher.com/telegraf"
 
 function telegraf_report() {
     result=$1
@@ -47,7 +49,7 @@ function telegraf_report() {
     echo Report result: ${result}\(${reason}\)
     public_ip="$( curl http://ipecho.net/plain -s )"
     infl_row="lb_down_test,client=${public_ip},reason=${reason} state=\"${result}\""
-    status_code=$( curl -q -o /dev/null -X POST https://csm.outcatcher.com/telegraf -d "${infl_row}" -w "%{http_code}" )
+    status_code=$( curl -q -o /dev/null -X POST ${telegraf} -d "${infl_row}" -w "%{http_code}" )
     if [[ "${status_code}" != "204" ]]; then
         echo "Can't report status to telegraf ($status_code)"
         exit 3
@@ -91,8 +93,10 @@ elif [[ ${test_result} != 101 ]]; then
     telegraf_report fail ${test_result}
     exit ${test_result}
 fi
+python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${telegraf} || exit $?  # check that LB excludes not working node in some time
 
 start_stop_rand_node start
 ${start_test}
 test_should_pass
 telegraf_report pass 0
+deactivate

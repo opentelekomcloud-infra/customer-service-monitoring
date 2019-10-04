@@ -9,7 +9,6 @@ from argparse import ArgumentParser
 from threading import Thread
 
 import requests
-import wrapt
 from influx_line_protocol import Metric, MetricCollection
 from ocomone.logging import setup_logger
 from ocomone.session import BaseUrlSession
@@ -20,30 +19,12 @@ LB_TIMING = "lb_timing"
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
 
-
-@wrapt.decorator
-def report(wrapped, instance: "Client" = None, args=(), kwargs=None):
-    stat = wrapped(*args, **kwargs)
-    srv, time_ms = stat
-    metrics = MetricCollection()
-    lb_timing = Metric(LB_TIMING)
-    lb_timing.add_value("elapsed", time_ms)
-    lb_timing.add_tag("server", srv)
-    lb_timing.add_tag("client", instance.client)
-    metrics.append(lb_timing)
-
-    def _post_data():
-        res = instance.session.post("/telegraf", data=str(metrics))
-        assert res.status_code == 204, f"Status is {res.status_code}"
-
-    Thread(target=_post_data, daemon=True).start()
-    return stat
-
-
 RE_URL = re.compile(r"^https?://.+$")
 
 
 class Client:
+    """Test client"""
+
     def __init__(self, url: str, tgf_address):
 
         if RE_URL.fullmatch(url) is None:
@@ -60,12 +41,30 @@ class Client:
         self._tgf_address = tgf_address
         self._next_boom = 0
 
-    @report
+    def report_metric(self, metrics: MetricCollection):
+        """Report metric to the server in new thread"""
+
+        def _post_data():
+            res = self.session.post("/telegraf", data=str(metrics))
+            assert res.status_code == 204, f"Status is {res.status_code}"
+
+        Thread(target=_post_data, daemon=True).start()
+
     def get(self):
         """Send request and write metrics to telegraf"""
         res = requests.get(self.url, headers={"Connection": "close"})
-        stat = res.headers["Server"], res.elapsed.microseconds / 1000
-        return stat
+        srv, time_ms = res.headers["Server"], res.elapsed.microseconds / 1000
+
+        metrics = MetricCollection()
+        lb_timing = Metric(LB_TIMING)
+        lb_timing.add_value("elapsed", time_ms)
+        lb_timing.add_tag("server", srv)
+        lb_timing.add_tag("client", self.client)
+        metrics.append(lb_timing)
+
+        self.report_metric(metrics)
+
+        return srv, time_ms
 
     def run(self):
         LOGGER.info(f"Started monitoring of {self.url} (telegraf at {self._tgf_address})")
@@ -78,14 +77,18 @@ class Client:
                 sys.exit(0)
 
 
-if __name__ == '__main__':
-    AGP = ArgumentParser(description="Script for monitor response times and nodes, reporting results to telegraf.")
-    AGP.add_argument("target", help="Load balancer address")
+def add_common_arguments(agp: ArgumentParser):
+    agp.add_argument("target", help="Load balancer address")
     tgf_default = os.getenv("TGF_ADDRESS", "")
-    AGP.add_argument("--telegraf", help=f"Address of telegraf server for reporting. "
+    agp.add_argument("--telegraf", help=f"Address of telegraf server for reporting. "
                                         f"Default is taken from TGF_ADDRESS variable ('{tgf_default}')",
                      default=tgf_default)
-    AGP.add_argument("--log-dir", "-l", help="Directory to write log file to", default=".")
-    ARGS = AGP.parse_args()
-    setup_logger(LOGGER, "continuous", log_dir=ARGS.log_dir, log_format="%(message)s")
-    Client(ARGS.target, ARGS.telegraf).run()
+    agp.add_argument("--log-dir", "-l", help="Directory to write log file to", default=".")
+
+
+if __name__ == '__main__':
+    AGP = ArgumentParser(description="Script for monitor response times and nodes, reporting results to telegraf.")
+    add_common_arguments(AGP)
+    args = AGP.parse_args()
+    setup_logger(LOGGER, "continuous", log_dir=args.log_dir, log_format="%(message)s")
+    Client(args.target, args.telegraf).run()
