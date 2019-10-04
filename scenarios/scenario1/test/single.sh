@@ -43,7 +43,7 @@ function prepare() {
 }
 
 csm_host="https://csm.outcatcher.com"
-telegraf="${csm_host}telegraf"
+telegraf="${csm_host}/telegraf"
 
 function telegraf_report() {
     result=$1
@@ -99,8 +99,8 @@ python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host
 
 start_stop_rand_node start
 python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} --nodes 2 || exit $?  # check that LB excludes not working node in some time
-${start_test}
 
+${start_test}
 test_should_pass
 telegraf_report pass 0
 deactivate
