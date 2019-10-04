@@ -15,7 +15,17 @@ ws_name="single"
 
 terraform workspace select ${ws_name} || terraform workspace new ${ws_name} || exit $?
 
-lb_host="ecs-80-158-23-240.reverse.open-telekom-cloud.com"
+function start_stop_rand_node() {
+    if [[ "$1" == "stop" ]]; then
+        playbook=scenario1_stop_server_on_random_node.yml
+    else
+        playbook=scenario1_setup.yml
+    fi
+    cur_dir=$( pwd )
+    cd ${project_root}
+    ansible-playbook -i inventory/prod playbooks/${playbook}
+    cd ${cur_dir}
+}
 
 function prepare() {
     cur_dir=$(pwd)
@@ -27,19 +37,7 @@ function prepare() {
     python3 "${project_root}/scenarios/core/create_inventory.py" ${file} --name "scenario1-single"
     deactivate
     source ./post_build.sh
-    cd ${cur_dir}
-}
-
-
-function start_stop_rand_node() {
-    if [[ "$1" == "stop" ]]; then
-        playbook=scenario1_stop_server_on_random_node.yml
-    else
-        playbook=scenario1_setup.yml
-    fi
-    cur_dir=$( pwd )
-    cd ${project_root}
-    ansible-playbook -i inventory/prod playbooks/${playbook}
+    start_stop_rand_node start  # check that all nodes are running before test
     cd ${cur_dir}
 }
 
@@ -65,6 +63,7 @@ fi
 
 prepare
 echo Preparation Finished
+lb_host="ecs-80-158-23-240.reverse.open-telekom-cloud.com"
 echo LB at ${lb_host}
 start_test="./load_balancer_test ${lb_host} 300"
 echo Starting test...
