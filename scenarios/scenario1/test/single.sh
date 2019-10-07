@@ -95,11 +95,11 @@ elif [[ ${test_result} != 101 ]]; then
     telegraf_report fail ${test_result}
     exit ${test_result}
 fi
-python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} || exit $?  # check that LB excludes not working node in some time
+python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} || telegraf_report fail $?
 
 sleep 60  # make reports beautiful again
 start_stop_rand_node start
-python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} || exit $?  # check that LB excludes not working node in some time
+python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} || telegraf_report fail $?
 
 ${start_test}
 test_should_pass
