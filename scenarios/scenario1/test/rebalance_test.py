@@ -19,15 +19,18 @@ def parse_args():
 LB_DOWNTIME = "lb_down"
 
 
-def report_failed(client: Client):
+def report(client: Client, ok, server=None):
     metrics = MetricCollection()
     lb_down = Metric(LB_DOWNTIME)
-    lb_down.add_value("failed_requests", 1)
+    lb_down.add_tag("ok", ok)
+    if server is not None:
+        lb_down.add_tag("server", server)
+    lb_down.add_value("requests", 1)
     metrics.append(lb_down)
     client.report_metric(metrics)
 
 
-def main():
+def main(timeout: float):
     """Find unavailable node and waits until it won't be used"""
     args = parse_args()
     client = Client(args.target, args.telegraf)
@@ -40,7 +43,6 @@ def main():
 
     max_success_count = 15  # max number of consecutive successful requests to consider downtime finished
     success_count = 0
-    timeout = 120
     end_time = time.monotonic() + timeout
     print("Started waiting for loadbalancer to re-balance nodes")
     nodes = set()
@@ -48,24 +50,30 @@ def main():
     if args.nodes is None:
         def _should_continue():
             return success_count < max_success_count
+
+        exp_nodes = ""
     else:
         def _should_continue():
             return len(nodes) < args.nodes
 
+        exp_nodes = f" ({args.nodes} expected)"
+
     while _should_continue():
         try:
             resp = requests.get(client.url, headers={"Connection": "close"}, timeout=1)
-            if resp.status_code == 200:
-                nodes.add(resp.headers["Server"])
         except ConnectionError:  # one node is down
             success_count = 0
-            report_failed(client)
+            report(client, ok=False)
         else:
-            success_count += 1
+            if resp.status_code == 200:
+                server = resp.headers["Server"]
+                success_count += 1
+                nodes.add(server)
+                report(client, ok=True, server=server)
         finally:
-            _check_timeout(f"No re-balancing is done after {timeout} seconds. Nodes: {nodes}")
+            _check_timeout(f"No re-balancing is done after {timeout} seconds. Nodes: {nodes}{exp_nodes}")
     print(f"LB rebalanced nodes: ({nodes})")
 
 
 if __name__ == '__main__':
-    main()
+    main(10)
