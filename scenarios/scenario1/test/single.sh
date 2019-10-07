@@ -97,6 +97,7 @@ elif [[ ${test_result} != 101 ]]; then
 fi
 python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} || exit $?  # check that LB excludes not working node in some time
 
+sleep 60  # make reports beautiful again
 start_stop_rand_node start
 python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} || exit $?  # check that LB excludes not working node in some time
 
