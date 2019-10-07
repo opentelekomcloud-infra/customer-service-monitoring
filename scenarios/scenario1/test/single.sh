@@ -95,7 +95,7 @@ elif [[ ${test_result} != 101 ]]; then
     telegraf_report fail ${test_result}
     exit ${test_result}
 fi
-python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} --nodes 1 || exit $?  # check that LB excludes not working node in some time
+python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} || exit $?  # check that LB excludes not working node in some time
 
 start_stop_rand_node start
 python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} --nodes 2 || exit $?  # check that LB excludes not working node in some time
