@@ -8,19 +8,14 @@ resource "opentelekomcloud_lb_loadbalancer_v2" "loadbalancer" {
   ]
 }
 
-# create FIP
-resource "opentelekomcloud_networking_floatingip_v2" "floatingip" {
-  pool = "admin_external_net"
-}
-
 # Assign FIP to Loadbalancer
 resource opentelekomcloud_networking_floatingip_associate_v2 "floatingip_associate_lb" {
-  floating_ip = opentelekomcloud_networking_floatingip_v2.floatingip.address
+  floating_ip = var.loadbalancer_public_ip
   port_id     = opentelekomcloud_lb_loadbalancer_v2.loadbalancer.vip_port_id
 }
 
 output "scn1_lb_fip" {
-  value = opentelekomcloud_networking_floatingip_v2.floatingip.address
+  value = var.loadbalancer_public_ip
 }
 
 # Create listener
