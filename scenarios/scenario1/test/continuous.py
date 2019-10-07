@@ -48,7 +48,7 @@ class Client:
             res = self.session.post("/telegraf", data=str(metrics))
             assert res.status_code == 204, f"Status is {res.status_code}"
 
-        Thread(target=_post_data, daemon=True).start()
+        Thread(target=_post_data).start()
 
     def get(self):
         """Send request and write metrics to telegraf"""
