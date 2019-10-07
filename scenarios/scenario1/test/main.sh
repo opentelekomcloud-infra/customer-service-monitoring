@@ -11,6 +11,7 @@ scenario_dir=$(cd "${local_dir}/.."; pwd)
 echo "Scenario directory: ${scenario_dir}"
 cd "${scenario_dir}" || exit 1
 terraform init || exit $?
+terraform workspace select default
 source ./post_build.sh
 
 cd "${project_root}" || exit 1

@@ -72,6 +72,7 @@ def main(timeout: float):
                 report(client, ok=True, server=server)
         finally:
             _check_timeout(f"No re-balancing is done after {timeout} seconds. Nodes: {nodes}{exp_nodes}")
+            time.sleep(0.5)
     print(f"LB rebalanced nodes: ({nodes})")
 
 
