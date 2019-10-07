@@ -41,7 +41,7 @@ def main(timeout: float):
         if time.monotonic() > end_time:
             raise TimeoutError(msg)
 
-    max_success_count = 15  # max number of consecutive successful requests to consider downtime finished
+    max_success_count = 20  # max number of consecutive successful requests to consider downtime finished
     success_count = 0
     end_time = time.monotonic() + timeout
     print("Started waiting for loadbalancer to re-balance nodes")
@@ -76,4 +76,4 @@ def main(timeout: float):
 
 
 if __name__ == '__main__':
-    main(50)
+    main(20)
