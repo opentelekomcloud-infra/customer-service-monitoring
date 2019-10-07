@@ -76,4 +76,4 @@ def main(timeout: float):
 
 
 if __name__ == '__main__':
-    main(10)
+    main(50)

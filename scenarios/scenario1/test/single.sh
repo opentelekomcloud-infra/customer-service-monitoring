@@ -98,7 +98,7 @@ fi
 python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} || exit $?  # check that LB excludes not working node in some time
 
 start_stop_rand_node start
-python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} --nodes 2 || exit $?  # check that LB excludes not working node in some time
+python "${scenario_dir}/test/rebalance_test.py" ${lb_host} --telegraf=${csm_host} || exit $?  # check that LB excludes not working node in some time
 
 ${start_test}
 test_should_pass
