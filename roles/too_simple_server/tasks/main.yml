@@ -9,7 +9,7 @@
 
   - name: Compare checksum
     set_fact:
-      force_new_download: "{{ existing_file.stat.md5 != md5sum }}"
+      force_new_download: "{{ existing_file.stat.checksum != md5sum }}"
     when: existing_file.stat.exists
 
   - name: Download too-simple-server
