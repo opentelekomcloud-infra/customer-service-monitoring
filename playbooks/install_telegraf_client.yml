@@ -1,0 +1,6 @@
+---
+- name: Instal Grafana suite on Bastion
+  hosts: gatewayed
+  become: true
+  roles:
+  - telegraf-client
