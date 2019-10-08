@@ -32,7 +32,7 @@
   - name: Install Telegraf packages [Debian/Ubuntu]
     apt:
       name: telegraf
-      state: latest
+      state: {{ telegraf_state }}
       update_cache: yes
       cache_valid_time: 3600
     register: apt_result

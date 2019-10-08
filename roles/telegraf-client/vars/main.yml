@@ -3,3 +3,4 @@ telegraf_start_delay: 6
 telegraf_template_configuration: yes
 telegraf_binary_path: /usr/bin/telegraf
 telegraf_configuration_dir: /etc/telegraf
+telegraf_state: latest
