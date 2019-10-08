@@ -1,10 +1,10 @@
+import json
 import os
 from argparse import ArgumentParser
 
-import json
 import yaml
 
-version = '0.2'
+version = '0.3'
 
 
 def parse_params():
@@ -22,40 +22,22 @@ def get_tfstate(state_file):
     return json.load(open(state_file))
 
 
+def main():
+    args = parse_params()
+    if args.version:
+        print(version)
+    else:
+        list_all(args)
 
-class TerraformInventory:
-    def __init__(self):
-        self.hosts_vars = {}
-        self.inv_output = {}
-        self.hosts = {}
-        self.group = {}
 
-        self.args = parse_params()
-        if self.args.version:
-            print(version)
-        else:
-            self.list_all()
+def list_all(args):
+    hosts_vars = {}
+    inv_output = {}
+    hosts = {}
+    group = {}
 
-    def list_all(self):
-        for name, attributes, self.group in self.get_tf_instances():
-            self.hosts_vars[name] = attributes
-            self.hosts[name] = ''
-        self.inv_output['all'] = {
-            'hosts': self.hosts_vars,
-            'children': {
-                self.group['group']: {
-                    'hosts': self.hosts
-                }
-            }
-        }
-        path = '{}/inventory/prod/{}.yml'.format(
-            os.path.abspath("{}/../..".format(os.path.dirname(__file__))), self.args.name)
-        with open(path, 'w+') as file:
-            file.write(yaml.safe_dump(self.inv_output, default_flow_style=False))
-        return print('File written to: {}'.format(path))
-
-    def get_tf_instances(self):
-        tfstate = get_tfstate(self.args.state)
+    def get_tf_instances():
+        tfstate = get_tfstate(args.state)
         for resource in tfstate['resources']:
 
             if resource['type'] == 'opentelekomcloud_compute_instance_v2' and resource['name'] != 'bastion':
@@ -77,6 +59,23 @@ class TerraformInventory:
 
                     yield name, attributes, group
 
+    for name, attributes, group in get_tf_instances():
+        hosts_vars[name] = attributes
+        hosts[name] = ''
+    inv_output['all'] = {
+        'hosts': hosts_vars,
+        'children': {
+            group['group']: {
+                'hosts': hosts
+            }
+        }
+    }
+    path = '{}/inventory/prod/{}.yml'.format(
+        os.path.abspath("{}/../..".format(os.path.dirname(__file__))), args.name)
+    with open(path, 'w+') as file:
+        file.write(yaml.safe_dump(inv_output, default_flow_style=False))
+    return print('File written to: {}'.format(path))
+
 
 if __name__ == '__main__':
-    TerraformInventory()
+    main()
