@@ -1,5 +1,5 @@
 ---
-- name: Instal Grafana suite on Bastion
+- name: Instal telegraf client on nodes
   hosts: gatewayed
   become: true
   roles:

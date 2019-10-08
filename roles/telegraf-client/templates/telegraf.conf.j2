@@ -1,8 +1,5 @@
 # Telegraf configuration
-
-# Configuration for telegraf agent
 [agent]
-
   interval = "{{ telegraf_agent_interval }}"
   round_interval = {{ telegraf_round_interval }}
   metric_batch_size = {{ telegraf_metric_batch_size }}
@@ -23,7 +20,6 @@
   hostname = "{{ ansible_hostname }}"
 {% endif %}
 
-  ## If set to true, do no set the "host" tag in the telegraf agent.
   omit_hostname = {{ telegraf_omit_hostname }}
 
 ###############################################################################
@@ -31,17 +27,11 @@
 ###############################################################################
 
 [outputs]
-
-# Configuration for influxdb server to send metrics to
 [[outputs.influxdb]]
   urls = [ "{{ telegraf_influxdb_urls|join('","') }}" ] # required
-
   database = "{{ telegraf_influxdb_database }}" # required
-
   precision = "{{ telegraf_influxdb_precision }}"
-
   retention_policy = "{{ telegraf_influxdb_retention_policy }}"
-
   write_consistency = "{{ telegraf_influxdb_write_consistency }}"
 
   timeout = "{{ telegraf_influxdb_timeout }}"
