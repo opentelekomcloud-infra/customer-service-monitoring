@@ -45,7 +45,7 @@ class Client:
         """Report metric to the server in new thread"""
 
         def _post_data():
-            res = self.session.post("/telegraf", data=str(metrics))
+            res = self.session.post("/telegraf", data=str(metrics), timeout=2)
             assert res.status_code == 204, f"Status is {res.status_code}"
 
         Thread(target=_post_data).start()
