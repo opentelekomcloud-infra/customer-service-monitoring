@@ -45,7 +45,10 @@ telegraf_plugins_base:
   - name: net
     options:
       interfaces:
-        - "eth0"
+        - "eth*"
+        - "enp0s[0-1]"
+        - "lo"
+        - "ens3"
 
 telegraf_plugins: "{{ telegraf_plugins_base }} + {{ telegraf_plugins_extra | default([]) }}"
 telegraf_influxdata_base_url: "https://repos.influxdata.com"
