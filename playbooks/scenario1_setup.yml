@@ -15,3 +15,9 @@
   vars:
     debug: True
     server_port: 80
+
+- name: Instal telegraf client on nodes
+  hosts: gatewayed
+  become: true
+  roles:
+  - telegraf-client
