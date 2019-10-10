@@ -14,6 +14,7 @@ from ocomone.logging import setup_logger
 from requests import Timeout
 
 LB_TIMING = "lb_timing"
+LB_TIMEOUT = "lb_timeout"
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
@@ -57,7 +58,7 @@ class Client:
             res = requests.get(self.url, headers={"Connection": "close"}, timeout=timeout)
         except Timeout:
             LOGGER.exception("Timeout sending request to LB")
-            lb_timeout = Metric("lb_timeout")
+            lb_timeout = Metric(LB_TIMEOUT)
             lb_timeout.add_tag("client", self.client)
             lb_timeout.add_value("timeout", timeout * 1000)
             metrics.append(lb_timeout)
