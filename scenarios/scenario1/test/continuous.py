@@ -11,7 +11,6 @@ from threading import Thread
 import requests
 from influx_line_protocol import Metric, MetricCollection
 from ocomone.logging import setup_logger
-from ocomone.session import BaseUrlSession
 from requests import Timeout
 
 LB_TIMING = "lb_timing"
@@ -37,7 +36,6 @@ class Client:
             public_ip = ""
 
         self.client = public_ip or socket.gethostname()
-        self.session = BaseUrlSession(tgf_address)
         self._tgf_address = tgf_address
         self._next_boom = 0
 
@@ -45,7 +43,7 @@ class Client:
         """Report metric to the server in new thread"""
 
         def _post_data():
-            res = self.session.post("/telegraf", data=str(metrics), timeout=2)
+            res = requests.post(f"{self._tgf_address}/telegraf", data=str(metrics), timeout=2)
             assert res.status_code == 204, f"Status is {res.status_code}"
 
         Thread(target=_post_data).start()
