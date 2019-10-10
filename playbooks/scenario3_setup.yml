@@ -1,0 +1,32 @@
+---
+- name: Register existing settings
+  hosts: local
+  tasks:
+    - name: Wait for host
+      script: wait_for_public_ip.py {{ hostvars.bastion.ansible_host }} 120
+      args:
+        executable: python3
+
+- name: Instal telegraf client on bastion
+  hosts: bastion
+  become: true
+  roles:
+  - telegraf-client
+  vars:
+    telegraf_plugins_base:
+      - name: mem
+      - name: disk
+      - name: diskio
+      - name: cpu
+        options:
+          percpu: "false"
+          totalcpu: "true"
+          fielddrop:
+            - "time_*"
+      - name: net
+        options:
+          interfaces:
+            - "eth*"
+            - "enp0s[0-1]"
+            - "lo"
+            - "ens3"
