@@ -14,6 +14,7 @@ from ocomone.logging import setup_logger
 from requests import Timeout
 
 LB_TIMING = "lb_timing"
+LB_TIMEOUT = "lb_timeout"
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
@@ -50,25 +51,31 @@ class Client:
 
     def get(self):
         """Send request and write metrics to telegraf"""
-        res = requests.get(self.url, headers={"Connection": "close"})
-        srv, time_ms = res.headers["Server"], res.elapsed.microseconds / 1000
-
+        timeout = 20
         metrics = MetricCollection()
-        lb_timing = Metric(LB_TIMING)
-        lb_timing.add_value("elapsed", time_ms)
-        lb_timing.add_tag("server", srv)
-        lb_timing.add_tag("client", self.client)
-        metrics.append(lb_timing)
+
+        try:
+            res = requests.get(self.url, headers={"Connection": "close"}, timeout=timeout)
+        except Timeout:
+            LOGGER.exception("Timeout sending request to LB")
+            lb_timeout = Metric(LB_TIMEOUT)
+            lb_timeout.add_tag("client", self.client)
+            lb_timeout.add_value("timeout", timeout * 1000)
+            metrics.append(lb_timeout)
+        else:
+            lb_timing = Metric(LB_TIMING)
+            lb_timing.add_tag("client", self.client)
+            lb_timing.add_tag("server", res.headers["Server"])
+            lb_timing.add_value("elapsed", res.elapsed.microseconds / 1000)
+            metrics.append(lb_timing)
 
         self.report_metric(metrics)
-
-        return srv, time_ms
 
     def run(self):
         LOGGER.info(f"Started monitoring of {self.url} (telegraf at {self._tgf_address})")
         while True:
             try:
-                LOGGER.debug(self.get())
+                self.get()
                 time.sleep(0.5)
             except KeyboardInterrupt:
                 LOGGER.info("Monitoring Stopped")
@@ -88,5 +95,5 @@ if __name__ == '__main__':
     AGP = ArgumentParser(description="Script for monitor response times and nodes, reporting results to telegraf.")
     add_common_arguments(AGP)
     args = AGP.parse_args()
-    setup_logger(LOGGER, "continuous", log_dir=args.log_dir, log_format="%(message)s")
+    setup_logger(LOGGER, "continuous", log_dir=args.log_dir, log_format="[%(asctime)s] %(message)s")
     Client(args.target, args.telegraf).run()
