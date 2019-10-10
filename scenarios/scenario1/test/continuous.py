@@ -55,19 +55,18 @@ class Client:
 
         try:
             res = requests.get(self.url, headers={"Connection": "close"}, timeout=timeout)
-            srv, time_ms = res.headers["Server"], res.elapsed.microseconds / 1000
-            lb_timing = Metric(LB_TIMING)
-            lb_timing.add_tag("client", self.client)
-            lb_timing.add_tag("server", srv)
-            lb_timing.add_value("elapsed", time_ms)
-            metrics.append(lb_timing)
-
         except Timeout:
             LOGGER.exception("Timeout sending request to LB")
             lb_timeout = Metric("lb_timeout")
             lb_timeout.add_tag("client", self.client)
             lb_timeout.add_value("timeout", timeout * 1000)
             metrics.append(lb_timeout)
+        else:
+            lb_timing = Metric(LB_TIMING)
+            lb_timing.add_tag("client", self.client)
+            lb_timing.add_tag("server", res.headers["Server"])
+            lb_timing.add_value("elapsed", res.elapsed.microseconds / 1000)
+            metrics.append(lb_timing)
 
         self.report_metric(metrics)
 
