@@ -13,3 +13,7 @@ variable "volume_server" {
 variable "public_key" {
   default = null
 }
+variable "volume_type" {
+  type    = list(string)
+  default = ["SATA", "SAS", "SSD"]
+}

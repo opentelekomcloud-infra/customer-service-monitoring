@@ -58,6 +58,8 @@ def list_all(args):
                     group.update(attributes['tag'])
 
                     yield name, attributes, group
+            else:
+                exit(0)
 
     for name, attributes, group in get_tf_instances():
         hosts_vars[name] = attributes
