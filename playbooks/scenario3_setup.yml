@@ -13,7 +13,7 @@
         ansible_ssh_user: "linux"
         groups: scn3_ecs
 
-- name: Format and mount attached devices on server
+- name: Prepare attached devices on server
   hosts: scn3_ecs
   become: true
   vars:
@@ -22,6 +22,16 @@
       sas: "/dev/vdc"
       ssd: "/dev/vdd"
   tasks:
+    - name: Add hdparm repository [Debian/Ubuntu]
+      apt_repository:
+        repo: deb http://deb.debian.org/debian stretch main
+        state: present
+
+    - name: Install hdparm
+      apt:
+        name: hdparm
+        update_cache: yes
+
     - name: Create a ext4 filesystem on attached disks
       filesystem:
         fstype: ext4
@@ -43,26 +53,37 @@
         state: mounted
       with_items: "{{ lookup('dict', devices) }}"
 
-#- name: Instal telegraf client on bastion
-#  hosts: scn3_ecs
-#  become: true
-#  roles:
-#  - telegraf-client
-#  vars:
-#    telegraf_plugins_base:
-#      - name: mem
-#      - name: disk
-#      - name: diskio
-#      - name: cpu
-#        options:
-#          percpu: "false"
-#          totalcpu: "true"
-#          fielddrop:
-#            - "time_*"
-#      - name: net
-#        options:
-#          interfaces:
-#            - "eth*"
-#            - "enp0s[0-1]"
-#            - "lo"
-#            - "ens3"
+    - name: Cron job for create big files on all devices every 15 minutes
+      cron:
+        name: "Creating big file on {{ item.value }}"
+        minute: "*/15"
+        job: /bin/dd if=/dev/urandom of="/mnt/{{ item.key }}/bigfile.txt" bs=1000000 count=1000 oflag=dsync
+      with_items: "{{ lookup('dict', devices) }}"
+
+    - name: Cron job for reading big files on all devices every 5 minutes
+      cron:
+        name: "Reading big files from {{ item.value }}"
+        minute: "*/5"
+        job: /sbin/hdparm -tT "{{ item.value }}"
+      with_items: "{{ lookup('dict', devices) }}"
+
+- name: Instal telegraf client on server
+  hosts: scn3_ecs
+  become: true
+  roles:
+  - telegraf-client
+  vars:
+    telegraf_plugins_base:
+      - name: mem
+      - name: disk
+        options:
+          ignore_fs: ["tmpfs", "devtmpfs"]
+      - name: diskio
+        options:
+          devices: ["vdb", "vdc", "vdd"]
+      - name: cpu
+        options:
+          percpu: "false"
+          totalcpu: "true"
+          fielddrop:
+            - "time_*"
