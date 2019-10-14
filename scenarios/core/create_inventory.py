@@ -31,52 +31,53 @@ def main():
 
 
 def list_all(args):
-    hosts_vars = {}
-    inv_output = {}
-    hosts = {}
-    group = {}
-
-    def get_tf_instances():
-        tfstate = get_tfstate(args.state)
-        for resource in tfstate['resources']:
-
-            if resource['type'] == 'opentelekomcloud_compute_instance_v2' and resource['name'] != 'bastion':
-                for instance in resource['instances']:
-                    tf_attrib = instance['attributes']
-
-                    name = tf_attrib['name']
-                    group = {}
-                    attributes = {
-                        'id': tf_attrib['id'],
-                        'image': tf_attrib['image_name'],
-                        'region': tf_attrib['region'],
-                        'public_ipv4': tf_attrib['network'][0]['floating_ip'],
-                        'ansible_host': tf_attrib['access_ip_v4'],
-                        'ansible_ssh_user': 'linux',
-                        'tag': tf_attrib['tag'],
-                    }
-                    group.update(attributes['tag'])
-
-                    yield name, attributes, group
-            else:
-                exit(0)
-
-    for name, attributes, group in get_tf_instances():
-        hosts_vars[name] = attributes
-        hosts[name] = ''
-    inv_output['all'] = {
-        'hosts': hosts_vars,
-        'children': {
-            group['group']: {
-                'hosts': hosts
-            }
+    inv_output = {
+        'all': {
+            'hosts': {},
+            'children': {}
         }
     }
-    path = '{}/inventory/prod/{}.yml'.format(
-        os.path.abspath("{}/../..".format(os.path.dirname(__file__))), args.name)
-    with open(path, 'w+') as file:
-        file.write(yaml.safe_dump(inv_output, default_flow_style=False))
-    return print('File written to: {}'.format(path))
+    hosts = inv_output['all']['hosts']
+    children = inv_output['all']['children']
+
+    for name, attributes in get_tf_instances(args.state):
+        tag: dict = attributes.pop('tag')
+        hosts[name] = attributes
+        if 'group' in tag:
+            grp_name = tag['group']
+            if grp_name not in children:
+                children[grp_name] = {'hosts': {}}
+            children[grp_name]['hosts'][name] = ''
+    if hosts:
+        path = '{}/inventory/prod/{}.yml'.format(
+            os.path.abspath("{}/../..".format(os.path.dirname(__file__))), args.name)
+        with open(path, 'w+') as file:
+            file.write(yaml.safe_dump(inv_output, default_flow_style=False))
+        print('File written to: {}'.format(path))
+    else:
+        print('Nothing to write')
+
+
+def get_tf_instances(tfstate):
+    tfstate = get_tfstate(tfstate)
+    for resource in tfstate['resources']:
+
+        if resource['type'] == 'opentelekomcloud_compute_instance_v2' and resource['name'] != 'bastion':
+            for instance in resource['instances']:
+                tf_attrib = instance['attributes']
+
+                _name = tf_attrib['name']
+                _attributes = {
+                    'id': tf_attrib['id'],
+                    'image': tf_attrib['image_name'],
+                    'region': tf_attrib['region'],
+                    'public_ipv4': tf_attrib['network'][0]['floating_ip'],
+                    'ansible_host': tf_attrib['access_ip_v4'],
+                    'ansible_ssh_user': 'linux',
+                    'tag': tf_attrib['tag'],
+                }
+
+                yield _name, _attributes
 
 
 if __name__ == '__main__':
