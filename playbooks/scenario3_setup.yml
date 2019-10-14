@@ -75,9 +75,6 @@
   vars:
     telegraf_plugins_base:
       - name: mem
-      - name: disk
-        options:
-          ignore_fs: ["tmpfs", "devtmpfs"]
       - name: diskio
         options:
           devices: ["vdb", "vdc", "vdd"]
