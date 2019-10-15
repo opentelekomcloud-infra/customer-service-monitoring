@@ -1,0 +1,86 @@
+---
+- name: Register existing settings
+  hosts: local
+  tasks:
+    - name: Wait for host
+      script: wait_for_public_ip.py "{{ lookup('env', 'SERVER_PUBLIC_IP') }}" 120
+      args:
+        executable: python3
+    - name: Register host
+      add_host:
+        hostname: server
+        ansible_ssh_host: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+        ansible_ssh_user: "linux"
+        groups: scn3_ecs
+
+- name: Prepare attached devices on server
+  hosts: scn3_ecs
+  become: true
+  vars:
+    devices:
+      sata: "/dev/vdb"
+      sas: "/dev/vdc"
+      ssd: "/dev/vdd"
+  tasks:
+    - name: Add hdparm repository [Debian/Ubuntu]
+      apt_repository:
+        repo: deb http://deb.debian.org/debian stretch main
+        state: present
+
+    - name: Install hdparm
+      apt:
+        name: hdparm
+        update_cache: yes
+
+    - name: Create a ext4 filesystem on attached disks
+      filesystem:
+        fstype: ext4
+        dev: "{{ item.value }}"
+      with_items: "{{ lookup('dict', devices) }}"
+
+    - name: Create directories for mount
+      file:
+        path: "/mnt/{{ item.key }}"
+        state: directory
+        mode: '0755'
+      with_items: "{{ lookup('dict', devices) }}"
+
+    - name: Mount up devices
+      mount:
+        path: "/mnt/{{ item.key }}"
+        src: "{{ item.value }}"
+        fstype: ext4
+        state: mounted
+      with_items: "{{ lookup('dict', devices) }}"
+
+    - name: Cron job for create big files on all devices every 15 minutes
+      cron:
+        name: "Creating big file on {{ item.value }}"
+        minute: "*/5"
+        job: /bin/dd if=/dev/urandom of="/mnt/{{ item.key }}/bigfile.txt" bs=1000000 count=1000 oflag=dsync
+      with_items: "{{ lookup('dict', devices) }}"
+
+    - name: Cron job for reading big files on all devices every 5 minutes
+      cron:
+        name: "Reading big files from {{ item.value }}"
+        minute: "*/2"
+        job: /sbin/hdparm -tT "{{ item.value }}"
+      with_items: "{{ lookup('dict', devices) }}"
+
+- name: Instal telegraf client on server
+  hosts: scn3_ecs
+  become: true
+  roles:
+  - telegraf-client
+  vars:
+    telegraf_plugins_base:
+      - name: mem
+      - name: diskio
+        options:
+          devices: ["vdb", "vdc", "vdd"]
+      - name: cpu
+        options:
+          percpu: "false"
+          totalcpu: "true"
+          fielddrop:
+            - "time_*"
