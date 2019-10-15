@@ -1,9 +1,10 @@
 
 locals {
   workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
+  prefix = "${local.workspace_prefix}${var.postfix}"
   key_pair = {
     public_key = var.public_key
-    key_name   = "${local.workspace_prefix}kp_${var.postfix}"
+    key_name   = "${local.prefix}_kp"
   }
 }
 
@@ -28,7 +29,7 @@ module "bastion" {
   network        = module.network.network
   subnet         = module.network.subnet
   router         = module.network.router
-  name           = "${local.workspace_prefix}${var.postfix}_server"
+  name           = "${local.prefix}_server"
 }
 
 module "resources" {
