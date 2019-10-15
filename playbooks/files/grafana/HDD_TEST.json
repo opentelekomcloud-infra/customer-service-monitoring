@@ -916,7 +916,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "10m"
               ],
               "type": "time"
             },
@@ -977,7 +977,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "10m"
               ],
               "type": "time"
             },
@@ -1038,7 +1038,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "10m"
               ],
               "type": "time"
             },
@@ -1186,7 +1186,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "10m"
               ],
               "type": "time"
             },
@@ -1247,7 +1247,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "10m"
               ],
               "type": "time"
             },
@@ -1308,7 +1308,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "10m"
               ],
               "type": "time"
             },
@@ -1456,7 +1456,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "10m"
               ],
               "type": "time"
             },
@@ -1517,7 +1517,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "10m"
               ],
               "type": "time"
             },
@@ -1578,7 +1578,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "10m"
               ],
               "type": "time"
             },
@@ -2180,5 +2180,5 @@
   "timezone": "",
   "title": "HDD_TEST",
   "uid": "1lJt0IoWk",
-  "version": 42
+  "version": 44
 }
