@@ -48,3 +48,6 @@ resource "opentelekomcloud_compute_instance_v2" "bastion" {
 output "bastion_ip" {
   value = local.bastion_ip
 }
+output "bastion_vm_id" {
+  value = opentelekomcloud_compute_instance_v2.bastion.id
+}
