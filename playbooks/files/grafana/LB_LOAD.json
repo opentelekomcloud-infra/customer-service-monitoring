@@ -101,7 +101,7 @@
           "groupBy": [
             {
               "params": [
-                "5s"
+                "5m"
               ],
               "type": "time"
             },
@@ -119,7 +119,7 @@
             },
             {
               "params": [
-                "previous"
+                "null"
               ],
               "type": "fill"
             }
@@ -138,8 +138,10 @@
                 "type": "field"
               },
               {
-                "params": [],
-                "type": "mean"
+                "params": [
+                  "97"
+                ],
+                "type": "percentile"
               }
             ]
           ],
@@ -253,7 +255,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "1h"
               ],
               "type": "time"
             },
@@ -425,7 +427,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "10m"
               ],
               "type": "time"
             },
@@ -564,7 +566,7 @@
           "groupBy": [
             {
               "params": [
-                "1s"
+                "5m"
               ],
               "type": "time"
             },
@@ -596,7 +598,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "max"
               }
             ]
           ],
@@ -706,7 +708,7 @@
           "groupBy": [
             {
               "params": [
-                "1s"
+                "30m"
               ],
               "type": "time"
             },
@@ -738,7 +740,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "median"
               }
             ]
           ],
@@ -848,7 +850,7 @@
           "groupBy": [
             {
               "params": [
-                "1s"
+                "30m"
               ],
               "type": "time"
             },
@@ -948,7 +950,7 @@
       }
     }
   ],
-  "refresh": "5m",
+  "refresh": "15m",
   "schemaVersion": 20,
   "style": "dark",
   "tags": [
@@ -958,7 +960,7 @@
     "list": []
   },
   "time": {
-    "from": "now-12h",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {
@@ -978,5 +980,5 @@
   "timezone": "",
   "title": "LB_LOAD",
   "uid": "DLw74BtWz",
-  "version": 35
+  "version": 42
 }
