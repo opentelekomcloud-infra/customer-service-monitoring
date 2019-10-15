@@ -280,12 +280,13 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Disk I/O requests for all devices",
+      "title": "Disk I/O reads requests for all devices",
       "tooltip": {
         "shared": true,
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": true,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -350,7 +351,7 @@
       },
       "percentage": false,
       "pointradius": 2,
-      "points": false,
+      "points": true,
       "renderer": "flot",
       "seriesOverrides": [
         {
@@ -550,12 +551,13 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Disk I/O bytes for all devices",
+      "title": "Disk I/O read bytes for all devices",
       "tooltip": {
         "shared": true,
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": true,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -620,7 +622,7 @@
       },
       "percentage": false,
       "pointradius": 2,
-      "points": false,
+      "points": true,
       "renderer": "flot",
       "seriesOverrides": [
         {
@@ -826,12 +828,13 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Disk I/O time for /dev/vdb (SATA)",
+      "title": "Disk I/O read time for /dev/vdb (SATA)",
       "tooltip": {
         "shared": true,
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": true,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -913,7 +916,7 @@
           "groupBy": [
             {
               "params": [
-                "10m"
+                "5m"
               ],
               "type": "time"
             },
@@ -974,7 +977,7 @@
           "groupBy": [
             {
               "params": [
-                "10m"
+                "5m"
               ],
               "type": "time"
             },
@@ -1035,7 +1038,7 @@
           "groupBy": [
             {
               "params": [
-                "10m"
+                "5m"
               ],
               "type": "time"
             },
@@ -1096,12 +1099,13 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Disk I/O requests for all devices",
+      "title": "Disk I/O writes requests for all devices",
       "tooltip": {
         "shared": true,
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": true,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -1182,7 +1186,7 @@
           "groupBy": [
             {
               "params": [
-                "10m"
+                "5m"
               ],
               "type": "time"
             },
@@ -1243,7 +1247,7 @@
           "groupBy": [
             {
               "params": [
-                "10m"
+                "5m"
               ],
               "type": "time"
             },
@@ -1304,7 +1308,7 @@
           "groupBy": [
             {
               "params": [
-                "10m"
+                "5m"
               ],
               "type": "time"
             },
@@ -1365,12 +1369,13 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Disk I/O bytes for /dev/vdc (SAS)",
+      "title": "Disk I/O write bytes for all devices",
       "tooltip": {
         "shared": true,
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": true,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -1451,7 +1456,7 @@
           "groupBy": [
             {
               "params": [
-                "10m"
+                "5m"
               ],
               "type": "time"
             },
@@ -1512,7 +1517,7 @@
           "groupBy": [
             {
               "params": [
-                "10m"
+                "5m"
               ],
               "type": "time"
             },
@@ -1573,7 +1578,7 @@
           "groupBy": [
             {
               "params": [
-                "10m"
+                "5m"
               ],
               "type": "time"
             },
@@ -1634,12 +1639,13 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Disk I/O time for all devices",
+      "title": "Disk I/O write time for all devices",
       "tooltip": {
         "shared": true,
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": true,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -1845,6 +1851,7 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": true,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -1921,7 +1928,7 @@
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "10s"
               ],
               "type": "time"
             },
@@ -2110,6 +2117,7 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": true,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -2142,6 +2150,7 @@
       }
     }
   ],
+  "refresh": "5s",
   "schemaVersion": 20,
   "style": "dark",
   "tags": [
@@ -2151,7 +2160,7 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {
@@ -2171,5 +2180,5 @@
   "timezone": "",
   "title": "HDD_TEST",
   "uid": "1lJt0IoWk",
-  "version": 32
+  "version": 42
 }
