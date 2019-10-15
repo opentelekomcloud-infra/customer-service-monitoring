@@ -12,7 +12,7 @@ module "network" {
   source = "../modules/public_router"
 
   addr_3_octets = var.addr_3_octets
-  prefix        = "${local.workspace_prefix}${var.postfix}"
+  prefix        = local.prefix
 }
 
 resource "opentelekomcloud_networking_floatingip_v2" "server_fip" {
