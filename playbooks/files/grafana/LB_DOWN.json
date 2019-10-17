@@ -445,14 +445,14 @@
               "params": [
                 2
               ],
-              "type": "lt"
+              "type": "gt"
             },
             "operator": {
               "type": "and"
             },
             "query": {
               "params": [
-                "A",
+                "C",
                 "30m",
                 "now"
               ]
@@ -517,13 +517,13 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Node not shut down",
+          "alias": "/Script error: .+/",
           "color": "#F2495C"
         },
         {
           "alias": "all",
           "bars": false,
-          "color": "#8AB8FF",
+          "color": "rgb(235, 242, 255)",
           "lines": true,
           "points": false
         },
@@ -580,13 +580,19 @@
           ]
         },
         {
-          "alias": "Node not shut down",
+          "alias": "Script error: $tag_reason",
           "groupBy": [
             {
               "params": [
                 "1m"
               ],
               "type": "time"
+            },
+            {
+              "params": [
+                "reason"
+              ],
+              "type": "tag"
             },
             {
               "params": [
@@ -618,8 +624,8 @@
           "tags": [
             {
               "key": "reason",
-              "operator": "=",
-              "value": "multiple_nodes"
+              "operator": "!=",
+              "value": "0"
             }
           ]
         },
@@ -634,11 +640,12 @@
             },
             {
               "params": [
-                "none"
+                "previous"
               ],
               "type": "fill"
             }
           ],
+          "hide": false,
           "measurement": "lb_down_test",
           "orderByTime": "ASC",
           "policy": "default",
@@ -666,9 +673,8 @@
           "colorMode": "critical",
           "fill": true,
           "line": true,
-          "op": "lt",
-          "value": 2,
-          "yaxis": "left"
+          "op": "gt",
+          "value": 2
         }
       ],
       "timeFrom": null,
@@ -744,5 +750,5 @@
   "timezone": "",
   "title": "LB_DOWN",
   "uid": "blTLMD2Wz",
-  "version": 26
+  "version": 27
 }
