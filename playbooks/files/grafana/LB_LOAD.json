@@ -1064,6 +1064,12 @@
               "key": "interface",
               "operator": "=",
               "value": "ens3"
+            },
+            {
+              "condition": "AND",
+              "key": "host",
+              "operator": "=~",
+              "value": "/^basic-\\d/"
             }
           ]
         }
@@ -1212,6 +1218,12 @@
               "key": "interface",
               "operator": "=",
               "value": "ens3"
+            },
+            {
+              "condition": "AND",
+              "key": "host",
+              "operator": "=~",
+              "value": "/^basic-\\d/"
             }
           ]
         }
@@ -1437,5 +1449,5 @@
   "timezone": "",
   "title": "LB_LOAD",
   "uid": "DLw74BtWz",
-  "version": 57
+  "version": 58
 }
