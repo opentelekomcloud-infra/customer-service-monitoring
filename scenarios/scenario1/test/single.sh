@@ -95,13 +95,18 @@ elif [[ ${test_result} != 101 ]]; then
     telegraf_report fail ${test_result}
     exit ${test_result}
 fi
-python -m csm_test_utils rebalance ${lb_host} --telegraf=${csm_host} || telegraf_report fail $?
+python -m csm_test_utils rebalance --target ${lb_host} --telegraf=${csm_host} || telegraf_report fail $?
 
 sleep 60  # make reports beautiful again
 start_stop_rand_node start
-python -m csm_test_utils rebalance ${lb_host} --telegraf=${csm_host} || telegraf_report fail $?
+python -m csm_test_utils rebalance --target ${lb_host} --telegraf=${csm_host} || telegraf_report fail $?
 
 ${start_test}
 test_should_pass
-telegraf_report pass 0
+test_result=$?
+if [[ status == 0 ]]; then
+    telegraf_report pass 0
+else
+    telegraf_report fail ${test_result}
+fi
 deactivate
