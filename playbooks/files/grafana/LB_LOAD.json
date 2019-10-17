@@ -44,6 +44,52 @@
               "type": "count"
             },
             "type": "query"
+          },
+          {
+            "evaluator": {
+              "params": [
+                1
+              ],
+              "type": "lt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "B",
+                "1m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "count"
+            },
+            "type": "query"
+          },
+          {
+            "evaluator": {
+              "params": [
+                1
+              ],
+              "type": "lt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "C",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "count"
+            },
+            "type": "query"
           }
         ],
         "executionErrorState": "alerting",
@@ -59,8 +105,8 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "InfluxDB",
-      "fill": 6,
-      "fillGradient": 8,
+      "fill": 1,
+      "fillGradient": 2,
       "gridPos": {
         "h": 8,
         "w": 24,
@@ -82,7 +128,7 @@
         "values": true
       },
       "lines": true,
-      "linewidth": 2,
+      "linewidth": 1,
       "nullPointMode": "null",
       "options": {
         "dataLinks": []
@@ -97,7 +143,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "$tag_server / $tag_client",
+          "alias": "$tag_server / OTC",
           "groupBy": [
             {
               "params": [
@@ -124,6 +170,7 @@
               "type": "fill"
             }
           ],
+          "hide": false,
           "measurement": "lb_timing",
           "orderByTime": "ASC",
           "policy": "default",
@@ -145,7 +192,147 @@
               }
             ]
           ],
-          "tags": []
+          "tags": [
+            {
+              "key": "server",
+              "operator": "=~",
+              "value": "/^basic-\\d/"
+            },
+            {
+              "condition": "AND",
+              "key": "client",
+              "operator": "=~",
+              "value": "/^80\\..+/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_server / AWS",
+          "groupBy": [
+            {
+              "params": [
+                "5m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "server"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "client"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "lb_timing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "elapsed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "97"
+                ],
+                "type": "percentile"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "server",
+              "operator": "=~",
+              "value": "/^basic-\\d/"
+            },
+            {
+              "condition": "AND",
+              "key": "client",
+              "operator": "=~",
+              "value": "/^34\\..+/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_server / Azure",
+          "groupBy": [
+            {
+              "params": [
+                "5m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "server"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "client"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "lb_timing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "elapsed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "97"
+                ],
+                "type": "percentile"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "server",
+              "operator": "=~",
+              "value": "/^basic-\\d/"
+            },
+            {
+              "condition": "AND",
+              "key": "client",
+              "operator": "=~",
+              "value": "/^40\\..+/"
+            }
+          ]
         }
       ],
       "thresholds": [
@@ -154,8 +341,7 @@
           "fill": true,
           "line": true,
           "op": "lt",
-          "value": 1,
-          "yaxis": "left"
+          "value": 1
         }
       ],
       "timeFrom": null,
@@ -242,16 +428,24 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "/.+/",
-          "color": "rgb(250, 67, 0)"
+          "alias": "Azure client",
+          "color": "#3274D9"
+        },
+        {
+          "alias": "OTC client",
+          "color": "rgb(255, 0, 222)"
+        },
+        {
+          "alias": "AWS client",
+          "color": "#FF780A"
         }
       ],
       "spaceLength": 10,
-      "stack": true,
+      "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Client $tag_client",
+          "alias": "Azure client",
           "groupBy": [
             {
               "params": [
@@ -291,7 +485,111 @@
               }
             ]
           ],
-          "tags": []
+          "tags": [
+            {
+              "key": "client",
+              "operator": "=",
+              "value": "40.113.8.30"
+            }
+          ]
+        },
+        {
+          "alias": "AWS client",
+          "groupBy": [
+            {
+              "params": [
+                "1h"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "client"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "0"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "lb_timeout",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "timeout"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "count"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "client",
+              "operator": "=",
+              "value": "34.245.34.71"
+            }
+          ]
+        },
+        {
+          "alias": "OTC client",
+          "groupBy": [
+            {
+              "params": [
+                "1h"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "client"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "0"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "lb_timeout",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "timeout"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "count"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "client",
+              "operator": "=",
+              "value": "80.158.48.21"
+            }
+          ]
         }
       ],
       "thresholds": [],
@@ -374,12 +672,12 @@
         "notifications": []
       },
       "aliasColors": {},
-      "bars": true,
+      "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "fill": 1,
-      "fillGradient": 0,
+      "fill": 2,
+      "fillGradient": 1,
       "gridPos": {
         "h": 8,
         "w": 24,
@@ -398,28 +696,26 @@
         "total": false,
         "values": true
       },
-      "lines": false,
+      "lines": true,
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
         "dataLinks": []
       },
-      "percentage": true,
+      "percentage": false,
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "basic-0",
-          "color": "#56A64B"
+          "alias": "basic-0"
         },
         {
-          "alias": "basic-1",
-          "color": "#8F3BB8"
+          "alias": "basic-1"
         }
       ],
       "spaceLength": 10,
-      "stack": true,
+      "stack": false,
       "steppedLine": false,
       "targets": [
         {
@@ -427,7 +723,7 @@
           "groupBy": [
             {
               "params": [
-                "10m"
+                "3m"
               ],
               "type": "time"
             },
@@ -439,7 +735,7 @@
             },
             {
               "params": [
-                "null"
+                "linear"
               ],
               "type": "fill"
             }
@@ -466,7 +762,13 @@
               }
             ]
           ],
-          "tags": []
+          "tags": [
+            {
+              "key": "server",
+              "operator": "=~",
+              "value": "/^basic-\\d/"
+            }
+          ]
         }
       ],
       "thresholds": [
@@ -475,13 +777,14 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 10
+          "value": 10,
+          "yaxis": "left"
         }
       ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Node request distribution",
+      "title": "Node request distribution (count)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -501,8 +804,8 @@
           "format": "short",
           "label": null,
           "logBase": 1,
-          "max": "100",
-          "min": "0",
+          "max": null,
+          "min": null,
           "show": true
         },
         {
@@ -1134,5 +1437,5 @@
   "timezone": "",
   "title": "LB_LOAD",
   "uid": "DLw74BtWz",
-  "version": 51
+  "version": 57
 }
