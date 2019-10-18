@@ -61,7 +61,7 @@ resource "opentelekomcloud_ces_alarmrule" "alarm" {
   condition {
     comparison_operator = ">"
     count = 1
-    filter = "above"
+    filter = "average"
     period = 60
     value = 50
   }
