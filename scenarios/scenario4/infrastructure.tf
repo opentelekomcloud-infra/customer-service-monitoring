@@ -4,7 +4,7 @@ locals {
   prefix = "${local.workspace_prefix}${var.postfix}"
   key_pair = {
     public_key = var.public_key
-    key_name   = "${local.prefix}_kp"
+    key_name   = "${local.workspace_prefix}kp_${var.postfix}"
   }
 }
 
@@ -29,7 +29,7 @@ module "bastion" {
   network        = module.network.network
   subnet         = module.network.subnet
   router         = module.network.router
-  name           = "${local.prefix}_server"
+  name           = "${local.prefix}_bastion"
 }
 
 module "resources" {
@@ -38,14 +38,16 @@ module "resources" {
   default_flavor         = var.default_flavor
   debian_image           = var.debian_image
   net_address            = var.addr_3_octets
-  key_pair_name          = local.key_pair.key_name
   nodes_count            = var.nodes_count
   bastion_local_ip       = module.bastion.bastion_ip
   loadbalancer_local_ip  = "${var.addr_3_octets}.3"
   bastion_sec_group_id   = module.bastion.basion_group_id
   network_id             = module.network.network.id
+  router_id              = module.network.router.id
   subnet_id              = module.network.subnet.id
-  loadbalancer_public_ip = var.loadbalancer_eip
+  prefix                 = local.prefix
+  az                     = var.default_az
+  kp                     = local.key_pair
 }
 
 output "out-scn4_lb_fip" {
@@ -53,5 +55,5 @@ output "out-scn4_lb_fip" {
 }
 
 output "out-scn4_bastion_fip" {
-  value = var.bastion_eip
+  value = opentelekomcloud_networking_floatingip_v2.server_fip.address
 }
