@@ -28,4 +28,5 @@
     vars:
       telegraf_plugins_base:
       - name: postgresql
-        address: "postgres://{{ lookup('env', 'PSQL_USERNAME') }}:{{ lookup('env', 'PSQL_PASSWORD') }}@{{ lookup('env', 'PSQL_ADDRESS') }}/entities"
+        options:
+          address: "postgres://{{ lookup('env', 'PSQL_USERNAME') }}:{{ lookup('env', 'PSQL_PASSWORD') }}@{{ lookup('env', 'PSQL_ADDRESS') }}/entities"
