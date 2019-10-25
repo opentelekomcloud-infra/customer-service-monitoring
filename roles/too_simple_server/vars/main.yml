@@ -1,4 +1,4 @@
-version: "0.4.1"
+version: "0.4.2"
 server: "too_simple_server"
 server_archive_name: "{{ server }}-{{ version }}-linux.tar.gz"
 server_pid_file: "/tmp/too-simple.pid"
