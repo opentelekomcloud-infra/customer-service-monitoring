@@ -61,9 +61,9 @@ resource "opentelekomcloud_ces_alarmrule" "alarm" {
   }
   metric {
     metric_name = "cpu_util"
-    namespace = "SYS.AS"
+    namespace = "SYS.ECS"
     dimensions {
-      name = "ECSs"
+      name = "instance_id"
       value = opentelekomcloud_compute_instance_v2.http[0].id
     }
   }
