@@ -16,7 +16,7 @@ source ./post_build.sh
 
 cd "${project_root}" || exit 1
 
-log_path="/var/log/scenario1"
+log_path="/var/log/scenario2"
 
 sudo mkdir -p ${log_path}
 username=$(whoami)
