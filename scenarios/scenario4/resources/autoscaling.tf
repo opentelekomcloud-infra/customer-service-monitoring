@@ -1,6 +1,6 @@
 # Create Autoscaling
 resource "opentelekomcloud_as_configuration_v1" "as_config" {
-  scaling_configuration_name = "${var.prefix}_as_config"
+  scaling_configuration_name = "${var.prefix}_autoscaled_instance"
   instance_config {
     flavor = var.default_flavor
     image = data.opentelekomcloud_images_image_v2.current_image.id
@@ -9,6 +9,7 @@ resource "opentelekomcloud_as_configuration_v1" "as_config" {
       volume_type = "SATA"
       disk_type = "SYS"
     }
+    instance_id = opentelekomcloud_compute_instance_v2.http[0].id
     key_name = var.kp.key_name
     user_data   = file("${path.module}/first_boot.sh")
   }
@@ -37,6 +38,7 @@ resource "opentelekomcloud_as_group_v1" "autoscaling_group_with_lb" {
   }
   delete_publicip = true
   delete_instances = "yes"
+  cool_down_time = 300
   depends_on = [
     opentelekomcloud_as_configuration_v1.as_config
   ]
@@ -77,4 +79,7 @@ resource "opentelekomcloud_ces_alarmrule" "alarm" {
   }
   alarm_description = "autoScaling"
   alarm_enabled = true
+  depends_on = [
+    opentelekomcloud_as_group_v1.autoscaling_group_with_lb
+  ]
 }
