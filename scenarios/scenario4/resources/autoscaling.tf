@@ -78,3 +78,43 @@ resource "opentelekomcloud_ces_alarmrule" "alarm" {
     opentelekomcloud_as_group_v1.autoscaling_group_with_lb
   ]
 }
+
+resource "opentelekomcloud_as_policy_v1" "reduce_policy" {
+  scaling_group_id = opentelekomcloud_as_group_v1.autoscaling_group_with_lb.id
+  scaling_policy_name = "${var.prefix}_reduce_policy"
+  scaling_policy_type = "ALARM"
+  alarm_id = opentelekomcloud_ces_alarmrule.reduce.id
+  scaling_policy_action {
+    operation = "REMOVE"
+    instance_number = 2
+  }
+}
+
+resource "opentelekomcloud_ces_alarmrule" "reduce" {
+  alarm_name = "${var.prefix}_alarm_cpu_rule"
+  condition {
+    comparison_operator = "<="
+    count = 1
+    filter = "average"
+    period = 300
+    value = 50
+  }
+  metric {
+    metric_name = "cpu_util"
+    namespace = "SYS.ECS"
+    dimensions {
+      name = "instance_id"
+      value = opentelekomcloud_compute_instance_v2.http[0].id
+    }
+  }
+  alarm_action_enabled = true
+  alarm_actions {
+    notification_list = []
+    type = "autoscaling"
+  }
+  alarm_description = "autoReducing"
+  alarm_enabled = true
+  depends_on = [
+    opentelekomcloud_as_group_v1.autoscaling_group_with_lb
+  ]
+}
