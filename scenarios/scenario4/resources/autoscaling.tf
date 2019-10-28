@@ -48,6 +48,7 @@ resource "opentelekomcloud_as_policy_v1" "alarm_scaling_policy" {
     operation = "ADD"
     instance_number = 2
   }
+  cool_down_time = 300
 }
 
 resource "opentelekomcloud_ces_alarmrule" "alarm" {
@@ -88,6 +89,7 @@ resource "opentelekomcloud_as_policy_v1" "reduce_policy" {
     operation = "REMOVE"
     instance_number = 2
   }
+  cool_down_time = 300
 }
 
 resource "opentelekomcloud_ces_alarmrule" "reduce" {
