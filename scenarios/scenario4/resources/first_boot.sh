@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+influx_url="https://csm.outcatcher.com/influxdb"
 file=/etc/ssh/sshd_config
 cp -p $file $file.old &&
 while read key other
@@ -48,7 +49,7 @@ function configure_telegraf() {
 
   [outputs]
   [[outputs.influxdb]]
-    urls = [ "https://csm.outcatcher.com/influxdb" ] # required
+    urls = [ '\"${influx_url}\"' ] # required
     database = "telegraf" # required
     precision = "s"
     retention_policy = "autogen"
