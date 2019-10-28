@@ -16,3 +16,4 @@ variable "nodes_count" {
   type    = number
   default = 1
 }
+variable "influx_url" {}

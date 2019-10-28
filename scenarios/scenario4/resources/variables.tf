@@ -5,7 +5,7 @@ variable "bastion_sec_group_id" {}
 variable "network_id" {}
 variable "subnet_id" {}
 variable "router_id" {}
-
+variable "influx_url" {}
 variable "bastion_local_ip" {}
 variable "nodes_count" {}
 variable "prefix" {}

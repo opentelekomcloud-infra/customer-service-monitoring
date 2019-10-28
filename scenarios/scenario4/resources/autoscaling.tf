@@ -2,13 +2,6 @@
 resource "opentelekomcloud_as_configuration_v1" "as_config" {
   scaling_configuration_name = "${var.prefix}_autoscaled_instance"
   instance_config {
-    flavor = var.default_flavor
-    image = data.opentelekomcloud_images_image_v2.current_image.id
-    disk {
-      size = 40
-      volume_type = "SATA"
-      disk_type = "SYS"
-    }
     instance_id = opentelekomcloud_compute_instance_v2.http[0].id
     key_name = var.kp.key_name
     user_data   = file("${path.module}/first_boot.sh")
@@ -36,6 +29,8 @@ resource "opentelekomcloud_as_group_v1" "autoscaling_group_with_lb" {
     protocol_port = 80
     weight = 1
   }
+  health_periodic_audit_method = "NOVA_AUDIT"
+  health_periodic_audit_time = "5"
   delete_publicip = true
   delete_instances = "yes"
   cool_down_time = 300
@@ -58,7 +53,7 @@ resource "opentelekomcloud_as_policy_v1" "alarm_scaling_policy" {
 resource "opentelekomcloud_ces_alarmrule" "alarm" {
   alarm_name = "${var.prefix}_alarm_cpu_rule"
   condition {
-    comparison_operator = ">"
+    comparison_operator = ">="
     count = 1
     filter = "average"
     period = 300
@@ -68,7 +63,7 @@ resource "opentelekomcloud_ces_alarmrule" "alarm" {
     metric_name = "cpu_util"
     namespace = "SYS.AS"
     dimensions {
-      name = "instance_id"
+      name = "ECSs"
       value = opentelekomcloud_compute_instance_v2.http[0].id
     }
   }

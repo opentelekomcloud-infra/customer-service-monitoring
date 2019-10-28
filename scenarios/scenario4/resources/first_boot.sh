@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-influx_url="https://csm.outcatcher.com/influxdb"
 file=/etc/ssh/sshd_config
 cp -p $file $file.old &&
 while read key other

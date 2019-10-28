@@ -48,6 +48,7 @@ module "resources" {
   prefix                 = local.prefix
   az                     = var.default_az
   kp                     = local.key_pair
+  influx_url             = var.influx_url
 }
 
 output "out-scn4_lb_fip" {
