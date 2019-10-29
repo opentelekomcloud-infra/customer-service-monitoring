@@ -1,2 +1,2 @@
 ocomone >= 0.3.3
-csm-test-utils >= 0.1.1
+csm-test-utils >= 0.2.1
