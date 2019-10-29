@@ -78,6 +78,7 @@ function configure_telegraf() {
 function install_nginx() {
   sudo apt-get install nginx -y
   sudo systemctl enable nginx
+  sudo apt-get install nginx-extras
 }
 
 function configure_nginx() {
@@ -90,4 +91,5 @@ install_telegraf
 sudo service telegraf restart
 install_nginx
 sudo sed -i '/listen \[::\]:80 default_server;/a add_header Host $hostname;' /etc/nginx/sites-enabled/default
+sudo sed -i '/types_hash_max_size/a more_clear_headers Server;' /etc/nginx/nginx.conf
 sudo service nginx restart
