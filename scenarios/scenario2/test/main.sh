@@ -28,4 +28,4 @@ function run_test() {
     python -m csm_test_utils rds_monitor --target "${SERVER_PUBLIC_IP}" --telegraf https://csm.outcatcher.com --log-dir ${log_path}
 }
 
-run_test > /dev/null &
+run_test >> "${log_path}/base.log" 2>&1 &
