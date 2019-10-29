@@ -147,7 +147,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "$resolution"
               ],
               "type": "time"
             },
@@ -186,7 +186,7 @@
               },
               {
                 "params": [
-                  "97"
+                  "99"
                 ],
                 "type": "percentile"
               }
@@ -211,7 +211,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "$resolution"
               ],
               "type": "time"
             },
@@ -250,7 +250,7 @@
               },
               {
                 "params": [
-                  "97"
+                  "99"
                 ],
                 "type": "percentile"
               }
@@ -275,7 +275,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "$resolution"
               ],
               "type": "time"
             },
@@ -314,7 +314,7 @@
               },
               {
                 "params": [
-                  "97"
+                  "99"
                 ],
                 "type": "percentile"
               }
@@ -341,7 +341,8 @@
           "fill": true,
           "line": true,
           "op": "lt",
-          "value": 1
+          "value": 1,
+          "yaxis": "left"
         }
       ],
       "timeFrom": null,
@@ -441,7 +442,7 @@
         }
       ],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "targets": [
         {
@@ -679,7 +680,7 @@
       "fill": 2,
       "fillGradient": 1,
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 24,
         "x": 0,
         "y": 16
@@ -693,6 +694,7 @@
         "min": false,
         "rightSide": true,
         "show": true,
+        "sideWidth": 380,
         "total": false,
         "values": true
       },
@@ -834,7 +836,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 23
       },
       "id": 15,
       "legend": {
@@ -974,7 +976,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 31
       },
       "id": 21,
       "legend": {
@@ -1128,7 +1130,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 39
       },
       "id": 22,
       "legend": {
@@ -1282,7 +1284,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 47
       },
       "id": 14,
       "legend": {
@@ -1399,7 +1401,7 @@
         {
           "format": "short",
           "label": null,
-          "logBase": 1,
+          "logBase": 2,
           "max": null,
           "min": null,
           "show": true
@@ -1419,14 +1421,108 @@
       }
     }
   ],
-  "refresh": "15m",
+  "refresh": false,
   "schemaVersion": 20,
   "style": "dark",
   "tags": [
     "scn1-test1"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "auto": false,
+        "auto_count": 30,
+        "auto_min": "10s",
+        "current": {
+          "text": "10m",
+          "value": "10m"
+        },
+        "hide": 0,
+        "label": null,
+        "name": "resolution",
+        "options": [
+          {
+            "selected": false,
+            "text": "1s",
+            "value": "1s"
+          },
+          {
+            "selected": false,
+            "text": "5s",
+            "value": "5s"
+          },
+          {
+            "selected": false,
+            "text": "10s",
+            "value": "10s"
+          },
+          {
+            "selected": false,
+            "text": "30s",
+            "value": "30s"
+          },
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": false,
+            "text": "5m",
+            "value": "5m"
+          },
+          {
+            "selected": true,
+            "text": "10m",
+            "value": "10m"
+          },
+          {
+            "selected": false,
+            "text": "30m",
+            "value": "30m"
+          },
+          {
+            "selected": false,
+            "text": "1h",
+            "value": "1h"
+          },
+          {
+            "selected": false,
+            "text": "6h",
+            "value": "6h"
+          },
+          {
+            "selected": false,
+            "text": "12h",
+            "value": "12h"
+          },
+          {
+            "selected": false,
+            "text": "1d",
+            "value": "1d"
+          },
+          {
+            "selected": false,
+            "text": "7d",
+            "value": "7d"
+          },
+          {
+            "selected": false,
+            "text": "14d",
+            "value": "14d"
+          },
+          {
+            "selected": false,
+            "text": "30d",
+            "value": "30d"
+          }
+        ],
+        "query": "1s,5s,10s,30s,1m,5m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
+        "refresh": 2,
+        "skipUrlSync": false,
+        "type": "interval"
+      }
+    ]
   },
   "time": {
     "from": "now-7d",
@@ -1449,5 +1545,5 @@
   "timezone": "",
   "title": "LB_LOAD",
   "uid": "DLw74BtWz",
-  "version": 58
+  "version": 64
 }
