@@ -12,21 +12,31 @@
       force_new_download: "{{ existing_file.stat.checksum != md5sum }}"
     when: existing_file.stat.exists
 
-  - name: Download too-simple-server
-    get_url:
-      url: "{{ download_path }}"
-      dest: /tmp/
-      checksum: "md5:{{ md5sum }}"
-      force:  "{{ force_new_download | default ('false') }}"
+  - block:
+    - name: Download too-simple-server
+      get_url:
+        url: "{{ download_path }}"
+        dest: /tmp/
+        checksum: "md5:{{ md5sum }}"
+        force:  "{{ force_new_download | default ('false') }}"
 
-  - name: Extract too-simple-server into /usr/bin/
-    unarchive:
-      src: "{{ archive_dir }}"
-      dest: /usr/bin/
-      remote_src: yes
+    - name: Extract too-simple-server into /usr/bin/
+      unarchive:
+        src: "{{ archive_dir }}"
+        dest: /usr/bin/
+        remote_src: yes
+    when: force_new_download
+
+
+- name: Stop server
+  command: "{{ server }} stop"
+  args:
+    removes: "{{ server_pid_file }}"
+  when: server_state == 'absent' or force_new_download
+
 
 - name: Configure and start
-  when: server_state == 'present'
+  when: server_state == 'present' or force_new_download
   block:
 
   - name: Create config dir
@@ -45,9 +55,3 @@
     command: "{{ server }} --config {{ server_config }}"
     args:
       creates: "{{ server_pid_file }}"
-
-- name: Stop server
-  command: "{{ server }} stop"
-  args:
-    removes: "{{ server_pid_file }}"
-  when: server_state == 'absent'
