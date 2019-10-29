@@ -17,7 +17,6 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 7,
-  "iteration": 1572345509324,
   "links": [],
   "panels": [
     {
@@ -29,8 +28,8 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 8,
-        "w": 16,
+        "h": 7,
+        "w": 24,
         "x": 0,
         "y": 0
       },
@@ -41,7 +40,7 @@
         "current": false,
         "max": true,
         "min": true,
-        "rightSide": false,
+        "rightSide": true,
         "show": true,
         "total": false,
         "values": true
@@ -192,10 +191,10 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 0
+        "h": 7,
+        "w": 18,
+        "x": 0,
+        "y": 7
       },
       "id": 4,
       "legend": {
@@ -325,7 +324,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 14
       },
       "id": 6,
       "legend": {
@@ -567,5 +566,5 @@
   "timezone": "",
   "title": "AUTOSCALING",
   "uid": "7IKA_kAZk",
-  "version": 29
+  "version": 33
 }
