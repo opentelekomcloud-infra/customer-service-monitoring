@@ -78,7 +78,7 @@ function configure_telegraf() {
 function install_nginx() {
   sudo apt-get install nginx -y
   sudo systemctl enable nginx
-  sudo apt-get install nginx-extras
+  sudo apt-get install nginx-extras -y
 }
 
 install_telegraf
