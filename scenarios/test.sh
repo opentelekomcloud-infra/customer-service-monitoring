@@ -9,11 +9,12 @@ fi
 
 project_root=$(bash ./core/get_project_root.sh)
 cd ${project_root}
-
-if [[ ! -d ".venv" ]]; then
-    python3 -m venv .venv || exit 3
+venv="${project_root}/.venv"
+python3 -c "import sys; sys.exit(not sys.version_info >= (3, 7))" || (echo "Python version is too low, 3.7+ expected" && exit 1)
+if [[ ! -d ${venv} ]]; then
+    python3 -m venv ${venv} || exit 3
 fi
-source .venv/bin/activate
+source ${venv}/bin/activate
 python -m pip install -r "${project_root}/requirements.txt" || ( echo "can't activate venv" && exit 3 )
 
 
