@@ -20,4 +20,5 @@ python -m pip install -r "${project_root}/requirements.txt" || ( echo "can't act
 scenario_dir="${project_root}/scenarios/${scenario_name}"
 cd ${scenario_dir} || exit 1
 
+echo "Starting test"
 bash ./test/main.sh "${project_root}"
