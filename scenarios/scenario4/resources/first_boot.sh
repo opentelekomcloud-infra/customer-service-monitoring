@@ -81,12 +81,6 @@ function install_nginx() {
   sudo apt-get install nginx-extras
 }
 
-function configure_nginx() {
-  echo '
-    add_header Server $hostname;
-'
-}
-
 install_telegraf
 sudo service telegraf restart
 install_nginx
