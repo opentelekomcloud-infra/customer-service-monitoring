@@ -41,7 +41,7 @@ def list_all(args):
     children = inv_output['all']['children']
 
     for name, attributes in get_tf_instances(args.state):
-        tag: dict = attributes.pop('tag')
+        tag: dict = attributes.pop('tag', {})
         hosts[name] = attributes
         if 'group' in tag:
             grp_name = tag['group']

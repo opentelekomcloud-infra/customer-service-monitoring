@@ -15,91 +15,10 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 6,
   "links": [],
   "panels": [
     {
-      "alert": {
-        "alertRuleTags": {},
-        "conditions": [
-          {
-            "evaluator": {
-              "params": [
-                1
-              ],
-              "type": "lt"
-            },
-            "operator": {
-              "type": "and"
-            },
-            "query": {
-              "params": [
-                "A",
-                "1m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "count"
-            },
-            "type": "query"
-          },
-          {
-            "evaluator": {
-              "params": [
-                1
-              ],
-              "type": "lt"
-            },
-            "operator": {
-              "type": "and"
-            },
-            "query": {
-              "params": [
-                "B",
-                "1m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "count"
-            },
-            "type": "query"
-          },
-          {
-            "evaluator": {
-              "params": [
-                1
-              ],
-              "type": "lt"
-            },
-            "operator": {
-              "type": "and"
-            },
-            "query": {
-              "params": [
-                "C",
-                "5m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "count"
-            },
-            "type": "query"
-          }
-        ],
-        "executionErrorState": "alerting",
-        "for": "0m",
-        "frequency": "1m",
-        "handler": 1,
-        "name": "No data from nodes",
-        "noDataState": "alerting",
-        "notifications": []
-      },
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -147,7 +66,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "3s"
               ],
               "type": "time"
             },
@@ -165,7 +84,7 @@
             },
             {
               "params": [
-                "null"
+                "previous"
               ],
               "type": "fill"
             }
@@ -185,10 +104,8 @@
                 "type": "field"
               },
               {
-                "params": [
-                  "97"
-                ],
-                "type": "percentile"
+                "params": [],
+                "type": "median"
               }
             ]
           ],
@@ -211,7 +128,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "3s"
               ],
               "type": "time"
             },
@@ -229,7 +146,7 @@
             },
             {
               "params": [
-                "null"
+                "previous"
               ],
               "type": "fill"
             }
@@ -249,10 +166,8 @@
                 "type": "field"
               },
               {
-                "params": [
-                  "97"
-                ],
-                "type": "percentile"
+                "params": [],
+                "type": "median"
               }
             ]
           ],
@@ -275,7 +190,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "3s"
               ],
               "type": "time"
             },
@@ -293,7 +208,7 @@
             },
             {
               "params": [
-                "null"
+                "previous"
               ],
               "type": "fill"
             }
@@ -313,10 +228,8 @@
                 "type": "field"
               },
               {
-                "params": [
-                  "97"
-                ],
-                "type": "percentile"
+                "params": [],
+                "type": "median"
               }
             ]
           ],
@@ -335,15 +248,7 @@
           ]
         }
       ],
-      "thresholds": [
-        {
-          "colorMode": "critical",
-          "fill": true,
-          "line": true,
-          "op": "lt",
-          "value": 1
-        }
-      ],
+      "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -441,7 +346,7 @@
         }
       ],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "targets": [
         {
@@ -636,41 +541,6 @@
       }
     },
     {
-      "alert": {
-        "alertRuleTags": {},
-        "conditions": [
-          {
-            "evaluator": {
-              "params": [
-                10
-              ],
-              "type": "gt"
-            },
-            "operator": {
-              "type": "and"
-            },
-            "query": {
-              "params": [
-                "C",
-                "1m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "percent_diff"
-            },
-            "type": "query"
-          }
-        ],
-        "executionErrorState": "alerting",
-        "for": "5m",
-        "frequency": "1m",
-        "handler": 1,
-        "name": "Node distribution alert",
-        "noDataState": "no_data",
-        "notifications": []
-      },
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -679,7 +549,7 @@
       "fill": 2,
       "fillGradient": 1,
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 24,
         "x": 0,
         "y": 16
@@ -693,6 +563,7 @@
         "min": false,
         "rightSide": true,
         "show": true,
+        "sideWidth": 380,
         "total": false,
         "values": true
       },
@@ -723,7 +594,7 @@
           "groupBy": [
             {
               "params": [
-                "3m"
+                "10s"
               ],
               "type": "time"
             },
@@ -735,7 +606,7 @@
             },
             {
               "params": [
-                "linear"
+                "previous"
               ],
               "type": "fill"
             }
@@ -771,16 +642,7 @@
           ]
         }
       ],
-      "thresholds": [
-        {
-          "colorMode": "critical",
-          "fill": true,
-          "line": true,
-          "op": "gt",
-          "value": 10,
-          "yaxis": "left"
-        }
-      ],
+      "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -834,7 +696,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 23
       },
       "id": 15,
       "legend": {
@@ -869,7 +731,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "20s"
               ],
               "type": "time"
             },
@@ -974,7 +836,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 31
       },
       "id": 21,
       "legend": {
@@ -1011,7 +873,7 @@
           "groupBy": [
             {
               "params": [
-                "30m"
+                "1m"
               ],
               "type": "time"
             },
@@ -1029,7 +891,7 @@
             },
             {
               "params": [
-                "linear"
+                "previous"
               ],
               "type": "fill"
             }
@@ -1128,7 +990,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 39
       },
       "id": 22,
       "legend": {
@@ -1165,7 +1027,7 @@
           "groupBy": [
             {
               "params": [
-                "30m"
+                "1m"
               ],
               "type": "time"
             },
@@ -1282,7 +1144,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 47
       },
       "id": 14,
       "legend": {
@@ -1319,7 +1181,7 @@
           "groupBy": [
             {
               "params": [
-                "30m"
+                "10s"
               ],
               "type": "time"
             },
@@ -1429,7 +1291,7 @@
     "list": []
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-12h",
     "to": "now"
   },
   "timepicker": {
@@ -1447,7 +1309,7 @@
     ]
   },
   "timezone": "",
-  "title": "LB_LOAD",
-  "uid": "DLw74BtWz",
-  "version": 58
+  "title": "LB_LOAD_high_res",
+  "uid": "q8hQIeoWz",
+  "version": 2
 }
