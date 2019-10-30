@@ -8,3 +8,4 @@ download_path: "https://github.com/opentelekomcloud-infra/simple-exquisite-webse
 archive_dir: "/tmp/{{ server_archive_name }}"
 sha1sum_url: "{{ download_path }}.sha1"
 sha1sum: "{{ lookup('url', sha1sum_url).split(' ')[0] }}"
+force_new_download: True

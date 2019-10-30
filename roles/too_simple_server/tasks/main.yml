@@ -30,7 +30,7 @@
         src: "{{ archive_dir }}"
         dest: /usr/bin/
         remote_src: yes
-    when: "{{ force_new_download | default ('false') }}"
+    when: force_new_download | default ('false')
 
 
 - name: Stop server
