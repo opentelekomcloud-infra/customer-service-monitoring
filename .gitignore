@@ -22,4 +22,4 @@ override.tf.json
 *_override.tf.json
 
 # var files to keep credentials
-secrets.auto.tfvars
+secrets.*
