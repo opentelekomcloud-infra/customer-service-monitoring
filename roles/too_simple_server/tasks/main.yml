@@ -7,9 +7,14 @@
       path: "{{ archive_dir }}"
     register: existing_file
 
+  - name: Log sha1
+    debug:
+      var: sha1sum
+      verbosity: 1
+
   - name: Compare checksum
     set_fact:
-      force_new_download: "{{ existing_file.stat.checksum != md5sum }}"
+      force_new_download: "{{ existing_file.stat.checksum != sha1sum }}"
     when: existing_file.stat.exists
 
   - block:
@@ -17,7 +22,7 @@
       get_url:
         url: "{{ download_path }}"
         dest: /tmp/
-        checksum: "md5:{{ md5sum }}"
+        checksum: "sha1:{{ sha1sum }}"
         force:  "{{ force_new_download | default ('false') }}"
 
     - name: Extract too-simple-server into /usr/bin/
