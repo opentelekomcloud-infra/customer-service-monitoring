@@ -1,5 +1,5 @@
 data "opentelekomcloud_images_image_v2" "current_image" {
-  name        = var.debian_image
+  name        = var.host_image
   most_recent = true
 }
 
@@ -9,10 +9,7 @@ resource "opentelekomcloud_compute_instance_v2" "http" {
   name        = "${local.workspace_prefix}${var.prefix}_basic_${count.index}"
   flavor_name = var.default_flavor
   key_pair    = var.kp.key_name
-  user_data   = templatefile("${path.module}/first_boot.sh", {
-    influx_url            = var.influx_url,
-  })
-
+  user_data   = file("${path.module}/first_boot.sh")
   availability_zone = var.az
 
   network {

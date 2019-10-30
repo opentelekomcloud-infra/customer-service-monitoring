@@ -36,7 +36,7 @@ module "resources" {
   source = "./resources"
 
   default_flavor         = var.default_flavor
-  debian_image           = var.debian_image
+  host_image             = var.host_image
   net_address            = var.addr_3_octets
   nodes_count            = var.nodes_count
   bastion_local_ip       = module.bastion.bastion_ip
