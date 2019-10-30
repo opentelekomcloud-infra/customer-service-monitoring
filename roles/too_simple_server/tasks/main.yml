@@ -23,14 +23,14 @@
         url: "{{ download_path }}"
         dest: /tmp/
         checksum: "sha1:{{ sha1sum }}"
-        force:  "{{ force_new_download | default ('false') }}"
+        force:  yes
 
     - name: Extract too-simple-server into /usr/bin/
       unarchive:
         src: "{{ archive_dir }}"
         dest: /usr/bin/
         remote_src: yes
-    when: force_new_download
+    when: "{{ force_new_download | default ('false') }}"
 
 
 - name: Stop server
