@@ -1,0 +1,6 @@
+---
+all:
+  hosts:
+    test_host:
+      ansible_ssh_user: "linux"
+      ansible_host: "{{ lookup('env', 'TEST_HOST_ADDRESS') | default('test.outcatcher.com') }}"
