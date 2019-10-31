@@ -13,10 +13,10 @@ if [[ -z "${INFLUX_PSWD}" ]]; then
     exit 2
 fi
 
-project_root=$(bash ./core/get_project_root.sh)
+export PROJECT_ROOT=$(bash ./core/get_project_root.sh)
 
 # first - build infra
-terraform_dir="${project_root}/scenarios/${scenario_name}"
+terraform_dir="${PROJECT_ROOT}/scenarios/${scenario_name}"
 pre_build="./pre_build.sh"
 post_build="./post_build.sh"
 
@@ -30,10 +30,10 @@ terraform apply -auto-approve -input=false "$@" || exit  # pass all scripts argu
 file="${terraform_dir}/scenario_state"
 terraform state pull > ${file} || exit $?
 
-python3 "${project_root}/scenarios/core/create_inventory.py" ${file} --name ${scenario_name}
+python3 "${PROJECT_ROOT}/scenarios/core/create_inventory.py" ${file} --name ${scenario_name}
 
 cd "${terraform_dir}" || exit 1
 if [[ -e ${post_build} ]]; then source "${post_build}"; fi # here goes setting up env variables
 # second - configure build infra
-cd "${project_root}" || exit 1
+cd "${PROJECT_ROOT}" || exit 1
 ansible-playbook -i "inventory/prod" "playbooks/${scenario_name}_setup.yml"

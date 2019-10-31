@@ -1,12 +1,12 @@
 {
   "variables": {
-    "source_image": "1b5482ef-eb06-47d7-bc21-4c51027d7e99",
+    "source_image": "{{env `OTC_IMAGE_ID`}}",
     "source_image_name": "KPI_Scn4_host_image",
     "flavor": "s2.large.2",
     "region": "eu-de",
     "ssh_user": "linux",
-    "network_id": "ac462305-619a-4726-81e7-43b56a45cba4",
-    "sec_grp_id": "d298a575-6321-450a-b91e-353b3224215d",
+    "network_id": "{{env `OTC_NETWORK_ID`}}",
+    "sec_grp_id": "{{env `OTC_SEC_GROUP`}}",
     "influx_url": "{{env `INFLUXDB_URL`}}"
   },
   "builders": [
