@@ -1,7 +1,6 @@
 {
   "variables": {
     "source_image": "{{env `OTC_IMAGE_ID`}}",
-    "source_image_name": "KPI_Scn4_host_image",
     "flavor": "s2.large.2",
     "region": "eu-de",
     "ssh_user": "linux",
@@ -13,7 +12,7 @@
     {
       "type": "openstack",
       "ssh_username": "{{user `ssh_user` }}",
-      "image_name": "{{user `source_image_name` }}",
+      "image_name": "Debian_CSM_test_host",
       "source_image": "{{user `source_image` }}",
       "flavor": "{{user `flavor` }}",
       "region": "{{user `region` }}",
@@ -25,12 +24,16 @@
       ],
       "availability_zone": "eu-de-01",
       "floating_ip_network": "admin_external_net",
-      "use_blockstorage_volume": true
+      "use_blockstorage_volume": true,
+      "image_tags": ["csm", "test-host"]
     }
   ],
   "provisioners": [
     {
       "type": "ansible",
+      "groups": "test_host",
+      "galaxy_file": "../requirements.yml",
+      "inventory_file": "../inventory/base_infra.yml",
       "playbook_file": "../playbooks/test_host_setup.yml"
     }
   ]
