@@ -5,11 +5,12 @@
       "playbook_file": "../playbooks/test_host_setup.yml"
     }
   ],
-
+  "variables": {
+    "auth_url": "https://iam.eu-de.otc.t-systems.com:443/v3"
+  },
   "builders": [
     {
       "type": "openstack",
-      "auth_url": "https://iam.eu-de.otc.t-systems.com:443/v3",
       "ssh_username": "linux",
       "image_name": "Debian_10_latest_csm_test_host",
       "source_image": "d1874917-f310-436a-96d4-827cc8a2d146",
