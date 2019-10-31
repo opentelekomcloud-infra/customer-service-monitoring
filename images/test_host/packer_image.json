@@ -5,9 +5,6 @@
       "playbook_file": "../playbooks/test_host_setup.yml"
     }
   ],
-  "variables": {
-    "auth_url": "https://iam.eu-de.otc.t-systems.com:443/v3"
-  },
   "builders": [
     {
       "type": "openstack",
