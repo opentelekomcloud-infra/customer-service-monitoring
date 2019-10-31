@@ -11,6 +11,8 @@ resource "opentelekomcloud_vpc_subnet_v1" "subnet" {
   gateway_ip = "192.168.0.1"
   name       = "image_subnet"
   vpc_id     = opentelekomcloud_vpc_v1.vpc.id
+  primary_dns = "1.1.1.1"
+  secondary_dns = "8.8.8.8"
 }
 
 resource "opentelekomcloud_compute_secgroup_v2" "group" {
@@ -21,12 +23,6 @@ resource "opentelekomcloud_compute_secgroup_v2" "group" {
     from_port   = 22
     ip_protocol = "tcp"
     to_port     = 22
-  }
-  rule {
-    cidr        = "0.0.0.0/0"
-    from_port   = 443
-    ip_protocol = "tcp"
-    to_port     = 443
   }
 }
 
