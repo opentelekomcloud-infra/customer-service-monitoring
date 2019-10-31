@@ -15,12 +15,18 @@ resource "opentelekomcloud_vpc_subnet_v1" "subnet" {
 
 resource "opentelekomcloud_compute_secgroup_v2" "group" {
   description = "Public group"
-  name        = "ssh_allowed"
+  name        = "public"
   rule {
-    cidr        = "129.168.0.0/29"
+    cidr        = "0.0.0.0/0"
     from_port   = 22
     ip_protocol = "tcp"
     to_port     = 22
+  }
+  rule {
+    cidr        = "0.0.0.0/0"
+    from_port   = 443
+    ip_protocol = "tcp"
+    to_port     = 443
   }
 }
 
