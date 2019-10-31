@@ -8,6 +8,11 @@ if [[ -z ${scenario_name} ]]; then
     exit 2
 fi
 
+if [[ -z "${INFLUX_PSWD}" ]]; then
+    echo "InfluxDB password is missing"
+    exit 2
+fi
+
 project_root=$(bash ./core/get_project_root.sh)
 
 # first - build infra
