@@ -30,7 +30,7 @@ do
 done
 
 cd ${scn_dir}
-terraform destroy
+terraform destroy -auto-approve
 cd ..
 
 exit 0  # post_build is sourced by build, so build will finish here

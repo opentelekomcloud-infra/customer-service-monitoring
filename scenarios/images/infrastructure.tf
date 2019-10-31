@@ -1,16 +1,12 @@
 locals {
   name_prefix = "image_making"
 }
-resource "opentelekomcloud_vpc_v1" "vpc" {
-  cidr = "192.168.0.0/24"
-  name = "${local.name_prefix}_network"
+resource "opentelekomcloud_networking_network_v2" "network" {
 }
 
-resource "opentelekomcloud_vpc_subnet_v1" "subnet" {
-  cidr = opentelekomcloud_vpc_v1.vpc.cidr
-  gateway_ip = "192.168.0.1"
-  name = "${local.name_prefix}_subnet"
-  vpc_id = opentelekomcloud_vpc_v1.vpc.id
+resource "opentelekomcloud_networking_subnet_v2" "subnet" {
+  cidr = "192.168.0.0/29"
+  network_id = opentelekomcloud_networking_network_v2.network.id
 }
 
 resource "opentelekomcloud_compute_secgroup_v2" "group" {
@@ -39,6 +35,6 @@ output "out-group" {
 }
 
 output "out-network_id" {
-  value = opentelekomcloud_vpc_subnet_v1.subnet.vpc_id
+  value = opentelekomcloud_networking_subnet_v2.subnet.network_id
 }
 
