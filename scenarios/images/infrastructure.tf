@@ -1,17 +1,21 @@
 locals {
   name_prefix = "image_making"
 }
-resource "opentelekomcloud_networking_network_v2" "network" {
+resource "opentelekomcloud_vpc_v1" "vpc" {
+  cidr = "192.168.0.0/28"
+  name = "image_vpc"
 }
 
-resource "opentelekomcloud_networking_subnet_v2" "subnet" {
-  cidr = "192.168.0.0/29"
-  network_id = opentelekomcloud_networking_network_v2.network.id
+resource "opentelekomcloud_vpc_subnet_v1" "subnet" {
+  cidr       = "192.168.0.0/29"
+  gateway_ip = "192.168.0.1"
+  name       = "image_subnet"
+  vpc_id     = opentelekomcloud_vpc_v1.vpc.id
 }
 
 resource "opentelekomcloud_compute_secgroup_v2" "group" {
   description = "Public group"
-  name = "ssh_allowed"
+  name        = "ssh_allowed"
   rule {
     cidr        = "129.168.0.0/29"
     from_port   = 22
@@ -21,9 +25,9 @@ resource "opentelekomcloud_compute_secgroup_v2" "group" {
 }
 
 data "opentelekomcloud_images_image_v2" "base_image" {
-  name = "Standard_Debian_10_latest"
+  name        = var.image_name
   most_recent = true
-  visibility = "public"
+  visibility  = var.image_visibility
 }
 
 output "out-image_id" {
@@ -35,6 +39,5 @@ output "out-group" {
 }
 
 output "out-network_id" {
-  value = opentelekomcloud_networking_subnet_v2.subnet.network_id
+  value = opentelekomcloud_vpc_subnet_v1.subnet.id
 }
-
