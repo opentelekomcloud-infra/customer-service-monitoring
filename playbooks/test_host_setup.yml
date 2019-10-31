@@ -1,0 +1,27 @@
+- name: Setup software
+  hosts: test_host
+  roles:
+  - role:
+    become: yes
+    name: latest_python
+    vars:
+      min_py_version: '3.7'
+  - role:
+    become: yes
+    name: darkwizard242.terraform
+    vars:
+      terraform_version: '0.12.8'
+  tasks:
+  - name: Get exact python version
+    shell: python3 -c "import sys; print('{}.{}'.format(sys.version_info.major, sys.version_info.minor))"
+    register: python_version
+  - name: Install venv
+    pip:
+      requirements: 'requirements.txt'
+      virtualenv: '.venv'
+      virtualenv_python: "python{{ python_version.stdout }}"
+  - name: Install ansible
+    pip:
+      requirements: 'req_ansible.txt'
+      virtualenv: '.venv'
+      virtualenv_python: "python{{ python_version.stdout }}"
