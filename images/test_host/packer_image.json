@@ -5,8 +5,7 @@
     "region": "eu-de",
     "ssh_user": "linux",
     "network_id": "{{env `OTC_NETWORK_ID`}}",
-    "sec_grp_id": "{{env `OTC_SEC_GROUP`}}",
-    "influx_url": "{{env `INFLUXDB_URL`}}"
+    "sec_grp_id": "{{env `OTC_SEC_GROUP`}}"
   },
   "builders": [
     {
