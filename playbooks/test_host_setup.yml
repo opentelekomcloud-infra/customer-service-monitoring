@@ -27,5 +27,6 @@
     with_items: "{{ requirements }}"
   - name: Install requirements
     pip:
+      executable: pip3
       requirements: "{{ req_dir }}{{ item }}.txt"
     with_items: "{{ requirements }}"
