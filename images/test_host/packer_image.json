@@ -31,9 +31,7 @@
   "provisioners": [
     {
       "type": "ansible",
-      "groups": "test_host",
-      "galaxy_file": "../requirements.yml",
-      "inventory_file": "../inventory/base_infra.yml",
+      "host_alias": "test_host",
       "playbook_file": "../playbooks/test_host_setup.yml"
     }
   ]
