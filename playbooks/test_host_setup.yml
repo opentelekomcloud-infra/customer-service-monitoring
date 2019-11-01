@@ -28,4 +28,4 @@
   - name: Install requirements
     pip:
       requirements: "{{ req_dir }}{{ item }}.txt"
-      with_items: "{{ requirements }}"
+    with_items: "{{ requirements }}"
