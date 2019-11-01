@@ -20,14 +20,12 @@ if [[ -z ${PROJECT_ROOT} ]]; then
     echo "post_build.sh should be started with ./build.sh"
     exit 1
 fi
-cd ${PROJECT_ROOT} || exit 1
 
-cd ./images
+cd "${PROJECT_ROOT}/images" || exit 1
 
-for dir in $(find -name "packer_image.json" -printf '%h\n' | sort -u)
-do
-    bash build_image.sh ${dir}
-done
+targets=$(find -name "packer_image.json" -printf '%h ' | sort -u)
+echo ${targets}
+python3 "${scn_dir}/parallel_run.py" ${targets}
 
 cd ${scn_dir}
 terraform destroy -auto-approve
