@@ -29,6 +29,7 @@
   unarchive:
     dest: "{{ downloads_path }}"
     src: "{{ downloads_path }}Python-{{ python_version }}.tgz"
+    remote_src: yes
 - name: configure  # noqa 301
   command: ./configure --enable-optimizations --prefix=/usr/local
   args:

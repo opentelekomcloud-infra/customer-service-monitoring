@@ -1,5 +1,5 @@
 ---
 - hosts: local
-  become: True
+  become: yes
   roles:
     - role: latest_python

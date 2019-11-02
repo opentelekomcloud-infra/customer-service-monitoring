@@ -34,7 +34,7 @@ function init_if_missing() {
 
 # init pre-/post-build scripts
 init_if_missing "pre_build.sh" "${shebang}"
-init_if_missing "post_build.sh" $( < "./core/post_build_template.sh" )
+init_if_missing "post_build.sh" "$( < "./core/post_build_template.sh" )"
 
 # init tests
 mkdir -p "${target_dir}/test"

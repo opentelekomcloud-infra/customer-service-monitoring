@@ -1,0 +1,35 @@
+- name: Setup software
+  hosts: test_host
+  vars:
+    requirements:
+      - 'requirements'
+      - 'req_ansible'
+    req_dir: "/tmp/requirements/"
+  roles:
+  - role: darkwizard242.terraform
+    become: yes
+    vars:
+      terraform_version: '0.12.12'
+  tasks:
+  - name: Update and upgrade apt packages
+    become: yes
+    apt:
+      upgrade: yes
+      update_cache: yes
+  - name: Install PIP
+    become: yes
+    apt:
+      name:
+      - python3-setuptools
+      - python3-pip
+      - python3-wheel
+  - name: Copy Requirements
+    copy:
+      src: "{{ item }}.txt"
+      dest: "{{ req_dir }}"
+    with_items: "{{ requirements }}"
+  - name: Install requirements
+    pip:
+      executable: pip3
+      requirements: "{{ req_dir }}{{ item }}.txt"
+    with_items: "{{ requirements }}"

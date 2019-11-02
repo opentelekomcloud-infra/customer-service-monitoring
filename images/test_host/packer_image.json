@@ -1,36 +1,37 @@
 {
   "variables": {
     "source_image": "{{env `OTC_IMAGE_ID`}}",
-    "source_image_name": "KPI_Scn4_host_image",
     "flavor": "s2.large.2",
     "region": "eu-de",
     "ssh_user": "linux",
     "network_id": "{{env `OTC_NETWORK_ID`}}",
-    "sec_grp_id": "{{env `OTC_SEC_GROUP`}}",
-    "influx_url": "{{env `INFLUXDB_URL`}}"
+    "sec_grp_id": "{{env `OTC_SEC_GROUP`}}"
   },
   "builders": [
     {
       "type": "openstack",
       "ssh_username": "{{user `ssh_user` }}",
-      "image_name": "{{user `source_image_name` }}",
+      "image_name": "Debian_CSM_test_host",
       "source_image": "{{user `source_image` }}",
       "flavor": "{{user `flavor` }}",
       "region": "{{user `region` }}",
-      "networks": ["{{user `network_id`}}"],
-      "security_groups": ["{{user `sec_grp_id`}}"],
+      "networks": [
+        "{{user `network_id`}}"
+      ],
+      "security_groups": [
+        "{{user `sec_grp_id`}}"
+      ],
       "availability_zone": "eu-de-01",
       "floating_ip_network": "admin_external_net",
-      "use_blockstorage_volume": true
+      "use_blockstorage_volume": true,
+      "image_tags": ["csm", "test-host"]
     }
   ],
   "provisioners": [
     {
-      "environment_vars": [
-        "INFLUXDB_URL={{user `influx_url`}}"
-      ],
-      "script": "scenario4/scripts/provision.sh",
-      "type": "shell"
+      "type": "ansible",
+      "host_alias": "test_host",
+      "playbook_file": "../playbooks/test_host_setup.yml"
     }
   ]
 }
