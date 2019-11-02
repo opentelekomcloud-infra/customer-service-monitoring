@@ -6,8 +6,7 @@
     "region": "eu-de",
     "ssh_user": "linux",
     "network_id": "{{env `OTC_NETWORK_ID`}}",
-    "sec_grp_id": "{{env `OTC_SEC_GROUP`}}",
-    "influx_url": "{{env `INFLUXDB_URL`}}"
+    "sec_grp_id": "{{env `OTC_SEC_GROUP`}}"
   },
   "builders": [
     {
@@ -26,9 +25,11 @@
   ],
   "provisioners": [
     {
-      "environment_vars": [
-        "INFLUXDB_URL={{user `influx_url`}}"
-      ],
+      "type": "ansible",
+      "host_alias": "scn4_host",
+      "playbook_file": "../playbooks/scenario4_image_setup.yml"
+    },
+    {
       "script": "scenario4/scripts/provision.sh",
       "type": "shell"
     }

@@ -1,0 +1,47 @@
+---
+- name: Instal telegraf client on Bastion
+  hosts: bastion
+  become: true
+  roles:
+  - telegraf-client
+  vars:
+    telegraf_plugins_base:
+      - name: http_listener_v2
+        options:
+          service_address: ":8080"
+          data_format: "influx"
+    telegraf_influxdb_urls:
+      - https://influx1.eco.tsi-dev.otc-service.com:8086
+    telegraf_influxdb_database: csm
+    telegraf_influxdb_username: csm
+    telegraf_influxdb_password: "{{ lookup('env', 'INFLUX_PSWD') }}"
+  tasks:
+    - name: install nginx
+      apt:
+        name: nginx
+
+    - name: start nginx
+      service:
+        name: nginx
+        state: started
+
+    - name: copy the nginx config files
+      copy:
+        src: nginx/nginx_config/telegraf_nginx.conf
+        dest: /etc/nginx/sites-enabled/
+
+    - name: copy nginx ssl config
+      copy:
+        src: nginx/nginx_config/ssl_nginx.conf
+        dest: /etc/nginx/
+
+    - name: copy ssl keys to nginx
+      copy:
+        src: nginx/nginx_keys/
+        dest: /etc/sslcerts/live/
+
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+

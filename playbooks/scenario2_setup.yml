@@ -26,6 +26,11 @@
       server_port: 80
   - role: telegraf-client
     vars:
+      telegraf_influxdb_urls:
+        - https://influx1.eco.tsi-dev.otc-service.com:8086
+      telegraf_influxdb_database: csm
+      telegraf_influxdb_username: csm
+      telegraf_influxdb_password: "{{ lookup('env', 'INFLUX_PSWD') }}"
       telegraf_plugins_base:
       - name: postgresql
         options:
