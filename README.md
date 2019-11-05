@@ -1,7 +1,7 @@
 # Sandbox
 POC of the platform KPI monitoring
 
-[![Build Status](https://travis-ci.org/opentelekomcloud-infra/csm-sandbox.svg?branch=master)](https://travis-ci.org/opentelekomcloud-infra/csm-sandbox)
+[![Build Status](https://travis-ci.org/opentelekomcloud-infra/customer-service-monitoring.svg?branch=master)](https://travis-ci.org/opentelekomcloud-infra/customer-service-monitoring)
 
 This repository contains customer service monitoring test scenarios for 
 **Open Telekom Cloud**
