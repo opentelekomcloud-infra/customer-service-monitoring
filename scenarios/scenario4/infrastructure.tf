@@ -1,7 +1,7 @@
 
 locals {
   workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
-  prefix = "${local.workspace_prefix}${var.postfix}"
+  prefix           = "${local.workspace_prefix}${var.postfix}"
   key_pair = {
     public_key = var.public_key
     key_name   = "${local.workspace_prefix}kp_${var.postfix}"
@@ -35,20 +35,20 @@ module "bastion" {
 module "resources" {
   source = "./resources"
 
-  default_flavor         = var.default_flavor
-  host_image             = var.host_image
-  net_address            = var.addr_3_octets
-  nodes_count            = var.nodes_count
-  bastion_local_ip       = module.bastion.bastion_ip
-  loadbalancer_local_ip  = "${var.addr_3_octets}.3"
-  bastion_sec_group_id   = module.bastion.basion_group_id
-  network_id             = module.network.network.id
-  router_id              = module.network.router.id
-  subnet_id              = module.network.subnet.id
-  prefix                 = local.prefix
-  az                     = var.default_az
-  kp                     = local.key_pair
-  influx_url             = var.influx_url
+  default_flavor        = var.default_flavor
+  host_image            = var.host_image
+  net_address           = var.addr_3_octets
+  nodes_count           = var.nodes_count
+  bastion_local_ip      = module.bastion.bastion_ip
+  loadbalancer_local_ip = "${var.addr_3_octets}.3"
+  bastion_sec_group_id  = module.bastion.basion_group_id
+  network_id            = module.network.network.id
+  router_id             = module.network.router.id
+  subnet_id             = module.network.subnet.id
+  prefix                = local.prefix
+  az                    = var.default_az
+  kp                    = local.key_pair
+  influx_url            = var.influx_url
 }
 
 output "out-scn4_lb_fip" {

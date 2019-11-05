@@ -3,7 +3,7 @@ terraform {
     opentelekomcloud = ">= 1.11.0"
   }
 
-  backend "s3" {  # use OBS for remote state
+  backend "s3" { # use OBS for remote state
     key                         = "terraform_state/scenario3"
     endpoint                    = "obs.eu-de.otc.t-systems.com"
     bucket                      = "obs-csm"
