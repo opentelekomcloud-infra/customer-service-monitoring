@@ -18,9 +18,9 @@
   hosts: gatewayed
   tasks:
 
-    - name: Install stress package
+    - name: Install stress and cron package
       apt:
-        name: stress
+        name:  ['stress', 'cron']
         update_cache: yes
         cache_valid_time: 3600
 
