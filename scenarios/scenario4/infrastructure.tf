@@ -1,7 +1,7 @@
 
 locals {
   workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
-  prefix = "${local.workspace_prefix}${var.postfix}"
+  prefix           = "${local.workspace_prefix}${var.postfix}"
   key_pair = {
     public_key = var.public_key
     key_name   = "${local.workspace_prefix}kp_${var.postfix}"
