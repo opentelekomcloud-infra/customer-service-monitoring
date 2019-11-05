@@ -1,5 +1,6 @@
 - name: Setup software
   hosts: scn4_host
+  become: yes
   roles:
   - telegraf-client
   vars:
