@@ -1,9 +1,10 @@
 - name: Setup software
   hosts: scn4_host
-  become: yes
   roles:
   - telegraf-client
+  become: yes
   vars:
+    telegraf_hostname: ""
     telegraf_influxdb_urls:
       - https://influx1.eco.tsi-dev.otc-service.com:8086
     telegraf_influxdb_database: csm
@@ -22,10 +23,12 @@
             - "time_*"
   tasks:
   - name: install nginx
+    become: yes
     apt:
       name: ['nginx', 'nginx-extras']
 
   - name: start nginx
+    become: yes
     service:
       name: nginx
       state: started
