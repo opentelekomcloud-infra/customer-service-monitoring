@@ -22,13 +22,10 @@
           fielddrop:
             - "time_*"
   tasks:
-  - name: install nginx
+  - name: Start Server
     become: yes
-    apt:
-      name: ['nginx', 'nginx-extras']
-
-  - name: start nginx
-    become: yes
-    service:
-      name: nginx
-      state: started
+    roles:
+    - too_simple_server
+    vars:
+      debug: True
+      server_port: 80
