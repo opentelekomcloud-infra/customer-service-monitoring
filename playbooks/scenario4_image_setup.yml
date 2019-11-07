@@ -1,7 +1,6 @@
 - name: Setup software
   hosts: scn4_host
-  roles:
-  - telegraf-client
+  roles: telegraf-client
   become: yes
   vars_files:
     - "./vars/repeat-blocks.yml"
