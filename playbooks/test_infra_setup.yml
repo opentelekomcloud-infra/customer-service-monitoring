@@ -1,0 +1,34 @@
+---
+- name: Register existing settings
+  hosts: local
+  tasks:
+    - name: Wait for host
+      script: wait_for_public_ip.py "{{ lookup('env', 'SERVER_PUBLIC_IP') }}" 120
+      args:
+        executable: python3
+    - name: Register host
+      add_host:
+        hostname: test_host
+        ansible_ssh_host: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+        ansible_ssh_user: "linux"
+
+- name: Setup host
+  hosts: test_host
+  tasks:
+  - name: Checkout infrasctructure repository
+    git:
+      repo: 'https://github.com/opentelekomcloud-infra/customer-service-monitoring'
+      dest: '/tmp/csm'
+      force: yes
+      depth: 1
+
+- name: 'Start Scenario #1 tests'
+  host: test_host
+  tasks:
+  - name: 'Scheduled tests'
+    cron:
+      job: '/tmp/csm/scenarios/scenario1/test/single.sh'
+      minute: '*/10'
+  - name: 'Monitoring'
+    command: 'start-stop-daemon -mp /var/run/single.pid -bS /usr/bin/bash -- /tmp/csm/scenarios/scenario1/test.sh scenario1'
+

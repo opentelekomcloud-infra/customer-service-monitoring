@@ -1,0 +1,8 @@
+---
+- name: Install requirements for infra building to local host
+  hosts: localhost
+  become: yes
+  roles:
+  - role: darkwizard242.terraform
+    args:
+      terraform_version: 0.12.12
