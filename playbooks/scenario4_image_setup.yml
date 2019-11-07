@@ -18,11 +18,12 @@
           totalcpu: "true"
           fielddrop:
             - "time_*"
-  tasks:
-    - name: Start Server
-      become: yes
-      roles:
-      - too_simple_server
-      vars:
-        debug: True
-        server_port: 80
+
+- name: Start test Server
+  hosts: scn4_host
+  become: true
+  roles:
+  - too_simple_server
+  vars:
+    debug: True
+    server_port: 80
