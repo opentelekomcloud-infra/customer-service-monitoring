@@ -2,6 +2,8 @@
 - name: Instal telegraf client on Bastion
   hosts: bastion
   become: true
+  vars_files:
+  - "./vars/repeat-blocks.yml"
   tasks:
     - name: copy ssl keys to nginx
       copy:
@@ -9,8 +11,6 @@
         dest: /etc/sslcerts/live/
   roles:
   - role: telegraf-client
-    vars_files:
-      - "./vars/repeat-blocks.yml"
     vars:
       telegraf_plugins_base:
         - name: http_listener_v2
