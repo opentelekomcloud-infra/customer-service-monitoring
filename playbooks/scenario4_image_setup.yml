@@ -1,6 +1,7 @@
 - name: Setup software
   hosts: scn4_host
-  roles: telegraf-client
+  roles:
+  - telegraf-client
   become: yes
   vars_files:
     - "./vars/repeat-blocks.yml"
@@ -18,10 +19,10 @@
           fielddrop:
             - "time_*"
   tasks:
-  - name: Start Server
-    become: yes
-    roles:
-    - too_simple_server
-    vars:
-      debug: True
-      server_port: 80
+    - name: Start Server
+      become: yes
+      roles:
+      - too_simple_server
+      vars:
+        debug: True
+        server_port: 80
