@@ -2,6 +2,8 @@
 - name: Instal telegraf client on Bastion
   hosts: bastion
   become: true
+  vars_files:
+    - "./vars/repeat-blocks.yml"
   roles:
   - telegraf-client
   vars:
@@ -10,11 +12,6 @@
         options:
           service_address: ":8080"
           data_format: "influx"
-    telegraf_influxdb_urls:
-      - https://influx1.eco.tsi-dev.otc-service.com:8086
-    telegraf_influxdb_database: csm
-    telegraf_influxdb_username: csm
-    telegraf_influxdb_password: "{{ lookup('env', 'INFLUX_PSWD') }}"
   tasks:
     - name: install nginx
       apt:
