@@ -2,46 +2,45 @@
 - name: Instal telegraf client on Bastion
   hosts: bastion
   become: true
-  roles:
-  - telegraf-client
-  vars:
-    telegraf_plugins_base:
-      - name: http_listener_v2
-        options:
-          service_address: ":8080"
-          data_format: "influx"
-    telegraf_influxdb_urls:
-      - https://influx1.eco.tsi-dev.otc-service.com:8086
-    telegraf_influxdb_database: csm
-    telegraf_influxdb_username: csm
-    telegraf_influxdb_password: "{{ lookup('env', 'INFLUX_PSWD') }}"
   tasks:
-    - name: install nginx
-      apt:
-        name: nginx
-
-    - name: start nginx
-      service:
-        name: nginx
-        state: started
-
-    - name: copy the nginx config files
-      copy:
-        src: nginx/nginx_config/telegraf_nginx.conf
-        dest: /etc/nginx/sites-enabled/
-
-    - name: copy nginx ssl config
-      copy:
-        src: nginx/nginx_config/ssl_nginx.conf
-        dest: /etc/nginx/
-
     - name: copy ssl keys to nginx
       copy:
         src: nginx/nginx_keys/
         dest: /etc/sslcerts/live/
-
-    - name: restart nginx
-      service:
-        name: nginx
-        state: restarted
-
+  roles:
+  - role: telegraf-client
+    vars:
+      telegraf_plugins_base:
+        - name: http_listener_v2
+          options:
+            service_address: ":8080"
+            data_format: "influx"
+      telegraf_influxdb_urls:
+        - https://influx1.eco.tsi-dev.otc-service.com:8086
+      telegraf_influxdb_database: csm
+      telegraf_influxdb_username: csm
+      telegraf_influxdb_password: "{{ lookup('env', 'INFLUX_PSWD') }}"
+  - role: geerlingguy.nginx
+    vars:
+      nginx_vhosts:
+        - listen: "443 ssl"
+          server_name: "csm.outcatcher.com"
+          extra_parameters: |
+            location / {
+                if ($scheme = http) {
+                    return 301 https://$server_name$request_uri;
+                }
+                proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;
+                proxy_set_header Host $http_host;
+                proxy_http_version 1.1;
+            }
+            location /telegraf {
+                proxy_pass         http://localhost:8080;
+                proxy_set_header   Host $host;
+            }
+            ssl_prefer_server_ciphers on;
+            ssl_certificate           /etc/sslcerts/live/fullchain.pem;
+            ssl_certificate_key       /etc/sslcerts/live/privkey.pem;
+            ssl_dhparam               /etc/sslcerts/live/dhparams.pem;
+            ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
+            ssl_ciphers               ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA;
