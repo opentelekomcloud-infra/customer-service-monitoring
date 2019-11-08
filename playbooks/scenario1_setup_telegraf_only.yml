@@ -23,4 +23,4 @@
       nginx_vhosts:
         - listen: "443 ssl"
           server_name: "csm.outcatcher.com"
-          extra_parameters: {{ extra_parameters }}
+          extra_parameters: "{{ extra_parameters }}"
