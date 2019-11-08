@@ -3,42 +3,24 @@
   hosts: bastion
   become: true
   vars_files:
-    - "./vars/repeat-blocks.yml"
-  roles:
-  - telegraf-client
-  vars:
-    telegraf_plugins_base:
-      - name: http_listener_v2
-        options:
-          service_address: ":8080"
-          data_format: "influx"
+  - "./vars/repeat-blocks.yml"
+  - "./vars/nginx_extra_parameters.yml"
   tasks:
-    - name: install nginx
-      apt:
-        name: nginx
-
-    - name: start nginx
-      service:
-        name: nginx
-        state: started
-
-    - name: copy the nginx config files
-      copy:
-        src: nginx/nginx_config/telegraf_nginx.conf
-        dest: /etc/nginx/sites-enabled/
-
-    - name: copy nginx ssl config
-      copy:
-        src: nginx/nginx_config/ssl_nginx.conf
-        dest: /etc/nginx/
-
     - name: copy ssl keys to nginx
       copy:
         src: nginx/nginx_keys/
         dest: /etc/sslcerts/live/
-
-    - name: restart nginx
-      service:
-        name: nginx
-        state: restarted
-
+  roles:
+  - role: telegraf-client
+    vars:
+      telegraf_plugins_base:
+        - name: http_listener_v2
+          options:
+            service_address: ":8080"
+            data_format: "influx"
+  - role: geerlingguy.nginx
+    vars:
+      nginx_vhosts:
+        - listen: "443 ssl"
+          server_name: "csm.outcatcher.com"
+          extra_parameters: "{{ extra_parameters }}"
