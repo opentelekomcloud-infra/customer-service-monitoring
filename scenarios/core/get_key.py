@@ -19,7 +19,7 @@ def parse_params():
 
 def generate_private_key():
     key = RSA.generate(2048)
-    return key
+    return key.exportKey()
 
 
 def copy_key_from_s3():
@@ -32,8 +32,8 @@ def copy_key_from_s3():
     except ClientError as e:
         if e.response['Error']['Code'] == "404":
             print("The object does not exist in s3. Generating new one ...")
-            object = s3.Object(bucket, args.key)
-            object.put(Body=generate_private_key())
+            obj = s3.Object(bucket, args.key)
+            obj.put(Body=generate_private_key())
         else:
             raise
 
