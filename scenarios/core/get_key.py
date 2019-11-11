@@ -6,7 +6,7 @@ from botocore.exceptions import ClientError
 from Crypto.PublicKey import RSA
 
 api_endpoint = 'https://obs.eu-de.otc.t-systems.com'
-bucket = "obs-csm"
+bucket = 'obs-csm'
 
 
 def parse_params():
