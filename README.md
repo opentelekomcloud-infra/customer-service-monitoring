@@ -1,5 +1,5 @@
-# Sandbox
-POC of the platform KPI monitoring
+# Customer Service Monitoring
+T-Systems solution for customer KPI monitoring for Open Telekom Cloud
 
 [![Build Status](https://travis-ci.org/opentelekomcloud-infra/customer-service-monitoring.svg?branch=master)](https://travis-ci.org/opentelekomcloud-infra/customer-service-monitoring)
 
@@ -41,4 +41,5 @@ for details.
 
 ### Execution
 
-*Not implemented yet*
+There is `test.sh` script for running tests/monitoring defined in `scenario/test/main.sh` \
+Implementation of most tests can be found in [csm test utils](https://github.com/opentelekomcloud-infra/csm-test-utils) repository
