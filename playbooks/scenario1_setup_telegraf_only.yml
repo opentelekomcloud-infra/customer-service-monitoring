@@ -3,7 +3,7 @@
   hosts: bastion
   become: true
   vars_files:
-  - "./vars/repeat-blocks.yml"
+  - "./vars/telegraf_dbconnection_vars.yml"
   - "./vars/nginx_extra_parameters.yml"
   tasks:
     - name: copy ssl keys to nginx

@@ -20,7 +20,7 @@
   hosts: gatewayed
   become: true
   vars_files:
-    - "./vars/repeat-blocks.yml"
+    - "./vars/telegraf_dbconnection_vars.yml"
   roles:
   - telegraf-client
   vars:
