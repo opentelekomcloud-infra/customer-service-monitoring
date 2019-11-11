@@ -30,10 +30,13 @@ def copy_key_from_s3():
     try:
         s3.Bucket(bucket).download_file(args.key, args.output)
     except ClientError as e:
-        if e.response['Error']['Code'] == "404":
-            print("The object does not exist in s3. Generating new one ...")
+        if e.response['Error']['Code'] == '404':
+            print('The object does not exist in s3. Generating new one ...')
+            key = generate_private_key()
             obj = s3.Object(bucket, args.key)
-            obj.put(Body=generate_private_key())
+            obj.put(Body=key)
+            with open(args.output, 'wb') as file:
+                file.write(key)
         else:
             raise
 
