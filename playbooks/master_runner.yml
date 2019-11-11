@@ -1,8 +1,27 @@
 ---
 - name: Install requirements for infra building to local host
-  hosts: localhost
+  hosts: local
   become: yes
   roles:
   - role: darkwizard242.terraform
-    args:
+    vars:
       terraform_version: 0.12.12
+  vars:
+    requirements: 'master_requirements.txt'
+    build_path: '../scenarios'
+  vars_files:
+    - 'vars/inherit_env.yml'
+  tasks:
+  - name: Copy Requirements
+    copy:
+      src: "{{ requirements }}"
+      dest: '/tmp'
+  - name: Install master requirements
+    pip:
+      executable: pip3
+      requirements: "/tmp/{{ requirements }}"
+  - name: Build infrastructure
+    environment: "{{ credentials_env | combine({'INFLUX_PSWD': '1'}) }}"
+    shell: 'eval `ssh-agent -s` && ./build.sh test_infra'
+    args:
+      chdir: "{{ build_path }}"

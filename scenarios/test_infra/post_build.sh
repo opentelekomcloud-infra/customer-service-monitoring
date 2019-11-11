@@ -8,3 +8,5 @@ function get_value() {
     var_name=$1
     echo $( echo "${output}" | grep -E "${var_name} =" | grep -oE "\"(.+)\"" | sed -e 's/^"//' -e 's/"$//' )
 }
+
+export SERVER_PUBLIC_IP=$( get_value "test_host_ip" )

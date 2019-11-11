@@ -13,9 +13,9 @@ resource "opentelekomcloud_vpc_subnet_v1" "subnet" {
   secondary_dns = "8.8.8.8"
 }
 
-resource "opentelekomcloud_compute_secgroup_v2" "group" {
-  description = "Public group"
-  name        = "public"
+resource "opentelekomcloud_compute_secgroup_v2" "public_ssh" {
+  description = "Public ssh port"
+  name        = "public_ssh"
   rule {
     cidr        = "0.0.0.0/0"
     from_port   = 22

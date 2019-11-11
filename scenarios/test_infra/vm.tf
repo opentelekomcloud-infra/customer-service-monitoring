@@ -16,10 +16,24 @@ resource "opentelekomcloud_compute_instance_v2" "test_host" {
   key_pair          = opentelekomcloud_compute_keypair_v2.th_kp.name
   region            = var.region
   availability_zone = var.default_az
+  depends_on = [
+    opentelekomcloud_compute_secgroup_v2.public_ssh
+  ]
   security_groups = [
-    opentelekomcloud_compute_secgroup_v2.group.name
+    opentelekomcloud_compute_secgroup_v2.public_ssh.id
   ]
   network {
     uuid = opentelekomcloud_vpc_subnet_v1.subnet.id
   }
+}
+
+resource "opentelekomcloud_compute_floatingip_v2" "public_ip" {}
+
+resource "opentelekomcloud_compute_floatingip_associate_v2" "associate" {
+  floating_ip = opentelekomcloud_compute_floatingip_v2.public_ip.address
+  instance_id = opentelekomcloud_compute_instance_v2.test_host.id
+}
+
+output "out-test_host_ip" {
+  value = opentelekomcloud_compute_floatingip_v2.public_ip.address
 }
