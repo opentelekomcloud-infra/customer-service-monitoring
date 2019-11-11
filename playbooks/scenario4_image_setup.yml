@@ -4,7 +4,7 @@
   - telegraf-client
   become: yes
   vars_files:
-    - "./vars/repeat-blocks.yml"
+    - "./vars/telegraf_dbconnection_vars.yml"
   vars:
     telegraf_hostname: ""
     telegraf_plugins_base:
