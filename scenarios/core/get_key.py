@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 
 from boto3.session import Session
 from botocore.exceptions import ClientError
+from Crypto.PublicKey import RSA
 
 api_endpoint = 'https://obs.eu-de.otc.t-systems.com'
 bucket = "obs-csm"
@@ -16,6 +17,11 @@ def parse_params():
     return args
 
 
+def generate_private_key():
+    key = RSA.generate(2048)
+    return key
+
+
 def copy_key_from_s3():
     args = parse_params()
     session = Session(aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
@@ -25,7 +31,9 @@ def copy_key_from_s3():
         s3.Bucket(bucket).download_file(args.key, args.output)
     except ClientError as e:
         if e.response['Error']['Code'] == "404":
-            print("The object does not exist.")
+            print("The object does not exist in s3. Generating new one ...")
+            object = s3.Object(bucket, args.key)
+            object.put(Body=generate_private_key())
         else:
             raise
 
