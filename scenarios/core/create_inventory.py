@@ -39,9 +39,8 @@ def list_all(args):
     }
     hosts = inv_output['all']['hosts']
     children = inv_output['all']['children']
-
     for name, attributes in get_tf_instances(args.state):
-        tag: dict = attributes.pop('tag', {})
+        tag: dict = attributes.pop('tag', None) or {}
         hosts[name] = attributes
         if 'group' in tag:
             grp_name = tag['group']
@@ -49,8 +48,8 @@ def list_all(args):
                 children[grp_name] = {'hosts': {}}
             children[grp_name]['hosts'][name] = ''
     if hosts:
-        path = '{}/inventory/prod/{}.yml'.format(
-            os.path.abspath("{}/../..".format(os.path.dirname(__file__))), args.name)
+        root_path = os.path.abspath(f'{os.path.dirname(__file__)}/../..')
+        path = f'{root_path}/inventory/prod/{args.name}.yml'
         with open(path, 'w+') as file:
             file.write(yaml.safe_dump(inv_output, default_flow_style=False))
         print('File written to: {}'.format(path))
