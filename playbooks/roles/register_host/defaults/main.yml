@@ -1,4 +1,4 @@
-hostname_or_ip: "{{ hostvars.bastion.ansible_host }}"
+dnsname_or_ip: "{{ hostvars.bastion.ansible_host }}"
 hostname: "scenario_host"
 username: "linux"
 group: "default"

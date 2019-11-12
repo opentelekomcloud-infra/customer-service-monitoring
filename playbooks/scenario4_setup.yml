@@ -5,24 +5,23 @@
   roles:
   - register_host
   vars:
-    hostname_or_ip: {{ hostvars.bastion.ansible_host }}
+    dnsname_or_ip: "{{ hostvars.bastion.ansible_host }}"
     hostname: "server"
-    username: "linux"
     group: "scn4_ecs"
 
-#- name: Configure cron on main host for stress testing
-#  become: true
-#  hosts: gatewayed
-#  tasks:
-#
-#    - name: Install stress and cron package
-#      apt:
-#        name:  ['stress', 'cron']
-#        update_cache: yes
-#        cache_valid_time: 3600
-#
-#    - name: Cron job for stress CPU every 30 minutes for 7 minutes
-#      cron:
-#        name: Load cpu via stress package
-#        minute: "*/30"
-#        job: /usr/bin/stress --cpu 2 --vm 2 --vm-bytes 512M --timeout 420
+- name: Configure cron on main host for stress testing
+  become: true
+  hosts: gatewayed
+  tasks:
+
+    - name: Install stress and cron package
+      apt:
+        name:  ['stress', 'cron']
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Cron job for stress CPU every 30 minutes for 7 minutes
+      cron:
+        name: Load cpu via stress package
+        minute: "*/30"
+        job: /usr/bin/stress --cpu 2 --vm 2 --vm-bytes 512M --timeout 420

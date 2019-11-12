@@ -1,11 +1,13 @@
 ---
 - name: Register existing settings
   hosts: local
-  tasks:
-    - name: Wait for host
-      script: wait_for_public_ip.py {{ hostvars.bastion.ansible_host }} 120
-      args:
-        executable: python3
+  become: true
+  roles:
+  - register_host
+  vars:
+    dnsname_or_ip: "{{ hostvars.bastion.ansible_host }}"
+    hostname: "server"
+    group: "scn1_ecs"
 
 - name: Start Server
   hosts: gatewayed
