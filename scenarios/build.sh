@@ -23,7 +23,7 @@ post_build="./post_build.sh"
 
 cd "${terraform_dir}" || exit 1
 terraform init
-if [[ -e ${pre_build} ]]; then source "${pre_build}" ${scenario_name}; fi
+source "${pre_build}" ${scenario_name}
 terraform apply -auto-approve -input=false "$@" || exit  # pass all scripts arguments to terraform build (for -var support)
 
 # create inventory file after build infrastructure
