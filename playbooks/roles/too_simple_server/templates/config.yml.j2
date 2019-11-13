@@ -1,11 +1,13 @@
 debug: {{ not pg_db_url }}
 server_port: {{ server_port }}
 
-postgres:
-  db_url: "{{ pg_db_url }}"
-  database: "{{ pg_database }}"
-  username: "{{ pg_username }}"
-  password: "{{ pg_password }}"
-  initial_data:
-    count: {{ pg_initial_record_count }}
-    size: {{ pg_initial_record_size }}
+{% if pg_db_url is defined and pg_db_url != None %}
+  postgres:
+    db_url: "{{ pg_db_url }}"
+    database: "{{ pg_database }}"
+    username: "{{ pg_username }}"
+    password: "{{ pg_password }}"
+    initial_data:
+      count: {{ pg_initial_record_count }}
+      size: {{ pg_initial_record_size }}
+{% endif %}
