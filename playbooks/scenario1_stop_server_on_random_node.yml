@@ -1,8 +1,4 @@
 ---
-- name: Register existing settings
-  hosts: local
-  tasks:
-
 - name: Stop server on node
   hosts: "{{ groups.gatewayed | random }}"
   become: yes
