@@ -1,12 +1,11 @@
 ---
-- name: Register host
+- name: Register existing settings
   hosts: local
-  tasks:
-   - name: Register host
-     add_host:
-       hostname: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
-       ansible_ssh_user: "linux"
-       groups: scn2_ecs
+  roles:
+  - register_host
+  vars:
+    dnsname_or_ip: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+    group: "scn2_ecs"
 
 - name: Stop Server
   hosts: scn2_ecs
