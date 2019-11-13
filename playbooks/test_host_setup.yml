@@ -23,6 +23,7 @@
       - python3-setuptools
       - python3-pip
       - python3-wheel
+      - cron
   - name: Copy Requirements
     copy:
       src: "{{ item }}.txt"
