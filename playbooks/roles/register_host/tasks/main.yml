@@ -1,0 +1,14 @@
+---
+- name: Prepare inventory
+  block:
+    - name: Wait for host
+      script: wait_for_public_ip.py "{{ dnsname_or_ip }}" 120
+      args:
+        executable: python3
+
+    - name: Register host
+      add_host:
+        hostname: "{{ hostname }}"
+        ansible_ssh_host: "{{ dnsname_or_ip }}"
+        ansible_ssh_user: "{{ username }}"
+        groups: "{{ group }}"
