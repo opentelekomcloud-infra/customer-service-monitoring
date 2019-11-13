@@ -1,12 +1,10 @@
 ---
 - name: Register existing settings
   hosts: local
-  become: true
   roles:
   - register_host
   vars:
     dnsname_or_ip: "{{ hostvars.bastion.ansible_host }}"
-    hostname: "server"
     group: "scn4_ecs"
 
 - name: Configure cron on main host for stress testing

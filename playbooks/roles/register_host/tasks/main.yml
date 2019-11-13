@@ -1,6 +1,5 @@
 ---
 - name: Prepare inventory
-  become: yes
   block:
     - name: Wait for host
       script: wait_for_public_ip.py "{{ dnsname_or_ip }}" 120
