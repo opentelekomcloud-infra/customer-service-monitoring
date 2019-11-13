@@ -38,6 +38,6 @@ module "resources" {
   bastion_vm_id = module.bastion.bastion_vm_id
 }
 
-output "out-scn3.5_server_fip" {
+output "out-scn3_5_server_fip" {
   value = opentelekomcloud_networking_floatingip_v2.server_fip.address
 }
