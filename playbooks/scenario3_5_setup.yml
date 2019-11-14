@@ -5,10 +5,10 @@
   - register_host
   vars:
     dnsname_or_ip: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
-    group: "scn3_ecs"
+    group: "scn3_5_ecs"
 
 - name: Prepare attached devices on server
-  hosts: scn3_ecs
+  hosts: scn3_5_ecs
   become: true
   tasks:
     - name: Create a ext4 filesystem on attached disks
@@ -29,3 +29,34 @@
         fstype: ext4
         state: mounted
 
+    - name: Cron job for create big files on all devices every 15 minutes
+      cron:
+        name: "Creating big file on /dev/sda"
+        minute: "*/5"
+        job: /bin/dd if=/dev/urandom of="/mnt/scsi/bigfile.txt" bs=1000000 count=1000 oflag=dsync
+
+    - name: Cron job for reading big files on all devices every 5 minutes
+      cron:
+        name: "Reading big files from /dev/sda"
+        minute: "*/2"
+        job: /sbin/hdparm -tT "/dev/sda"
+
+- name: Instal telegraf client on server
+  hosts: scn3_5_ecs
+  become: true
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
+  roles:
+  - telegraf-client
+  vars:
+    telegraf_plugins_base:
+      - name: mem
+      - name: diskio
+        options:
+          devices: ["sda"]
+      - name: cpu
+        options:
+          percpu: "false"
+          totalcpu: "true"
+          fielddrop:
+            - "time_*"
