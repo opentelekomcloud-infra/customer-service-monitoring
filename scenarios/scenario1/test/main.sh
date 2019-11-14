@@ -29,3 +29,11 @@ function run_test() {
 }
 
 run_test > /dev/null &
+bg_pid=$!
+
+function check_and_wait() {
+    kill -0 ${bg_pid} || exit $?
+    sleep 5s
+}
+check_and_wait
+check_and_wait
