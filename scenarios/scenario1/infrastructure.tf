@@ -17,14 +17,15 @@ module "network" {
 module "bastion" {
   source = "../modules/bastion"
 
-  debian_image   = var.debian_image
-  bastion_eip    = var.bastion_eip
-  default_flavor = var.default_flavor
-  key_pair       = local.key_pair
-  network        = module.network.network
-  subnet         = module.network.subnet
-  router         = module.network.router
-  name           = "${local.workspace_prefix}bastion"
+  debian_image      = var.debian_image
+  bastion_eip       = var.bastion_eip
+  default_flavor    = var.default_flavor
+  key_pair          = local.key_pair
+  network           = module.network.network
+  subnet            = module.network.subnet
+  router            = module.network.router
+  name              = "${local.workspace_prefix}bastion"
+  availability_zone = var.default_az
 }
 
 module "resources" {
