@@ -11,6 +11,16 @@
   hosts: scn3_5_ecs
   become: true
   tasks:
+    - name: Add hdparm repository [Debian/Ubuntu]
+      apt_repository:
+        repo: deb http://deb.debian.org/debian stretch main
+        state: present
+
+    - name: Install hdparm
+      apt:
+        name: hdparm
+        update_cache: yes
+
     - name: Create a ext4 filesystem on attached disks
       filesystem:
         fstype: ext4
