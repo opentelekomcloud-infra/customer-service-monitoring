@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 parent_dir="$(cd "$(dirname "$0")/.." && pwd)"
+number=$(echo $1 | grep -o -E "[0-9_]+$")
 
 rm -f  ~/.ssh/known_hosts
-file_name="scn2_instance_rsa"
+file_name="scn${number}_instance_rsa"
 export RSA_PRIVATE_KEY="$( pwd )/${file_name}"
 ssh-add -d "${RSA_PRIVATE_KEY}"
 
