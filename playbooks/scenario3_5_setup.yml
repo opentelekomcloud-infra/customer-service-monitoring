@@ -1,0 +1,31 @@
+---
+- name: Register existing settings
+  hosts: local
+  roles:
+  - register_host
+  vars:
+    dnsname_or_ip: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+    group: "scn3_ecs"
+
+- name: Prepare attached devices on server
+  hosts: scn3_ecs
+  become: true
+  tasks:
+    - name: Create a ext4 filesystem on attached disks
+      filesystem:
+        fstype: ext4
+        dev: "/dev/vdb"
+
+    - name: Create directories for mount
+      file:
+        path: "/mnt/scsi"
+        state: directory
+        mode: '0755'
+
+    - name: Mount up devices
+      mount:
+        path: "/mnt/scsi"
+        src: "/dev/vdb"
+        fstype: ext4
+        state: mounted
+
