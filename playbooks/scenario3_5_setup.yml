@@ -14,7 +14,7 @@
     - name: Create a ext4 filesystem on attached disks
       filesystem:
         fstype: ext4
-        dev: "/dev/vdb"
+        dev: "/dev/sda"
 
     - name: Create directories for mount
       file:
@@ -25,7 +25,7 @@
     - name: Mount up devices
       mount:
         path: "/mnt/scsi"
-        src: "/dev/vdb"
+        src: "/dev/sda"
         fstype: ext4
         state: mounted
 
