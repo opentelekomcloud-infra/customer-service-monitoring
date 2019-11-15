@@ -30,6 +30,7 @@ module "bastion" {
   subnet         = module.network.subnet
   router         = module.network.router
   name           = "${local.prefix}_server"
+  default_az     = var.default_az
 }
 
 module "resources" {
