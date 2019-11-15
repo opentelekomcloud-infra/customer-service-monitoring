@@ -25,6 +25,7 @@ module "bastion" {
   subnet         = module.network.subnet
   router         = module.network.router
   name           = "${local.workspace_prefix}bastion"
+  default_az     = var.default_az
 }
 
 module "resources" {

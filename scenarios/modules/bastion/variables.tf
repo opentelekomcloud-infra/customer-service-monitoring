@@ -7,6 +7,9 @@ variable "key_pair" {
 variable "name" {
   default = "bastion"
 }
+variable "default_az" {
+  default = "eu-de-01"
+}
 variable "default_flavor" {}
 variable "debian_image" {}
 variable "bastion_eip" {}

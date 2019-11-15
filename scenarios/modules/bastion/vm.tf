@@ -27,6 +27,8 @@ resource "opentelekomcloud_compute_instance_v2" "bastion" {
     bastion_address = local.bastion_ip,
   })
 
+  availability_zone = var.default_az
+
   depends_on = [
     opentelekomcloud_networking_port_v2.bastion_port
   ]
