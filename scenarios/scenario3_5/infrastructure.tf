@@ -19,26 +19,15 @@ resource "opentelekomcloud_networking_floatingip_v2" "server_fip" {
   pool = "admin_external_net"
 }
 
-module "bastion" {
-  source = "../modules/bastion"
-
-  debian_image   = var.debian_image
-  bastion_eip    = opentelekomcloud_networking_floatingip_v2.server_fip.address
-  default_flavor = var.default_flavor
-  key_pair       = local.key_pair
-  network        = module.network.network
-  subnet         = module.network.subnet
-  router         = module.network.router
-  name           = "${local.prefix}_server"
-  default_az     = var.default_az
-}
-
 module "resources" {
   source = "./resources"
-
-  bastion_vm_id = module.bastion.bastion_vm_id
-}
-
-output "out-scn3_5_server_fip" {
-  value = opentelekomcloud_networking_floatingip_v2.server_fip.address
+  prefix         = local.prefix
+  debian_image   = var.debian_image
+  default_az     = var.default_az
+  default_flavor = var.default_flavor
+  disc_volume    = var.disc_volume
+  key_pair       = local.key_pair
+  net_address    = var.addr_3_octets
+  subnet         = module.network.subnet
+  nodes_count    = var.nodes_count
 }
