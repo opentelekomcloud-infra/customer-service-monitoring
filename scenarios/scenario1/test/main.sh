@@ -30,10 +30,8 @@ function run_test() {
 
 run_test > /dev/null &
 bg_pid=$!
-
-function check_and_wait() {
+wait_end=$(( $( date +%s ) + 20))
+while [[ $(date) < ${wait_end} ]] ; do  # if monitoring is dead in 20 seconds - consider test stage failed
     kill -0 ${bg_pid} || exit $?
-    sleep 5s
-}
-check_and_wait
-check_and_wait
+    sleep 1s
+done
