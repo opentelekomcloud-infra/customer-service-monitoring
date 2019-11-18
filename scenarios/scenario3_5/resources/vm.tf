@@ -35,7 +35,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "scn3_5_group" {
 # Create instance
 resource "opentelekomcloud_compute_instance_v2" "instance" {
   count       = var.nodes_count
-  name        = "basic_${count.index}"
+  name        = "${var.prefix}basic_${count.index}"
   flavor_name = var.default_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
   user_data   = file("${path.module}/first_boot.sh")
@@ -59,7 +59,7 @@ resource "opentelekomcloud_compute_instance_v2" "instance" {
 # Create network port
 resource "opentelekomcloud_networking_port_v2" "instance_port" {
   count          = var.nodes_count
-  name           = "port_${count.index}"
+  name           = "${var.prefix}port_${count.index}"
   network_id     = var.network.id
   admin_state_up = true
   security_group_ids = [

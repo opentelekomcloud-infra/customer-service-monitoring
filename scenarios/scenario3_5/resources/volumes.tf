@@ -5,6 +5,9 @@ resource "opentelekomcloud_evs_volume_v3" "iSCSI-volume" {
   volume_type = var.volume_type
   multiattach = true
   availability_zone = var.default_az
+  metadata = {
+    "hw:passthrough" = true
+  }
 }
 
 # Attach volumes to instance
