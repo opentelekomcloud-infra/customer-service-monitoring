@@ -1,5 +1,5 @@
 ---
-- name: Instal telegraf client on Bastion
+- name: Instal telegraf client on Localhost
   hosts: local
   become: true
   vars_files:
