@@ -60,7 +60,7 @@ resource "opentelekomcloud_compute_instance_v2" "instance" {
 resource "opentelekomcloud_networking_port_v2" "instance_port" {
   count          = var.nodes_count
   name           = "port_${count.index}"
-  network_id     = v
+  network_id     = var.network.id
   admin_state_up = true
   security_group_ids = [
     opentelekomcloud_compute_secgroup_v2.scn3_5_group.id

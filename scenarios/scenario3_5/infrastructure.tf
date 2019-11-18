@@ -29,5 +29,6 @@ module "resources" {
   key_pair       = local.key_pair
   net_address    = var.addr_3_octets
   subnet         = module.network.subnet
+  network        = module.network.network
   nodes_count    = var.nodes_count
 }

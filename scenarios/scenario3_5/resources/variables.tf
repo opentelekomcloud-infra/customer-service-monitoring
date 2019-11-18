@@ -10,6 +10,7 @@ variable "nodes_count" {}
 variable "default_flavor" {}
 variable "disc_volume" {}
 variable "subnet" {}
+variable "network" {}
 variable "prefix" {}
 variable "default_az" {}
 variable "net_address" {}
