@@ -16,7 +16,7 @@ resource "opentelekomcloud_as_group_v1" "autoscaling_group_with_lb" {
   scaling_configuration_id = opentelekomcloud_as_configuration_v1.as_config.id
   desire_instance_number = 0
   min_instance_number = 0
-  max_instance_number = 10
+  max_instance_number = 2
   networks {
     id = var.network_id
   }
@@ -33,7 +33,7 @@ resource "opentelekomcloud_as_group_v1" "autoscaling_group_with_lb" {
   health_periodic_audit_time = "5"
   delete_publicip = true
   delete_instances = "yes"
-  cool_down_time = 300
+  cool_down_time = 60
   depends_on = [
     opentelekomcloud_as_configuration_v1.as_config
   ]
