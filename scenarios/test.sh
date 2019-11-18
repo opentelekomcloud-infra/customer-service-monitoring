@@ -21,5 +21,12 @@ python -m pip install -r "${project_root}/playbooks/files/requirements.txt" || (
 scenario_dir="${project_root}/scenarios/${scenario_name}"
 cd ${scenario_dir} || exit 1
 
+test_path="./test/main.sh"
+
+if [[ ! -e ${test_path} ]]; then
+    echo "No test script exists for scenario ${scenario_name}"
+    exit 0
+fi
+
 echo "Starting test"
-bash ./test/main.sh "${project_root}"
+bash ${test_path} "${project_root}"

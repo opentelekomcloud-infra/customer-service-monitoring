@@ -1,16 +1,18 @@
+#!/usr/bin/env python3
 import json
 import os
+import sys
 from argparse import ArgumentParser
 
 import yaml
 
-version = '0.3'
+__version__ = '0.4'
 
 
 def parse_params():
-    parser = ArgumentParser('OpenTelekomCloud Terraform inventory')
+    parser = ArgumentParser(description='Create Ansible inventory from Terraform state for OpenTelekomCloud')
     parser.add_argument('state', help='Terraform state file')
-    parser.add_argument('--name', default=None)
+    parser.add_argument('--name')
     parser.add_argument('--version', '-v', action='store_true', help='Show version')
     args = parser.parse_args()
     if args.name is None:
@@ -18,19 +20,21 @@ def parse_params():
     return args
 
 
-def get_tfstate(state_file):
-    return json.load(open(state_file))
+def read_state(state_file) -> dict:
+    """Load Terraform state from tfstate file to dict"""
+    with open(state_file) as s_file:
+        return json.load(s_file)
 
 
 def main():
     args = parse_params()
     if args.version:
-        print(version)
-    else:
-        list_all(args)
+        print(__version__)
+        sys.exit(0)
+    generate_inventory(args)
 
 
-def list_all(args):
+def generate_inventory(args):
     inv_output = {
         'all': {
             'hosts': {},
@@ -39,11 +43,11 @@ def list_all(args):
     }
     hosts = inv_output['all']['hosts']
     children = inv_output['all']['children']
-    for name, attributes in get_tf_instances(args.state):
-        tag: dict = attributes.pop('tag', None) or {}
+    for name, attributes in get_ecs_instances(args.state):
+        tags: dict = attributes.pop('tag', None) or {}
         hosts[name] = attributes
-        if 'group' in tag:
-            grp_name = tag['group']
+        if 'group' in tags:
+            grp_name = tags['group']
             if grp_name not in children:
                 children[grp_name] = {'hosts': {}}
             children[grp_name]['hosts'][name] = ''
@@ -52,21 +56,21 @@ def list_all(args):
         path = f'{root_path}/inventory/prod/{args.name}.yml'
         with open(path, 'w+') as file:
             file.write(yaml.safe_dump(inv_output, default_flow_style=False))
-        print('File written to: {}'.format(path))
+        print(f'File written to: {path}')
     else:
         print('Nothing to write')
 
 
-def get_tf_instances(tfstate):
-    tfstate = get_tfstate(tfstate)
-    for resource in tfstate['resources']:
+def get_ecs_instances(tf_state_file):
+    tf_state = read_state(tf_state_file)
+    for resource in tf_state['resources']:
 
         if resource['type'] == 'opentelekomcloud_compute_instance_v2' and resource['name'] != 'bastion':
             for instance in resource['instances']:
                 tf_attrib = instance['attributes']
 
-                _name = tf_attrib['name']
-                _attributes = {
+                name = tf_attrib['name']
+                attributes = {
                     'id': tf_attrib['id'],
                     'image': tf_attrib['image_name'],
                     'region': tf_attrib['region'],
@@ -76,7 +80,7 @@ def get_tf_instances(tfstate):
                     'tag': tf_attrib['tag'],
                 }
 
-                yield _name, _attributes
+                yield name, attributes
 
 
 if __name__ == '__main__':
