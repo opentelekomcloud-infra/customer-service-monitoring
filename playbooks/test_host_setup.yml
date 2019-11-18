@@ -22,6 +22,7 @@
       name:
       - python3-setuptools
       - python3-pip
+      - python3-venv
       - python3-wheel
       - cron
   - name: Copy Requirements
