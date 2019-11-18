@@ -33,7 +33,7 @@ resource "opentelekomcloud_as_group_v1" "autoscaling_group_with_lb" {
   health_periodic_audit_time = "5"
   delete_publicip = true
   delete_instances = "yes"
-  cool_down_time = 60
+  cool_down_time = 300
   depends_on = [
     opentelekomcloud_as_configuration_v1.as_config
   ]
@@ -48,7 +48,7 @@ resource "opentelekomcloud_as_policy_v1" "alarm_scaling_policy" {
     operation = "ADD"
     instance_number = 2
   }
-  cool_down_time = 300
+  cool_down_time = 60
 }
 
 resource "opentelekomcloud_ces_alarmrule" "alarm" {
@@ -89,7 +89,7 @@ resource "opentelekomcloud_as_policy_v1" "reduce_policy" {
     operation = "REMOVE"
     instance_number = 2
   }
-  cool_down_time = 300
+  cool_down_time = 60
 }
 
 resource "opentelekomcloud_ces_alarmrule" "reduce" {
