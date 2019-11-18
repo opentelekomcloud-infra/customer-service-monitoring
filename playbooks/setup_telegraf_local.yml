@@ -1,0 +1,21 @@
+---
+- name: Instal telegraf client on Bastion
+  hosts: local
+  become: true
+  vars_files:
+  - "./vars/telegraf_dbconnection_vars.yml"
+  - "./vars/nginx_telegraf_local.yml"
+  roles:
+  - role: telegraf-client
+    vars:
+      telegraf_plugins_base:
+        - name: http_listener_v2
+          options:
+            service_address: ":8080"
+            data_format: "influx"
+  - role: geerlingguy.nginx
+    vars:
+      nginx_vhosts:
+        - listen: "80"
+          server_name: "localhost"
+          extra_parameters: "{{ extra_parameters }}"
