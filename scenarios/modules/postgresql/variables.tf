@@ -1,7 +1,7 @@
 variable "psql_port" {}
 variable "psql_password" {}
 variable "psql_version" {
-  default = "10.0"
+  default = "10"
 }
 variable "az" {}
 variable "subnet_cidr" {}

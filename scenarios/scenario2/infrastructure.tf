@@ -1,7 +1,7 @@
 module "resources" {
   source = "./resources"
 
-  centos_image   = var.centos_image
+  centos_image   = var.vm_image
   default_flavor = var.default_flavor
   net_address    = var.net_address
   postfix        = var.postfix
@@ -19,6 +19,7 @@ module "postgresql" {
   psql_port     = var.psql_port
   subnet_cidr   = module.resources.subnet.cidr
   subnet_id     = module.resources.subnet.id
+  psql_version  = var.psql_version
 }
 
 output "out-scn2_public_ip" {

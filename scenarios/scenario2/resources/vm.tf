@@ -1,14 +1,14 @@
 resource "opentelekomcloud_compute_keypair_v2" "pair" {
-  name = "csn2_${var.postfix}"
+  name       = "csn2_${var.postfix}"
   public_key = var.public_key
 }
 
 resource "opentelekomcloud_vpc_eip_v1" "scn2_eip" {
 
   bandwidth {
-    name = "scn2_limit"
+    name       = "scn2_limit"
     share_type = "PER"
-    size = 10
+    size       = 10
   }
 
   publicip {
@@ -22,39 +22,39 @@ output "scn2_eip" {
 
 resource "opentelekomcloud_compute_secgroup_v2" "scn2_public" {
   description = "Allow external connections to ssh, http, and https ports"
-  name = "scn2_public"
+  name        = "scn2_public"
 
   rule {
-    cidr = "0.0.0.0/0"
-    from_port = 80
+    cidr        = "0.0.0.0/0"
+    from_port   = 80
     ip_protocol = "tcp"
-    to_port = 80
+    to_port     = 80
   }
   rule {
-    cidr = "0.0.0.0/0"
-    from_port = 443
+    cidr        = "0.0.0.0/0"
+    from_port   = 443
     ip_protocol = "tcp"
-    to_port = 443
+    to_port     = 443
   }
   rule {
-    cidr = "0.0.0.0/0"
-    from_port = 22
+    cidr        = "0.0.0.0/0"
+    from_port   = 22
     ip_protocol = "tcp"
-    to_port = 22
+    to_port     = 22
   }
 }
 
 resource "opentelekomcloud_compute_instance_v2" "basic" {
-  name = "${var.postfix}_server"
+  name       = "${var.postfix}_server"
   image_name = var.centos_image
-  flavor_id = var.default_flavor
+  flavor_id  = var.default_flavor
   security_groups = [
     opentelekomcloud_compute_secgroup_v2.scn2_public.id
   ]
 
-  region = var.region
+  region            = var.region
   availability_zone = "${var.region}-01"
-  key_pair = opentelekomcloud_compute_keypair_v2.pair.name
+  key_pair          = opentelekomcloud_compute_keypair_v2.pair.name
 
   depends_on = [
     opentelekomcloud_vpc_subnet_v1.subnet,
@@ -63,7 +63,7 @@ resource "opentelekomcloud_compute_instance_v2" "basic" {
   ]
 
   network {
-    uuid = opentelekomcloud_vpc_subnet_v1.subnet.id
+    uuid        = opentelekomcloud_vpc_subnet_v1.subnet.id
     fixed_ip_v4 = "${var.net_address}.10"
   }
 

@@ -22,7 +22,10 @@ resource "opentelekomcloud_rds_instance_v3" "instance" {
     type = "COMMON"
     size = 50
   }
-  flavor = data.opentelekomcloud_rds_flavors_v3.flavours.flavors[1].name
+  flavor = [
+    for flavour in data.opentelekomcloud_rds_flavors_v3.flavours.flavors :
+    flavour.name if flavour.vcpus < 4
+  ][0]
   backup_strategy {
     start_time = "08:00-09:00"
     keep_days  = 1
