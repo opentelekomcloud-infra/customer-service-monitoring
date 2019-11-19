@@ -16,7 +16,7 @@
       telegraf_plugins_base:
         - name: http_listener_v2
           options:
-            service_address: ":8080"
+            service_address: "localhost:{{ telegraf_local_port }}"
             data_format: "influx"
   - role: geerlingguy.nginx
     vars:

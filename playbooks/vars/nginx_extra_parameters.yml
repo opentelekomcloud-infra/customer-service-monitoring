@@ -1,3 +1,4 @@
+telegraf_local_port: 8080
 extra_parameters: |
             location / {
                 if ($scheme = http) {
@@ -8,7 +9,7 @@ extra_parameters: |
                 proxy_http_version 1.1;
             }
             location /telegraf {
-                proxy_pass         http://localhost:8080;
+                proxy_pass         http://localhost:{{ telegraf_local_port }};
                 proxy_set_header   Host $host;
             }
             ssl_prefer_server_ciphers on;
