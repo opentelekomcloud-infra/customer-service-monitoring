@@ -1,15 +1,26 @@
 ---
 - name: Register existing settings
   hosts: local
-  roles:
-  - register_host
-  vars:
-    dnsname_or_ip: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
-    group: "scn2_ecs"
+  tasks:
+  - name: Register host
+    add_host:
+      hostname: 'scn2_ecs'
+      ansible_ssh_host: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+      ansible_ssh_user: 'linux'
+
+- name: Wait for host
+  hosts: scn2_ecs
+  tasks:
+  - name: Wait for host to be up
+    wait_for_connection:
+      delay: 5
+      timeout: 120
 
 - name: Start Server
   hosts: scn2_ecs
   become: yes
+  vars_files:
+  - "./vars/telegraf_dbconnection_vars.yml"
   roles:
   - role: too_simple_server
     vars:
@@ -20,8 +31,6 @@
       debug: False
       server_port: 80
   - role: telegraf-client
-    vars_files:
-      - "./vars/telegraf_dbconnection_vars.yml"
     vars:
       telegraf_plugins_base:
       - name: postgresql

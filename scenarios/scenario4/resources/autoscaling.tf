@@ -16,7 +16,7 @@ resource "opentelekomcloud_as_group_v1" "autoscaling_group_with_lb" {
   scaling_configuration_id = opentelekomcloud_as_configuration_v1.as_config.id
   desire_instance_number = 0
   min_instance_number = 0
-  max_instance_number = 10
+  max_instance_number = 2
   networks {
     id = var.network_id
   }
@@ -48,7 +48,7 @@ resource "opentelekomcloud_as_policy_v1" "alarm_scaling_policy" {
     operation = "ADD"
     instance_number = 2
   }
-  cool_down_time = 300
+  cool_down_time = 60
 }
 
 resource "opentelekomcloud_ces_alarmrule" "alarm" {
@@ -89,7 +89,7 @@ resource "opentelekomcloud_as_policy_v1" "reduce_policy" {
     operation = "REMOVE"
     instance_number = 2
   }
-  cool_down_time = 300
+  cool_down_time = 60
 }
 
 resource "opentelekomcloud_ces_alarmrule" "reduce" {
