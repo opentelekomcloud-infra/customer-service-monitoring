@@ -6,7 +6,7 @@ resource "opentelekomcloud_compute_keypair_v2" "pair" {
 # Create Bastion instance
 # Get the uuid of image
 data "opentelekomcloud_images_image_v2" "current_deb_image" {
-  name        = var.debian_image
+  name        = var.ecs_image
   most_recent = true
 }
 
@@ -19,15 +19,15 @@ locals {
 
 resource "opentelekomcloud_compute_instance_v2" "bastion" {
   name        = var.name
-  image_name  = var.debian_image
-  flavor_name = var.default_flavor
+  image_name  = var.ecs_image
+  flavor_name = var.ecs_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
   user_data = templatefile("${path.module}/first_boot_bastion.sh", {
     cidr            = var.subnet.cidr,
     bastion_address = local.bastion_ip,
   })
 
-  availability_zone = var.default_az
+  availability_zone = var.availability_zone
 
   depends_on = [
     opentelekomcloud_networking_port_v2.bastion_port
