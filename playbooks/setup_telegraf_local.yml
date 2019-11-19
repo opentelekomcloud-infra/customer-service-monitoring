@@ -1,15 +1,10 @@
 ---
-- name: Instal telegraf client on Bastion
-  hosts: bastion
+- name: Instal telegraf client on Localhost
+  hosts: local
   become: true
   vars_files:
   - "./vars/telegraf_dbconnection_vars.yml"
-  - "./vars/nginx_extra_parameters.yml"
-  tasks:
-    - name: copy ssl keys to nginx
-      copy:
-        src: nginx/nginx_keys/
-        dest: /etc/sslcerts/live/
+  - "./vars/nginx_telegraf_local.yml"
   roles:
   - role: telegraf-client
     vars:
@@ -21,6 +16,6 @@
   - role: geerlingguy.nginx
     vars:
       nginx_vhosts:
-        - listen: "443 ssl"
-          server_name: "csm.outcatcher.com"
+        - listen: "80"
+          server_name: "localhost"
           extra_parameters: "{{ extra_parameters }}"
