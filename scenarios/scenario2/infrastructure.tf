@@ -1,25 +1,29 @@
 module "resources" {
   source = "./resources"
 
-  centos_image   = var.vm_image
-  default_flavor = var.default_flavor
-  net_address    = var.net_address
-  postfix        = var.postfix
-  public_key     = var.public_key
-  region         = var.region
+  ecs_image   = var.ecs_image
+  ecs_flavor  = var.ecs_flavor
+  net_address = var.net_address
+  postfix     = var.postfix
+  public_key  = var.public_key
+
+  region            = var.region
+  availability_zone = var.availability_zone
 }
 
 module "postgresql" {
   source = "../modules/postgresql"
 
-  az            = var.default_az
-  instance_name = "scn2-db"
-  network_id    = module.resources.vpc_id
-  psql_password = var.psql_password
-  psql_port     = var.psql_port
-  subnet_cidr   = module.resources.subnet.cidr
-  subnet_id     = module.resources.subnet.id
+  availability_zone = var.availability_zone
+  instance_name     = "scn2-db"
+
+  network_id  = module.resources.vpc_id
+  subnet_id   = module.resources.subnet.id
+  subnet_cidr = module.resources.subnet.cidr
+
   psql_version  = var.psql_version
+  psql_port     = var.psql_port
+  psql_password = var.psql_password
 }
 
 output "out-scn2_public_ip" {

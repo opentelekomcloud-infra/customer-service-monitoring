@@ -3,7 +3,7 @@ variable "psql_password" {}
 variable "psql_version" {
   default = "10"
 }
-variable "az" {}
+variable "availability_zone" {}
 variable "subnet_cidr" {}
 variable "subnet_id" {}
 variable "network_id" {}

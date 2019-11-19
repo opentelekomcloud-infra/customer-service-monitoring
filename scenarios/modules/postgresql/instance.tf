@@ -6,7 +6,7 @@ data opentelekomcloud_rds_flavors_v3 "flavours" {
 
 resource "opentelekomcloud_rds_instance_v3" "instance" {
   availability_zone = [
-    var.az
+    var.availability_zone
   ]
   db {
     password = var.psql_password

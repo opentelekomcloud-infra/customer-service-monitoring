@@ -46,14 +46,14 @@ resource "opentelekomcloud_compute_secgroup_v2" "scn2_public" {
 
 resource "opentelekomcloud_compute_instance_v2" "basic" {
   name       = "${var.postfix}_server"
-  image_name = var.centos_image
-  flavor_id  = var.default_flavor
+  image_name = var.ecs_image
+  flavor_id  = var.ecs_flavor
   security_groups = [
     opentelekomcloud_compute_secgroup_v2.scn2_public.id
   ]
 
   region            = var.region
-  availability_zone = "${var.region}-01"
+  availability_zone = var.availability_zone
   key_pair          = opentelekomcloud_compute_keypair_v2.pair.name
 
   depends_on = [
