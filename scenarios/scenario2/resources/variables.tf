@@ -1,6 +1,9 @@
 variable "postfix" {}
 variable "net_address" {}
 variable "region" {}
+variable "availability_zone" {}
+
 variable "public_key" {}
-variable "default_flavor" {}
-variable "centos_image" {}
+variable "ecs_flavor" {}
+variable "ecs_image" {}
+
