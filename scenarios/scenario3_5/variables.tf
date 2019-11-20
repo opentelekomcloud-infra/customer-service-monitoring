@@ -2,17 +2,13 @@ variable "username" {}
 variable "password" {}
 variable "region" {}
 variable "tenant_name" {}
-variable "default_az" {}
+variable "availability_zone" {}
 variable "domain_name" {}
-variable "default_flavor" {}
-variable "debian_image" {}
+variable "ecs_flavor" {}
+variable "ecs_image" {}
 variable "addr_3_octets" { default = "192.168.0" }
 variable "postfix" {}
 variable "public_key" { default = "" }
-variable "server_eip" { default = "" }
-variable "nodes_count" {
-  default = 2
-}
 variable "disc_volume" {
   type    = number
   default = 10

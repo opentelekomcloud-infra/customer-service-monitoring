@@ -5,12 +5,11 @@ variable "key_pair" {
     public_key : string
   })
 }
-variable "debian_image" {}
-variable "nodes_count" {}
-variable "default_flavor" {}
+variable "ecs_image" {}
+variable "ecs_flavor" {}
 variable "disc_volume" {}
 variable "subnet" {}
 variable "network" {}
 variable "prefix" {}
-variable "default_az" {}
+variable "availability_zone" {}
 variable "net_address" {}

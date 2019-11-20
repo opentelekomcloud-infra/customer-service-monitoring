@@ -4,7 +4,7 @@ resource "opentelekomcloud_compute_keypair_v2" "pair" {
 }
 
 data "opentelekomcloud_images_image_v2" "current_image" {
-  name        = var.debian_image
+  name        = var.ecs_image
   most_recent = true
 }
 
@@ -35,11 +35,10 @@ resource "opentelekomcloud_compute_secgroup_v2" "scn3_5_group" {
 # Create instance for iscsi target
 resource "opentelekomcloud_compute_instance_v2" "target_instance" {
   name        = "${var.prefix}_target_instance"
-  flavor_name = var.default_flavor
+  flavor_name = var.ecs_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
-  user_data   = file("${path.module}/first_boot.sh")
 
-  availability_zone = var.default_az
+  availability_zone = var.availability_zone
 
   network {
     port = opentelekomcloud_networking_port_v2.target_instance_port.id
@@ -84,11 +83,10 @@ resource opentelekomcloud_compute_floatingip_associate_v2 "floatingip_associate_
 # Create instance for iscsi initiator
 resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
   name        = "${var.prefix}_initiator_instance"
-  flavor_name = var.default_flavor
+  flavor_name = var.ecs_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
-  user_data   = file("${path.module}/first_boot.sh")
 
-  availability_zone = var.default_az
+  availability_zone = var.availability_zone
 
   network {
     port = opentelekomcloud_networking_port_v2.initiator_instance_port.id

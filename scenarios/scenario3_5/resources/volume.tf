@@ -3,7 +3,7 @@ resource "opentelekomcloud_blockstorage_volume_v2" "SCSI-volume" {
   name              = "scsi-volume"
   size              = var.disc_volume
   volume_type       = var.volume_type
-  availability_zone = var.default_az
+  availability_zone = var.availability_zone
   device_type       = "SCSI"
 }
 

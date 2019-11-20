@@ -17,16 +17,15 @@ module "network" {
 
 module "resources" {
   source = "./resources"
-  prefix         = local.prefix
-  debian_image   = var.debian_image
-  default_az     = var.default_az
-  default_flavor = var.default_flavor
-  disc_volume    = var.disc_volume
-  key_pair       = local.key_pair
-  net_address    = var.addr_3_octets
-  subnet         = module.network.subnet
-  network        = module.network.network
-  nodes_count    = var.nodes_count
+  prefix            = local.prefix
+  ecs_image         = var.ecs_image
+  availability_zone = var.availability_zone
+  ecs_flavor        = var.ecs_flavor
+  disc_volume       = var.disc_volume
+  key_pair          = local.key_pair
+  net_address       = var.addr_3_octets
+  subnet            = module.network.subnet
+  network           = module.network.network
 }
 
 output "out-scn3_5_target_fip" {
