@@ -1,13 +1,21 @@
 ---
-- name: Register existing settings
+- name: Register existing settings for target
   hosts: local
-  include_role:
-    name: register_host
-  loop:
-    - { dnsname_or_ip: "{{ lookup('env', 'TARGET_SERVER_PUBLIC_IP') }}", group: 'scn3_5_target' }
-    - { dnsname_or_ip: "{{ lookup('env', 'INITIATOR_SERVER_PUBLIC_IP') }}"', group: 'scn3_5_initiator' }
+  roles:
+  - register_host
+  vars:
+    dnsname_or_ip: "{{ lookup('env', 'TARGET_SERVER_PUBLIC_IP') }}"
+    group: "scn3_5_target"
 
-- name: Prepare attached devices on server
+- name: Register existing settings for initiator
+  hosts: local
+  roles:
+  - register_host
+  vars:
+    dnsname_or_ip: "{{ lookup('env', 'INITIATOR_SERVER_PUBLIC_IP') }}"
+    group: "scn3_5_initiator"
+
+- name: Prepare attached device on target server
   hosts: scn3_5_target
   become: true
   tasks:

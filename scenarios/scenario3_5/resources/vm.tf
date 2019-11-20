@@ -34,7 +34,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "scn3_5_group" {
 
 # Create instance for iscsi target
 resource "opentelekomcloud_compute_instance_v2" "target_instance" {
-  name        = "${var.prefix}target_instance"
+  name        = "${var.prefix}_target_instance"
   flavor_name = var.default_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
   user_data   = file("${path.module}/first_boot.sh")
@@ -57,7 +57,7 @@ resource "opentelekomcloud_compute_instance_v2" "target_instance" {
 
 # Create network port for iscsi target
 resource "opentelekomcloud_networking_port_v2" "target_instance_port" {
-  name           = "${var.prefix}target_port"
+  name           = "${var.prefix}_target_port"
   network_id     = var.network.id
   admin_state_up = true
 
@@ -83,7 +83,7 @@ resource opentelekomcloud_compute_floatingip_associate_v2 "floatingip_associate_
 
 # Create instance for iscsi initiator
 resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
-  name        = "${var.prefix}initiator_instance"
+  name        = "${var.prefix}_initiator_instance"
   flavor_name = var.default_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
   user_data   = file("${path.module}/first_boot.sh")
@@ -106,7 +106,7 @@ resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
 
 # Create network port for iscsi initiator
 resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
-  name           = "${var.prefix}initiator_port"
+  name           = "${var.prefix}_initiator_port"
   network_id     = var.network.id
   admin_state_up = true
 
