@@ -6,4 +6,5 @@ function get_value() {
     echo $( echo "${output}" | grep -E "${var_name} =" | grep -oE "\"(.+)\"" | sed -e 's/^"//' -e 's/"$//' )
 }
 
-export SERVER_PUBLIC_IP=$( get_value "scn3_5_server_fip" )
+export TARGET_SERVER_PUBLIC_IP=$( get_value "scn3_5_target_fip" )
+export INITIATOR_SERVER_PUBLIC_IP=$( get_value "scn3_5_initiator_fip" )

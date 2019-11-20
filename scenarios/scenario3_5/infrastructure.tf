@@ -15,10 +15,6 @@ module "network" {
   prefix        = local.prefix
 }
 
-resource "opentelekomcloud_networking_floatingip_v2" "server_fip" {
-  pool = "admin_external_net"
-}
-
 module "resources" {
   source = "./resources"
   prefix         = local.prefix
@@ -31,4 +27,12 @@ module "resources" {
   subnet         = module.network.subnet
   network        = module.network.network
   nodes_count    = var.nodes_count
+}
+
+output "out-scn3_5_target_fip" {
+  value = module.resources.target_fip
+}
+
+output "out-out-scn3_5_initiator_fip" {
+  value = module.resources.initiator_fip
 }
