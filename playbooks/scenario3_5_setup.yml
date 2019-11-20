@@ -1,26 +1,16 @@
 ---
 - name: Register existing settings
   hosts: local
-  roles:
-  - register_host
-  vars:
-    dnsname_or_ip: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
-    group: "scn3_5_ecs"
+  include_role:
+    name: register_host
+  loop:
+    - { dnsname_or_ip: "{{ lookup('env', 'TARGET_SERVER_PUBLIC_IP') }}", group: 'scn3_5_target' }
+    - { dnsname_or_ip: "{{ lookup('env', 'INITIATOR_SERVER_PUBLIC_IP') }}"', group: 'scn3_5_initiator' }
 
 - name: Prepare attached devices on server
-  hosts: scn3_5_ecs
+  hosts: scn3_5_target
   become: true
   tasks:
-    - name: Add hdparm repository [Debian/Ubuntu]
-      apt_repository:
-        repo: deb http://deb.debian.org/debian stretch main
-        state: present
-
-    - name: Install hdparm
-      apt:
-        name: hdparm
-        update_cache: yes
-
     - name: Create a ext4 filesystem on attached disks
       filesystem:
         fstype: ext4
@@ -38,35 +28,3 @@
         src: "/dev/sda"
         fstype: ext4
         state: mounted
-
-    - name: Cron job for create big files on all devices every 15 minutes
-      cron:
-        name: "Creating big file on /dev/sda"
-        minute: "*/5"
-        job: /bin/dd if=/dev/urandom of="/mnt/scsi/bigfile.txt" bs=1000000 count=1000 oflag=dsync
-
-    - name: Cron job for reading big files on all devices every 5 minutes
-      cron:
-        name: "Reading big files from /dev/sda"
-        minute: "*/2"
-        job: /sbin/hdparm -tT "/dev/sda"
-
-- name: Instal telegraf client on server
-  hosts: scn3_5_ecs
-  become: true
-  vars_files:
-    - "./vars/telegraf_dbconnection_vars.yml"
-  roles:
-  - telegraf-client
-  vars:
-    telegraf_plugins_base:
-      - name: mem
-      - name: diskio
-        options:
-          devices: ["sda"]
-      - name: cpu
-        options:
-          percpu: "false"
-          totalcpu: "true"
-          fielddrop:
-            - "time_*"

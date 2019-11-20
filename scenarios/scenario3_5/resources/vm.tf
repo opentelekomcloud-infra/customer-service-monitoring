@@ -127,7 +127,7 @@ resource "opentelekomcloud_networking_floatingip_v2" "initiator_fip" {
 # Assign FIP to target initiator
 resource opentelekomcloud_compute_floatingip_associate_v2 "floatingip_associate_initiator" {
   floating_ip = opentelekomcloud_networking_floatingip_v2.initiator_fip.address
-  instance_id = opentelekomcloud_compute_instance_v2.target_instance.id
+  instance_id = opentelekomcloud_compute_instance_v2.initiator_instance.id
 }
 
 output "target_fip" {
