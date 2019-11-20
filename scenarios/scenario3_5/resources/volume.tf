@@ -9,6 +9,6 @@ resource "opentelekomcloud_blockstorage_volume_v2" "SCSI-volume" {
 
 # Attach volumes to instance
 resource "opentelekomcloud_compute_volume_attach_v2" "attach-SCSI-volume" {
-  instance_id = opentelekomcloud_compute_instance_v2.target_instance
+  instance_id = opentelekomcloud_compute_instance_v2.target_instance.id
   volume_id   = opentelekomcloud_blockstorage_volume_v2.SCSI-volume.id
 }
