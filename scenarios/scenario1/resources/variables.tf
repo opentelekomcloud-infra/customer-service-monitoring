@@ -5,9 +5,6 @@ variable "bastion_sec_group_id" {}
 variable "network_id" {}
 variable "subnet_id" {}
 
-variable "router_id" {}
-variable "region" {}
-
 variable "bastion_local_ip" {}
 variable "nodes_count" {}
 variable "key_pair_name" {}
@@ -18,9 +15,6 @@ variable "disc_volume" {
 
 variable "loadbalancer_local_ip" {}
 variable "loadbalancer_public_ip" {}
-
-variable "dns_private_zone" { default = "csm-otc.com" }
-variable "dns_bastion_record" { default = "bastion" } # domain inside `dns_private_zone`
 
 locals {
   workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"

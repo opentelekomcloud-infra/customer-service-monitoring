@@ -45,9 +45,6 @@ module "resources" {
   loadbalancer_local_ip  = "${var.addr_3_octets}.3"
   bastion_sec_group_id   = module.bastion.basion_group_id
   loadbalancer_public_ip = var.loadbalancer_eip
-
-  router_id = module.network.router.id
-  region    = var.region
 }
 
 output "out-scn1_lb_fip" {
@@ -56,8 +53,4 @@ output "out-scn1_lb_fip" {
 
 output "out-scn1_bastion_fip" {
   value = var.bastion_eip
-}
-
-output "out-scn1_bastion_local_dns" {
-  value = module.resources.bastion_dns
 }

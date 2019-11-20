@@ -49,7 +49,7 @@
     vars:
       nginx_vhosts:
       - listen: "80"
-        server_name: "{{ bastion_private_name }}"
+        server_name: "localhost"
         extra_parameters: "{{ extra_parameters }}"
 
 - name: Instal telegraf client on nodes

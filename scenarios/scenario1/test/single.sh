@@ -42,7 +42,7 @@ function prepare() {
     cd ${cur_dir}
 }
 
-telegraf="http://${BASTION_PRIVATE_NAME}/telegraf"
+telegraf="http://${BASTION_PUBLIC_IP}/telegraf"
 
 function telegraf_report() {
     result=$1
