@@ -1,0 +1,10 @@
+---
+- name: Configure and start
+  block:
+
+  - name: Write configuration
+    template:
+      src: config.yml.j2
+      dest: /etc/tgt/conf.d/otc_iscsi.conf
+      force: yes
+

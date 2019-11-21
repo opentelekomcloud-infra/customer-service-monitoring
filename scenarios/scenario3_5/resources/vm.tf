@@ -30,6 +30,12 @@ resource "opentelekomcloud_compute_secgroup_v2" "scn3_5_group" {
     ip_protocol = "tcp"
     to_port     = 443
   }
+  rule {
+    cidr        = "0.0.0.0/0"
+    from_port   = 3260
+    ip_protocol = "tcp"
+    to_port     = 3260
+  }
 }
 
 # Create instance for iscsi target

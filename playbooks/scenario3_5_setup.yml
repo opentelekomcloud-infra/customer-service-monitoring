@@ -6,6 +6,7 @@
   vars:
     dnsname_or_ip: "{{ lookup('env', 'TARGET_SERVER_PUBLIC_IP') }}"
     hostname: "scn3_5_target"
+    group: "scn3_5_ecs"
 
 - name: Register existing settings for initiator
   hosts: local
@@ -14,25 +15,38 @@
   vars:
     dnsname_or_ip: "{{ lookup('env', 'INITIATOR_SERVER_PUBLIC_IP') }}"
     hostname: "scn3_5_initiator"
+    group: "scn3_5_ecs"
 
 - name: Prepare attached device on target server
   hosts: scn3_5_target
   become: true
-  tasks:
-    - name: Create a ext4 filesystem on attached disks
-      filesystem:
-        fstype: ext4
-        dev: "/dev/sda"
+  roles:
+  - iscsi_target
+  vars:
+    volume_group: otc_iscsi
+    volume_name: otc_lun1
+    incominguser_password: password
+    outgoinguser_password: password
+    initiator_address: "{{ lookup('env', 'INITIATOR_SERVER_PUBLIC_IP') }}"
 
-    - name: Create directories for mount
-      file:
-        path: "/mnt/scsi"
-        state: directory
-        mode: '0755'
-
-    - name: Mount up devices
-      mount:
-        path: "/mnt/scsi"
-        src: "/dev/sda"
-        fstype: ext4
-        state: mounted
+#- name: Prepare attached device on target server
+#  hosts: scn3_5_target
+#  become: true
+#  tasks:
+#    - name: Create a ext4 filesystem on attached disks
+#      filesystem:
+#        fstype: ext4
+#        dev: "/dev/sda"
+#
+#    - name: Create directories for mount
+#      file:
+#        path: "/mnt/scsi"
+#        state: directory
+#        mode: '0755'
+#
+#    - name: Mount up devices
+#      mount:
+#        path: "/mnt/scsi"
+#        src: "/dev/sda"
+#        fstype: ext4
+#        state: mounted

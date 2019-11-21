@@ -1,0 +1,5 @@
+volume_group: otc_iscsi
+volume_name: otc_lun1
+incominguser_password: password
+outgoinguser_password: secretpass
+initiator_address: 192.168.0.11
