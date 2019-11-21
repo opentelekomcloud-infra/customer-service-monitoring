@@ -1,5 +1,5 @@
 ---
-- name: Configure and start
+- name: Configure and start iSCSI target
   block:
 
   - name: Write configuration

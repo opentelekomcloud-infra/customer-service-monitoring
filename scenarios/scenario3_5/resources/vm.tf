@@ -14,21 +14,9 @@ resource "opentelekomcloud_compute_secgroup_v2" "scn3_5_group" {
   name        = "${var.prefix}_grp"
   rule {
     cidr        = "0.0.0.0/0"
-    from_port   = 80
-    ip_protocol = "tcp"
-    to_port     = 80
-  }
-  rule {
-    cidr        = "0.0.0.0/0"
     from_port   = 22
     ip_protocol = "tcp"
     to_port     = 22
-  }
-  rule {
-    cidr        = "0.0.0.0/0"
-    from_port   = 443
-    ip_protocol = "tcp"
-    to_port     = 443
   }
   rule {
     cidr        = "0.0.0.0/0"
@@ -44,7 +32,7 @@ resource "opentelekomcloud_compute_instance_v2" "target_instance" {
   flavor_name = var.ecs_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
 
-  availability_zone = var.availability_zone
+  availability_zone = var.target_availability_zone
 
   network {
     port = opentelekomcloud_networking_port_v2.target_instance_port.id
@@ -92,7 +80,7 @@ resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
   flavor_name = var.ecs_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
 
-  availability_zone = var.availability_zone
+  availability_zone = var.initiator_availability_zone
 
   network {
     port = opentelekomcloud_networking_port_v2.initiator_instance_port.id
