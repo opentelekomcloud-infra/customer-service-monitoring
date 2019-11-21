@@ -22,15 +22,15 @@ resource "opentelekomcloud_networking_floatingip_v2" "server_fip" {
 module "bastion" {
   source = "../modules/bastion"
 
-  ecs_image   = var.debian_image
+  debian_image   = var.debian_image
   bastion_eip    = opentelekomcloud_networking_floatingip_v2.server_fip.address
-  ecs_flavor = var.default_flavor
+  default_flavor = var.default_flavor
   key_pair       = local.key_pair
   network        = module.network.network
   subnet         = module.network.subnet
   router         = module.network.router
   name           = "${local.prefix}_server"
-  availability_zone     = var.default_az
+  default_az     = var.default_az
 }
 
 module "resources" {

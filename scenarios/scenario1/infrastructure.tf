@@ -17,8 +17,8 @@ module "network" {
 module "bastion" {
   source = "../modules/bastion"
 
-  ecs_image  = var.ecs_image
-  ecs_flavor = var.ecs_flavor
+  debian_image   = var.ecs_image
+  default_flavor = var.ecs_flavor
 
   bastion_eip = var.bastion_eip
   key_pair    = local.key_pair
@@ -27,7 +27,7 @@ module "bastion" {
   router      = module.network.router
   name        = "${local.workspace_prefix}bastion"
 
-  availability_zone = var.availability_zone
+  default_az = var.availability_zone
 }
 
 module "resources" {
