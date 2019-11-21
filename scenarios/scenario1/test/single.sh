@@ -42,8 +42,7 @@ function prepare() {
     cd ${cur_dir}
 }
 
-csm_host="https://csm.outcatcher.com"
-telegraf="${csm_host}/telegraf"
+telegraf="http://${BASTION_PUBLIC_IP}/telegraf"
 
 function telegraf_report() {
     result=$1

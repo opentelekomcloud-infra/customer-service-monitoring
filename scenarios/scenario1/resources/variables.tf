@@ -1,6 +1,6 @@
 variable "net_address" {}
-variable "default_flavor" {}
-variable "debian_image" {}
+variable "ecs_flavor" {}
+variable "ecs_image" {}
 variable "bastion_sec_group_id" {}
 variable "network_id" {}
 variable "subnet_id" {}
