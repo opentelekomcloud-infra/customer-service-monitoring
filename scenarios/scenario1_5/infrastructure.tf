@@ -15,6 +15,7 @@ module "infrastructure" {
   domain_name       = var.domain_name
   ecs_flavor        = var.ecs_flavor
   ecs_image         = var.ecs_image
+  public_key        = var.public_key
 
   username = var.username
   password = var.password
