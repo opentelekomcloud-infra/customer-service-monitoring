@@ -23,7 +23,7 @@ function start_stop_rand_node() {
     fi
     cur_dir=$( pwd )
     cd ${project_root}
-    ansible-playbook -i inventory/prod playbooks/${playbook}
+    ansible-playbook playbooks/${playbook}
     cd ${cur_dir}
     sleep 3s
 }
@@ -36,7 +36,7 @@ function prepare() {
     terraform state pull > ${file} || exit $?
     source "${project_root}/.venv/bin/activate"
     export PYTHONPATH="${PYTHONPATH}:${scenario_dir}/test"
-    python3 "${project_root}/scenarios/core/create_inventory.py" ${file} --name "scenario1-single"
+    python3 "${project_root}/scenarios/core/create_inventory.py" ${file} --name "scenario1_5"
     source ./post_build.sh
     start_stop_rand_node start  # check that all nodes are running before test
     cd ${cur_dir}
