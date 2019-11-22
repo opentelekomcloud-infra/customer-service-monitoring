@@ -17,9 +17,9 @@ terraform workspace select ${ws_name} || terraform workspace new ${ws_name} || e
 
 function start_stop_rand_node() {
     if [[ "$1" == "stop" ]]; then
-        playbook=scenario1_stop_server_on_random_node.yml
+        playbook=scenario1_5_stop_server_on_random_node.yml
     else
-        playbook=scenario1_setup.yml
+        playbook=scenario1_5_setup.yml
     fi
     cur_dir=$( pwd )
     cd ${project_root}
@@ -66,9 +66,8 @@ fi
 
 prepare
 echo Preparation Finished
-lb_host="ecs-80-158-23-240.reverse.open-telekom-cloud.com"
-echo LB at ${lb_host}
-start_test="./load_balancer_test ${lb_host} 300"
+echo LB at ${LOADBALANCER_PUBLIC_IP}
+start_test="./load_balancer_test ${LOADBALANCER_PUBLIC_IP} 300"
 echo Starting test...
 
 function test_should_pass() {
@@ -94,11 +93,11 @@ elif [[ ${test_result} != 101 ]]; then
     telegraf_report fail ${test_result}
     exit ${test_result}
 fi
-python -m csm_test_utils rebalance --target ${lb_host} --telegraf=${csm_host} || telegraf_report fail $?
+python -m csm_test_utils rebalance --target ${LOADBALANCER_PUBLIC_IP} --telegraf=${telegraf} || telegraf_report fail $?
 
 sleep 60  # make reports beautiful again
 start_stop_rand_node start
-python -m csm_test_utils rebalance --target ${lb_host} --telegraf=${csm_host} || telegraf_report fail $?
+python -m csm_test_utils rebalance --target ${LOADBALANCER_PUBLIC_IP} --telegraf=${telegraf} || telegraf_report fail $?
 
 ${start_test}
 test_should_pass
