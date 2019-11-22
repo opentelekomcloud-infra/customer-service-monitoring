@@ -24,12 +24,13 @@
     lvol:
       vg: "{{ volume_group }}"
       lv: "{{ volume_name }}"
+      shrink: false
       size: 100%FREE
 
   - name: Write configuration
     template:
       src: config.yml.j2
-      dest: /etc/tgt/conf.d/otc_iscsi.conf
+      dest: "{{ config_path }}/{{ config_filename }}"
       force: yes
 
   - name: Restart service tgt
