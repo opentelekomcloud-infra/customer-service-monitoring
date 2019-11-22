@@ -33,6 +33,10 @@ output "out-scn3_5_target_fip" {
   value = module.resources.target_fip
 }
 
-output "out-out-scn3_5_initiator_fip" {
+output "out-scn3_5_initiator_fip" {
   value = module.resources.initiator_fip
+}
+
+output "out-scn3_5_iscsi_device_name" {
+  value = module.resources.device_name
 }

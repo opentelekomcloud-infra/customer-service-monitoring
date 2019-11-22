@@ -1,3 +1,4 @@
+device: /dev/sda
 volume_group: otc_iscsi
 volume_name: otc_lun1
 incominguser_username: otc-iscsi-user
