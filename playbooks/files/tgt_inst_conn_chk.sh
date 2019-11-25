@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 telegraf="localhost:8080/telegraf"
-res="$(tgtadm --mode conn --op show --tid 1)"
-data=$(echo $res | grep -oE "\b[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\b")
+session="$(iscsiadm -m session -o show)"
+data=$(echo $session| grep -oE "\b[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\b:[0-9]{4}")
 
 function telegraf_report() {
     result=$1

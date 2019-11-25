@@ -110,26 +110,16 @@
           totalcpu: "true"
           fielddrop:
             - "time_*"
-
-- name: Instal telegraf client on target
-  hosts: scn3_5_target
-  become: true
-  vars_files:
-    - "./vars/telegraf_dbconnection_vars.yml"
-  roles:
-  - telegraf-client
-  vars:
-    telegraf_plugins_base:
       - name: http_listener_v2
         options:
           service_address: "localhost:8080"
           data_format: "influx"
 
 - name: Prepare test
-  hosts: scn3_5_target
+  hosts: scn3_5_initiator
   become: true
   tasks:
-    - name: copy test script on target
+    - name: copy test script on initiator
       copy:
         src: tgt_inst_conn_chk.sh
         dest: /tmp/
