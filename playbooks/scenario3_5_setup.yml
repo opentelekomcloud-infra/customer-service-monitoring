@@ -45,6 +45,11 @@
         node_pass: "{{ incominguser_password }}"
         portal: "{{ hostvars.scn3_5_target_instance.ansible_host }}"
 
+    - name: copy test script on target
+      copy:
+        src: tgt_inst_conn_chk.sh
+        dest: /tmp/
+
 - name: Prepare attached iSCSI device on initiator
   hosts: scn3_5_initiator
   become: true
@@ -91,7 +96,7 @@
         minute: "*/2"
         job: /sbin/hdparm -tT "{{ lookup('env', 'ISCSI_DEVICE_NAME') }}"
 
-- name: Instal telegraf client on server
+- name: Instal telegraf client on initiator
   hosts: scn3_5_initiator
   become: true
   vars_files:
@@ -110,3 +115,18 @@
           totalcpu: "true"
           fielddrop:
             - "time_*"
+
+- name: Instal telegraf client on target
+  hosts: scn3_5_target
+  become: true
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
+  roles:
+  - telegraf-client
+  vars:
+    telegraf_plugins_base:
+      - name: exec
+        options:
+          commands : ["/tmp/tgt_inst_conn_chk.sh"]
+          timeout : "30s"
+          data_format : "influx"
