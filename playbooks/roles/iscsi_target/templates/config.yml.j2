@@ -1,0 +1,7 @@
+<target iqn.{{ ansible_date_time.year }}-{{ ansible_date_time.month }}.otc.com:lun1>
+    # Provided device as an iSCSI target
+    backing-store /dev/mapper/{{ volume_group }}-{{ volume_name }}
+    initiator-address {{ initiator_address }}
+    incominguser {{ incominguser_username }} {{ incominguser_password }}
+    outgoinguser {{ outgoinguser_username }} {{ outgoinguser_password }}
+</target>

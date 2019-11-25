@@ -1,0 +1,8 @@
+device: /dev/sda
+volume_group: otc_iscsi
+volume_name: otc_lun1
+incominguser_username: otc-iscsi-user
+incominguser_password: password
+outgoinguser_username: otc-iscsi-target
+outgoinguser_password: secretpass
+initiator_address: 192.168.0.11

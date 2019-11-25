@@ -8,3 +8,4 @@ function get_value() {
 
 export TARGET_SERVER_PUBLIC_IP=$( get_value "scn3_5_target_fip" )
 export INITIATOR_SERVER_PUBLIC_IP=$( get_value "scn3_5_initiator_fip" )
+export ISCSI_DEVICE_NAME=$( get_value "scn3_5_iscsi_device_name" )
