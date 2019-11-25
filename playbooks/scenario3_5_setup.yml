@@ -45,11 +45,6 @@
         node_pass: "{{ incominguser_password }}"
         portal: "{{ hostvars.scn3_5_target_instance.ansible_host }}"
 
-    - name: copy test script on target
-      copy:
-        src: tgt_inst_conn_chk.sh
-        dest: /tmp/
-
 - name: Prepare attached iSCSI device on initiator
   hosts: scn3_5_initiator
   become: true
@@ -115,6 +110,15 @@
           totalcpu: "true"
           fielddrop:
             - "time_*"
+
+- name: Copy test script to target
+  hosts: scn3_5_target
+  become: true
+  tasks:
+  - name: copy test script on target
+    copy:
+      src: tgt_inst_conn_chk.sh
+      dest: /tmp/
 
 - name: Instal telegraf client on target
   hosts: scn3_5_target
