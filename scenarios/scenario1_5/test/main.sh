@@ -64,6 +64,7 @@ fi
 prepare
 echo Preparation Finished
 echo LB at ${LOADBALANCER_PUBLIC_IP}
+echo telegraf at "${BASTION_PUBLIC_IP}"
 start_test="./load_balancer_test ${LOADBALANCER_PUBLIC_IP} 300"
 echo Starting test...
 
