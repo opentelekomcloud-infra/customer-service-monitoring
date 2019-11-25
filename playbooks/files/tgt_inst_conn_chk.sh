@@ -2,12 +2,6 @@
 telegraf="localhost:8080"
 res="$(tgtadm --mode conn --op show --tid 1)"
 data=$(echo $res | grep -oE "\b[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\b")
-if [[ ! -z ${data} ]];
-then
-  telegraf_report connected ok
-else
-  telegraf_report connection_lost fail
-fi
 
 function telegraf_report() {
     result=$1
@@ -20,3 +14,10 @@ function telegraf_report() {
         exit 3
     fi
 }
+
+if [[ ! -z ${data} ]];
+then
+  telegraf_report connected ok
+else
+  telegraf_report connection_lost fail
+fi
