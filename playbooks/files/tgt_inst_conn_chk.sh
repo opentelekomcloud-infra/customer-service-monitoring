@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-telegraf="localhost:8080"
+telegraf="localhost:8080/telegraf"
 res="$(tgtadm --mode conn --op show --tid 1)"
 data=$(echo $res | grep -oE "\b[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\b")
 
