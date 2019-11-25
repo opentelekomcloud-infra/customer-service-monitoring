@@ -38,6 +38,19 @@ function prepare() {
     cd ${cur_dir}
 }
 
+version=0.1
+archive=lb_test-${version}.tgz
+if [[ ! -e ${archive} ]]; then
+    wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v${version}/lb_test-${version}-linux.tar.gz
+    tar xf ${archive}
+fi
+
+prepare
+echo Preparation Finished
+echo LB at ${LOADBALANCER_PUBLIC_IP}
+echo telegraf at "${BASTION_PUBLIC_IP}"
+start_test="./load_balancer_test ${LOADBALANCER_PUBLIC_IP} 300"
+
 telegraf_host="http://${BASTION_PUBLIC_IP}"
 telegraf="${telegraf_host}/telegraf"
 
@@ -54,18 +67,6 @@ function telegraf_report() {
     fi
 }
 
-version=0.1
-archive=lb_test-${version}.tgz
-if [[ ! -e ${archive} ]]; then
-    wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v${version}/lb_test-${version}-linux.tar.gz
-    tar xf ${archive}
-fi
-
-prepare
-echo Preparation Finished
-echo LB at ${LOADBALANCER_PUBLIC_IP}
-echo telegraf at "${BASTION_PUBLIC_IP}"
-start_test="./load_balancer_test ${LOADBALANCER_PUBLIC_IP} 300"
 echo Starting test...
 
 function test_should_pass() {
