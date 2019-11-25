@@ -111,15 +111,6 @@
           fielddrop:
             - "time_*"
 
-- name: Copy test script to target
-  hosts: scn3_5_target
-  become: true
-  tasks:
-  - name: copy test script on target
-    copy:
-      src: tgt_inst_conn_chk.sh
-      dest: /tmp/
-
 - name: Instal telegraf client on target
   hosts: scn3_5_target
   become: true
@@ -134,3 +125,23 @@
           commands : ["/tmp/tgt_inst_conn_chk.sh"]
           timeout : "30s"
           data_format : "influx"
+
+- name: Prepare test
+  hosts: scn3_5_target
+  become: true
+  tasks:
+    - name: copy test script on target
+      copy:
+        src: tgt_inst_conn_chk.sh
+        dest: /tmp/
+
+    - name: Changing perm of "tgt_inst_conn_chk.sh", adding "+x"
+      file: dest=/tmp/tgt_inst_conn_chk.sh mode=a+x
+
+    - name: Allow 'telegraf' group to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%telegraf'
+        line: '%telegraf ALL=(ALL) NOPASSWD: ALL'
+        validate: visudo -cf %s
