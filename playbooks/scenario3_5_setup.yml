@@ -120,11 +120,10 @@
   - telegraf-client
   vars:
     telegraf_plugins_base:
-      - name: exec
+      - name: http_listener_v2
         options:
-          commands : ["/tmp/tgt_inst_conn_chk.sh"]
-          timeout : "30s"
-          data_format : "influx"
+          service_address: "localhost:8080"
+          data_format: "influx"
 
 - name: Prepare test
   hosts: scn3_5_target
@@ -138,10 +137,8 @@
     - name: Changing perm of "tgt_inst_conn_chk.sh", adding "+x"
       file: dest=/tmp/tgt_inst_conn_chk.sh mode=a+x
 
-    - name: Allow 'telegraf' group to have passwordless sudo
-      lineinfile:
-        dest: /etc/sudoers
-        state: present
-        regexp: '^%telegraf'
-        line: '%telegraf ALL=(ALL) NOPASSWD: ALL'
-        validate: visudo -cf %s
+    - name: Schedule connection test
+      cron:
+        name: "Check status of iSCSI connection"
+        minute: "*/1"
+        job: /tmp/tgt_inst_conn_chk.sh
