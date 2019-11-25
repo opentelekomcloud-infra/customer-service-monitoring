@@ -65,6 +65,7 @@ def get_key_from_s3() -> str:
             with open(output_file, 'wb') as file:
                 file.write(key)
             return output_file
+        raise cl_e
 
 
 if __name__ == '__main__':
