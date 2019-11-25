@@ -23,22 +23,23 @@ function start_stop_rand_node() {
     cd ${cur_dir}
     sleep 3s
 }
-
+scenario_name="scenario1_5"
 function prepare() {
     cur_dir=$(pwd)
     cd ${scenario_dir}
-    bash ./pre_build.sh
+    bash ../core/pre_build.sh ${scenario_name}
     file=tmp_state
     terraform state pull > ${file} || exit $?
     source "${project_root}/.venv/bin/activate"
     export PYTHONPATH="${PYTHONPATH}:${scenario_dir}/test"
-    python3 "${project_root}/scenarios/core/create_inventory.py" ${file} --name "scenario1_5"
+    python3 "${project_root}/scenarios/core/create_inventory.py" ${file} --name ${scenario_name}
     source ./post_build.sh
     start_stop_rand_node start  # check that all nodes are running before test
     cd ${cur_dir}
 }
 
-telegraf="http://${BASTION_PUBLIC_IP}/telegraf"
+telegraf_host="http://${BASTION_PUBLIC_IP}"
+telegraf="${telegraf_host}/telegraf"
 
 function telegraf_report() {
     result=$1
@@ -89,11 +90,11 @@ elif [[ ${test_result} != 101 ]]; then
     telegraf_report fail ${test_result}
     exit ${test_result}
 fi
-python -m csm_test_utils rebalance --target ${LOADBALANCER_PUBLIC_IP} --telegraf=${telegraf} || telegraf_report fail $?
+python -m csm_test_utils rebalance --target ${LOADBALANCER_PUBLIC_IP} --telegraf=${telegraf_host} || telegraf_report fail $?
 
 sleep 60  # make reports beautiful again
 start_stop_rand_node start
-python -m csm_test_utils rebalance --target ${LOADBALANCER_PUBLIC_IP} --telegraf=${telegraf} || telegraf_report fail $?
+python -m csm_test_utils rebalance --target ${LOADBALANCER_PUBLIC_IP} --telegraf=${telegraf_host} || telegraf_report fail $?
 
 ${start_test}
 test_should_pass
