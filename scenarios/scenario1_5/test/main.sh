@@ -33,7 +33,7 @@ function prepare() {
     source "${project_root}/.venv/bin/activate"
     export PYTHONPATH="${PYTHONPATH}:${scenario_dir}/test"
     python3 "${project_root}/scenarios/core/create_inventory.py" ${file} --name ${scenario_name}
-    source ./post_build.sh
+    source ./post_build.sh || exit 1
     start_stop_rand_node start  # check that all nodes are running before test
     cd ${cur_dir}
 }
