@@ -91,7 +91,7 @@
         minute: "*/2"
         job: /sbin/hdparm -tT "{{ lookup('env', 'ISCSI_DEVICE_NAME') }}"
 
-- name: Instal telegraf client on server
+- name: Instal telegraf client on initiator
   hosts: scn3_5_initiator
   become: true
   vars_files:
@@ -110,3 +110,25 @@
           totalcpu: "true"
           fielddrop:
             - "time_*"
+      - name: http_listener_v2
+        options:
+          service_address: "localhost:8080"
+          data_format: "influx"
+
+- name: Prepare test
+  hosts: scn3_5_initiator
+  become: true
+  tasks:
+    - name: copy test script on initiator
+      copy:
+        src: tgt_inst_conn_chk.sh
+        dest: /tmp/
+
+    - name: Changing perm of "tgt_inst_conn_chk.sh", adding "+x"
+      file: dest=/tmp/tgt_inst_conn_chk.sh mode=a+x
+
+    - name: Schedule connection test
+      cron:
+        name: "Check status of iSCSI connection"
+        minute: "*/1"
+        job: /tmp/tgt_inst_conn_chk.sh
