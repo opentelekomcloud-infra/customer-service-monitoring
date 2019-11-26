@@ -28,6 +28,8 @@ module "bastion" {
   name        = "${local.workspace_prefix}bastion"
 
   default_az = var.availability_zone
+
+  scenario_name = var.postfix
 }
 
 module "resources" {
@@ -37,6 +39,7 @@ module "resources" {
   ecs_image     = var.ecs_image
   key_pair_name = local.key_pair.key_name
   nodes_count   = var.nodes_count
+  postfix       = var.postfix
 
   net_address            = var.addr_3_octets
   network_id             = module.network.network.id

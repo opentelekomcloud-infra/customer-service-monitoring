@@ -11,38 +11,48 @@ echo "Scenario directory: ${scenario_dir}"
 cd "${scenario_dir}" || exit 1
 terraform init || exit $?
 
-ws_name="single"
-
-terraform workspace select ${ws_name} || terraform workspace new ${ws_name} || exit $?
-
 function start_stop_rand_node() {
     if [[ "$1" == "stop" ]]; then
-        playbook=scenario1_stop_server_on_random_node.yml
+        playbook=scenario1_5_stop_server_on_random_node.yml
     else
-        playbook=scenario1_setup.yml
+        playbook=scenario1_5_setup.yml
     fi
     cur_dir=$( pwd )
     cd ${project_root}
-    ansible-playbook -i inventory/prod playbooks/${playbook}
+    ansible-playbook playbooks/${playbook}
     cd ${cur_dir}
     sleep 3s
 }
-
+scenario_name="scenario1_5"
 function prepare() {
     cur_dir=$(pwd)
     cd ${scenario_dir}
-    bash ./pre_build.sh
+    bash ../core/pre_build.sh ${scenario_name}
     file=tmp_state
     terraform state pull > ${file} || exit $?
     source "${project_root}/.venv/bin/activate"
     export PYTHONPATH="${PYTHONPATH}:${scenario_dir}/test"
-    python3 "${project_root}/scenarios/core/create_inventory.py" ${file} --name "scenario1-single"
-    source ./post_build.sh
+    python3 "${project_root}/scenarios/core/create_inventory.py" ${file} --name ${scenario_name}
+    source ./post_build.sh || exit 1
     start_stop_rand_node start  # check that all nodes are running before test
     cd ${cur_dir}
 }
 
-telegraf="http://${BASTION_PUBLIC_IP}/telegraf"
+version=0.1
+archive=lb_test-${version}.tgz
+if [[ ! -e ${archive} ]]; then
+    wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v${version}/lb_test-${version}-linux.tar.gz
+    tar xf ${archive}
+fi
+
+prepare
+echo Preparation Finished
+echo LB at ${LOADBALANCER_PUBLIC_IP}
+echo telegraf at "${BASTION_PUBLIC_IP}"
+start_test="./load_balancer_test ${LOADBALANCER_PUBLIC_IP} 300"
+
+telegraf_host="http://${BASTION_PUBLIC_IP}"
+telegraf="${telegraf_host}/telegraf"
 
 function telegraf_report() {
     result=$1
@@ -57,18 +67,6 @@ function telegraf_report() {
     fi
 }
 
-version=0.1
-archive=lb_test-${version}.tgz
-if [[ ! -e ${archive} ]]; then
-    wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v${version}/lb_test-${version}-linux.tar.gz
-    tar xf ${archive}
-fi
-
-prepare
-echo Preparation Finished
-lb_host="ecs-80-158-23-240.reverse.open-telekom-cloud.com"
-echo LB at ${lb_host}
-start_test="./load_balancer_test ${lb_host} 300"
 echo Starting test...
 
 function test_should_pass() {
@@ -94,11 +92,11 @@ elif [[ ${test_result} != 101 ]]; then
     telegraf_report fail ${test_result}
     exit ${test_result}
 fi
-python -m csm_test_utils rebalance --target ${lb_host} --telegraf=${csm_host} || telegraf_report fail $?
+python -m csm_test_utils rebalance --target ${LOADBALANCER_PUBLIC_IP} --telegraf=${telegraf_host} || telegraf_report fail $?
 
 sleep 60  # make reports beautiful again
 start_stop_rand_node start
-python -m csm_test_utils rebalance --target ${lb_host} --telegraf=${csm_host} || telegraf_report fail $?
+python -m csm_test_utils rebalance --target ${LOADBALANCER_PUBLIC_IP} --telegraf=${telegraf_host} || telegraf_report fail $?
 
 ${start_test}
 test_should_pass
