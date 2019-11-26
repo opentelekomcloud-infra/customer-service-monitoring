@@ -52,26 +52,3 @@
       - listen: "80"
         server_name: "localhost"
         extra_parameters: "{{ extra_parameters }}"
-
-- name: Instal telegraf client on nodes
-  hosts: gatewayed
-  become: true
-  vars_files:
-  - "./vars/telegraf_dbconnection_vars.yml"
-  roles:
-  - telegraf-client
-  vars:
-    telegraf_plugins_base:
-    - name: cpu
-      options:
-        percpu: "false"
-        totalcpu: "true"
-        fielddrop:
-          - "time_*"
-    - name: net
-      options:
-        interfaces:
-          - "eth*"
-          - "enp0s[0-1]"
-          - "lo"
-          - "ens3"
