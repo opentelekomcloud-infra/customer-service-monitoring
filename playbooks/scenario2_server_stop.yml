@@ -2,7 +2,7 @@
 - name: Register existing settings
   hosts: local
   roles:
-  - register_host
+    - register_host
   vars:
     dnsname_or_ip: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
     group: "scn2_ecs"
@@ -11,6 +11,6 @@
   hosts: scn2_ecs
   become: yes
   roles:
-  - too_simple_server
+    - too_simple_server
   vars:
     server_state: absent

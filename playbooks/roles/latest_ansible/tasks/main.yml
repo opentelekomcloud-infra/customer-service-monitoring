@@ -1,11 +1,11 @@
 ---
-- name: debian install  # noqa 403
+- name: debian install # noqa 403
   apt:
     name: python3-pip
     state: latest
     update_cache: yes
   when: ansible_os_family == 'Debian'
-- name: install py3 ansible version  # noqa 403
+- name: install py3 ansible version # noqa 403
   pip:
     executable: pip3
     name:

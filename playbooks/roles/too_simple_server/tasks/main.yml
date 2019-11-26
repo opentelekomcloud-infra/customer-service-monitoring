@@ -2,36 +2,35 @@
 - name: Prepare server
   become: yes
   block:
-  - name: Check if server archive already downloaded
-    stat:
-      path: "{{ archive_dir }}"
-    register: existing_file
+    - name: Check if server archive already downloaded
+      stat:
+        path: "{{ archive_dir }}"
+      register: existing_file
 
-  - name: Log sha1
-    debug:
-      var: sha1sum
-      verbosity: 1
+    - name: Log sha1
+      debug:
+        var: sha1sum
+        verbosity: 1
 
-  - name: Compare checksum
-    set_fact:
-      force_new_download: "{{ existing_file.stat.checksum != sha1sum }}"
-    when: existing_file.stat.exists
+    - name: Compare checksum
+      set_fact:
+        force_new_download: "{{ existing_file.stat.checksum != sha1sum }}"
+      when: existing_file.stat.exists
 
-  - block:
-    - name: Download too-simple-server
-      get_url:
-        url: "{{ download_path }}"
-        dest: /tmp/
-        checksum: "sha1:{{ sha1sum }}"
-        force:  yes
+    - block:
+        - name: Download too-simple-server
+          get_url:
+            url: "{{ download_path }}"
+            dest: /tmp/
+            checksum: "sha1:{{ sha1sum }}"
+            force: yes
 
-    - name: Extract too-simple-server into /usr/bin/
-      unarchive:
-        src: "{{ archive_dir }}"
-        dest: /usr/bin/
-        remote_src: yes
-    when: force_new_download | default ('false')
-
+        - name: Extract too-simple-server into /usr/bin/
+          unarchive:
+            src: "{{ archive_dir }}"
+            dest: /usr/bin/
+            remote_src: yes
+      when: force_new_download | default ('false')
 
 - name: Stop server
   command: "{{ server }} stop"
@@ -39,24 +38,22 @@
     removes: "{{ server_pid_file }}"
   when: server_state == 'absent' or force_new_download
 
-
 - name: Configure and start
   when: server_state == 'present' or force_new_download
   block:
+    - name: Create config dir
+      become: yes
+      file:
+        mode: 0777
+        path: "{{ server_config_dir }}"
+        state: directory
 
-  - name: Create config dir
-    become: yes
-    file:
-      mode: 0777
-      path: "{{ server_config_dir }}"
-      state: directory
-
-  - name: Write configuration
-    template:
-      src: config.yml.j2
-      dest: "{{ server_config }}"
-      force: yes
-  - name: Start server
-    command: "{{ server }} --config {{ server_config }}"
-    args:
-      creates: "{{ server_pid_file }}"
+    - name: Write configuration
+      template:
+        src: config.yml.j2
+        dest: "{{ server_config }}"
+        force: yes
+    - name: Start server
+      command: "{{ server }} --config {{ server_config }}"
+      args:
+        creates: "{{ server_pid_file }}"

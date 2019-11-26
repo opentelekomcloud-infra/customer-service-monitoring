@@ -15,8 +15,7 @@ if [[ ! -d ${venv} ]]; then
     python3 -m venv ${venv} || exit 3
 fi
 source ${venv}/bin/activate
-python -m pip install -r "${project_root}/playbooks/files/requirements.txt" || ( echo "can't activate venv" && exit 3 )
-
+python -m pip install -r "${project_root}/playbooks/files/requirements.txt" || (echo "can't activate venv" && exit 3)
 
 scenario_dir="${project_root}/scenarios/${scenario_name}"
 cd ${scenario_dir} || exit 1

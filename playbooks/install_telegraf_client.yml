@@ -1,6 +1,6 @@
 ---
-- name: Instal telegraf client on nodes
+- name: Install telegraf client on nodes
   hosts: gatewayed
   become: true
   roles:
-  - telegraf-client
+    - telegraf-client

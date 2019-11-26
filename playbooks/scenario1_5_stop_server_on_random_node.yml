@@ -3,7 +3,6 @@
   hosts: "{{ groups.gatewayed | random }}"
   become: yes
   roles:
-  - too_simple_server
+    - too_simple_server
   vars:
     server_state: absent
-

@@ -2,7 +2,7 @@
 - name: Register existing settings
   hosts: local
   roles:
-  - register_host
+    - register_host
   vars:
     dnsname_or_ip: "{{ hostvars.bastion.ansible_host }}"
     group: "scn4_ecs"
@@ -11,10 +11,9 @@
   become: true
   hosts: gatewayed
   tasks:
-
     - name: Install stress and cron package
       apt:
-        name:  ['stress', 'cron']
+        name: ["stress", "cron"]
         update_cache: yes
         cache_valid_time: 3600
 

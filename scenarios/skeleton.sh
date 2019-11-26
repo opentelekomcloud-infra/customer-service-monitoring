@@ -8,8 +8,8 @@ fi
 
 FORCE=0
 if [[ "$2" == "--force" ]]; then
-    FORCE=1
-    echo "All existing files will be overwritten"
+  FORCE=1
+  echo "All existing files will be overwritten"
 fi
 
 target_name="$1"
@@ -21,20 +21,19 @@ mkdir -p "${target_dir}"
 # initialize terraform + some scripts
 shebang="#!/usr/bin/env bash"
 function init_if_missing() {
-    f_path="${target_dir}/$1"
-    data="$2"
-    if [[ ! -e ${f_path} || "${FORCE}" == "1" ]]; then
-        echo "${data}" > "${f_path}"
-        echo "File ${f_path} initialized."
-    else
-        echo "File ${f_path} already exists."
-    fi
-
+  f_path="${target_dir}/$1"
+  data="$2"
+  if [[ ! -e ${f_path} || "${FORCE}" == "1" ]]; then
+    echo "${data}" >"${f_path}"
+    echo "File ${f_path} initialized."
+  else
+    echo "File ${f_path} already exists."
+  fi
 }
 
 # init pre-/post-build scripts
 init_if_missing "pre_build.sh" "${shebang}"
-init_if_missing "post_build.sh" "$( < "./core/post_build_template.sh" )"
+init_if_missing "post_build.sh" "$(<"./core/post_build_template.sh")"
 
 # init tests
 mkdir -p "${target_dir}/test"

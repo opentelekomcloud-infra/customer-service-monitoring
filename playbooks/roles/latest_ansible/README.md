@@ -1,7 +1,7 @@
 Role Name
 =========
 
-Update ansible to latest version
+Update ansible to the latest version
 
 Requirements
 ------------

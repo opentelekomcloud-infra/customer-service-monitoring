@@ -2,37 +2,37 @@
 - name: Register existing settings
   hosts: local
   tasks:
-  - name: Register host
-    add_host:
-      hostname: 'scn2_ecs'
-      ansible_ssh_host: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
-      ansible_ssh_user: 'linux'
+    - name: Register host
+      add_host:
+        hostname: "scn2_ecs"
+        ansible_ssh_host: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+        ansible_ssh_user: "linux"
 
 - name: Wait for host
   hosts: scn2_ecs
   tasks:
-  - name: Wait for host to be up
-    wait_for_connection:
-      delay: 5
-      timeout: 120
+    - name: Wait for host to be up
+      wait_for_connection:
+        delay: 5
+        timeout: 120
 
 - name: Start Server
   hosts: scn2_ecs
   become: yes
   vars_files:
-  - "./vars/telegraf_dbconnection_vars.yml"
+    - "./vars/telegraf_dbconnection_vars.yml"
   roles:
-  - role: too_simple_server
-    vars:
-      pg_db_url: "{{ lookup('env', 'PSQL_ADDRESS') }}"
-      pg_database: "entities"
-      pg_username: "{{ lookup('env', 'PSQL_USERNAME') }}"
-      pg_password: "{{ lookup('env', 'PSQL_PASSWORD') }}"
-      debug: False
-      server_port: 80
-  - role: telegraf-client
-    vars:
-      telegraf_plugins_base:
-      - name: postgresql
-        options:
-          address: "postgres://{{ lookup('env', 'PSQL_USERNAME') }}:{{ lookup('env', 'PSQL_PASSWORD') }}@{{ lookup('env', 'PSQL_ADDRESS') }}/entities"
+    - role: too_simple_server
+      vars:
+        pg_db_url: "{{ lookup('env', 'PSQL_ADDRESS') }}"
+        pg_database: "entities"
+        pg_username: "{{ lookup('env', 'PSQL_USERNAME') }}"
+        pg_password: "{{ lookup('env', 'PSQL_PASSWORD') }}"
+        debug: False
+        server_port: 80
+    - role: telegraf-client
+      vars:
+        telegraf_plugins_base:
+          - name: postgresql
+            options:
+              address: "postgres://{{ lookup('env', 'PSQL_USERNAME') }}:{{ lookup('env', 'PSQL_PASSWORD') }}@{{ lookup('env', 'PSQL_ADDRESS') }}/entities"

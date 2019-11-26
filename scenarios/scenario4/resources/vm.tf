@@ -40,4 +40,3 @@ resource "opentelekomcloud_networking_port_v2" "http" {
     ip_address = "${var.net_address}.${count.index + 10}"
   }
 }
-

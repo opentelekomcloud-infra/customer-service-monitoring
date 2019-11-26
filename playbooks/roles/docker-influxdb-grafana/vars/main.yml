@@ -1,3 +1,0 @@
-docker_configs_folder: influx_grafana_telegraf
-python_packages_state: latest
-nginx_state: latest

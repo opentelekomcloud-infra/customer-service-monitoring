@@ -2,24 +2,24 @@
 - name: Register existing settings
   hosts: local
   tasks:
-  - name: Register host
-    add_host:
-      hostname: 'scn1_ecs'
-      ansible_ssh_host: "{{ hostvars.bastion.ansible_host }}"
-      ansible_ssh_user: 'linux'
+    - name: Register host
+      add_host:
+        hostname: "scn1_ecs"
+        ansible_ssh_host: "{{ hostvars.bastion.ansible_host }}"
+        ansible_ssh_user: "linux"
 
 - name: Wait for host
   hosts: scn1_ecs
   tasks:
-  - name: Wait for host to be up
-    wait_for_connection:
-      timeout: 120
+    - name: Wait for host to be up
+      wait_for_connection:
+        timeout: 120
 
 - name: Start Server
   hosts: gatewayed
   become: true
   roles:
-  - too_simple_server
+    - too_simple_server
   vars:
     debug: True
     server_port: 80
@@ -28,8 +28,8 @@
   hosts: bastion
   become: true
   vars_files:
-  - "./vars/telegraf_dbconnection_vars.yml"
-  - "./vars/nginx_telegraf_local.yml"
+    - "./vars/telegraf_dbconnection_vars.yml"
+    - "./vars/nginx_telegraf_local.yml"
   vars:
     bastion_private_name: "{{ lookup('env', 'BASTION_PRIVATE_NAME') }}"
   tasks:
@@ -38,40 +38,40 @@
         src: nginx/nginx_keys/
         dest: /etc/sslcerts/live/
   roles:
-  - role: telegraf-client
-    vars:
-      telegraf_plugins_base:
-      - name: http_listener_v2
-        options:
-          service_address: "localhost:{{ telegraf_local_port }}"
-          data_format: "influx"
-  - role: geerlingguy.nginx
-    vars:
-      nginx_remove_default_vhost: yes
-      nginx_vhosts:
-      - listen: "80"
-        server_name: "localhost"
-        extra_parameters: "{{ extra_parameters }}"
+    - role: telegraf-client
+      vars:
+        telegraf_plugins_base:
+          - name: http_listener_v2
+            options:
+              service_address: "localhost:{{ telegraf_local_port }}"
+              data_format: "influx"
+    - role: geerlingguy.nginx
+      vars:
+        nginx_remove_default_vhost: yes
+        nginx_vhosts:
+          - listen: "80"
+            server_name: "localhost"
+            extra_parameters: "{{ extra_parameters }}"
 
-- name: Instal telegraf client on nodes
+- name: Install telegraf client on nodes
   hosts: gatewayed
   become: true
   vars_files:
-  - "./vars/telegraf_dbconnection_vars.yml"
+    - "./vars/telegraf_dbconnection_vars.yml"
   roles:
-  - telegraf-client
+    - telegraf-client
   vars:
     telegraf_plugins_base:
-    - name: cpu
-      options:
-        percpu: "false"
-        totalcpu: "true"
-        fielddrop:
-          - "time_*"
-    - name: net
-      options:
-        interfaces:
-          - "eth*"
-          - "enp0s[0-1]"
-          - "lo"
-          - "ens3"
+      - name: cpu
+        options:
+          percpu: "false"
+          totalcpu: "true"
+          fielddrop:
+            - "time_*"
+      - name: net
+        options:
+          interfaces:
+            - "eth*"
+            - "enp0s[0-1]"
+            - "lo"
+            - "ens3"

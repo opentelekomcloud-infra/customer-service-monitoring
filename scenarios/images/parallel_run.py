@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Start building images in parallel"""
+"""Start building images in parallel."""
 
 import subprocess
 import sys
@@ -9,7 +9,7 @@ TIMEOUT = 20 * 60
 
 
 def main():
-    """Run packer for all given targets in a parallel"""
+    """Run packer for all given targets in a parallel."""
     targets = sys.argv[1:]
 
     def _run(_target):

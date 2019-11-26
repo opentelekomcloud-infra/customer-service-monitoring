@@ -32,4 +32,3 @@ output "out-scn1_5_lb_fip" {
 output "out-scn1_5_bastion_fip" {
   value = var.bastion_eip
 }
-

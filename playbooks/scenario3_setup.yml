@@ -2,7 +2,7 @@
 - name: Register existing settings
   hosts: local
   roles:
-  - register_host
+    - register_host
   vars:
     dnsname_or_ip: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
     group: "scn3_ecs"
@@ -36,7 +36,7 @@
       file:
         path: "/mnt/{{ item.key }}"
         state: directory
-        mode: '0755'
+        mode: "0755"
       with_items: "{{ lookup('dict', devices) }}"
 
     - name: Mount up devices
@@ -61,13 +61,13 @@
         job: /sbin/hdparm -tT "{{ item.value }}"
       with_items: "{{ lookup('dict', devices) }}"
 
-- name: Instal telegraf client on server
+- name: Install telegraf client on server
   hosts: scn3_ecs
   become: true
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
   roles:
-  - telegraf-client
+    - telegraf-client
   vars:
     telegraf_plugins_base:
       - name: mem

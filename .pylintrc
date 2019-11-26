@@ -14,7 +14,7 @@ ignore=CVS
 # Pickle collected data for later comparisons.
 persistent=yes
 
-# List of plugins (as comma separated values of python modules names) to load,
+# List of plugins (as comma-separated-values of python modules names) to load,
 # usually to register additional checkers.
 load-plugins=
 
@@ -30,7 +30,7 @@ unsafe-load-any-extension=no
 # run arbitrary code
 extension-pkg-whitelist=
 
-# Allow optimization of some AST trees. This will activate a peephole AST
+# Allow optimization of some AST trees. That will activate a peephole AST
 # optimizer, which will apply various small optimizations. For instance, it can
 # be used to obtain the result of joining multiple strings with the addition
 # operator. Joining a lot of strings can lead to a maximum recursion error in
@@ -46,14 +46,14 @@ optimize-ast=no
 confidence=
 
 # Enable the message, report, category or checker with the given id(s). You can
-# either give multiple identifier separated by comma (,) or put this option
-# multiple time. See also the "--disable" option for examples.
+# either give multiple identifiers separated by comma (,) or put this option
+# multiple times. See also the "--disable" option for example.
 #enable=
 
 # Disable the message, report, category or checker with the given id(s). You
 # can either give multiple identifiers separated by comma (,) or put this
 # option multiple times (only on the command line, not in the configuration
-# file where it should appear only once).You can also use "--disable=all" to
+# file where it should appear only once). You can also use "--disable=all" to
 # disable everything first and then reenable specific checks. For example, if
 # you want to run only the similarities checker, you can use "--disable=all
 # --enable=similarities". If you want to run only the classes checker, but have
@@ -65,11 +65,11 @@ disable=
 [REPORTS]
 
 # Set the output format. Available formats are text, parseable, colorized, msvs
-# (visual studio) and html. You can also give a reporter class, eg
+# (visual studio) and HTML. You can also give a reporter class, eg
 # mypackage.mymodule.MyReporterClass.
 output-format=colorized
 
-# Put messages in a separate file for each module / package specified on the
+# Put messages in a separate file for each module/package specified on the
 # command line instead of printing them on stdout. Reports (if any) will be
 # written in a file name "pylint_global.[txt|html]".
 files-output=no
@@ -79,19 +79,19 @@ reports=yes
 
 # Python expression which should return a note less than 10 (10 is the highest
 # note). You have access to the variables errors warning, statement which
-# respectively contain the number of errors / warnings messages and the total
-# number of statements analyzed. This is used by the global evaluation report
+# respectively contain the number of errors/warnings messages and the total
+# number of statements analyzed. That is used by the global evaluation report
 # (RP0004).
 evaluation=10.0 - ((float(5 * error + 2 * warning + refactor + convention) / statement) * 10)
 
-# Template used to display messages. This is a python new-style format string
+# Template used to display messages. That is a python new-style format string
 # used to format the message information. See doc for all details
 #msg-template=
 
 
 [BASIC]
 
-# List of builtins function names that should not be used, separated by a comma
+# List of builtin function names that should not be used, separated by a comma
 bad-functions=map,filter,input
 
 # Good variable names which should always be accepted, separated by a comma
@@ -178,7 +178,7 @@ docstring-min-length=-1
 
 [ELIF]
 
-# Maximum number of nested blocks for function / method body
+# Maximum number of nested blocks for function/method body
 max-nested-blocks=5
 
 
@@ -196,18 +196,18 @@ single-line-if-stmt=no
 
 # List of optional constructs for which whitespace checking is disabled. `dict-
 # separator` is used to allow tabulation in dicts, etc.: {1  : 1,\n222: 2}.
-# `trailing-comma` allows a space between comma and closing bracket: (a, ).
+# `trailing-comma` allows a space between the comma and closing bracket: (a, ).
 # `empty-line` allows space-only lines.
 no-space-check=trailing-comma,dict-separator
 
 # Maximum number of lines in a module
 max-module-lines=1000
 
-# String used as indentation unit. This is usually "    " (4 spaces) or "\t" (1
+# String used as indentation unit. That is usually "    " (4 spaces) or "\t" (1
 # tab).
 indent-string='    '
 
-# Number of spaces of indent required inside a hanging  or continued line.
+# Number of spaces of indent required inside a hanging or continued line.
 indent-after-paren=4
 
 # Expected format of line ending, e.g. empty (any line ending), LF or CRLF.
@@ -223,13 +223,13 @@ logging-modules=logging
 
 [MISCELLANEOUS]
 
-# List of note tags to take in consideration, separated by a comma.
+# List of note tags to take into consideration, separated by a comma.
 notes=FIXME,XXX,TODO
 
 
 [SIMILARITIES]
 
-# Minimum lines number of a similarity.
+# Minimum lines number of similarities.
 min-similarity-lines=4
 
 # Ignore comments when computing similarities.
@@ -248,10 +248,10 @@ ignore-imports=no
 # install python-enchant package.
 spelling-dict=
 
-# List of comma separated words that should not be checked.
+# List of comma-separated words that should not be checked.
 spelling-ignore-words=
 
-# A path to a file that contains private dictionary; one word per line.
+# A path to a file that contains a private dictionary; one word per line.
 spelling-private-dict-file=
 
 # Tells whether to store unknown words to indicated private dictionary in
@@ -295,7 +295,7 @@ dummy-variables-rgx=_$|dummy
 # you should avoid to define new builtins when possible.
 additional-builtins=
 
-# List of strings which can identify a callback function by name. A callback
+# List of strings that can identify a callback function by name. A callback
 # name must start or end with one of those strings.
 callbacks=cb_,_cb
 
@@ -305,7 +305,7 @@ callbacks=cb_,_cb
 # List of method names used to declare (i.e. assign) instance attributes.
 defining-attr-methods=__init__,__new__,setUp
 
-# List of valid names for the first argument in a class method.
+# List of valid names for the first argument is a class method.
 valid-classmethod-first-arg=cls
 
 # List of valid names for the first argument in a metaclass class method.
@@ -318,23 +318,23 @@ exclude-protected=_asdict,_fields,_replace,_source,_make
 
 [DESIGN]
 
-# Maximum number of arguments for function / method
+# Maximum number of arguments for function/method
 max-args=8
 
 # Argument names that match this expression will be ignored. Default to name
-# with leading underscore
+# with a leading underscore
 ignored-argument-names=_.*
 
-# Maximum number of locals for function / method body
+# Maximum number of locals for function/method body
 max-locals=15
 
-# Maximum number of return / yield for function / method body
+# Maximum number of return/yield for function/method body
 max-returns=6
 
-# Maximum number of branch for function / method body
+# Maximum number of a branch for function/method body
 max-branches=12
 
-# Maximum number of statements in function / method body
+# Maximum number of statements in function/method body
 max-statements=50
 
 # Maximum number of parents for a class (see R0901).
@@ -349,7 +349,7 @@ min-public-methods=2
 # Maximum number of public methods for a class (see R0904).
 max-public-methods=25
 
-# Maximum number of boolean expressions in a if statement
+# Maximum number of boolean expressions in an if statement
 max-bool-expr=5
 
 
@@ -358,7 +358,7 @@ max-bool-expr=5
 # Deprecated modules which should not be used, separated by a comma
 deprecated-modules=regsub,TERMIOS,Bastion,rexec
 
-# Create a graph of every (i.e. internal and external) dependencies in the
+# Create a graph of every (i.e. internal and external) dependency in the
 # given file (report RP0402 must not be disabled)
 import-graph=
 

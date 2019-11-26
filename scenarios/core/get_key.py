@@ -43,7 +43,7 @@ def requires_update(file_name, remote_md5):
 
 
 def get_key_from_s3() -> str:
-    """Download existing key from s3 or create a new one and upload"""
+    """Download existing key from s3 or create a new one and upload."""
     args = parse_params()
     session = Session(aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
                       aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY'])
