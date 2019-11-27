@@ -24,3 +24,6 @@ override.tf.json
 # var files to keep credentials
 secrets.*
 /venv/
+
+# vscode folder
+/.vscode/
