@@ -3,7 +3,7 @@
   service:
     name: telegraf
     state: restarted
-  become: true
+  become: yes
   when: telegraf_start_service
 
 - name: pause
@@ -17,7 +17,7 @@
     warn: false
   ignore_errors: yes
   register: telegraf_service_status
-  become: true
+  become: yes
   when: telegraf_start_service
 
 - name: assert running

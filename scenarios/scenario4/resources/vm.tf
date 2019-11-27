@@ -5,11 +5,11 @@ data "opentelekomcloud_images_image_v2" "current_image" {
 
 # Create instance
 resource "opentelekomcloud_compute_instance_v2" "http" {
-  count       = var.nodes_count
-  name        = "${local.workspace_prefix}${var.prefix}_basic_${count.index}"
-  flavor_name = var.default_flavor
-  key_pair    = var.kp.key_name
-  user_data   = file("${path.module}/first_boot.sh")
+  count             = var.nodes_count
+  name              = "${local.workspace_prefix}${var.prefix}_basic_${count.index}"
+  flavor_name       = var.ecs_flavor
+  key_pair          = var.kp.key_name
+  user_data         = file("${path.module}/first_boot.sh")
   availability_zone = var.az
 
   network {

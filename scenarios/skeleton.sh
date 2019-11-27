@@ -63,7 +63,7 @@ init_if_missing "test/main.py" ""
 init_if_missing "terraform.tfvars" \
 "region = \"eu-de\"
 tenant_name = \"eu-de_rus\"
-default_az = \"eu-de-01\"
+availability_zone = \"eu-de-01\"
 domain_name = \"OTC00000000001000000447\""
 init_if_missing "secrets.auto.tfvars" \
 "username = \"\"
@@ -99,7 +99,7 @@ init_if_missing "variables.tf" "variable \"username\" {}
 variable \"password\" {}
 variable \"region\" {}
 variable \"tenant_name\" {}
-variable \"default_az\" {}
+variable \"availability_zone\" {}
 variable \"domain_name\" {}"
 
 cd "${target_dir}" || exit 2

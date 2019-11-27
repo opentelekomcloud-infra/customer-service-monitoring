@@ -16,7 +16,7 @@ module "network" {
 }
 
 module "resources" {
-  source = "./resources"
+  source                      = "./resources"
   prefix                      = local.prefix
   ecs_image                   = var.ecs_image
   initiator_availability_zone = var.initiator_availability_zone

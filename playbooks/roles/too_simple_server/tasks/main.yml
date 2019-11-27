@@ -57,3 +57,7 @@
       command: "{{ server }} --config {{ server_config }}"
       args:
         creates: "{{ server_pid_file }}"
+    - name: Wait for port starts
+      wait_for:
+        port: 5054
+        timeout: 60

@@ -1,8 +1,8 @@
 # Create volume
 resource "opentelekomcloud_blockstorage_volume_v2" "volumes" {
-  count = 3
-  name = format("vol-%s", var.volume_type[count.index])
-  size = 2
+  count       = 3
+  name        = format("vol-%s", var.volume_type[count.index])
+  size        = 2
   volume_type = var.volume_type[count.index]
 }
 

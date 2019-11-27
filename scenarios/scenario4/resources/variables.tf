@@ -1,5 +1,5 @@
 variable "net_address" {}
-variable "default_flavor" {}
+variable "ecs_flavor" {}
 variable "host_image" {}
 variable "bastion_sec_group_id" {}
 variable "network_id" {}

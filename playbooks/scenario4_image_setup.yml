@@ -21,7 +21,7 @@
 
 - name: Start test Server
   hosts: scn4_host
-  become: true
+  become: yes
   roles:
     - too_simple_server
   vars:

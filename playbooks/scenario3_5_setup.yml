@@ -19,7 +19,7 @@
 
 - name: Prepare attached device on target server
   hosts: scn3_5_target
-  become: true
+  become: yes
   vars_files:
     - "./vars/scenario_3_5_vars.yml"
   roles:
@@ -27,7 +27,7 @@
 
 - name: Prepare initiator and connect device
   hosts: scn3_5_initiator
-  become: true
+  become: yes
   vars_files:
     - "./vars/scenario_3_5_vars.yml"
   tasks:
@@ -47,7 +47,7 @@
 
 - name: Prepare attached iSCSI device on initiator
   hosts: scn3_5_initiator
-  become: true
+  become: yes
   vars:
     mount_point: "/mnt/scsi"
   tasks:
@@ -93,7 +93,7 @@
 
 - name: Install telegraf client on initiator
   hosts: scn3_5_initiator
-  become: true
+  become: yes
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
   roles:
@@ -117,7 +117,7 @@
 
 - name: Prepare test
   hosts: scn3_5_initiator
-  become: true
+  become: yes
   tasks:
     - name: copy test script on initiator
       copy:

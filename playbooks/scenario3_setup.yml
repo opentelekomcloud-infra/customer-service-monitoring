@@ -9,7 +9,7 @@
 
 - name: Prepare attached devices on server
   hosts: scn3_ecs
-  become: true
+  become: yes
   vars:
     devices:
       sata: "/dev/vdb"
@@ -63,7 +63,7 @@
 
 - name: Install telegraf client on server
   hosts: scn3_ecs
-  become: true
+  become: yes
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
   roles:

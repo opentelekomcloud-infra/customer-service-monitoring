@@ -17,7 +17,7 @@
 
 - name: Start Server
   hosts: gatewayed
-  become: true
+  become: yes
   roles:
     - too_simple_server
   vars:
@@ -26,7 +26,7 @@
 
 - name: Install telegraf client on Bastion
   hosts: bastion
-  become: true
+  become: yes
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
     - "./vars/nginx_telegraf_local.yml"

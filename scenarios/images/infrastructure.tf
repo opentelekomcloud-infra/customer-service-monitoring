@@ -26,7 +26,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "group" {
 }
 
 data "opentelekomcloud_images_image_v2" "base_image" {
-  name        = var.image_name
+  name        = var.ecs_image
   most_recent = true
   visibility  = var.image_visibility
 }

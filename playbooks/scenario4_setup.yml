@@ -8,7 +8,7 @@
     group: "scn4_ecs"
 
 - name: Configure cron on main host for stress testing
-  become: true
+  become: yes
   hosts: gatewayed
   tasks:
     - name: Install stress and cron package

@@ -7,11 +7,11 @@ variable "key_pair" {
 variable "name" {
   default = "bastion"
 }
-variable "default_az" {
+variable "availability_zone" {
   default = "eu-de-01"
 }
-variable "default_flavor" {}
-variable "debian_image" {}
+variable "ecs_flavor" {}
+variable "ecs_image" {}
 variable "bastion_eip" {}
 variable "network" {}
 variable "subnet" {}
