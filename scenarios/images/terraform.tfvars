@@ -1,5 +1,5 @@
 region            = "eu-de"
-tenant_name       = "eu-de_rus"
+tenant_name       = "eu-de_csm"
 availability_zone = "eu-de-03"
-domain_name       = "OTC00000000001000000447"
+domain_name       = "OTC00000000001000000448"
 ecs_image         = "Standard_Debian_10_latest"
