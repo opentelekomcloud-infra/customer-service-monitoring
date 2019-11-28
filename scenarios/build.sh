@@ -8,6 +8,9 @@ if [[ -z ${scenario_name} ]]; then
     exit 2
 fi
 
+echo "Environment variables: "
+env
+
 export PROJECT_ROOT=$(bash ./core/get_project_root.sh)
 
 # first - build infra
