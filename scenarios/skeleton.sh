@@ -73,7 +73,7 @@ target_dir="${project_root}/playbooks" init_if_missing "${target_name}_setup.yml
 
 init_if_missing "settings.tf" "terraform {
   required_providers {
-    opentelekomcloud = \">= 1.11.0\"
+    opentelekomcloud = \">= 1.13.1\"
   }
 
   backend \"s3\" {  # use OBS for remote state

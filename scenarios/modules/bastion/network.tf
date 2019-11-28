@@ -34,7 +34,6 @@ output "bastion_group_id" {
   value = opentelekomcloud_compute_secgroup_v2.bastion_group.id
 }
 
-
 # Create network port
 resource "opentelekomcloud_networking_port_v2" "bastion_port" {
   name               = "${var.name}_port"

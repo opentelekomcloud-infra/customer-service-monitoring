@@ -21,7 +21,7 @@ def parse_params():
 
 
 def read_state(state_file) -> dict:
-    """Load Terraform state from tfstate file to dict."""
+    """Load Terraform state from tfstate file to dict"""
     with open(state_file) as s_file:
         return json.load(s_file)
 

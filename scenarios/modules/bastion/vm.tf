@@ -10,7 +10,6 @@ data "opentelekomcloud_images_image_v2" "current_deb_image" {
   most_recent = true
 }
 
-
 locals {
   // replace last subnet address octet with 2, e.g. 192.168.0.2 for 192.168.0.0
   bastion_ip_default = "${regex("^((?:\\d{1,3}\\.){3})(\\d)(?:/\\d+$)", var.subnet.cidr)[0]}2"
@@ -19,7 +18,7 @@ locals {
 
 resource "opentelekomcloud_compute_instance_v2" "bastion" {
   name        = var.name
-  ecs_image   = var.ecs_image
+  image_name   = var.ecs_image
   flavor_name = var.ecs_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
   user_data = templatefile("${path.module}/first_boot_bastion.sh", {
@@ -49,7 +48,6 @@ resource "opentelekomcloud_compute_instance_v2" "bastion" {
     scenario = var.scenario_name
   }
 }
-
 
 output "bastion_ip" {
   value = local.bastion_ip
