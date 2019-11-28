@@ -1,4 +1,4 @@
-# Sandbox — a playground for OTC customer service monitoring team
+# Customer service monitoring is a solution for monitoring OTC customer KPIs
 
 
 ### Creating issue / task:
