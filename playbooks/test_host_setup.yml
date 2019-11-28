@@ -3,7 +3,6 @@
   vars:
     requirements:
       - "requirements"
-      - "req_ansible"
     req_dir: "/tmp/requirements/"
   roles:
     - role: darkwizard242.terraform
