@@ -45,9 +45,9 @@ resource "opentelekomcloud_compute_secgroup_v2" "scn2_public" {
 }
 
 resource "opentelekomcloud_compute_instance_v2" "basic" {
-  name      = "${var.postfix}_server"
+  name       = "${var.postfix}_server"
   image_name = var.ecs_image
-  flavor_id = var.ecs_flavor
+  flavor_id  = var.ecs_flavor
   security_groups = [
     opentelekomcloud_compute_secgroup_v2.scn2_public.id
   ]

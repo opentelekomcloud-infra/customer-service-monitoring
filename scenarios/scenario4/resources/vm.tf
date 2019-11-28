@@ -8,9 +8,9 @@ resource "opentelekomcloud_compute_instance_v2" "http" {
   count             = var.nodes_count
   name              = "${local.workspace_prefix}${var.prefix}_basic_${count.index}"
   flavor_name       = var.ecs_flavor
-  key_pair          = var.kp.key_name
+  key_pair          = var.key_pair.key_name
   user_data         = file("${path.module}/first_boot.sh")
-  availability_zone = var.az
+  availability_zone = var.availability_zone
 
   network {
     port = opentelekomcloud_networking_port_v2.http.*.id[count.index]

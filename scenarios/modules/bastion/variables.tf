@@ -11,7 +11,7 @@ variable "availability_zone" {
   default = "eu-de-01"
 }
 variable "ecs_flavor" {}
-variable "ecs_image" {}
+variable "bastion_image" {}
 variable "bastion_eip" {}
 variable "network" {}
 variable "subnet" {}

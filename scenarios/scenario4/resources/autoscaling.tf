@@ -3,7 +3,7 @@ resource "opentelekomcloud_as_configuration_v1" "as_config" {
   scaling_configuration_name = "${var.prefix}_autoscaled_instance"
   instance_config {
     instance_id = opentelekomcloud_compute_instance_v2.http[0].id
-    key_name    = var.kp.key_name
+    key_name    = var.key_pair.key_name
     user_data   = file("${path.module}/first_boot.sh")
   }
   depends_on = [
