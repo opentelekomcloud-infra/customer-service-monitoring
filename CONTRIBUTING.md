@@ -19,7 +19,7 @@
 5. Create new [pull request](https://github.com/opentelekomcloud-infra/customer-service-monitoring/pulls)
     (*PR*) with clean title, description mentioning your issue:
     `Implementing #N` for new features, `Fixing #N` or `Fixed #N` for the bugfix. Where `N` is your issue number.
-    **Please note that PR can be merged just if all discussions are solved and it has at least 1 approval**
+    **Please note that PR can be merged only if all discussions are solved and it has at least 1 approval**
 6. If you need to change something after creating merge request — just push new commits to
     your branch — pull request will be updated accordingly (approvals will be reset)
 7. *For person merging*: branch is to be removed after merge. Merge should be made with **squash commits** option.
