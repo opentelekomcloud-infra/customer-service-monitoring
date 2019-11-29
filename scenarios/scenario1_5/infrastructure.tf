@@ -24,10 +24,10 @@ module "infrastructure" {
 }
 
 output "out-scn1_5_lb_fip" {
-  value = var.loadbalancer_eip
+  value = module.infrastructure.out-scn1_lb_fip
 }
 
 output "out-scn1_5_bastion_fip" {
-  value = var.bastion_eip
+  value = module.infrastructure.out-scn1_bastion_fip
 }
 
