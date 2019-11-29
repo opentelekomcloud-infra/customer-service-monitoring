@@ -31,6 +31,7 @@ module "bastion" {
   router         = module.network.router
   name           = "${local.prefix}_server"
   default_az     = var.default_az
+  scenario_name  = local.prefix
 }
 
 module "resources" {
