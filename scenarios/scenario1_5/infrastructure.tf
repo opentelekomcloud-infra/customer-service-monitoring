@@ -10,8 +10,6 @@ module "infrastructure" {
   source = "../scenario1"
 
   availability_zone = var.availability_zone
-  bastion_eip       = var.bastion_eip
-  loadbalancer_eip  = var.loadbalancer_eip
   domain_name       = var.domain_name
   ecs_flavor        = var.ecs_flavor
   ecs_image         = var.ecs_image
