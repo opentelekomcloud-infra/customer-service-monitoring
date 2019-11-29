@@ -1,4 +1,4 @@
-variable "postfix" {}
+variable "prefix" {}
 variable "net_address" {}
 variable "region" {}
 variable "availability_zone" {}

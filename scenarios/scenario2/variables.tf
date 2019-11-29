@@ -3,7 +3,7 @@ variable "password" {}
 variable "domain_name" {}
 variable "tenant_name" {}
 
-variable "postfix" {}
+variable "prefix" {}
 variable "net_address" {}
 variable "region" {}
 variable "availability_zone" {}
