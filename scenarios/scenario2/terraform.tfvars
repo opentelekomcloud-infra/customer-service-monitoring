@@ -1,4 +1,4 @@
-postfix           = "scn2"
+prefix            = "scn2"
 net_address       = "192.168.0"
 region            = "eu-de"
 availability_zone = "eu-de-03"

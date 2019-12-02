@@ -10,6 +10,7 @@
 
 - name: Wait for host
   hosts: scn2_ecs
+  gather_facts: no
   tasks:
     - name: Wait for host to be up
       wait_for_connection:

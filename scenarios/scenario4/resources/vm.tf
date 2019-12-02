@@ -24,7 +24,7 @@ resource "opentelekomcloud_compute_instance_v2" "http" {
     uuid                  = data.opentelekomcloud_images_image_v2.current_image.id
   }
 
-  tag = { 
+  tag = {
     "group" : "gatewayed",
     "scenario" : var.postfix
   }

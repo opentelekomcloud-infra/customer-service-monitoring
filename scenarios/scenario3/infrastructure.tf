@@ -22,7 +22,7 @@ resource "opentelekomcloud_networking_floatingip_v2" "server_fip" {
 module "bastion" {
   source = "../modules/bastion"
 
-  bastion_image         = var.ecs_image
+  bastion_image     = var.ecs_image
   bastion_eip       = opentelekomcloud_networking_floatingip_v2.server_fip.address
   ecs_flavor        = var.ecs_flavor
   key_pair          = local.key_pair
@@ -31,12 +31,14 @@ module "bastion" {
   router            = module.network.router
   name              = "${local.prefix}_server"
   availability_zone = var.availability_zone
+  scenario_name     = local.prefix
 }
 
 module "resources" {
   source = "./resources"
 
-  bastion_vm_id = module.bastion.bastion_vm_id
+  bastion_vm_id     = module.bastion.bastion_vm_id
+  availability_zone = var.default_az
 }
 
 output "out-scn3_server_fip" {

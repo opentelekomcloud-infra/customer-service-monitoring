@@ -4,6 +4,7 @@ resource "opentelekomcloud_blockstorage_volume_v2" "volumes" {
   name        = format("vol-%s", var.volume_type[count.index])
   size        = 2
   volume_type = var.volume_type[count.index]
+  availability_zone = var.availability_zone
 }
 
 # Attach volumes to instance
@@ -19,6 +20,7 @@ resource "opentelekomcloud_compute_volume_attach_v2" "attach-1" {
     opentelekomcloud_compute_volume_attach_v2.attach-0
   ]
 }
+
 resource "opentelekomcloud_compute_volume_attach_v2" "attach-2" {
   instance_id = var.bastion_vm_id
   volume_id   = opentelekomcloud_blockstorage_volume_v2.volumes[2].id

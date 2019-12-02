@@ -1,5 +1,5 @@
 resource "opentelekomcloud_compute_keypair_v2" "pair" {
-  name       = "csn2_${var.postfix}"
+  name       = "${var.prefix}-kp"
   public_key = var.public_key
 }
 
@@ -45,7 +45,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "scn2_public" {
 }
 
 resource "opentelekomcloud_compute_instance_v2" "basic" {
-  name       = "${var.postfix}_server"
+  name       = "${var.prefix}-instance"
   image_name = var.ecs_image
   flavor_id  = var.ecs_flavor
   security_groups = [

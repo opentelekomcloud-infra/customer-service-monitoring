@@ -13,5 +13,3 @@ variable "nodes_count" {
   default = 2
 }
 variable "public_key" { default = "" }
-variable "bastion_eip" {}
-variable "loadbalancer_eip" {}
