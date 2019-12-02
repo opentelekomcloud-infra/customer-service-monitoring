@@ -42,7 +42,7 @@
   tasks:
   - name: Register facts
     set_fact:
-      server_port: "{{ server_port }}"
+      server_local_port: "{{ server_port }}"
 
 - name: Install telegraf client on Server
   hosts: scn2_ecs
@@ -52,7 +52,7 @@
   roles:
   - role: telegraf-client
     vars:
-      telegraf_local_port: "{{ server_port }}"
+      telegraf_local_port: "{{ server_local_port }}"
       telegraf_plugins_base:
       - name: http_listener_v2
         options:
@@ -69,7 +69,7 @@
                 proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;
                 proxy_set_header Host $http_host;
                 proxy_http_version 1.1;
-                proxy_pass         http://localhost:{{ server_port }};
+                proxy_pass         http://localhost:{{ server_local_port }};
             }
             location /telegraf {
                 proxy_pass         http://localhost:{{ telegraf_local_port }};
