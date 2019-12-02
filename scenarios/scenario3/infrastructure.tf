@@ -37,7 +37,8 @@ module "bastion" {
 module "resources" {
   source = "./resources"
 
-  bastion_vm_id = module.bastion.bastion_vm_id
+  bastion_vm_id     = module.bastion.bastion_vm_id
+  availability_zone = var.default_az
 }
 
 output "out-scn3_server_fip" {
