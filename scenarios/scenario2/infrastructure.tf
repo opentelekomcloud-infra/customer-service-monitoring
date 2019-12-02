@@ -4,7 +4,7 @@ module "resources" {
   ecs_image   = var.ecs_image
   ecs_flavor  = var.ecs_flavor
   net_address = var.net_address
-  prefix     = var.prefix
+  prefix      = var.prefix
   public_key  = var.public_key
 
   region            = var.region
