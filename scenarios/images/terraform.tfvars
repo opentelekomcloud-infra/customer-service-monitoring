@@ -1,5 +1,3 @@
 region            = "eu-de"
-tenant_name       = ""
 availability_zone = "eu-de-03"
-domain_name       = ""
 ecs_image         = "Standard_Debian_10_latest"

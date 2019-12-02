@@ -62,9 +62,7 @@ init_if_missing "test/main.py" ""
 # init terraform configuration
 init_if_missing "terraform.tfvars" \
 "region = \"eu-de\"
-tenant_name = \"\"
-availability_zone = \"eu-de-01\"
-domain_name = \"\""
+availability_zone = \"eu-de-01\""
 init_if_missing "secrets.auto.tfvars" \
 "username = \"\"
 password = \"\""
