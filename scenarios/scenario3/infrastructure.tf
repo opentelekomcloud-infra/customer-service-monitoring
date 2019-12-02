@@ -31,7 +31,6 @@ module "bastion" {
   router            = module.network.router
   name              = "${local.prefix}_server"
   availability_zone = var.availability_zone
-  scenario_name     = local.prefix
   scenario          = var.scenario
 }
 
@@ -40,7 +39,6 @@ module "resources" {
 
   bastion_vm_id     = module.bastion.bastion_vm_id
   availability_zone = var.availability_zone
-  scenario          = var.scenario
 }
 
 output "out-scn3_server_fip" {

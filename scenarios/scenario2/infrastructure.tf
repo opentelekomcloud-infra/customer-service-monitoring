@@ -9,6 +9,7 @@ module "resources" {
 
   region            = var.region
   availability_zone = var.availability_zone
+  scenario          = var.scenario
 }
 
 module "postgresql" {
