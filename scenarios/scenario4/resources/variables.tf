@@ -8,6 +8,7 @@ variable "router_id" {}
 variable "bastion_local_ip" {}
 variable "nodes_count" {}
 variable "prefix" {}
+variable "postfix" {}
 variable "availability_zone" {}
 variable "disc_volume" {
   type    = number

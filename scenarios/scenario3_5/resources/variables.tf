@@ -11,6 +11,7 @@ variable "disc_volume" {}
 variable "subnet" {}
 variable "network" {}
 variable "prefix" {}
+variable "postfix" {}
 variable "target_availability_zone" {}
 variable "initiator_availability_zone" {}
 variable "net_address" {}
