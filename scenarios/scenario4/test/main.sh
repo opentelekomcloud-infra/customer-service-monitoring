@@ -25,7 +25,7 @@ sudo chown ${username} ${log_path}
 
 function run_test() {
     echo "Logs will be written to ${log_path}"
-    python -m csm_test_utils monitor --target "${LOADBALANCER_PUBLIC_IP}" --telegraf https://csm.outcatcher.com --log-dir ${log_path}
+    python -m csm_test_utils monitor --target "${LOADBALANCER_PUBLIC_IP}" --telegraf "${BASTION_PUBLIC_IP}" --log-dir ${log_path}
 }
 
 run_test > /dev/null &

@@ -32,6 +32,8 @@ module "bastion" {
   network     = module.network.network
   subnet      = module.network.subnet
   router      = module.network.router
+
+  scenario_name = var.postfix
 }
 
 module "resources" {
