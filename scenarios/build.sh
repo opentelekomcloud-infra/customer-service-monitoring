@@ -8,7 +8,7 @@ if [[ -z ${scenario_name} ]]; then
     exit 2
 fi
 
-if [[ -z "${INFLUX_PSWD}" ]]; then
+if [[ -z "${INFLUX_PASSWORD}" ]]; then
     echo "InfluxDB password is missing"
     exit 2
 fi
