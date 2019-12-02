@@ -51,7 +51,7 @@
   roles:
   - role: telegraf-client
     vars:
-      telegraf_local_port: "{{ server_local_port }}"
+      telegraf_local_port: 8080
       telegraf_plugins_base:
       - name: http_listener_v2
         options:
