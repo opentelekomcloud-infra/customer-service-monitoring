@@ -10,6 +10,7 @@ fi
 
 if [[ -z "${INFLUX_PASSWORD}" ]]; then
     echo "InfluxDB password is missing"
+    env
     exit 2
 fi
 
