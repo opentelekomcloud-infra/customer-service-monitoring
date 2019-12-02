@@ -1,7 +1,7 @@
 region            = "eu-de"
-tenant_name       = "eu-de_csm"
+tenant_name       = ""
 availability_zone = "eu-de-01"
-domain_name       = "OTC00000000001000000448"
+domain_name       = ""
 
 postfix = "scn1_5"
 

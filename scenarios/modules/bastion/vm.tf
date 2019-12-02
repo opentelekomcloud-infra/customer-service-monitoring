@@ -45,7 +45,7 @@ resource "opentelekomcloud_compute_instance_v2" "bastion" {
   }
 
   tag = {
-    "scenario" : var.scenario_name
+    "scenario" : var.postfix
   }
 }
 

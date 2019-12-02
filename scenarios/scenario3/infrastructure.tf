@@ -22,7 +22,7 @@ resource "opentelekomcloud_networking_floatingip_v2" "server_fip" {
 module "bastion" {
   source = "../modules/bastion"
 
-  ecs_image         = var.ecs_image
+  bastion_image         = var.ecs_image
   bastion_eip       = opentelekomcloud_networking_floatingip_v2.server_fip.address
   ecs_flavor        = var.ecs_flavor
   key_pair          = local.key_pair

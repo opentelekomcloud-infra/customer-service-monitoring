@@ -17,7 +17,7 @@ module "network" {
 module "bastion" {
   source = "../modules/bastion"
 
-  ecs_image  = var.ecs_image
+  bastion_image  = var.ecs_image
   ecs_flavor = var.ecs_flavor
 
   bastion_eip = var.bastion_eip
@@ -29,7 +29,7 @@ module "bastion" {
 
   availability_zone = var.availability_zone
 
-  scenario_name = var.postfix
+  postfix = var.postfix
 }
 
 module "resources" {
