@@ -1,7 +1,7 @@
 
 locals {
   workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
-  prefix           = "${local.workspace_prefix}${var.postfix}"
+  prefix           = "${local.workspace_prefix}${var.scenario}"
   key_pair = {
     public_key = var.public_key
     key_name   = "${local.prefix}_kp"
@@ -27,6 +27,7 @@ module "resources" {
   net_address                 = var.addr_3_octets
   subnet                      = module.network.subnet
   network                     = module.network.network
+  scenario                    = var.scenario
 }
 
 output "out-scn3_5_target_fip" {

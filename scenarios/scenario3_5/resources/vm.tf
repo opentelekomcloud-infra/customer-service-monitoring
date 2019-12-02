@@ -47,7 +47,7 @@ resource "opentelekomcloud_compute_instance_v2" "target_instance" {
   }
 
     tag = {
-    "scenario" : var.postfix
+    "scenario" : var.scenario
   }
 }
 
@@ -98,7 +98,7 @@ resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
   }
 
     tag = {
-    "scenario" : var.postfix
+    "scenario" : var.scenario
   }
 }
 

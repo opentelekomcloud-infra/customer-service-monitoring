@@ -1,7 +1,7 @@
 
 locals {
   workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
-  prefix           = "${local.workspace_prefix}${var.postfix}"
+  prefix           = "${local.workspace_prefix}${var.scenario}"
   key_pair = {
     public_key = var.public_key
     key_name   = "${local.prefix}_kp"
@@ -32,13 +32,15 @@ module "bastion" {
   name              = "${local.prefix}_server"
   availability_zone = var.availability_zone
   scenario_name     = local.prefix
+  scenario          = var.scenario
 }
 
 module "resources" {
   source = "./resources"
 
   bastion_vm_id     = module.bastion.bastion_vm_id
-  availability_zone = var.default_az
+  availability_zone = var.availability_zone
+  scenario          = var.scenario
 }
 
 output "out-scn3_server_fip" {

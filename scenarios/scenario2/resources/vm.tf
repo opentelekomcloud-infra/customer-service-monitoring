@@ -68,7 +68,7 @@ resource "opentelekomcloud_compute_instance_v2" "basic" {
   }
 
   tag = {
-    "scenario" : var.postfix
+    "scenario" : var.scenario
   }
 }
 

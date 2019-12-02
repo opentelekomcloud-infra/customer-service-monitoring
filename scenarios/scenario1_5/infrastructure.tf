@@ -2,7 +2,7 @@
 locals {
   key_pair = {
     public_key = var.public_key
-    key_name   = "kp_${var.postfix}"
+    key_name   = "kp_${var.scenario}"
   }
 }
 
@@ -18,7 +18,7 @@ module "infrastructure" {
   username = var.username
   password = var.password
 
-  postfix     = var.postfix
+  scenario     = var.scenario
   region      = var.region
   tenant_name = var.tenant_name
 }

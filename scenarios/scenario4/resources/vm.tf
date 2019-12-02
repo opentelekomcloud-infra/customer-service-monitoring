@@ -26,7 +26,7 @@ resource "opentelekomcloud_compute_instance_v2" "http" {
 
   tag = {
     "group" : "gatewayed",
-    "scenario" : var.postfix
+    "scenario" : var.scenario
   }
 }
 

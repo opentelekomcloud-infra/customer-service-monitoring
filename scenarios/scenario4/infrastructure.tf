@@ -1,10 +1,10 @@
 
 locals {
   workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
-  prefix           = "${local.workspace_prefix}${var.postfix}"
+  prefix           = "${local.workspace_prefix}${var.scenario}"
   key_pair = {
     public_key = var.public_key
-    key_name   = "${local.workspace_prefix}kp_${var.postfix}"
+    key_name   = "${local.workspace_prefix}kp_${var.scenario}"
   }
 }
 
@@ -32,6 +32,7 @@ module "bastion" {
   network           = module.network.network
   subnet            = module.network.subnet
   router            = module.network.router
+  scenario          = var.scenario
 }
 
 module "resources" {
@@ -50,6 +51,7 @@ module "resources" {
   prefix                = local.prefix
   availability_zone     = var.availability_zone
   key_pair              = local.key_pair
+  scenario              = var.scenario
 }
 
 output "out-scn4_lb_fip" {

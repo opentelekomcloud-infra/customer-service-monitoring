@@ -1,6 +1,6 @@
 region            = "eu-de"
 availability_zone = "eu-de-01"
-postfix           = "scn4"
+scenario           = "scn4"
 ecs_flavor        = "s2.large.2"
 bastion_image     = "Standard_Debian_9_latest"
 host_image        = "KPI_Scn4_host_image"
