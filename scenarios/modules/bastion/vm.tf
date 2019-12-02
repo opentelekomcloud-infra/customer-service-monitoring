@@ -45,7 +45,7 @@ resource "opentelekomcloud_compute_instance_v2" "bastion" {
     uuid                  = data.opentelekomcloud_images_image_v2.current_deb_image.id
   }
 
-  tag { scenario: var.scenario_name }
+  tag = { "scenario" : var.scenario_name }
 
 }
 

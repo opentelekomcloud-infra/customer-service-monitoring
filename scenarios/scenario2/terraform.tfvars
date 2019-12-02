@@ -1,4 +1,4 @@
-postfix           = "scn2"
+prefix            = "scn2"
 net_address       = "192.168.0"
 region            = "eu-de"
 tenant_name       = "eu-de_rus"
