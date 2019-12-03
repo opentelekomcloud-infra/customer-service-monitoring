@@ -17,8 +17,7 @@ telegraf_hostname:
 telegraf_omit_hostname: "false"
 telegraf_install_url:
 
-telegraf_influxdb_urls:
-  - https://csm.outcatcher.com/influxdb
+telegraf_influxdb_urls: []
 telegraf_influxdb_database: telegraf
 telegraf_influxdb_precision: s
 telegraf_influxdb_retention_policy: autogen
