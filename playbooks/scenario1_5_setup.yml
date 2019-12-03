@@ -31,8 +31,6 @@
   vars_files:
   - "./vars/telegraf_dbconnection_vars.yml"
   - "./vars/nginx_telegraf_local.yml"
-  vars:
-    bastion_private_name: "{{ lookup('env', 'BASTION_PRIVATE_NAME') }}"
   tasks:
     - name: copy ssl keys to nginx
       copy:
