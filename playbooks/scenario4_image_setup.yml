@@ -1,7 +1,7 @@
 - name: Setup software
   hosts: scn4_host
   roles:
-  - telegraf-client
+    - telegraf-client
   become: yes
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
@@ -21,9 +21,9 @@
 
 - name: Start test Server
   hosts: scn4_host
-  become: true
+  become: yes
   roles:
-  - too_simple_server
+    - too_simple_server
   vars:
     debug: True
     server_port: 80

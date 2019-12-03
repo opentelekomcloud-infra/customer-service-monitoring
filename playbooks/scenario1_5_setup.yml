@@ -2,52 +2,52 @@
 - name: Register existing settings
   hosts: local
   tasks:
-  - name: Register host
-    add_host:
-      hostname: 'scn1_5_ecs'
-      ansible_ssh_host: "{{ hostvars.bastion.ansible_host }}"
-      ansible_ssh_user: 'linux'
+    - name: Register host
+      add_host:
+        hostname: "scn1_5_ecs"
+        ansible_ssh_host: "{{ hostvars.bastion.ansible_host }}"
+        ansible_ssh_user: "linux"
 
 - name: Wait for host
   hosts: scn1_5_ecs
   gather_facts: no
   tasks:
-  - name: Wait for host to be up
-    wait_for_connection:
-      timeout: 120
+    - name: Wait for host to be up
+      wait_for_connection:
+        timeout: 120
 
 - name: Start Server
   hosts: gatewayed
-  become: true
+  become: yes
   roles:
-  - too_simple_server
+    - too_simple_server
   vars:
     debug: True
     server_port: 80
 
 - name: Install telegraf client on Bastion
   hosts: bastion
-  become: true
+  become: yes
   vars_files:
-  - "./vars/telegraf_dbconnection_vars.yml"
-  - "./vars/nginx_telegraf_local.yml"
+    - "./vars/telegraf_dbconnection_vars.yml"
+    - "./vars/nginx_telegraf_local.yml"
   tasks:
     - name: copy ssl keys to nginx
       copy:
         src: nginx/nginx_keys/
         dest: /etc/sslcerts/live/
   roles:
-  - role: telegraf-client
-    vars:
-      telegraf_plugins_base:
-      - name: http_listener_v2
-        options:
-          service_address: "localhost:{{ telegraf_local_port }}"
-          data_format: "influx"
-  - role: geerlingguy.nginx
-    vars:
-      nginx_remove_default_vhost: yes
-      nginx_vhosts:
-      - listen: "80"
-        server_name: "localhost"
-        extra_parameters: "{{ extra_parameters }}"
+    - role: telegraf-client
+      vars:
+        telegraf_plugins_base:
+          - name: http_listener_v2
+            options:
+              service_address: "localhost:{{ telegraf_local_port }}"
+              data_format: "influx"
+    - role: geerlingguy.nginx
+      vars:
+        nginx_remove_default_vhost: yes
+        nginx_vhosts:
+          - listen: "80"
+            server_name: "localhost"
+            extra_parameters: "{{ extra_parameters }}"

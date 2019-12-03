@@ -4,7 +4,7 @@ variable "ecs_image" {}
 variable "bastion_sec_group_id" {}
 variable "network_id" {}
 variable "subnet_id" {}
-variable "postfix" {}
+variable "scenario" {}
 
 variable "bastion_local_ip" {}
 variable "nodes_count" {}

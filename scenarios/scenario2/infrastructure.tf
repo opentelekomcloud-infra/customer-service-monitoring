@@ -9,6 +9,7 @@ module "resources" {
 
   region            = var.region
   availability_zone = var.availability_zone
+  scenario          = var.scenario
 }
 
 module "postgresql" {
@@ -39,4 +40,3 @@ output "out-db_username" {
 output "out-db_address" {
   value = module.postgresql.db_address
 }
-

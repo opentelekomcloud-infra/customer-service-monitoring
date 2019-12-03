@@ -67,6 +67,9 @@ resource "opentelekomcloud_compute_instance_v2" "basic" {
     fixed_ip_v4 = "${var.net_address}.10"
   }
 
+  tag = {
+    "scenario" : var.scenario
+  }
 }
 
 resource "opentelekomcloud_compute_floatingip_associate_v2" "assign_ip" {

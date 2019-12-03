@@ -8,8 +8,8 @@ fi
 
 FORCE=0
 if [[ "$2" == "--force" ]]; then
-    FORCE=1
-    echo "All existing files will be overwritten"
+  FORCE=1
+  echo "All existing files will be overwritten"
 fi
 
 target_name="$1"
@@ -21,20 +21,19 @@ mkdir -p "${target_dir}"
 # initialize terraform + some scripts
 shebang="#!/usr/bin/env bash"
 function init_if_missing() {
-    f_path="${target_dir}/$1"
-    data="$2"
-    if [[ ! -e ${f_path} || "${FORCE}" == "1" ]]; then
-        echo "${data}" > "${f_path}"
-        echo "File ${f_path} initialized."
-    else
-        echo "File ${f_path} already exists."
-    fi
-
+  f_path="${target_dir}/$1"
+  data="$2"
+  if [[ ! -e ${f_path} || "${FORCE}" == "1" ]]; then
+    echo "${data}" >"${f_path}"
+    echo "File ${f_path} initialized."
+  else
+    echo "File ${f_path} already exists."
+  fi
 }
 
 # init pre-/post-build scripts
 init_if_missing "pre_build.sh" "${shebang}"
-init_if_missing "post_build.sh" "$( < "./core/post_build_template.sh" )"
+init_if_missing "post_build.sh" "$(<"./core/post_build_template.sh")"
 
 # init tests
 mkdir -p "${target_dir}/test"
@@ -63,9 +62,7 @@ init_if_missing "test/main.py" ""
 # init terraform configuration
 init_if_missing "terraform.tfvars" \
 "region = \"eu-de\"
-tenant_name = \"eu-de_rus\"
-default_az = \"eu-de-01\"
-domain_name = \"OTC00000000001000000447\""
+availability_zone = \"eu-de-01\""
 init_if_missing "secrets.auto.tfvars" \
 "username = \"\"
 password = \"\""
@@ -74,7 +71,7 @@ target_dir="${project_root}/playbooks" init_if_missing "${target_name}_setup.yml
 
 init_if_missing "settings.tf" "terraform {
   required_providers {
-    opentelekomcloud = \">= 1.11.0\"
+    opentelekomcloud = \">= 1.13.1\"
   }
 
   backend \"s3\" {  # use OBS for remote state
@@ -100,7 +97,7 @@ init_if_missing "variables.tf" "variable \"username\" {}
 variable \"password\" {}
 variable \"region\" {}
 variable \"tenant_name\" {}
-variable \"default_az\" {}
+variable \"availability_zone\" {}
 variable \"domain_name\" {}"
 
 cd "${target_dir}" || exit 2

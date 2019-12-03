@@ -2,7 +2,7 @@
 locals {
   key_pair = {
     public_key = var.public_key
-    key_name   = "kp_${var.postfix}"
+    key_name   = "kp_${var.scenario}"
   }
 }
 
@@ -18,7 +18,7 @@ module "infrastructure" {
   username = var.username
   password = var.password
 
-  postfix     = var.postfix
+  scenario    = var.scenario
   region      = var.region
   tenant_name = var.tenant_name
 }
@@ -30,4 +30,3 @@ output "out-scn1_5_lb_fip" {
 output "out-scn1_5_bastion_fip" {
   value = module.infrastructure.out-scn1_bastion_fip
 }
-

@@ -16,8 +16,12 @@
       "source_image": "{{user `source_image` }}",
       "flavor": "{{user `flavor` }}",
       "region": "{{user `region` }}",
-      "networks": ["{{user `network_id`}}"],
-      "security_groups": ["{{user `sec_grp_id`}}"],
+      "networks": [
+        "{{user `network_id`}}"
+      ],
+      "security_groups": [
+        "{{user `sec_grp_id`}}"
+      ],
       "availability_zone": "eu-de-01",
       "floating_ip_network": "admin_external_net",
       "use_blockstorage_volume": true

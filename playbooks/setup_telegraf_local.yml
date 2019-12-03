@@ -1,22 +1,22 @@
 ---
-- name: Instal telegraf client on Localhost
+- name: Install telegraf client on Localhost
   hosts: local
-  become: true
+  become: yes
   vars_files:
-  - "./vars/telegraf_dbconnection_vars.yml"
-  - "./vars/nginx_telegraf_local.yml"
+    - "./vars/telegraf_dbconnection_vars.yml"
+    - "./vars/nginx_telegraf_local.yml"
   roles:
-  - role: telegraf-client
-    vars:
-      telegraf_plugins_base:
-        - name: http_listener_v2
-          options:
-            service_address: "localhost:{{ telegraf_local_port }}"
-            data_format: "influx"
-  - role: geerlingguy.nginx
-    vars:
-      nginx_remove_default_vhost: yes
-      nginx_vhosts:
-        - listen: "80"
-          server_name: "localhost"
-          extra_parameters: "{{ extra_parameters }}"
+    - role: telegraf-client
+      vars:
+        telegraf_plugins_base:
+          - name: http_listener_v2
+            options:
+              service_address: "localhost:{{ telegraf_local_port }}"
+              data_format: "influx"
+    - role: geerlingguy.nginx
+      vars:
+        nginx_remove_default_vhost: yes
+        nginx_vhosts:
+          - listen: "80"
+            server_name: "localhost"
+            extra_parameters: "{{ extra_parameters }}"

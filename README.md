@@ -14,7 +14,7 @@ Existing scripts were checked to be working with:
  - Terraform 0.12
  - Ansible 2.7 (Python 3.7)
 
-Installing of terraform for linux can be done using `install_terraform.sh`
+Installing terraform for Linux can be done using `install_terraform.sh`
 
 ### Build
 
@@ -30,14 +30,13 @@ export AWS_ACCESS_KEY_ID=myau_id
 export AWS_SECRET_ACCESS_KEY=sekret_myau
 ./build.sh scenario2
 ```
-This script perform the following actions:
- 1. Build required infrastructure using configuration from `scenarios/scenario2/` directory
+This script performs the following actions:
+ 1. Build required infrastructure using the configuration from `scenarios/scenario2/` directory
  1. Run `scenario2_setup.yml` playbook from `playbooks/` for created host
 
-There is no credentials stored in `terraform.tfvars` file for the scenario. Recommended way to
+There are no credentials stored in `terraform.tfvars` file for the scenario. Recommended way to
 define credentials and overriding is to create some `*.auto.tfvars` file in scenario directory,
-e.g. `secrets.auto.tfvars`. See [variables documentation](https://www.terraform.io/docs/configuration/variables.html)
-for details.
+e.g. `secrets.auto.tfvars`. See [variables documentation](https://www.terraform.io/docs/configuration/variables.html) for details.
 
 ### Execution
 

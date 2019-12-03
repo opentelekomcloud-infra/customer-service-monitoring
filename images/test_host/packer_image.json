@@ -24,7 +24,10 @@
       "availability_zone": "eu-de-01",
       "floating_ip_network": "admin_external_net",
       "use_blockstorage_volume": true,
-      "image_tags": ["csm", "test-host"]
+      "image_tags": [
+        "csm",
+        "test-host"
+      ]
     }
   ],
   "provisioners": [

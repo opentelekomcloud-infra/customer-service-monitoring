@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 
-start_dir=$( pwd )
-local_dir=$( cd $( dirname "$0" ); pwd )
-project_root=$( bash ${local_dir}/../../core/get_project_root.sh )
+start_dir=$(pwd)
+local_dir=$(
+    cd $(dirname "$0")
+    pwd
+)
+project_root=$(bash ${local_dir}/../../core/get_project_root.sh)
 echo "Project root: ${project_root}"
 
-
-scenario_dir=$(cd "${local_dir}/.."; pwd)
+scenario_dir=$(
+    cd "${local_dir}/.."
+    pwd
+)
 echo "Scenario directory: ${scenario_dir}"
 cd "${scenario_dir}" || exit 1
 terraform init || exit $?
@@ -17,7 +22,7 @@ function start_stop_rand_node() {
     else
         playbook=scenario1_5_setup.yml
     fi
-    cur_dir=$( pwd )
+    cur_dir=$(pwd)
     cd ${project_root}
     ansible-playbook playbooks/${playbook}
     cd ${cur_dir}
@@ -29,12 +34,12 @@ function prepare() {
     cd ${scenario_dir}
     bash ../core/pre_build.sh ${scenario_name}
     file=tmp_state
-    terraform state pull > ${file} || exit $?
+    terraform state pull >${file} || exit $?
     source "${project_root}/.venv/bin/activate"
     export PYTHONPATH="${PYTHONPATH}:${scenario_dir}/test"
     python3 "${project_root}/scenarios/core/create_inventory.py" ${file} --name ${scenario_name}
     source ./post_build.sh || exit 1
-    start_stop_rand_node start  # check that all nodes are running before test
+    start_stop_rand_node start # check that all nodes are running before test
     cd ${cur_dir}
 }
 
@@ -58,9 +63,9 @@ function telegraf_report() {
     result=$1
     reason=$2
     echo Report result: ${result}\(${reason}\)
-    public_ip="$( curl http://ipecho.net/plain -s )"
+    public_ip="$(curl http://ipecho.net/plain -s)"
     infl_row="lb_down_test,client=${public_ip},reason=${reason} state=\"${result}\""
-    status_code=$( curl -q -o /dev/null -X POST ${telegraf} -d "${infl_row}" -w "%{http_code}" )
+    status_code=$(curl -q -o /dev/null -X POST ${telegraf} -d "${infl_row}" -w "%{http_code}")
     if [[ "${status_code}" != "204" ]]; then
         echo "Can't report status to telegraf ($status_code)"
         exit 3
@@ -94,7 +99,7 @@ elif [[ ${test_result} != 101 ]]; then
 fi
 python -m csm_test_utils rebalance --target ${LOADBALANCER_PUBLIC_IP} --telegraf=${telegraf_host} || telegraf_report fail $?
 
-sleep 60  # make reports beautiful again
+sleep 60 # make reports beautiful again
 start_stop_rand_node start
 python -m csm_test_utils rebalance --target ${LOADBALANCER_PUBLIC_IP} --telegraf=${telegraf_host} || telegraf_report fail $?
 
