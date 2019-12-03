@@ -40,4 +40,3 @@ output "out-db_username" {
 output "out-db_address" {
   value = module.postgresql.db_address
 }
-

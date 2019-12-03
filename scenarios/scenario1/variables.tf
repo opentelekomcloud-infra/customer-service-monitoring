@@ -12,4 +12,4 @@ variable "nodes_count" {
   type    = number
   default = 2
 }
-variable "public_key" { default = "" }
+variable "public_key" {}

@@ -46,7 +46,7 @@ resource "opentelekomcloud_compute_instance_v2" "target_instance" {
     uuid                  = data.opentelekomcloud_images_image_v2.current_image.id
   }
 
-    tag = {
+  tag = {
     "scenario" : var.scenario
   }
 }
@@ -97,7 +97,7 @@ resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
     uuid                  = data.opentelekomcloud_images_image_v2.current_image.id
   }
 
-    tag = {
+  tag = {
     "scenario" : var.scenario
   }
 }

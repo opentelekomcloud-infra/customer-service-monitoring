@@ -18,7 +18,7 @@ module "infrastructure" {
   username = var.username
   password = var.password
 
-  scenario     = var.scenario
+  scenario    = var.scenario
   region      = var.region
   tenant_name = var.tenant_name
 }
