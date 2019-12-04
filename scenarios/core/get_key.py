@@ -30,10 +30,11 @@ def generate_private_key():
         key_size=2048
     )
     password = input("enter password: ")
+    password_bytes = bytes(password, 'utf-8')
     return key.private_bytes(
         crypto_serialization.Encoding.PEM,
         crypto_serialization.PrivateFormat.TraditionalOpenSSL,
-        crypto_serialization.BestAvailableEncryption(password))
+        crypto_serialization.BestAvailableEncryption(password_bytes))
 
 
 def requires_update(file_name, remote_md5):
