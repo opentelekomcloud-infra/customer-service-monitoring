@@ -20,6 +20,6 @@ variable "volume_bastion" {
   type    = number
   default = 10
 }
-variable "scenario" {}
+variable "scenario" { default = "" }
 
-variable "bastion_local_ip" {}
+variable "bastion_local_ip" { default = "" }
