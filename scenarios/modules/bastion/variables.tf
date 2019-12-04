@@ -22,4 +22,4 @@ variable "volume_bastion" {
 }
 variable "scenario" {}
 
-variable "bastion_local_ip" {}
+variable "bastion_local_ip" { default = "" }

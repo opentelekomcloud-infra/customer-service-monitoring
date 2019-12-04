@@ -10,7 +10,6 @@ variable "host_image" {}
 variable "addr_3_octets" { default = "192.168.0" }
 variable "scenario" {}
 variable "public_key" {}
-variable "server_eip" {}
 variable "loadbalancer_eip" {}
 variable "bastion_eip" {}
 variable "nodes_count" {
