@@ -30,7 +30,7 @@ def generate_private_key():
         key_size=2048
     )
     password = input("enter password: ")
-    password_bytes = bytes(password, 'utf-8')
+    password_bytes = password.encode('utf-8')
     return key.private_bytes(
         crypto_serialization.Encoding.PEM,
         crypto_serialization.PrivateFormat.TraditionalOpenSSL,
