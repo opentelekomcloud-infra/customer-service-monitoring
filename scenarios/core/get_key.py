@@ -23,13 +23,12 @@ def parse_params():
     return args
 
 
-def generate_private_key():
+def generate_private_key(password):
     key = rsa.generate_private_key(
         backend=crypto_default_backend(),
         public_exponent=65537,
         key_size=2048
     )
-    password = input("enter password: ")
     password_bytes = password.encode('utf-8')
     return key.private_bytes(
         crypto_serialization.Encoding.PEM,
@@ -63,7 +62,7 @@ def get_key_from_s3() -> str:
     except ClientError as cl_e:
         if cl_e.response['Error']['Code'] == '404':
             print('The object does not exist in s3. Generating new one ...')
-            key = generate_private_key()
+            key = generate_private_key(password)
             obj = obs.Object(BUCKET, key_name)
             obj.put(Body=key)
             with open(output_file, 'wb') as file:
