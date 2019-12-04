@@ -9,7 +9,7 @@ variable "bastion_image" {}
 variable "host_image" {}
 variable "addr_3_octets" { default = "192.168.0" }
 variable "scenario" {}
-variable "public_key" {}
+variable "public_key" { default = "" }
 variable "loadbalancer_eip" {}
 variable "bastion_eip" {}
 variable "nodes_count" {
