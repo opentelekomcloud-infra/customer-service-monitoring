@@ -61,7 +61,7 @@ def get_key_from_s3() -> str:
         file_md5 = bucket.Object(key_name).e_tag[1:-1]
         if requires_update(output_file, file_md5):
             bucket.download_file(key_name, get_decrypted_key(output_file,password))
-        return output_file,password
+        return output_file
     except ClientError as cl_e:
         if cl_e.response['Error']['Code'] == '404':
             print('The object does not exist in s3. Generating new one ...')
@@ -70,7 +70,7 @@ def get_key_from_s3() -> str:
             obj.put(Body=key)
             with open(output_file, 'wb') as file:
                 file.write(get_decrypted_key(key,password))
-            return output_file,password
+            return output_file
         raise cl_e
 
 
