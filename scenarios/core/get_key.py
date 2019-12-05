@@ -5,7 +5,6 @@ from argparse import ArgumentParser
 
 from boto3.session import Session
 from botocore.exceptions import ClientError
-from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend as crypto_default_backend
 from cryptography.hazmat.primitives import serialization as crypto_serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
@@ -30,13 +29,10 @@ def generate_private_key(password):
         public_exponent=65537,
         key_size=2048
     )
-    f = Fernet(password)
-    return f.encrypt(
-        key.private_bytes(
-            crypto_serialization.Encoding.PEM,
-            crypto_serialization.PrivateFormat.TraditionalOpenSSL,
-            crypto_serialization.NoEncryption()
-        ))
+    return key.private_bytes(
+        crypto_serialization.Encoding.PEM,
+        crypto_serialization.PrivateFormat.TraditionalOpenSSL,
+        crypto_serialization.BestAvailableEncryption(password))
 
 
 def requires_update(file_name, remote_md5):
@@ -60,7 +56,7 @@ def get_key_from_s3() -> str:
     try:
         file_md5 = bucket.Object(key_name).e_tag[1:-1]
         if requires_update(output_file, file_md5):
-            bucket.download_file(key_name, get_decrypted_key(output_file,password))
+            bucket.download_file(key_name, get_decrypted_key(output_file, password))
         return output_file
     except ClientError as cl_e:
         if cl_e.response['Error']['Code'] == '404':
@@ -69,14 +65,13 @@ def get_key_from_s3() -> str:
             obj = obs.Object(BUCKET, key_name)
             obj.put(Body=key)
             with open(output_file, 'wb') as file:
-                file.write(get_decrypted_key(key,password))
+                file.write(get_decrypted_key(key, password))
             return output_file
         raise cl_e
 
 
 def get_decrypted_key(encrypted_key, password) -> str:
-    f = Fernet(password)
-    return f.decrypt(encrypted_key)
+    return crypto_serialization.load_pem_private_key(encrypted_key, password=password, backend=crypto_default_backend())
 
 
 if __name__ == '__main__':
