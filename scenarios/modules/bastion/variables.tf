@@ -12,7 +12,7 @@ variable "availability_zone" {
 }
 variable "ecs_flavor" {}
 variable "bastion_image" {}
-variable "bastion_eip" {}
+variable "bastion_eip" { default = "" }
 variable "network" {}
 variable "subnet" {}
 variable "router" {}
@@ -22,4 +22,4 @@ variable "volume_bastion" {
 }
 variable "scenario" {}
 
-variable "bastion_local_ip" {}
+variable "bastion_local_ip" { default = "" }
