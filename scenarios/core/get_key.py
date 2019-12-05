@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 
 from boto3.session import Session
 from botocore.exceptions import ClientError
+from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend as crypto_default_backend
 from cryptography.hazmat.primitives import serialization as crypto_serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
@@ -29,11 +30,13 @@ def generate_private_key(password):
         public_exponent=65537,
         key_size=2048
     )
-    password_bytes = password.encode('utf-8')
-    return key.private_bytes(
-        crypto_serialization.Encoding.PEM,
-        crypto_serialization.PrivateFormat.TraditionalOpenSSL,
-        crypto_serialization.BestAvailableEncryption(password_bytes))
+    f = Fernet(password)
+    return f.encrypt(
+        key.private_bytes(
+            crypto_serialization.Encoding.PEM,
+            crypto_serialization.PrivateFormat.TraditionalOpenSSL,
+            crypto_serialization.NoEncryption()
+        ))
 
 
 def requires_update(file_name, remote_md5):
@@ -58,7 +61,7 @@ def get_key_from_s3() -> str:
         file_md5 = bucket.Object(key_name).e_tag[1:-1]
         if requires_update(output_file, file_md5):
             bucket.download_file(key_name, output_file)
-        return output_file
+        return get_decrypted_key(output_file,password)
     except ClientError as cl_e:
         if cl_e.response['Error']['Code'] == '404':
             print('The object does not exist in s3. Generating new one ...')
@@ -67,8 +70,13 @@ def get_key_from_s3() -> str:
             obj.put(Body=key)
             with open(output_file, 'wb') as file:
                 file.write(key)
-            return output_file
+            return get_decrypted_key(output_file,password)
         raise cl_e
+
+
+def get_decrypted_key(encrypted_key, password) -> str:
+    f = Fernet(password)
+    return f.decrypt(encrypted_key)
 
 
 if __name__ == '__main__':
