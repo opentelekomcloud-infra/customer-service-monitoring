@@ -23,7 +23,7 @@ def parse_params():
     return args
 
 
-def generate_private_key(password):
+def generate_private_key(password: str):
     key = rsa.generate_private_key(
         backend=crypto_default_backend(),
         public_exponent=65537,
@@ -32,7 +32,7 @@ def generate_private_key(password):
     return key.private_bytes(
         crypto_serialization.Encoding.PEM,
         crypto_serialization.PrivateFormat.TraditionalOpenSSL,
-        crypto_serialization.BestAvailableEncryption(password))
+        crypto_serialization.BestAvailableEncryption(password.encode('utf-8')))
 
 
 def requires_update(file_name, remote_md5):
@@ -56,7 +56,7 @@ def get_key_from_s3() -> str:
     try:
         file_md5 = bucket.Object(key_name).e_tag[1:-1]
         if requires_update(output_file, file_md5):
-            bucket.download_file(key_name, output_file, password)
+            bucket.download_file(key_name, output_file)
         return output_file
     except ClientError as cl_e:
         if cl_e.response['Error']['Code'] == '404':
