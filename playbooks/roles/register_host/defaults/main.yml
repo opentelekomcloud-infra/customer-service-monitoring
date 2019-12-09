@@ -1,4 +1,0 @@
-dnsname_or_ip: "{{ hostvars.bastion.ansible_host }}"
-hostname: "server"
-username: "linux"
-group: "default"
