@@ -58,7 +58,11 @@ def get_key_from_s3() -> str:
         if requires_update(output_file, file_md5):
             bucket.download_file(key_name, output_file)
         with open(output_file, 'wb') as file:
-            file.write(get_decrypted_key(file.read(), password))
+            file.write(
+                crypto_serialization.load_pem_private_key(
+                    file.read(),
+                    password=password,
+                    backend=crypto_default_backend()))
         return output_file
     except ClientError as cl_e:
         if cl_e.response['Error']['Code'] == '404':
@@ -67,13 +71,13 @@ def get_key_from_s3() -> str:
             obj = obs.Object(BUCKET, key_name)
             obj.put(Body=key)
             with open(output_file, 'wb') as file:
-                file.write(get_decrypted_key(key, password))
+                file.write(
+                    crypto_serialization.load_pem_private_key(
+                        key,
+                        password=password,
+                        backend=crypto_default_backend()))
             return output_file
         raise cl_e
-
-
-def get_decrypted_key(encrypted_key, password) -> str:
-    return crypto_serialization.load_pem_private_key(encrypted_key, password=password, backend=crypto_default_backend())
 
 
 if __name__ == '__main__':
