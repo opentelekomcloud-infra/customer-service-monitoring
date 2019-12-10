@@ -22,7 +22,7 @@ def parse_params():
     return args
 
 
-def generate_private_key():
+def generate_private_key(password: str):
     key = rsa.generate_private_key(
         backend=crypto_default_backend(),
         public_exponent=65537,
@@ -31,7 +31,7 @@ def generate_private_key():
     return key.private_bytes(
         crypto_serialization.Encoding.PEM,
         crypto_serialization.PrivateFormat.TraditionalOpenSSL,
-        crypto_serialization.NoEncryption())
+        crypto_serialization.BestAvailableEncryption(password.encode('utf-8')))
 
 
 def requires_update(file_name, remote_md5):
@@ -49,6 +49,7 @@ def get_key_from_s3() -> str:
                       aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY'])
     output_file = args.output
     key_name = args.key
+    password = input()
     obs = session.resource('s3', endpoint_url=S3_ENDPOINT)
     bucket = obs.Bucket(BUCKET)
     try:
@@ -59,7 +60,7 @@ def get_key_from_s3() -> str:
     except ClientError as cl_e:
         if cl_e.response['Error']['Code'] == '404':
             print('The object does not exist in s3. Generating new one ...')
-            key = generate_private_key()
+            key = generate_private_key(password)
             obj = obs.Object(BUCKET, key_name)
             obj.put(Body=key)
             with open(output_file, 'wb') as file:
