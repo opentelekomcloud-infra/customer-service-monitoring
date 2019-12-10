@@ -18,7 +18,6 @@ def parse_params():
     parser = ArgumentParser(description='Synchronize used private key with OBS')
     parser.add_argument('--key', '-k', required=True)
     parser.add_argument('--output', '-o', required=True)
-    parser.add_argument('--password', '-p', required=True)
     args = parser.parse_args()
     return args
 
@@ -50,7 +49,7 @@ def get_key_from_s3() -> str:
                       aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY'])
     output_file = args.output
     key_name = args.key
-    password = args.password
+    password = input()
     obs = session.resource('s3', endpoint_url=S3_ENDPOINT)
     bucket = obs.Bucket(BUCKET)
     try:
