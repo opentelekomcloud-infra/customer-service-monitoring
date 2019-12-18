@@ -52,6 +52,7 @@ module "resources" {
   availability_zone     = var.availability_zone
   key_pair              = local.key_pair
   scenario              = var.scenario
+  bastion_eip           = opentelekomcloud_networking_floatingip_v2.server_fip.address
 }
 
 output "out-scn4_lb_fip" {

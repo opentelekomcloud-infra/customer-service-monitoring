@@ -6,6 +6,7 @@ variable "network_id" {}
 variable "subnet_id" {}
 variable "router_id" {}
 variable "bastion_local_ip" {}
+variable "bastion_eip" {}
 variable "nodes_count" {}
 variable "prefix" {}
 variable "scenario" {}
