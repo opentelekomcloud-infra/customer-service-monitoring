@@ -31,6 +31,7 @@
       apt:
         upgrade: yes
         update_cache: yes
+
     - name: Install PIP
       apt:
         name:
@@ -42,9 +43,15 @@
       pip:
         executable: pip3
         name: csm-test-utils
+      register: result
+
+    - debug:
+        var: result
+        verbosity: 2
 
     - name: Start monitoring server
-      shell: "nohup /usr/bin/python3 -m csm_test_utils as_monitor --telegraf {{ hostvars.bastion.ansible_host }} &"
+      shell: "nohup /usr/bin/python3 -m csm_test_utils as_monitor --telegraf http://localhost &"
+      when: result.changed == true
 
 - name: Install telegraf client on Bastion
   hosts: bastion
