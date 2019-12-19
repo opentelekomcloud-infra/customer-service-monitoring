@@ -36,6 +36,7 @@
         name:
           - python3-setuptools
           - python3-pip
+          - cron
 
     - name: Install test utils
       pip:
