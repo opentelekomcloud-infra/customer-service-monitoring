@@ -16,7 +16,12 @@ resource "opentelekomcloud_ces_alarmrule" "instances_count" {
       value = opentelekomcloud_as_group_v1.autoscaling_group_with_lb.id
     }
   }
+  alarm_level          = 4
   alarm_action_enabled = true
+  alarm_actions {
+    notification_list = [ opentelekomcloud_smn_topic_v2.instances_count_topic.topic_urn ]
+    type              = "notification"
+  }
   ok_actions {
     notification_list = [ opentelekomcloud_smn_topic_v2.instances_count_topic.topic_urn ]
     type              = "notification"
