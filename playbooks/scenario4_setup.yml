@@ -31,11 +31,6 @@
     monitoring_local_port: 23456
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
-  tasks:
-    - name: Update and upgrade apt packages
-      apt:
-        upgrade: yes
-        update_cache: yes
   roles:
     - role: telegraf-client
       vars:
@@ -68,10 +63,6 @@
 - name: Install csm test utils and run as_monitoring server
   hosts: bastion
   tasks:
-    - name: Update and upgrade apt packages
-      apt:
-        upgrade: yes
-        update_cache: yes
     - name: Install PIP
       apt:
         name:
