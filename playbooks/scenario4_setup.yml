@@ -27,9 +27,14 @@
   hosts: bastion
   become: yes
   tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
     - name: Install PIP
       apt:
         name:
+          - python3-setuptools
           - python3-pip
 
     - name: Install test utils
