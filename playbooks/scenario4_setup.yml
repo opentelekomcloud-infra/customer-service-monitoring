@@ -42,8 +42,9 @@
       pip:
         executable: pip3
         name: csm-test-utils
+
     - name: Start monitoring server
-      shell: "nohup usr/bin/python3 -m csm_test_utils as_monitor --telegraf {{ hostvars.bastion.ansible_host }} &"
+      shell: "nohup /usr/bin/python3 -m csm_test_utils as_monitor --telegraf {{ hostvars.bastion.ansible_host }} &"
 
 - name: Install telegraf client on Bastion
   hosts: bastion
