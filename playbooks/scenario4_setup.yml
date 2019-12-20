@@ -55,7 +55,7 @@
                   proxy_pass         http://localhost:{{ telegraf_local_port }};
                   proxy_set_header   Host $host;
               }
-              location /smn {
+              location /smn/ {
                   proxy_pass         http://localhost:{{ monitoring_local_port }};
                   proxy_set_header   Host $host;
               }
@@ -82,4 +82,4 @@
         name: csm-test-utils
 
     - name: Start monitoring server
-      shell: "nohup /usr/bin/python3 -m csm_test_utils as_monitor --telegraf http://localhost &" # noqa 301 305
+      shell: "/usr/bin/python3 -m csm_test_utils as_monitor --telegraf http://localhost" # noqa 301 305
