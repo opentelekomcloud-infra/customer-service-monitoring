@@ -43,15 +43,9 @@
       pip:
         executable: pip3
         name: csm-test-utils
-      register: result
-
-    - debug:
-        var: result
-        verbosity: 2
 
     - name: Start monitoring server
-      shell: "nohup /usr/bin/python3 -m csm_test_utils as_monitor --telegraf http://localhost &"
-      when: result.changed == true
+      shell: "nohup /usr/bin/python3 -m csm_test_utils as_monitor --telegraf http://localhost &" # noqa 301 305
 
 - name: Install telegraf client on Bastion
   hosts: bastion
