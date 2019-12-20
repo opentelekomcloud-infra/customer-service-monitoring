@@ -17,18 +17,20 @@
         update_cache: yes
         cache_valid_time: 3600
 
-    - name: Cron job for stress CPU every 30 minutes for 7 minutes
+    - name: Cron job for stress CPU every 30 minutes for 8 minutes
       cron:
         name: Load cpu via stress package
         minute: "*/30"
-        job: /usr/bin/stress --cpu 2 --vm 2 --vm-bytes 512M --timeout 420
+        job: /usr/bin/stress --cpu 2 --vm 2 --vm-bytes 512M --timeout 480
 
 - name: Install telegraf client on Bastion
   hosts: bastion
-  become: true
+  become: yes
+  vars:
+    telegraf_local_port: 8080
+    monitoring_local_port: 23456
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
-    - "./vars/nginx_telegraf_local.yml"
   roles:
     - role: telegraf-client
       vars:
@@ -43,4 +45,41 @@
         nginx_vhosts:
           - listen: "80"
             server_name: "localhost"
-            extra_parameters: "{{ extra_parameters }}"
+            extra_parameters: |
+              location / {
+                  proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;
+                  proxy_set_header Host $http_host;
+                  proxy_http_version 1.1;
+              }
+              location /telegraf {
+                  proxy_pass         http://localhost:{{ telegraf_local_port }};
+                  proxy_set_header   Host $host;
+              }
+              location /smn/ {
+                  proxy_pass         http://localhost:{{ monitoring_local_port }};
+                  proxy_set_header   Host $host;
+              }
+
+- name: Install csm test utils and run as_monitoring server
+  hosts: bastion
+  become: yes
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+
+    - name: Install PIP
+      apt:
+        name:
+          - python3-setuptools
+          - python3-pip
+          - cron
+
+    - name: Install test utils
+      pip:
+        executable: pip3
+        name: csm-test-utils
+
+    - name: Start monitoring server
+      shell: "nohup /usr/bin/python3 -m csm_test_utils as_monitor --telegraf http://localhost &" # noqa 301 305
