@@ -23,30 +23,6 @@
         minute: "*/30"
         job: /usr/bin/stress --cpu 2 --vm 2 --vm-bytes 512M --timeout 480
 
-- name: Install csm test utils and run as_monitoring server
-  hosts: bastion
-  become: yes
-  tasks:
-    - name: Update and upgrade apt packages
-      apt:
-        upgrade: yes
-        update_cache: yes
-
-    - name: Install PIP
-      apt:
-        name:
-          - python3-setuptools
-          - python3-pip
-          - cron
-
-    - name: Install test utils
-      pip:
-        executable: pip3
-        name: csm-test-utils
-
-    - name: Start monitoring server
-      shell: "nohup /usr/bin/python3 -m csm_test_utils as_monitor --telegraf http://localhost &" # noqa 301 305
-
 - name: Install telegraf client on Bastion
   hosts: bastion
   become: yes
@@ -83,3 +59,27 @@
                   proxy_pass         http://localhost:{{ monitoring_local_port }};
                   proxy_set_header   Host $host;
               }
+
+- name: Install csm test utils and run as_monitoring server
+  hosts: bastion
+  become: yes
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+
+    - name: Install PIP
+      apt:
+        name:
+          - python3-setuptools
+          - python3-pip
+          - cron
+
+    - name: Install test utils
+      pip:
+        executable: pip3
+        name: csm-test-utils
+
+    - name: Start monitoring server
+      shell: "nohup /usr/bin/python3 -m csm_test_utils as_monitor --telegraf http://localhost &" # noqa 301 305
