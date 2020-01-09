@@ -12,4 +12,5 @@ project_root=$(bash ./core/get_project_root.sh)
 terraform_dir="${project_root}/scenarios/${scenario_name}"
 
 cd ${terraform_dir} || exit 1
+terraform init
 terraform destroy --auto-approve
