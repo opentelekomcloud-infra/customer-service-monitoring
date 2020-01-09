@@ -61,7 +61,7 @@
       vars:
         nginx_remove_default_vhost: yes
         nginx_vhosts:
-          - listen: "{{ telegraf_local_port }}"
+          - listen: "80"
             server_name: "localhost"
             extra_parameters: |
               location / {
