@@ -23,7 +23,7 @@ output "scn1_5_lb_fip" {
 # Create listener
 resource "opentelekomcloud_lb_listener_v2" "listener" {
   name            = "${var.workspace_prefix}${var.scenario}_listener_http"
-  protocol        = "TCP"
+  protocol        = var.protocol
   protocol_port   = 80
   loadbalancer_id = opentelekomcloud_lb_loadbalancer_v2.loadbalancer.id
   depends_on = [
@@ -34,7 +34,7 @@ resource "opentelekomcloud_lb_listener_v2" "listener" {
 # Set methode for load balance charge between instance
 resource "opentelekomcloud_lb_pool_v2" "pool" {
   name        = "${var.workspace_prefix}${var.scenario}_pool_http"
-  protocol    = var.pool_protocol
+  protocol    = var.protocol
   lb_method   = var.pool_lb_method
   listener_id = opentelekomcloud_lb_listener_v2.listener.id
   depends_on = [
