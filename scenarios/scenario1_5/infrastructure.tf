@@ -53,7 +53,6 @@ module "loadbalancer" {
 
   instances             = module.nodes.instances
   net_address           = var.addr_3_octets
-  nodes_count           = var.nodes_count
   scenario              = var.scenario
   subnet_id             = module.network.subnet.id
   workspace_prefix      = local.workspace_prefix

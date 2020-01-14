@@ -1,7 +1,6 @@
 variable "scenario" {}
 variable "subnet_id" {}
 variable "workspace_prefix" {}
-variable "nodes_count" {}
 variable "net_address" {}
 variable "monitor_delay" { default = 1 }
 variable "monitor_timeout" { default = 1 }

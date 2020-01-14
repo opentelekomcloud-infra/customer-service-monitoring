@@ -44,8 +44,8 @@ resource "opentelekomcloud_lb_pool_v2" "pool" {
 
 # Add multip instances to pool
 resource "opentelekomcloud_lb_member_v2" "members" {
-  count         = var.nodes_count
-  address       = "${var.net_address}.${count.index + 10}"
+  count         = length(var.instances)
+  address       = var.instances[count.index].access_ip_v4
   protocol_port = var.protocol_port
   pool_id       = opentelekomcloud_lb_pool_v2.pool.id
   subnet_id     = var.subnet_id
