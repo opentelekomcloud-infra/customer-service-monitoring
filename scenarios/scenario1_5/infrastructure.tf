@@ -33,8 +33,8 @@ module "bastion" {
   bastion_eip       = opentelekomcloud_networking_floatingip_v2.bastion_public_ip.address
 }
 
-module "resources" {
-  source = "./resources"
+module "nodes" {
+  source = "../modules/ecs_node"
 
   ecs_flavor    = var.ecs_flavor
   ecs_image     = var.ecs_image
@@ -51,7 +51,7 @@ module "resources" {
 module "loadbalancer" {
   source = "../modules/loadbalancer"
 
-  instances             = module.resources.instances
+  instances             = module.nodes.instances
   net_address           = var.addr_3_octets
   nodes_count           = var.nodes_count
   scenario              = var.scenario
