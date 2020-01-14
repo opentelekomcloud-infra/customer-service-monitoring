@@ -16,7 +16,7 @@ resource opentelekomcloud_networking_floatingip_associate_v2 "floatingip_associa
   port_id     = opentelekomcloud_lb_loadbalancer_v2.loadbalancer.vip_port_id
 }
 
-output "scn1_5_lb_fip" {
+output "loadbalancer_fip" {
   value = opentelekomcloud_compute_floatingip_v2.lb_public_ip.address
 }
 

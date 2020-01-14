@@ -59,7 +59,7 @@ module "loadbalancer" {
 }
 
 output "out-scn1_5_lb_fip" {
-  value = module.loadbalancer.scn1_5_lb_fip
+  value = module.loadbalancer.loadbalancer_fip
 }
 
 output "out-scn1_5_bastion_fip" {
