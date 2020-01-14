@@ -17,7 +17,7 @@ locals {
 }
 
 resource "opentelekomcloud_compute_instance_v2" "bastion" {
-  name        = var.name
+  name        = "${var.scenario}_${var.name}"
   image_name  = var.bastion_image
   flavor_name = var.ecs_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
