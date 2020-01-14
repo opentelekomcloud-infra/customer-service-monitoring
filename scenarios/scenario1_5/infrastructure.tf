@@ -45,7 +45,6 @@ module "resources" {
   net_address           = var.addr_3_octets
   network_id            = module.network.network.id
   subnet_id             = module.network.subnet.id
-  loadbalancer_local_ip = "${var.addr_3_octets}.3"
   bastion_sec_group_id  = module.bastion.bastion_group_id
 }
 
