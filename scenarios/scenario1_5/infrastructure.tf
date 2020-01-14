@@ -42,22 +42,22 @@ module "resources" {
   nodes_count   = var.nodes_count
   scenario      = var.scenario
 
-  net_address           = var.addr_3_octets
-  network_id            = module.network.network.id
-  subnet_id             = module.network.subnet.id
-  bastion_sec_group_id  = module.bastion.bastion_group_id
+  net_address          = var.addr_3_octets
+  network_id           = module.network.network.id
+  subnet_id            = module.network.subnet.id
+  bastion_sec_group_id = module.bastion.bastion_group_id
 }
 
 module "loadbalancer" {
   source = "../modules/loadbalancer"
 
-  instances = module.resources.instances
+  instances             = module.resources.instances
   loadbalancer_local_ip = "${var.addr_3_octets}.3"
-  net_address = var.addr_3_octets
-  nodes_count = var.nodes_count
-  scenario = var.scenario
-  subnet_id = module.network.subnet.id
-  workspace_prefix = local.workspace_prefix
+  net_address           = var.addr_3_octets
+  nodes_count           = var.nodes_count
+  scenario              = var.scenario
+  subnet_id             = module.network.subnet.id
+  workspace_prefix      = local.workspace_prefix
 }
 
 output "out-scn1_5_lb_fip" {
