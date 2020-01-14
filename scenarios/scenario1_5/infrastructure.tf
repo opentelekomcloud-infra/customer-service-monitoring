@@ -52,7 +52,6 @@ module "loadbalancer" {
   source = "../modules/loadbalancer"
 
   instances             = module.resources.instances
-  loadbalancer_local_ip = "${var.addr_3_octets}.3"
   net_address           = var.addr_3_octets
   nodes_count           = var.nodes_count
   scenario              = var.scenario

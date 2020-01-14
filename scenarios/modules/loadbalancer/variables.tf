@@ -1,6 +1,5 @@
 variable "scenario" {}
 variable "subnet_id" {}
-variable "loadbalancer_local_ip" {}
 variable "workspace_prefix" {}
 variable "nodes_count" {}
 variable "net_address" {}

@@ -2,7 +2,7 @@
 resource "opentelekomcloud_lb_loadbalancer_v2" "loadbalancer" {
   name          = "${var.workspace_prefix}${var.scenario}_elastic_loadbalancer_http"
   vip_subnet_id = var.subnet_id
-  vip_address   = var.loadbalancer_local_ip
+  vip_address   = "${var.net_address}.3"
   depends_on = [
     var.instances
   ]
