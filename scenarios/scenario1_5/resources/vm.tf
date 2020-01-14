@@ -11,7 +11,7 @@ resource "opentelekomcloud_compute_instance_v2" "http" {
   key_pair    = var.key_pair_name
   user_data   = file("${path.module}/first_boot.sh")
 
-  availability_zone = "eu-de-03"
+  availability_zone = var.availability_zone
 
   depends_on = [
     opentelekomcloud_networking_port_v2.http

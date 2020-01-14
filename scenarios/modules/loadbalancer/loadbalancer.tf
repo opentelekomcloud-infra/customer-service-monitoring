@@ -24,7 +24,7 @@ output "scn1_5_lb_fip" {
 resource "opentelekomcloud_lb_listener_v2" "listener" {
   name            = "${var.workspace_prefix}${var.scenario}_listener_http"
   protocol        = var.protocol
-  protocol_port   = 80
+  protocol_port   = var.protocol_port
   loadbalancer_id = opentelekomcloud_lb_loadbalancer_v2.loadbalancer.id
   depends_on = [
     opentelekomcloud_lb_loadbalancer_v2.loadbalancer
@@ -46,7 +46,7 @@ resource "opentelekomcloud_lb_pool_v2" "pool" {
 resource "opentelekomcloud_lb_member_v2" "members" {
   count         = var.nodes_count
   address       = "${var.net_address}.${count.index + 10}"
-  protocol_port = 80
+  protocol_port = var.protocol_port
   pool_id       = opentelekomcloud_lb_pool_v2.pool.id
   subnet_id     = var.subnet_id
   depends_on = [
@@ -58,7 +58,7 @@ resource "opentelekomcloud_lb_member_v2" "members" {
 resource "opentelekomcloud_lb_monitor_v2" "monitor" {
   name        = "${var.workspace_prefix}${var.scenario}_monitor_http"
   pool_id     = opentelekomcloud_lb_pool_v2.pool.id
-  type        = "TCP"
+  type        = var.protocol
   delay       = var.monitor_delay
   timeout     = var.monitor_timeout
   max_retries = var.monitor_max_retries
