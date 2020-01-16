@@ -1,15 +1,36 @@
-module "resources" {
-  source = "./resources"
 
-  ecs_image   = var.ecs_image
-  ecs_flavor  = var.ecs_flavor
-  net_address = var.net_address
-  prefix      = var.prefix
-  public_key  = var.public_key
+locals {
+  workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
+  key_pair = {
+    public_key = var.public_key
+    key_name   = "${local.workspace_prefix}kp_${var.scenario}"
+  }
+}
 
-  region            = var.region
+module "network" {
+  source = "../modules/public_router"
+
+  addr_3_octets = var.addr_3_octets
+  prefix        = "${local.workspace_prefix}${var.scenario}"
+}
+
+resource "opentelekomcloud_networking_floatingip_v2" "bastion_public_ip" {}
+
+module "bastion" {
+  source = "../modules/bastion"
+
+  bastion_image = var.ecs_image
+  ecs_flavor    = var.ecs_flavor
+
+  key_pair = local.key_pair
+  network  = module.network.network
+  subnet   = module.network.subnet
+  router   = module.network.router
+  name     = "${local.workspace_prefix}bastion"
+  scenario = var.scenario
+
   availability_zone = var.availability_zone
-  scenario          = var.scenario
+  bastion_eip       = opentelekomcloud_networking_floatingip_v2.bastion_public_ip.address
 }
 
 module "postgresql" {
@@ -18,9 +39,9 @@ module "postgresql" {
   availability_zone = var.availability_zone
   instance_name     = "scn2-db"
 
-  network_id  = module.resources.vpc_id
-  subnet_id   = module.resources.subnet.id
-  subnet_cidr = module.resources.subnet.cidr
+  network_id  = module.network.network.id
+  subnet_id   = module.network.subnet.id
+  subnet_cidr = module.network.subnet.cidr
 
   psql_version  = var.psql_version
   psql_port     = var.psql_port
@@ -28,7 +49,7 @@ module "postgresql" {
 }
 
 output "out-scn2_public_ip" {
-  value = module.resources.scn2_eip
+  value = opentelekomcloud_networking_floatingip_v2.bastion_public_ip.address
 }
 output "out-db_password" {
   value     = module.postgresql.db_password

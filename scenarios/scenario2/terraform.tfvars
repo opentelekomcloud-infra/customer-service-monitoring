@@ -1,5 +1,5 @@
 prefix            = "scn2"
-net_address       = "192.168.0"
+addr_3_octets       = "192.168.0"
 region            = "eu-de"
 availability_zone = "eu-de-03"
 ecs_flavor        = "c3.large.2"

@@ -33,8 +33,8 @@ module "bastion" {
   bastion_eip       = opentelekomcloud_networking_floatingip_v2.bastion_public_ip.address
 }
 
-module "resources" {
-  source = "./resources"
+module "nodes" {
+  source = "../modules/ecs_node"
 
   ecs_flavor    = var.ecs_flavor
   ecs_image     = var.ecs_image
@@ -42,16 +42,24 @@ module "resources" {
   nodes_count   = var.nodes_count
   scenario      = var.scenario
 
+  net_address          = var.addr_3_octets
+  network_id           = module.network.network.id
+  subnet_id            = module.network.subnet.id
+  bastion_sec_group_id = module.bastion.bastion_group_id
+}
+
+module "loadbalancer" {
+  source = "../modules/loadbalancer"
+
+  instances             = module.nodes.instances
   net_address           = var.addr_3_octets
-  network_id            = module.network.network.id
+  scenario              = var.scenario
   subnet_id             = module.network.subnet.id
-  bastion_local_ip      = module.bastion.bastion_ip
-  loadbalancer_local_ip = "${var.addr_3_octets}.3"
-  bastion_sec_group_id  = module.bastion.bastion_group_id
+  workspace_prefix      = local.workspace_prefix
 }
 
 output "out-scn1_lb_fip" {
-  value = module.resources.scn1_lb_fip
+  value = module.loadbalancer.loadbalancer_fip
 }
 
 output "out-scn1_bastion_fip" {
