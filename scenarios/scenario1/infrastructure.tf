@@ -51,11 +51,11 @@ module "nodes" {
 module "loadbalancer" {
   source = "../modules/loadbalancer"
 
-  instances             = module.nodes.instances
-  net_address           = var.addr_3_octets
-  scenario              = var.scenario
-  subnet_id             = module.network.subnet.id
-  workspace_prefix      = local.workspace_prefix
+  instances        = module.nodes.instances
+  net_address      = var.addr_3_octets
+  scenario         = var.scenario
+  subnet_id        = module.network.subnet.id
+  workspace_prefix = local.workspace_prefix
 }
 
 output "out-scn1_lb_fip" {
