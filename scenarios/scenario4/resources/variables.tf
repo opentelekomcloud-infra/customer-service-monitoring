@@ -21,8 +21,7 @@ variable "key_pair" {
     public_key : string
   })
 }
-variable "lb_monitor" {}
-variable "lb_pool" {}
+variable "loadbalancer_local_ip" {}
 
 locals {
   workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
