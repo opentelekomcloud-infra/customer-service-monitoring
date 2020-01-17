@@ -16,10 +16,6 @@ resource opentelekomcloud_networking_floatingip_associate_v2 "floatingip_associa
   port_id     = opentelekomcloud_lb_loadbalancer_v2.loadbalancer.vip_port_id
 }
 
-output "loadbalancer_fip" {
-  value = opentelekomcloud_compute_floatingip_v2.lb_public_ip.address
-}
-
 # Create listener
 resource "opentelekomcloud_lb_listener_v2" "listener" {
   name            = "${var.workspace_prefix}${var.scenario}_listener_http"
@@ -65,4 +61,16 @@ resource "opentelekomcloud_lb_monitor_v2" "monitor" {
   depends_on = [
     opentelekomcloud_lb_member_v2.members
   ]
+}
+
+output "loadbalancer_fip" {
+  value = opentelekomcloud_compute_floatingip_v2.lb_public_ip.address
+}
+
+output "monitor" {
+  value = opentelekomcloud_lb_monitor_v2.monitor
+}
+
+output "pool" {
+  value = opentelekomcloud_lb_pool_v2.pool
 }

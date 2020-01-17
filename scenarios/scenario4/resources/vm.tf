@@ -43,3 +43,7 @@ resource "opentelekomcloud_networking_port_v2" "http" {
     ip_address = "${var.net_address}.${count.index + 10}"
   }
 }
+
+output "instances" {
+  value = opentelekomcloud_compute_instance_v2.http
+}
