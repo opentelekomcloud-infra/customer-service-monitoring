@@ -25,7 +25,7 @@ resource "opentelekomcloud_as_group_v1" "autoscaling_group_with_lb" {
   }
   vpc_id = var.router_id
   lbaas_listeners {
-    pool_id       = var.lb_pool
+    pool_id       = var.lb_pool.id
     protocol_port = 80
     weight        = 1
   }
