@@ -4,7 +4,7 @@ variable "domain_name" {}
 variable "tenant_name" {}
 
 variable "prefix" {}
-variable "net_address" {}
+variable "addr_3_octets" {}
 variable "region" {}
 variable "availability_zone" {}
 variable "ecs_flavor" {}

@@ -32,12 +32,6 @@
         pg_username: "{{ lookup('env', 'PSQL_USERNAME') }}"
         pg_password: "{{ lookup('env', 'PSQL_PASSWORD') }}"
         debug: False
-    - role: telegraf-client
-      vars:
-        telegraf_plugins_base:
-          - name: postgresql
-            options:
-              address: "postgres://{{ lookup('env', 'PSQL_USERNAME') }}:{{ lookup('env', 'PSQL_PASSWORD') }}@{{ lookup('env', 'PSQL_ADDRESS') }}/entities"
   tasks:
     - name: Register facts
       set_fact:
@@ -57,6 +51,9 @@
             options:
               service_address: "localhost:{{ telegraf_local_port }}"
               data_format: "influx"
+          - name: postgresql
+            options:
+              address: "postgres://{{ lookup('env', 'PSQL_USERNAME') }}:{{ lookup('env', 'PSQL_PASSWORD') }}@{{ lookup('env', 'PSQL_ADDRESS') }}/entities"
     - role: geerlingguy.nginx
       vars:
         nginx_remove_default_vhost: yes
