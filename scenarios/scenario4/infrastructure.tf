@@ -67,7 +67,7 @@ module "resources" {
 }
 
 output "out-scn4_lb_fip" {
-  value = module.resources.scn4_lb_fip
+  value = module.loadbalancer.loadbalancer_fip
 }
 
 output "out-scn4_bastion_fip" {
