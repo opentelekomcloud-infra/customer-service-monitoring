@@ -15,13 +15,14 @@ variable "disc_volume" {
   type    = number
   default = 5
 }
+variable "lb_monitor" {}
+variable "lb_pool" {}
 variable "key_pair" {
   type = object({
     key_name : string
     public_key : string
   })
 }
-variable "loadbalancer_local_ip" {}
 
 locals {
   workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"

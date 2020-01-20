@@ -7,7 +7,7 @@ resource "opentelekomcloud_as_configuration_v1" "as_config" {
     user_data   = file("${path.module}/first_boot.sh")
   }
   depends_on = [
-    opentelekomcloud_lb_monitor_v2.monitor
+    var.lb_monitor
   ]
 }
 
@@ -25,7 +25,7 @@ resource "opentelekomcloud_as_group_v1" "autoscaling_group_with_lb" {
   }
   vpc_id = var.router_id
   lbaas_listeners {
-    pool_id       = opentelekomcloud_lb_pool_v2.pool.id
+    pool_id       = var.lb_pool
     protocol_port = 80
     weight        = 1
   }
