@@ -1,10 +1,9 @@
 
 locals {
   workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
-  prefix           = "${local.workspace_prefix}${var.scenario}"
   key_pair = {
     public_key = var.public_key
-    key_name   = "${local.prefix}_kp"
+    key_name   = "${local.workspace_prefix}kp_${var.scenario}"
   }
 }
 
@@ -12,12 +11,30 @@ module "network" {
   source = "../modules/public_router"
 
   addr_3_octets = var.addr_3_octets
-  prefix        = local.prefix
+  prefix        = "${local.workspace_prefix}${var.scenario}"
 }
 
-module "resources" {
-  source                      = "./resources"
-  prefix                      = local.prefix
+resource "opentelekomcloud_networking_floatingip_v2" "bastion_public_ip" {}
+
+module "bastion" {
+  source = "../modules/bastion"
+
+  bastion_image = var.ecs_image
+  ecs_flavor    = var.ecs_flavor
+  key_pair      = local.key_pair
+  network       = module.network.network
+  subnet        = module.network.subnet
+  router        = module.network.router
+  name          = "${local.workspace_prefix}bastion"
+  scenario      = var.scenario
+
+  availability_zone = var.availability_zone
+  bastion_eip       = opentelekomcloud_networking_floatingip_v2.bastion_public_ip.address
+}
+
+module "resource" {
+  source = "./resources"
+
   ecs_image                   = var.ecs_image
   initiator_availability_zone = var.initiator_availability_zone
   target_availability_zone    = var.target_availability_zone
