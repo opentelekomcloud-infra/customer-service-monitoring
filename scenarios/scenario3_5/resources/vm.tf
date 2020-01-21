@@ -11,7 +11,7 @@ data "opentelekomcloud_images_image_v2" "current_image" {
 # Create security group for instances
 resource "opentelekomcloud_compute_secgroup_v2" "scn3_5_group" {
   description = "Allow external connections to ssh, http, and https ports"
-  name        = "${var.prefix}_grp"
+  name        = "${var.scenario}_grp"
   rule {
     cidr        = "0.0.0.0/0"
     from_port   = 22
@@ -28,7 +28,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "scn3_5_group" {
 
 # Create instance for iscsi target
 resource "opentelekomcloud_compute_instance_v2" "target_instance" {
-  name        = "${var.prefix}_target_instance"
+  name        = "${var.scenario}_target_instance"
   flavor_name = var.ecs_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
 
@@ -53,7 +53,7 @@ resource "opentelekomcloud_compute_instance_v2" "target_instance" {
 
 # Create network port for iscsi target
 resource "opentelekomcloud_networking_port_v2" "target_instance_port" {
-  name           = "${var.prefix}_target_port"
+  name           = "${var.scenario}_target_port"
   network_id     = var.network.id
   admin_state_up = true
 
@@ -104,7 +104,7 @@ resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
 
 # Create network port for iscsi initiator
 resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
-  name           = "${var.prefix}_initiator_port"
+  name           = "${var.scenario}_initiator_port"
   network_id     = var.network.id
   admin_state_up = true
 
