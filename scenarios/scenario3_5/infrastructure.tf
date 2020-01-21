@@ -28,11 +28,11 @@ module "bastion" {
   name          = "${local.workspace_prefix}bastion"
   scenario      = var.scenario
 
-  availability_zone = var.availability_zone
+  availability_zone = var.target_availability_zone
   bastion_eip       = opentelekomcloud_networking_floatingip_v2.bastion_public_ip.address
 }
 
-module "resource" {
+module "resources" {
   source = "./resources"
 
   ecs_image                   = var.ecs_image
