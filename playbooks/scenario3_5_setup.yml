@@ -19,6 +19,7 @@
 
 - name: Prepare attached device on target server
   hosts: scn3_5_target
+  gather_facts: yes
   become: yes
   vars_files:
     - "./vars/scenario_3_5_vars.yml"

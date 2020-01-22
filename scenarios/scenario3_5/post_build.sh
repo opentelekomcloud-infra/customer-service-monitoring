@@ -7,4 +7,3 @@ function get_value() {
 }
 
 export BASTION_SERVER_PUBLIC_IP=$(get_value "scn3_5_bastion_fip")
-export ISCSI_DEVICE_NAME=$(get_value "scn3_5_iscsi_device_name")

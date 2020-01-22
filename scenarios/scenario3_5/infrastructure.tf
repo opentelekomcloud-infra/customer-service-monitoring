@@ -49,10 +49,6 @@ module "resources" {
   scenario                    = var.scenario
 }
 
-output "out-scn3_5_iscsi_device_name" {
-  value = module.resources.device_name
-}
-
 output "out-scn3_5_bastion_fip" {
   value = opentelekomcloud_networking_floatingip_v2.bastion_public_ip.address
 }
