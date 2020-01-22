@@ -42,7 +42,6 @@ resource "opentelekomcloud_compute_instance_v2" "target_instance" {
   }
 
   tag = {
-    "group" : "gatewayed",
     "scenario" : var.scenario
   }
 }
@@ -84,7 +83,6 @@ resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
   }
 
   tag = {
-    "group" : "gatewayed",
     "scenario" : var.scenario
   }
 }
