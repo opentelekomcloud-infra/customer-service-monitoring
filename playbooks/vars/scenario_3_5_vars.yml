@@ -1,4 +1,3 @@
-device: "{{ lookup('env', 'ISCSI_DEVICE_NAME') }}"
 volume_group: otc_iscsi
 volume_name: otc_lun1
 initiator_address: "{{ hostvars.scn3_5_initiator_instance.ansible_host }}"
