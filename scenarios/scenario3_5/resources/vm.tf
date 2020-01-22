@@ -67,16 +67,6 @@ resource "opentelekomcloud_networking_port_v2" "target_instance_port" {
   }
 }
 
-resource "opentelekomcloud_networking_floatingip_v2" "target_fip" {
-  pool = "admin_external_net"
-}
-
-# Assign FIP to target instance
-resource opentelekomcloud_compute_floatingip_associate_v2 "floatingip_associate_target" {
-  floating_ip = opentelekomcloud_networking_floatingip_v2.target_fip.address
-  instance_id = opentelekomcloud_compute_instance_v2.target_instance.id
-}
-
 # Create instance for iscsi initiator
 resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
   name        = "${var.scenario}_initiator_instance"
@@ -116,21 +106,4 @@ resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
     subnet_id  = var.subnet.id
     ip_address = "${var.net_address}.11"
   }
-}
-
-resource "opentelekomcloud_networking_floatingip_v2" "initiator_fip" {
-  pool = "admin_external_net"
-}
-
-# Assign FIP to target initiator
-resource opentelekomcloud_compute_floatingip_associate_v2 "floatingip_associate_initiator" {
-  floating_ip = opentelekomcloud_networking_floatingip_v2.initiator_fip.address
-  instance_id = opentelekomcloud_compute_instance_v2.initiator_instance.id
-}
-
-output "target_fip" {
-  value = opentelekomcloud_networking_floatingip_v2.target_fip.address
-}
-output "initiator_fip" {
-  value = opentelekomcloud_networking_floatingip_v2.initiator_fip.address
 }
