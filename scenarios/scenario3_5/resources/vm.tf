@@ -66,7 +66,7 @@ resource "opentelekomcloud_networking_port_v2" "target_instance_port" {
 resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
   name        = "${var.scenario}_initiator_instance"
   flavor_name = var.ecs_flavor
-  key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
+  key_pair    = var.key_pair_name
 
   availability_zone = var.initiator_availability_zone
 
