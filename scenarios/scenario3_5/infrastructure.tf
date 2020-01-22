@@ -40,7 +40,10 @@ module "resources" {
   target_availability_zone    = var.target_availability_zone
   ecs_flavor                  = var.ecs_flavor
   disc_volume                 = var.disc_volume
-  key_pair                    = local.key_pair
+#  key_pair                    = local.key_pair
+  key_pair_name = local.key_pair.key_name
+
+
   net_address                 = var.addr_3_octets
   subnet                      = module.network.subnet
   network                     = module.network.network

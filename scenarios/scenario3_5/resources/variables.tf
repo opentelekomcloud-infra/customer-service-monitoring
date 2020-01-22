@@ -1,10 +1,5 @@
 variable "volume_type" { default = "SATA" }
-variable "key_pair" {
-  type = object({
-    key_name : string
-    public_key : string
-  })
-}
+variable "key_pair_name" {}
 variable "ecs_image" {}
 variable "ecs_flavor" {}
 variable "disc_volume" {}

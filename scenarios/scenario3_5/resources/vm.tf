@@ -1,8 +1,3 @@
-resource "opentelekomcloud_compute_keypair_v2" "pair" {
-  name       = var.key_pair.key_name
-  public_key = var.key_pair.public_key
-}
-
 data "opentelekomcloud_images_image_v2" "current_image" {
   name        = var.ecs_image
   most_recent = true
@@ -30,7 +25,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "scn3_5_group" {
 resource "opentelekomcloud_compute_instance_v2" "target_instance" {
   name        = "${var.scenario}_target_instance"
   flavor_name = var.ecs_flavor
-  key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
+  key_pair    = var.key_pair_name
 
   availability_zone = var.target_availability_zone
 
