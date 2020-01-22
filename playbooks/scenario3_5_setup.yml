@@ -4,7 +4,7 @@
   roles:
     - register_host
   vars:
-    dnsname_or_ip: "{{ lookup('env', 'TARGET_SERVER_PUBLIC_IP') }}"
+    dnsname_or_ip: "{{ lookup('env', 'BASTION_SERVER_PUBLIC_IP') }}"
     hostname: "scn3_5_target"
     group: "scn3_5_ecs"
 
@@ -13,7 +13,7 @@
   roles:
     - register_host
   vars:
-    dnsname_or_ip: "{{ lookup('env', 'INITIATOR_SERVER_PUBLIC_IP') }}"
+    dnsname_or_ip: "{{ lookup('env', 'BASTION_SERVER_PUBLIC_IP') }}"
     hostname: "scn3_5_initiator"
     group: "scn3_5_ecs"
 

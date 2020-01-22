@@ -40,7 +40,6 @@ module "resources" {
   target_availability_zone    = var.target_availability_zone
   ecs_flavor                  = var.ecs_flavor
   disc_volume                 = var.disc_volume
-#  key_pair                    = local.key_pair
   key_pair_name = local.key_pair.key_name
 
 
@@ -52,4 +51,8 @@ module "resources" {
 
 output "out-scn3_5_iscsi_device_name" {
   value = module.resources.device_name
+}
+
+output "out-scn3_5_bastion_fip" {
+  value = opentelekomcloud_networking_floatingip_v2.bastion_public_ip.address
 }
