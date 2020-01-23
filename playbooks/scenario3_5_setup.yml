@@ -31,6 +31,8 @@
 - name: Prepare attached iSCSI device on initiator
   hosts: scn3_5_initiator_instance
   become: yes
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
   vars:
     mount_point: "/mnt/scsi"
   tasks:
@@ -45,8 +47,6 @@
         update_cache: yes
 
     - name: Create a ext4 filesystem on attached disks
-      vars_files:
-        - "./vars/scenario_3_5_vars.yml"
       filesystem:
         fstype: ext4
         dev: "{{ device }}"
@@ -58,8 +58,6 @@
         mode: "0755"
 
     - name: Mount up devices
-      vars_files:
-        - "./vars/scenario_3_5_vars.yml"
       mount:
         path: "{{ mount_point }}"
         src: "{{ device }}"
@@ -73,8 +71,6 @@
         job: /bin/dd if=/dev/urandom of="{{ mount_point }}/bigfile.txt" bs=5000000 count=100 oflag=dsync
 
     - name: Cron job for reading big files on all devices every 2 minutes
-      vars_files:
-        - "./vars/scenario_3_5_vars.yml"
       cron:
         name: "Reading big files from iSCSI device"
         minute: "*/2"
@@ -91,8 +87,6 @@
     telegraf_plugins_base:
       - name: mem
       - name: diskio
-        vars_files:
-          - "./vars/scenario_3_5_vars.yml"
         options:
           devices: ["{{ device }}"]
       - name: cpu
