@@ -1,6 +1,6 @@
 ---
 - name: Prepare attached device on target server
-  hosts: gatewayed, !scn3_5_initiator_instance
+  hosts: scn3_5_target_instance
   gather_facts: yes
   become: yes
   vars_files:
