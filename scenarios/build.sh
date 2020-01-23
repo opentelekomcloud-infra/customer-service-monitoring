@@ -30,4 +30,4 @@ cd "${terraform_dir}" || exit 1
 if [[ -e ${post_build} ]]; then source "${post_build}"; fi # here goes setting up env variables
 # second - configure build infra
 cd "${PROJECT_ROOT}" || exit 1
-ansible-playbook -i "inventory/prod" "playbooks/${scenario_name}_setup.yml" -v
+ansible-playbook -i "inventory/prod" "playbooks/${scenario_name}_setup.yml"
