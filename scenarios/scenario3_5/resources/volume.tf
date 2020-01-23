@@ -13,6 +13,6 @@ resource "opentelekomcloud_compute_volume_attach_v2" "attach-SCSI-volume" {
   volume_id   = opentelekomcloud_blockstorage_volume_v2.SCSI-volume.id
 }
 
-output "out-iscsi_device_name" {
+output "iscsi_device_name" {
   value = opentelekomcloud_compute_volume_attach_v2.attach-SCSI-volume.device
 }
