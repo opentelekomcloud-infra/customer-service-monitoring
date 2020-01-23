@@ -40,13 +40,13 @@ module "resources" {
   target_availability_zone    = var.target_availability_zone
   ecs_flavor                  = var.ecs_flavor
   disc_volume                 = var.disc_volume
-  key_pair_name = local.key_pair.key_name
+  key_pair_name               = local.key_pair.key_name
 
 
-  net_address                 = var.addr_3_octets
-  subnet                      = module.network.subnet
-  network                     = module.network.network
-  scenario                    = var.scenario
+  net_address = var.addr_3_octets
+  subnet      = module.network.subnet
+  network     = module.network.network
+  scenario    = var.scenario
 }
 
 output "out-scn3_5_bastion_fip" {
@@ -54,5 +54,5 @@ output "out-scn3_5_bastion_fip" {
 }
 
 output "out-iscsi_device_name" {
-  value       = module.resources.iscsi_device_name
+  value = module.resources.iscsi_device_name
 }

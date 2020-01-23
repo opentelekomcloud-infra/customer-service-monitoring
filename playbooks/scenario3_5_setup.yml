@@ -63,10 +63,9 @@
         update_cache: yes
 
     - name: Create a ext4 filesystem on attached disks
-    
       filesystem:
         fstype: ext4
-        dev: "{{ device }}"
+        dev: "{{ lookup('env', 'ISCSI_DEVICE_NAME') }}"
 
     - name: Create directories for mount
       file:
