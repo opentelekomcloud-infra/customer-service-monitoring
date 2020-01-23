@@ -62,6 +62,11 @@
         fstype: ext4
         state: mounted
 
+    - name: Install cron
+      apt:
+        pkg:
+          - cron
+
     - name: Cron job for create big files on SCSI device every 5 minutes
       cron:
         name: "Creating big file on iSCSI device"
