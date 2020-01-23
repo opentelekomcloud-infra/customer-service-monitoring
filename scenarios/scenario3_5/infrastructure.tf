@@ -52,7 +52,3 @@ module "resources" {
 output "out-scn3_5_bastion_fip" {
   value = opentelekomcloud_networking_floatingip_v2.bastion_public_ip.address
 }
-
-output "out-iscsi_device_name" {
-  value = module.resources.iscsi_device_name
-}
