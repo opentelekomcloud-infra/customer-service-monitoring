@@ -18,7 +18,7 @@
 #     group: "scn3_5_ecs"
 
 - name: Prepare attached device on target server
-  hosts: scn3_5_target_instance
+  hosts: gatewayed, !scn3_5_initiator_instance
   gather_facts: yes
   become: yes
   vars_files:
