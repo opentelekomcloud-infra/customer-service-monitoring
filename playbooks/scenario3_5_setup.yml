@@ -32,9 +32,7 @@
   hosts: scn3_5_initiator_instance
   become: yes
   vars_files:
-    - "./vars/telegraf_dbconnection_vars.yml"
-  vars:
-    mount_point: "/mnt/scsi"
+    - "./vars/scenario_3_5_vars.yml"
   tasks:
     - name: Add hdparm repository [Debian/Ubuntu]
       apt_repository:
@@ -81,6 +79,7 @@
   become: yes
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
+    - "./vars/scenario_3_5_vars.yml"
   roles:
     - telegraf-client
   vars:
