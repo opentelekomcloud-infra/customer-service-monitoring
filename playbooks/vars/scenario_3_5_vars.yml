@@ -5,3 +5,4 @@ incominguser_username: otc-iscsi-user
 default_incominguser_password: password
 incominguser_password: "{{ lookup('env', 'INITIATOR_PASSWORD') | default(default_incominguser_password, true) }}"
 mount_point: "/mnt/scsi"
+device: "/dev/sda"
