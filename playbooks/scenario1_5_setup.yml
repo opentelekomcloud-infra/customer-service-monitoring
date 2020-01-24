@@ -54,7 +54,7 @@
     project_path: /home/ansideln/work/customer-service-monitoring
     keys_path: "{{ project_path }}/scenarios/scenario1_5"
     inventory_path: "{{ test_path }}/inventory/prod"
-    LOADBALANCER_PUBLIC_IP: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
+    loadbalancer_public_ip: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
   tasks:
     - name: Checkout roles from git
       git:
@@ -67,6 +67,13 @@
         path: "{{ inventory_path }}"
         state: directory
         mode: "0755"
+
+    - name: Add ssh-configuration key to ansible
+      ini_file:
+        path: "{{ test_path }}"
+        section: ssh_connection
+        option: ssh_args
+        value: "-o PasswordAuthentication=no -o StrictHostKeyChecking=no"
 
     - name: Copy inventory
       copy:
@@ -95,9 +102,6 @@
         - "scenario1_5_start_server.yml"
         - "scenario1_5_stop_server_on_random_node.yml"
 
-    - name: Start ssh agent
-      shell: eval "$(ssh-agent)"
-
     - name: Ensure that cron installed
       become: yes
       apt:
@@ -107,7 +111,7 @@
 
     - name: Copy loadbalancer ip to bastion
       copy:
-        content: "{{ LOADBALANCER_PUBLIC_IP }}"
+        content: "{{ loadbalancer_public_ip }}"
         dest: "{{ test_path }}/load_balancer_ip"
 
     - name: Schedule test

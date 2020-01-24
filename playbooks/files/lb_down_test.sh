@@ -10,6 +10,7 @@ test_folder="/home/linux/test"
 telegraf="${telegraf_host}/telegraf"
 LOADBALANCER_PUBLIC_IP=$(cat "${test_folder}/load_balancer_ip")
 
+eval "$(ssh-agent)"
 ssh-add "${test_folder}/scn1_5_instance_rsa"
 
 function start_stop_rand_node() {
@@ -77,3 +78,5 @@ if [[ status == 0 ]]; then
 else
     telegraf_report fail ${test_result}
 fi
+
+pkill ssh-agent
