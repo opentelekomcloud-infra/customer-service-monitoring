@@ -47,7 +47,7 @@
             server_name: "localhost"
             extra_parameters: "{{ extra_parameters }}"
 
-- name: Copy test script files to Bastion
+- name: Copy and configure test script files to Bastion
   hosts: bastion
   vars:
     test_path: /home/linux/test
@@ -56,6 +56,18 @@
     inventory_path: "{{ test_path }}/inventory/prod"
     loadbalancer_public_ip: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
   tasks:
+    - name: Install PIP
+      apt:
+        name:
+          - python3-setuptools
+          - python3-pip
+          - cron
+
+    - name: Install test utils
+      pip:
+        executable: pip3
+        name: csm-test-utils
+
     - name: Checkout roles from git
       git:
         repo: 'https://github.com/opentelekomcloud-infra/csm-ansible-roles.git'
@@ -68,7 +80,7 @@
         state: directory
         mode: "0755"
 
-    - name: Add ssh-configuration key to ansible
+    - name: Add ssh-configuration to ansible
       ini_file:
         path: "{{ test_path }}/ansible.cfg"
         section: ssh_connection

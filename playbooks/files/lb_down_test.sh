@@ -1,14 +1,8 @@
-version=0.1
-archive=lb_test-${version}.tgz
-if [[ ! -e ${archive} ]]; then
-    wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v${version}/lb_test-${version}-linux.tar.gz
-    tar xf ${archive}
-fi
-
 telegraf_host="http://${localhost}"
 test_folder="/home/linux/test"
 telegraf="${telegraf_host}/telegraf"
 LOADBALANCER_PUBLIC_IP=$(cat "${test_folder}/load_balancer_ip")
+cd $(test_folder "$0")
 
 eval "$(ssh-agent)"
 ssh-add "${test_folder}/scn1_5_instance_rsa"
@@ -64,11 +58,11 @@ elif [[ ${test_result} != 101 ]]; then
     telegraf_report fail ${test_result}
     exit ${test_result}
 fi
-python -m csm_test_utils rebalance --target ${LOADBALANCER_PUBLIC_IP} --telegraf=${telegraf_host} || telegraf_report fail $?
+/usr/bin/python3 -m csm_test_utils rebalance --target ${LOADBALANCER_PUBLIC_IP} --telegraf=${telegraf_host} || telegraf_report fail $?
 
 sleep 60 # make reports beautiful again
 start_stop_rand_node start
-python -m csm_test_utils rebalance --target ${LOADBALANCER_PUBLIC_IP} --telegraf=${telegraf_host} || telegraf_report fail $?
+/usr/bin/python3 -m csm_test_utils rebalance --target ${LOADBALANCER_PUBLIC_IP} --telegraf=${telegraf_host} || telegraf_report fail $?
 
 ${start_test}
 test_should_pass
