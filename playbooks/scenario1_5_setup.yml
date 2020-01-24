@@ -109,9 +109,3 @@
       - copy:
           content: "{{ LOADBALANCER_PUBLIC_IP }}"
           dest: "{{ test_path }}/load_balancer_ip"
-
-    - name: Schedule test
-      cron:
-        name: "Check status of test"
-        minute: "*/5"
-        job: /home/linux/test/lb_down_test.sh
