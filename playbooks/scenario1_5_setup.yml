@@ -51,7 +51,8 @@
   hosts: bastion
   vars:
     test_path: /home/linux/test
-    keys_path: /home/linux/work/customer-service-monitoring/scenarios/scenario1_5
+    project_path: /home/linux/work/customer-service-monitoring/
+    keys_path: "{{ project_path }}/scenarios/scenario1_5"
     inventory_path: "{{ test_path }}/inventory/prod"
     LOADBALANCER_PUBLIC_IP: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
   tasks:
@@ -63,7 +64,7 @@
 
     - name: Copy inventory
       copy:
-        src: /inventory/prod/scenario1_5.yml
+        src: "{{ project_path }}/inventory/prod/scenario1_5.yml"
         dest: "{{ test_path }}/inventory/prod"
 
     - name: copy test script on bastion
