@@ -6,7 +6,6 @@ resource "opentelekomcloud_networking_router_route_v2" "router_route_1" {
 }
 
 # Acces group, open input port 80, 443 and ssh port
-
 resource "opentelekomcloud_compute_secgroup_v2" "bastion_group" {
   description = "Allow external connections to ssh, http, and https ports"
   name        = "${var.name}_grp"
