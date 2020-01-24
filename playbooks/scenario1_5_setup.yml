@@ -110,8 +110,8 @@
           content: "{{ LOADBALANCER_PUBLIC_IP }}"
           dest: "{{ test_path }}/load_balancer_ip"
 
-    - name: Schedule scenario 1.5 test
+    - name: Schedule test
       cron:
-        name: "Scenario 1.5 monitoring"
+        name: "Check status of test"
         minute: "*/5"
         job: /home/linux/test/lb_down_test.sh
