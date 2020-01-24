@@ -56,21 +56,15 @@
     inventory_path: "{{ test_path }}/inventory/prod"
     LOADBALANCER_PUBLIC_IP: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
   tasks:
-    - name: Create directory for inventory
-      file:
-        path: "{{ inventory_path }}"
-        state: directory
-        mode: "0755"
+    - name: Checkout roles from git
+      git:
+        repo: 'https://github.com/opentelekomcloud-infra/csm-ansible-roles.git'
+        dest: "{{ test_path }}"
 
     - name: Copy inventory
       copy:
         src: "{{ project_path }}/inventory/prod/scenario1_5.yml"
         dest: "{{ inventory_path }}"
-
-    - name: Checkout roles from git
-      git:
-        repo: 'https://github.com/opentelekomcloud-infra/csm-ansible-roles.git'
-        dest: "{{ test_path }}"
 
     - name: copy test script on bastion
       copy:
