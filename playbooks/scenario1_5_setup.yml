@@ -106,9 +106,9 @@
         cache_valid_time: 3600
 
     - name: Copy loadbalancer ip to bastion
-      - copy:
-          content: "{{ LOADBALANCER_PUBLIC_IP }}"
-          dest: "{{ test_path }}/load_balancer_ip"
+      copy:
+        content: "{{ LOADBALANCER_PUBLIC_IP }}"
+        dest: "{{ test_path }}/load_balancer_ip"
 
     - name: Schedule test
       cron:
