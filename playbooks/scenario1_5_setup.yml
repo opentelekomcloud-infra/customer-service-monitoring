@@ -115,4 +115,4 @@
         name: Scenario 1.5 monitoring
         user: linux
         minute: "*/5"
-        job: "{{ test_path }}/lb_down_test.sh"
+        job: "{{ test_path }}"/lb_down_test.sh
