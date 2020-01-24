@@ -70,7 +70,7 @@
 
     - name: Add ssh-configuration key to ansible
       ini_file:
-        path: "{{ test_path }}"
+        path: "{{ test_path }}/ansible.cfg"
         section: ssh_connection
         option: ssh_args
         value: "-o PasswordAuthentication=no -o StrictHostKeyChecking=no"
