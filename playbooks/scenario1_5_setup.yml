@@ -61,17 +61,23 @@
         repo: 'https://github.com/opentelekomcloud-infra/csm-ansible-roles.git'
         dest: "{{ test_path }}"
 
+    - name: Create directory for inventory
+      file:
+        path: "{{ inventory_path }}"
+        state: directory
+        mode: "0755"
+
     - name: Copy inventory
       copy:
         src: "{{ project_path }}/inventory/prod/scenario1_5.yml"
         dest: "{{ inventory_path }}"
 
-    - name: copy test script on bastion
+    - name: Copy test script on bastion
       copy:
         src: lb_down_test.sh
         dest: "{{ test_path }}"
 
-    - name: ensure private key and public one are present
+    - name: Ensure private key and public one are present
       copy:
         src: "{{ item }}"
         dest: "{{ test_path }}"
@@ -80,7 +86,7 @@
         - "{{ keys_path }}/scn1_5_instance_rsa.pub"
         - "{{ keys_path }}/scn1_5_instance_rsa"
 
-    - name: copy playbooks to bastion
+    - name: Copy playbooks to bastion
       copy:
         src: "{{ item }}"
         dest: "{{ test_path }}"
@@ -88,7 +94,7 @@
         - "scenario1_5_start_server.yml"
         - "scenario1_5_stop_server_on_random_node.yml"
 
-    - name: 'Start ssh agent'
+    - name: Start ssh agent
       shell: eval "$(ssh-agent)"
 
     - name: Ensure that cron installed
@@ -105,6 +111,6 @@
 
     - name: Schedule test
       cron:
-        name: "Check status of test"
+        name: "Run scenario 1.5 monitoring"
         minute: "*/5"
         job: /home/linux/test/lb_down_test.sh
