@@ -71,8 +71,6 @@
       git:
         repo: 'https://github.com/opentelekomcloud-infra/csm-ansible-roles.git'
         dest: "{{ test_path }}"
-        force: yes
-        depth: 1
 
     - name: copy test script on bastion
       copy:
