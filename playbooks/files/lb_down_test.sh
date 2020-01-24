@@ -1,48 +1,3 @@
-#!/usr/bin/env bash
-
-start_dir=$(pwd)
-local_dir=$(
-    cd $(dirname "$0")
-    pwd
-)
-project_root=$(bash ${local_dir}/../../core/get_project_root.sh)
-echo "Project root: ${project_root}"
-
-scenario_dir=$(
-    cd "${local_dir}/.."
-    pwd
-)
-echo "Scenario directory: ${scenario_dir}"
-cd "${scenario_dir}" || exit 1
-terraform init || exit $?
-
-function start_stop_rand_node() {
-    if [[ "$1" == "stop" ]]; then
-        playbook=scenario1_5_stop_server_on_random_node.yml
-    else
-        playbook=scenario1_5_setup.yml
-    fi
-    cur_dir=$(pwd)
-    cd ${project_root}
-    ansible-playbook playbooks/${playbook}
-    cd ${cur_dir}
-    sleep 3s
-}
-scenario_name="scenario1_5"
-function prepare() {
-    cur_dir=$(pwd)
-    cd ${scenario_dir}
-    bash ../core/pre_build.sh ${scenario_name}
-    file=tmp_state
-    terraform state pull >${file} || exit $?
-    source "${project_root}/.venv/bin/activate"
-    export PYTHONPATH="${PYTHONPATH}:${scenario_dir}/test"
-    python3 "${project_root}/scenarios/core/create_inventory.py" ${file} --name ${scenario_name}
-    source ./post_build.sh || exit 1
-    start_stop_rand_node start # check that all nodes are running before test
-    cd ${cur_dir}
-}
-
 version=0.1
 archive=lb_test-${version}.tgz
 if [[ ! -e ${archive} ]]; then
@@ -50,14 +5,22 @@ if [[ ! -e ${archive} ]]; then
     tar xf ${archive}
 fi
 
-prepare
-echo Preparation Finished
-echo LB at ${LOADBALANCER_PUBLIC_IP}
-echo telegraf at "${BASTION_PUBLIC_IP}"
-start_test="./load_balancer_test ${LOADBALANCER_PUBLIC_IP} 300"
-
-telegraf_host="http://${BASTION_PUBLIC_IP}"
+telegraf_host="http://${localhost}"
 telegraf="${telegraf_host}/telegraf"
+LOADBALANCER_PUBLIC_IP=$(cat "/home/linux/test/load_balancer_ip")
+
+function start_stop_rand_node() {
+    if [[ "$1" == "stop" ]]; then
+        playbook=scenario1_5_stop_server_on_random_node.yml
+    else
+        playbook=scenario1_5_start_server.yml
+    fi
+    cur_dir=$(pwd)
+    cd ${project_root}
+    ansible-playbook /test/playbooks/${playbook}
+    cd ${cur_dir}
+    sleep 3s
+}
 
 function telegraf_report() {
     result=$1
@@ -111,4 +74,3 @@ if [[ status == 0 ]]; then
 else
     telegraf_report fail ${test_result}
 fi
-deactivate

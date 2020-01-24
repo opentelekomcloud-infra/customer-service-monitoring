@@ -1,0 +1,9 @@
+---
+- name: Stop server on node
+  hosts: gatewayed
+  become: yes
+  roles:
+    - too_simple_server
+  vars:
+    debug: True
+    server_port: 80

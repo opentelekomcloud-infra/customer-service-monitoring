@@ -51,3 +51,68 @@
           - listen: "80"
             server_name: "localhost"
             extra_parameters: "{{ extra_parameters }}"
+
+- name: Copy test script files to Bastion
+  hosts: bastion
+  vars:
+    test_path: /home/linux/test
+    keys_path: /home/linux/work/customer-service-monitoring/scenarios/scenario1_5
+    inventory_path: "{{ test_path }}/inventory/prod"
+    LOADBALANCER_PUBLIC_IP: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
+  tasks:
+    - name: Create directory for inventory
+      file:
+        path: "{{ inventory_path }}"
+        state: directory
+        mode: "0755"
+
+    - name: Copy inventory
+      copy:
+        src: /inventory/prod/scenario1_5.yml
+        dest: "{{ test_path }}/inventory/prod"
+
+    - name: copy test script on bastion
+      copy:
+        src: lb_down_test.sh
+        dest: "{{ test_path }}"
+
+    - name: ensure private key and public one are present
+      copy:
+        src: "{{ item }}"
+        dest: "{{ test_path }}"
+        mode: 0600
+      with_items:
+        - "{{ keys_path }}/scn1_5_instance_rsa.pub"
+        - "{{ keys_path }}/scn1_5_instance_rsa"
+
+    - name: copy playbooks to bastion
+      copy:
+        src: "{{ item }}"
+        dest: "{{ test_path }}"
+      with_items:
+        - "scenario1_5_start_server.yml"
+        - "scenario1_5_stop_server_on_random_node.yml"
+
+    - name: 'Start ssh agent'
+      shell: '|
+        eval "$(ssh-agent)"
+        ssh-add "{{ test_path }}/scn1_5_instance_rsa"
+
+    - name: Ensure that cron installed
+      become: yes
+      apt:
+        name: cron
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Copy loadbalancer ip to bastion
+      - copy:
+          content: "{{ LOADBALANCER_PUBLIC_IP }}"
+          dest: "{{ test_path }}/load_balancer_ip"
+
+    - name: Schedule scenario 1.5 test
+      cron:
+        name: Scenario 1.5 monitoring
+        user: linux
+        minute: '*/5'
+        job: "{{ test_path }}/lb_down_test.sh"
