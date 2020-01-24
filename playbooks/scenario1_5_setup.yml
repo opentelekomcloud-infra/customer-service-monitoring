@@ -67,6 +67,13 @@
         src: "{{ project_path }}/inventory/prod/scenario1_5.yml"
         dest: "{{ inventory_path }}"
 
+    - name: Checkout roles from git
+      git:
+        repo: 'https://github.com/opentelekomcloud-infra/csm-ansible-roles.git'
+        dest: "{{ test_path }}"
+        force: yes
+        depth: 1
+
     - name: copy test script on bastion
       copy:
         src: lb_down_test.sh
@@ -90,9 +97,7 @@
         - "scenario1_5_stop_server_on_random_node.yml"
 
     - name: 'Start ssh agent'
-      shell: |
-        eval "$(ssh-agent)"
-        ssh-add "{{ test_path }}/scn1_5_instance_rsa"
+      shell: eval "$(ssh-agent)"
 
     - name: Ensure that cron installed
       become: yes

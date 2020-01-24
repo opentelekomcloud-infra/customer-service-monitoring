@@ -6,8 +6,11 @@ if [[ ! -e ${archive} ]]; then
 fi
 
 telegraf_host="http://${localhost}"
+test_folder="/home/linux/test"
 telegraf="${telegraf_host}/telegraf"
-LOADBALANCER_PUBLIC_IP=$(cat "/home/linux/test/load_balancer_ip")
+LOADBALANCER_PUBLIC_IP=$(cat "${test_folder}/load_balancer_ip")
+
+ssh-add "${test_folder}/scn1_5_instance_rsa"
 
 function start_stop_rand_node() {
     if [[ "$1" == "stop" ]]; then
@@ -17,7 +20,7 @@ function start_stop_rand_node() {
     fi
     cur_dir=$(pwd)
     cd ${project_root}
-    ansible-playbook /test/playbooks/${playbook}
+    ansible-playbook -i test/inventory/prod test/${playbook}
     cd ${cur_dir}
     sleep 3s
 }
