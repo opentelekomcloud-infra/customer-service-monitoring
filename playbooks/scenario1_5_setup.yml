@@ -132,7 +132,7 @@
   become: yes
   tasks:
     - name: Changing perm of "lb_down_test.sh", adding "+x"
-      file: dest="{{ test_path }}/lb_down_test.sh" mode=a+x
+      file: dest=/home/linux/test/lb_down_test.sh mode=a+x
 
     - name: Schedule test
       cron:
