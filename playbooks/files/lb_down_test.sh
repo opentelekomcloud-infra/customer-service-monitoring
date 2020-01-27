@@ -7,6 +7,19 @@ cd $(test_folder "$0")
 eval "$(ssh-agent)"
 ssh-add "${test_folder}/scn1_5_instance_rsa"
 
+version=0.1
+archive=lb_test-${version}.tgz
+if [[ ! -e ${archive} ]]; then
+    wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v${version}/lb_test-${version}-linux.tar.gz
+    tar xf ${archive}
+fi
+
+prepare
+echo Preparation Finished
+echo LB at ${LOADBALANCER_PUBLIC_IP}
+
+start_test="./load_balancer_test ${LOADBALANCER_PUBLIC_IP} 300"
+
 function start_stop_rand_node() {
     if [[ "$1" == "stop" ]]; then
         playbook=scenario1_5_stop_server_on_random_node.yml
