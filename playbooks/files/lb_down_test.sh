@@ -1,5 +1,5 @@
-telegraf_host="http://${localhost}"
-test_folder="/home/linux/test"
+telegraf_host="http://localhost"
+test_folder="${HOME}/test"
 telegraf="${telegraf_host}/telegraf"
 LOADBALANCER_PUBLIC_IP=$(cat "${test_folder}/load_balancer_ip")
 cd $(test_folder "$0")
