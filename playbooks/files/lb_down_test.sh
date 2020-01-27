@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 telegraf_host="http://localhost"
 test_folder="/home/linux/test"
 telegraf="${telegraf_host}/telegraf"
@@ -25,7 +26,7 @@ function start_stop_rand_node() {
     fi
     cur_dir=$(pwd)
     cd ${test_folder}
-    ansible-playbook -i test/inventory/prod test/${playbook}
+    ansible-playbook -i inventory/prod ${playbook}
     cd ${cur_dir}
     sleep 3s
 }
