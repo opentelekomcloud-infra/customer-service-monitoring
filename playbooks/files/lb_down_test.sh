@@ -1,8 +1,7 @@
 telegraf_host="http://localhost"
-test_folder="${HOME}/test"
+test_folder="/home/linux/test"
 telegraf="${telegraf_host}/telegraf"
 LOADBALANCER_PUBLIC_IP=$(cat "${test_folder}/load_balancer_ip")
-cd $(test_folder "$0")
 
 eval "$(ssh-agent)"
 ssh-add "${test_folder}/scn1_5_instance_rsa"
@@ -14,8 +13,6 @@ if [[ ! -e ${archive} ]]; then
     tar xf ${archive}
 fi
 
-prepare
-echo Preparation Finished
 echo LB at ${LOADBALANCER_PUBLIC_IP}
 
 start_test="./load_balancer_test ${LOADBALANCER_PUBLIC_IP} 300"
@@ -27,7 +24,7 @@ function start_stop_rand_node() {
         playbook=scenario1_5_start_server.yml
     fi
     cur_dir=$(pwd)
-    cd ${project_root}
+    cd ${test_folder}
     ansible-playbook -i test/inventory/prod test/${playbook}
     cd ${cur_dir}
     sleep 3s

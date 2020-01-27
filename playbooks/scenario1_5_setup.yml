@@ -126,6 +126,11 @@
         content: "{{ loadbalancer_public_ip }}"
         dest: "{{ test_path }}/load_balancer_ip"
 
+
+- name: Prepare test
+  hosts: bastion
+  become: yes
+  tasks:
     - name: Changing perm of "lb_down_test.sh", adding "+x"
       file: dest="{{ test_path }}/lb_down_test.sh" mode=a+x
 
