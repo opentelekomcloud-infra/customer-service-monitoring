@@ -83,9 +83,9 @@
     - name: Add ssh-configuration to ansible
       ini_file:
         path: "{{ test_path }}/ansible.cfg"
-        section: ssh_connection
-        option: ssh_args
-        value: "-o PasswordAuthentication=no -o StrictHostKeyChecking=no"
+        section: defaults
+        option: host_key_checking
+        value: False
 
     - name: Copy inventory
       copy:
