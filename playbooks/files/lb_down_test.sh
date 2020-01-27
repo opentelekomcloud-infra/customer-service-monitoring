@@ -55,7 +55,7 @@ function test_should_pass() {
     fi
     echo Test passed
 }
-
+start_stop_rand_node start # check that all nodes are running before test
 ${start_test}
 test_should_pass
 
