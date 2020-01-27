@@ -68,7 +68,7 @@
     inventory_path: "{{ test_path }}/inventory/prod"
     loadbalancer_public_ip: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
   tasks:
-    - name: Checkout roles from git
+    - name: Checkout roles from git # noqa 301 305
       git:
         repo: 'https://github.com/opentelekomcloud-infra/csm-ansible-roles.git'
         dest: "{{ test_path }}"
