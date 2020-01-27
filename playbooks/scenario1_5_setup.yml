@@ -67,12 +67,13 @@
     keys_path: "{{ project_path }}/scenarios/scenario1_5"
     inventory_path: "{{ test_path }}/inventory/prod"
     loadbalancer_public_ip: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
+    verion: "HEAD"
   tasks:
-    - name: Checkout roles from git # noqa 301 305
+    - name: Checkout roles from git
       git:
         repo: 'https://github.com/opentelekomcloud-infra/csm-ansible-roles.git'
         dest: "{{ test_path }}"
-        version: HEAD
+        version: verion
 
     - name: Create directory for inventory
       file:
