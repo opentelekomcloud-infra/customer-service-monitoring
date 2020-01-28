@@ -93,11 +93,6 @@
         src: "{{ project_path }}/inventory/prod/scenario1_5.yml"
         dest: "{{ inventory_path }}"
 
-    - name: Copy test script on bastion
-      copy:
-        src: lb_down_test.sh
-        dest: "{{ test_path }}"
-
     - name: Ensure private key and public one are present
       copy:
         src: "{{ item }}"
@@ -107,15 +102,16 @@
         - "{{ keys_path }}/scn1_5_instance_rsa.pub"
         - "{{ keys_path }}/scn1_5_instance_rsa"
 
-    - name: Copy playbooks to bastion
+    - name: Copy playbooks and test script to bastion
       copy:
         src: "{{ item }}"
         dest: "{{ test_path }}"
       with_items:
         - "scenario1_5_start_server.yml"
         - "scenario1_5_stop_server_on_random_node.yml"
+        - "lb_down_test.sh"
 
-    - name: Ensure that cron installed
+    - name: Ensure that cron is installed
       become: yes
       apt:
         name: cron
