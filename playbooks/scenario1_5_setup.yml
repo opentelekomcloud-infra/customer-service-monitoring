@@ -62,7 +62,7 @@
   hosts: bastion
   vars:
     test_path: /home/linux/test
-    project_path: /home/ansideln/work/customer-service-monitoring
+    project_path: /home/linux/customer-service-monitoring
     keys_path: "{{ project_path }}/scenarios/scenario1_5"
     inventory_path: "{{ test_path }}/inventory/prod"
     loadbalancer_public_ip: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
