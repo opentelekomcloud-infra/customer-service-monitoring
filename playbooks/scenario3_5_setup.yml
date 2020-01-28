@@ -110,14 +110,14 @@
   tasks:
     - name: copy test script on initiator
       copy:
-        src: tgt_inst_conn_chk.sh
+        src: iscsi_connection_status.sh
         dest: /tmp/
 
-    - name: Changing perm of "tgt_inst_conn_chk.sh", adding "+x"
-      file: dest=/tmp/tgt_inst_conn_chk.sh mode=a+x
+    - name: Changing perm of "iscsi_connection_status.sh", adding "+x"
+      file: dest=/tmp/iscsi_connection_status.sh mode=a+x
 
     - name: Schedule connection test
       cron:
         name: "Check status of iSCSI connection"
         minute: "*/1"
-        job: /tmp/tgt_inst_conn_chk.sh
+        job: /tmp/iscsi_connection_status.sh

@@ -31,11 +31,6 @@
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
     - "./vars/nginx_telegraf_local.yml"
-  tasks:
-    - name: copy ssl keys to nginx
-      copy:
-        src: nginx/nginx_keys/
-        dest: /etc/sslcerts/live/
   roles:
     - role: telegraf-client
       vars:
