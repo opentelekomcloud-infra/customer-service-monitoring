@@ -27,7 +27,7 @@ sudo mkdir -p ${log_path}
 username=$(whoami)
 sudo chown ${username} ${log_path}
 
-telegraf_host="http://${BASTION_PUBLIC_IP}"
+telegraf_host="http://${SERVER_PUBLIC_IP}"
 
 function run_test() {
     echo "Logs will be written to ${log_path}"
