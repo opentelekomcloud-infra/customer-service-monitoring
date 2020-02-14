@@ -83,3 +83,6 @@
 
     - name: Start monitoring server
       shell: "nohup /usr/bin/python3 -m csm_test_utils as_monitor --telegraf http://localhost &" # noqa 301 305
+
+    - name: Start loadbalancer monitoring
+      shell: "nohup /usr/bin/python3 -m csm_test_utils as_load --telegraf http://localhost --target {{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}&" # noqa 301 305
