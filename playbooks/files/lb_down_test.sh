@@ -7,7 +7,7 @@ LOADBALANCER_PUBLIC_IP=$(cat "${test_folder}/load_balancer_ip")
 eval "$(ssh-agent)"
 ssh-add "${test_folder}/scn1_5_instance_rsa"
 
-version=0.2.3
+version=0.1
 archive=lb_test-${version}.tgz
 if [[ ! -e ${archive} ]]; then
     wget -q -O ${archive} https://github.com/opentelekomcloud-infra/csm-test-utils/releases/download/v${version}/lb_test-${version}-linux.tar.gz
