@@ -60,10 +60,8 @@
                   proxy_set_header   Host $host;
               }
 
-- name: Install csm test utils and run as_monitoring server
+- name: Install csm test utils, run as_monitoring and as_load
   hosts: bastion
-  vars: 
-    csm-test-utils-sh: "nohup /usr/bin/python3 -m csm_test_utils"
   become: yes
   tasks:
     - name: Update and upgrade apt packages
@@ -84,7 +82,11 @@
         name: csm-test-utils
 
     - name: Start monitoring server
-      shell: {{ csm-test-utils-sh }} "as_monitor --telegraf http://localhost &" # noqa 301 305
+      shell: "{{ item }} as_monitor --telegraf http://localhost &" # noqa 301 305
+      with_items:
+        - "nohup /usr/bin/python3 -m csm_test_utils"
 
     - name: Start loadbalancer monitoring
-      shell: {{ csm-test-utils-sh }} "as_load --telegraf http://localhost --target {{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }} &" # noqa 301 305
+      shell: "{{ item }} as_load --telegraf http://localhost --target {{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }} &" # noqa 301 305
+      with_items:
+        - "nohup /usr/bin/python3 -m csm_test_utils"
