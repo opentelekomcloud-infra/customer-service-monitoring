@@ -63,6 +63,9 @@
 - name: Install csm test utils, run as_monitoring and as_load
   hosts: bastion
   become: yes
+  vars:
+    lb_ip: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
+    nohup_py3: "nohup /usr/bin/python3 -m csm_test_utils"
   tasks:
     - name: Update and upgrade apt packages
       apt:
@@ -80,13 +83,10 @@
       pip:
         executable: pip3
         name: csm-test-utils
+        state: forcereinstall
 
     - name: Start monitoring server
-      shell: "{{ item }} as_monitor --telegraf http://localhost &" # noqa 301 305
-      with_items:
-        - "nohup /usr/bin/python3 -m csm_test_utils"
+      shell: "{{ nohup_py3 }} as_monitor --telegraf http://localhost &" # noqa 301 305
 
     - name: Start loadbalancer monitoring
-      shell: "{{ item }} as_load --telegraf http://localhost --target {{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }} &" # noqa 301 305
-      with_items:
-        - "nohup /usr/bin/python3 -m csm_test_utils"
+      shell: "{{ nohup_py3 }} as_load --telegraf http://localhost --target {{ lb_ip }} &" # noqa 301 305
