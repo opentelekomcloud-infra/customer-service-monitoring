@@ -66,6 +66,7 @@
   vars:
     lb_ip: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
     nohup_py3: "nohup /usr/bin/python3 -m csm_test_utils"
+    telegraf_host: "http://localhost"
   tasks:
     - name: Update and upgrade apt packages
       apt:
@@ -85,8 +86,8 @@
         name: csm-test-utils
         state: forcereinstall
 
-    - name: Start monitoring server
-      shell: "{{ nohup_py3 }} as_monitor --telegraf http://localhost &" # noqa 301 305
-
-    - name: Start loadbalancer monitoring
-      shell: "{{ nohup_py3 }} as_load --telegraf http://localhost --target {{ lb_ip }} &" # noqa 301 305
+    - name: Start monitoring server and ld
+      shell: "{{ nohup_py3 }} {{ item }} --telegraf {{ telegraf_host }} --target {{ lb_ip }} &" # noqa 301 305
+      loop:
+        - "as_monitor"
+        - "as_load"
