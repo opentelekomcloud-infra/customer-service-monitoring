@@ -86,7 +86,7 @@
         name: csm-test-utils
         state: forcereinstall
 
-    - name: Start monitoring server and ld
+    - name: Start monitoring server and lb
       shell: "{{ nohup_py3 }} {{ item }} --telegraf {{ telegraf_host }} --target {{ lb_ip }} &" # noqa 301 305
       loop:
         - "as_monitor"
