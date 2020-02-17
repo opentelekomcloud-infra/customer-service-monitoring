@@ -1,5 +1,5 @@
 ocomone >= 0.3.3
-csm-test-utils >= 0.2.4
+csm-test-utils >= 0.2.5
 boto3 == 1.10.13
 botocore == 1.13.13
 cryptography == 2.8
