@@ -60,9 +60,13 @@
                   proxy_set_header   Host $host;
               }
 
-- name: Install csm test utils and run as_monitoring server
+- name: Install csm test utils, run as_monitoring and as_load
   hosts: bastion
   become: yes
+  vars:
+    lb_ip: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
+    nohup_py3: "nohup /usr/bin/python3 -m csm_test_utils"
+    telegraf_host: "http://localhost"
   tasks:
     - name: Update and upgrade apt packages
       apt:
@@ -80,6 +84,10 @@
       pip:
         executable: pip3
         name: csm-test-utils
+        state: forcereinstall
 
-    - name: Start monitoring server
-      shell: "nohup /usr/bin/python3 -m csm_test_utils as_monitor --telegraf http://localhost &" # noqa 301 305
+    - name: Start monitoring server and lb
+      shell: "{{ nohup_py3 }} {{ item }} --telegraf {{ telegraf_host }} --target {{ lb_ip }} &" # noqa 301 305
+      loop:
+        - "as_monitor"
+        - "as_load"
