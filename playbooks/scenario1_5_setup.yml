@@ -1,11 +1,62 @@
 ---
-- name: Register existing settings
+- name: Build infrastructure
   hosts: local
+  become: yes
+  roles:
+    - build_infrastructure
+  vars:
+    terraform_base_dir: "../scenarios"
+    scenario_name: "scenario1_5"
+    key_name: "key_scenario1_5"
+    requirements: "requirements.txt"
+    infra_state: present
+
+- name: Add to environment variables terraform outputs
+  hosts: local
+  become: yes
+  tasks:
+  - name: Add to environment variables terraform outputs
+    set_fact:
+      BASTION_PUBLIC_IP: tf_output.outputs["out-scn1_5_lb_fip"].value
+      LOADBALANCER_PUBLIC_IP:  tf_output.outputs["out-scn1_5_bastion_fip"].value
+
+- name: Creation inventory
+  hosts: local
+  become: yes
+  vars:
+    path_to_state_file: "../scenarios/scenario1_5"
+    scenario_name: "scenario1_5"
+    AWS_variables:
+      AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+      AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+  tasks:
+  - name: Creation state file
+    file:
+      path:  "{{ path_to_state_file }}/state_file.json"
+      state: touch
+  - name: Terraform init
+    environment: "{{ AWS_variables }}"
+    command:
+      chdir: "{{ path_to_state_file }}"
+      cmd: "terraform init"
+  - name: Filling state file
+    environment: "{{ AWS_variables }}"
+    shell: "terraform state pull > state_file.json"
+    args:
+      chdir: "{{ path_to_state_file }}"
+  - name: Call create_inventory
+    command:
+      cmd: "python3 core/create_inventory.py {{ scenario_name }}/state_file.json --name {{ scenario_name }}"
+      chdir: "../scenarios"
+
+- name : Register existing settings
+  hosts: local
+  become: yes
   tasks:
     - name: Register host
       add_host:
         hostname: "scn1_5_ecs"
-        ansible_ssh_host: "{{ hostvars.bastion.ansible_host }}"
+        ansible_ssh_host: "{{ LOADBALANCER_PUBLIC_IP }}"
         ansible_ssh_user: "linux"
 
 - name: Wait for host
@@ -65,7 +116,7 @@
     project_path: /home/linux/customer-service-monitoring
     keys_path: "{{ project_path }}/scenarios/scenario1_5"
     inventory_path: "{{ test_path }}/inventory/prod"
-    loadbalancer_public_ip: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
+    loadbalancer_public_ip: "{{ LOADBALANCER_PUBLIC_IP }}"
     version: "HEAD"
   tasks:
     - name: Checkout roles from git
