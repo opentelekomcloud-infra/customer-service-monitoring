@@ -29,7 +29,7 @@ module "bastion" {
   network           = module.network.network
   subnet            = module.network.subnet
   router            = module.network.router
-  name              = "${local.prefix}_server"
+  name              = "${local.workspace_prefix}server"
   availability_zone = var.availability_zone
   scenario          = var.scenario
 }
