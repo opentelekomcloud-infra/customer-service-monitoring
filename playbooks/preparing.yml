@@ -1,0 +1,25 @@
+---
+- name: Creation state file
+  file:
+    path:  "../scenarios/{{ scenario_name }}/state_file.json"
+    state: touch
+- name: Filling state file
+  environment: "{{ AWS_variables }}"
+  shell: "terraform init"
+  args:
+    chdir: "../scenarios/{{ scenario_name }}"
+  tags:
+  - skip_ansible_lint
+- name: Filling state file
+  environment: "{{ AWS_variables }}"
+  shell: "terraform state pull > state_file.json"
+  args:
+    chdir: "../scenarios/{{ scenario_name }}"
+  tags:
+  - skip_ansible_lint
+- name: Call create_inventory
+  command:
+    cmd: "python3 core/create_inventory.py {{ scenario_name }}/state_file.json --name {{ scenario_name }}"
+    chdir: "../scenarios"
+  tags:
+  - skip_ansible_lint

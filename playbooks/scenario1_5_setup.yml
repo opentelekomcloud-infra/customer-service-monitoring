@@ -1,11 +1,16 @@
 ---
-- name: Register existing settings
+- name : Register existing settings and hosts
   hosts: local
+  become: yes
   tasks:
+    - name: Setting variables terraform outputs
+      set_fact:
+        BASTION_PUBLIC_IP: "{{ bastion_public_ip }}"
+        LOADBALANCER_PUBLIC_IP:  "{{ loadbalancer_public_ip }}"
     - name: Register host
       add_host:
         hostname: "scn1_5_ecs"
-        ansible_ssh_host: "{{ hostvars.bastion.ansible_host }}"
+        ansible_ssh_host: "{{ BASTION_PUBLIC_IP }}"
         ansible_ssh_user: "linux"
 
 - name: Wait for host
@@ -65,7 +70,7 @@
     project_path: /home/linux/customer-service-monitoring
     keys_path: "{{ project_path }}/scenarios/scenario1_5"
     inventory_path: "{{ test_path }}/inventory/prod"
-    loadbalancer_public_ip: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
+    loadbalancer_public_ip: "{{ LOADBALANCER_PUBLIC_IP }}"
     version: "HEAD"
   tasks:
     - name: Checkout roles from git
@@ -121,7 +126,6 @@
       copy:
         content: "{{ loadbalancer_public_ip }}"
         dest: "{{ test_path }}/load_balancer_ip"
-
 
 - name: Prepare test
   hosts: bastion

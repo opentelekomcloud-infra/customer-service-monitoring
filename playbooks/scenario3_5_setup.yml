@@ -121,3 +121,10 @@
         name: "Check status of iSCSI connection"
         minute: "*/1"
         job: /tmp/iscsi_connection_status.sh
+
+- name: Include a play with cleaning
+  vars:
+    scenario_name: "scenario3_5"
+  tasks:
+    - name: Including tasks for cleaning
+      include_tasks: cleaning.yml
