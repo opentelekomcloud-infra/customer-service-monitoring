@@ -1,4 +1,47 @@
 ---
+- name: Build infrastructure
+  hosts: local
+  roles:
+    - build_infrastructure
+  vars:
+    terraform_base_dir: "../scenarios"
+    scenario_name: "scenario3_5"
+    key_name: "key_scenario3_5"
+    requirements: "requirements.txt"
+    infra_state: present
+
+- name : Register existing settings and hosts
+  hosts: local
+  vars:
+    bastion_public_ip: "{{ tf_output.outputs['scn3_5_bastion_fip'].value }}"
+    scn3_5_initiator_instance_ip: "{{ tf_output.outputs['scn3_5_initiator_instance_ip'].value }}"
+    scn3_5_target_instance_ip: "{{ tf_output.outputs['scn3_5_target_instance_ip'].value }}"
+    scenario_name: "scenario3_5"
+    key_name: "key_scenario3_5"
+    AWS_variables:
+      AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+      AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+  tasks:
+  - name: Register bastion
+    add_host:
+      name: "bastion"
+      ansible_host: "{{ bastion_public_ip }}"
+      ansible_ssh_user: "linux"
+  - name: Register initiator host
+    add_host:
+      host: "scn3_5_initiator_instance"
+      ansible_host:  scn3_5_initiator_instance_ip
+      groups: "gatewayed"
+      ansible_ssh_common_args: '-J linux@{{ bastion_public_ip }} -o PasswordAuthentication=no -o StrictHostKeyChecking=no  -i "/tmp/{{ key_name }}" '
+      ansible_ssh_user: "linux"
+  - name: Register target host
+    add_host:
+      host: "scn3_5_target_instance"
+      ansible_host:  "{{ tf_output.outputs['scn3_5_target_instance_ip'].value }}"
+      groups: "gatewayed"
+      ansible_ssh_common_args: '-J linux@{{ bastion_public_ip }} -o PasswordAuthentication=no -o StrictHostKeyChecking=no -i "/tmp/{{ key_name }}"'
+      ansible_ssh_user: "linux"
+
 - name: Prepare attached device on target server
   hosts: scn3_5_target_instance
   gather_facts: yes

@@ -104,3 +104,11 @@ resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
     ip_address = "${var.net_address}.11"
   }
 }
+
+output "target_instance_id" {
+  value = opentelekomcloud_compute_instance_v2.target_instance.access_ip_v4
+}
+
+output "initiator_instance_ip" {
+  value = opentelekomcloud_compute_instance_v2.initiator_instance.access_ip_v4
+}

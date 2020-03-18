@@ -3,7 +3,7 @@ locals {
   workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
   key_pair = {
     public_key = var.public_key
-    key_name   = "${local.workspace_prefix}kp_${var.scenario}"
+    key_name   = "${local.workspace_prefix}kl_${var.scenario}"
   }
 }
 
@@ -49,6 +49,14 @@ module "resources" {
   scenario    = var.scenario
 }
 
-output "out-scn3_5_bastion_fip" {
+output "scn3_5_bastion_fip" {
   value = opentelekomcloud_networking_floatingip_v2.bastion_public_ip.address
+}
+
+output "scn3_5_initiator_instance_ip" {
+  value = module.resources.initiator_instance_ip
+}
+
+output "scn3_5_target_instance_ip" {
+  value = module.resources.target_instance_id
 }
