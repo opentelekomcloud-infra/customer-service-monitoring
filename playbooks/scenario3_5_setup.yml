@@ -32,7 +32,7 @@
       host: "scn3_5_initiator_instance"
       ansible_host:  scn3_5_initiator_instance_ip
       groups: "gatewayed"
-      ansible_ssh_common_args: '-J linux@{{ bastion_public_ip }} -o PasswordAuthentication=no -o StrictHostKeyChecking=no  -i "/tmp/{{ key_name }}" '
+      ansible_ssh_common_args: '-J linux@{{ bastion_public_ip }} -o PasswordAuthentication=no -o StrictHostKeyChecking=no -i "/tmp/{{ key_name }}"'
       ansible_ssh_user: "linux"
   - name: Register target host
     add_host:
