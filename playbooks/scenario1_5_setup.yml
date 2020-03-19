@@ -102,7 +102,7 @@
     project_path: /home/linux/customer-service-monitoring
     keys_path: "{{ project_path }}/scenarios/scenario1_5"
     inventory_path: "{{ test_path }}/inventory/prod"
-    loadbalancer_public_ip: "{{ LOADBALANCER_PUBLIC_IP }}"
+    loadbalancer_public_ip: "{{ hostvars.load_balancer.ansible_host }}"
     version: "HEAD"
   tasks:
   - name: Checkout roles from git
@@ -125,8 +125,10 @@
       value: False
 
   - name: Copy inventory
-    copy:
-      src: "{{ project_path }}/inventory/prod/scenario1_5.yml"
+    vars:
+      hosts: "{{ groups.gatewayed }}"
+    template:
+      src: "scenario1_5.yml"
       dest: "{{ inventory_path }}"
 
   - name: Ensure private key and public one are present
@@ -135,8 +137,8 @@
       dest: "{{ test_path }}"
       mode: 0600
     with_items:
-    - "{{ keys_path }}/scn1_5_instance_rsa.pub"
-    - "{{ keys_path }}/scn1_5_instance_rsa"
+    - "/tmp/key_scenario1_5.pub"
+    - "/tmp/key_scenario1_5"
 
   - name: Copy playbooks and test script to bastion
     copy:

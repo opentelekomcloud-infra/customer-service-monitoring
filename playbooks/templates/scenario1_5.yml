@@ -1,0 +1,12 @@
+all:
+  hosts:
+  {% for host in hosts %}
+    {{ host }}:
+      ansible_ssh_user: linux
+  {% endfor %}
+  children:
+    gatewayed:
+      hosts:
+        {% for host in hosts %}
+        {{ host }}:
+        {%  endfor %}
