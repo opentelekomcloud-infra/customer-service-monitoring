@@ -14,10 +14,11 @@
   hosts: local
   vars:
     bastion_public_ip: "{{ tf_output.outputs['scn3_5_bastion_fip'].value }}"
-    scn3_5_initiator_instance_ip: "{{ tf_output.outputs['scn3_5_initiator_instance_ip'].value }}"
-    scn3_5_target_instance_ip: "{{ tf_output.outputs['scn3_5_target_instance_ip'].value }}"
+    scn3_5_initiator_ip: "{{ tf_output.outputs['scn3_5_initiator_instance_ip'].value }}"
+    scn3_5_target_ip: "{{ tf_output.outputs['scn3_5_target_instance_ip'].value }}"
     scenario_name: "scenario3_5"
     key_name: "key_scenario3_5"
+    ansible_ssh_private_key_file: "/tmp/{{ key_name }}"
     AWS_variables:
       AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
       AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
@@ -26,25 +27,38 @@
     add_host:
       name: "bastion"
       ansible_host: "{{ bastion_public_ip }}"
-      ansible_ssh_user: "linux"
+      ansible_user: "linux"
   - name: Register initiator host
     add_host:
-      host: "scn3_5_initiator_instance"
-      ansible_host:  scn3_5_initiator_instance_ip
+      name: "scn3_5_initiator"
       groups: "gatewayed"
-      ansible_ssh_common_args: '-J linux@{{ bastion_public_ip }} -o PasswordAuthentication=no -o StrictHostKeyChecking=no -i "/tmp/{{ key_name }}"'
-      ansible_ssh_user: "linux"
+      ansible_host:  "{{ scn3_5_initiator_ip }}"
+      ansible_user: "linux"
   - name: Register target host
     add_host:
-      host: "scn3_5_target_instance"
-      ansible_host:  "{{ tf_output.outputs['scn3_5_target_instance_ip'].value }}"
+      name: "scn3_5_target"
       groups: "gatewayed"
-      ansible_ssh_common_args: '-J linux@{{ bastion_public_ip }} -o PasswordAuthentication=no -o StrictHostKeyChecking=no -i "/tmp/{{ key_name }}"'
+      ansible_host:  "{{ scn3_5_target_ip }}"
       ansible_ssh_user: "linux"
 
+- name: Wait for bastion
+  hosts: bastion
+  gather_facts: no
+  tasks:
+  - name: Wait for host to be up
+    wait_for_connection:
+      timeout: 120
+
+- name: Wait for hosts
+  hosts: gatewayed
+  gather_facts: no
+  tasks:
+  - name: Wait for host to be up
+    wait_for_connection:
+      timeout: 120
+
 - name: Prepare attached device on target server
-  hosts: scn3_5_target_instance
-  gather_facts: yes
+  hosts: scn3_5_target
   become: yes
   vars_files:
     - "./vars/scenario_3_5_vars.yml"
@@ -52,7 +66,7 @@
     - iscsi_target
 
 - name: Prepare initiator and connect device
-  hosts: scn3_5_initiator_instance
+  hosts: scn3_5_initiator
   become: yes
   vars_files:
     - "./vars/scenario_3_5_vars.yml"
@@ -61,7 +75,7 @@
       open_iscsi:
         show_nodes: yes
         discover: yes
-        portal: "{{ hostvars.scn3_5_target_instance.ansible_host }}"
+        portal: "{{ hostvars.scn3_5_target.ansible_host }}"
 
     - name: Connect to the target
       open_iscsi:
@@ -69,10 +83,10 @@
         login: yes
         node_user: "{{ incominguser_username }}"
         node_pass: "{{ incominguser_password }}"
-        portal: "{{ hostvars.scn3_5_target_instance.ansible_host }}"
+        portal: "{{ hostvars.scn3_5_target.ansible_host }}"
 
 - name: Prepare attached iSCSI device on initiator
-  hosts: scn3_5_initiator_instance
+  hosts: scn3_5_initiator
   become: yes
   vars_files:
     - "./vars/scenario_3_5_vars.yml"
@@ -123,7 +137,7 @@
         job: /sbin/hdparm -tT "{{ device }}"
 
 - name: Install telegraf client on initiator
-  hosts: scn3_5_initiator_instance
+  hosts: scn3_5_initiator
   become: yes
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
@@ -148,7 +162,7 @@
           data_format: "influx"
 
 - name: Prepare test
-  hosts: scn3_5_initiator_instance
+  hosts: scn3_5_initiator
   become: yes
   tasks:
     - name: copy test script on initiator
@@ -165,9 +179,3 @@
         minute: "*/1"
         job: /tmp/iscsi_connection_status.sh
 
-- name: Include a play with cleaning
-  vars:
-    scenario_name: "scenario3_5"
-  tasks:
-    - name: Including tasks for cleaning
-      include_tasks: cleaning.yml
