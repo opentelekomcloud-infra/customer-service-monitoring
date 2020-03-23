@@ -105,7 +105,7 @@ resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
   }
 }
 
-output "target_instance_id" {
+output "target_instance_ip" {
   value = opentelekomcloud_compute_instance_v2.target_instance.access_ip_v4
 }
 

@@ -1,6 +1,6 @@
 ---
 - name: Build infrastructure
-  hosts: local
+  hosts: localhost
   roles:
     - darkwizard242.terraform
     - build_infrastructure
@@ -12,7 +12,7 @@
     infra_state: present
 
 - name : Register existing settings and hosts
-  hosts: test_host
+  hosts: localhost
   vars:
     bastion_public_ip: "{{ tf_output.outputs['scn1_5_bastion_fip'].value }}"
     loadbalancer_public_ip:  "{{ tf_output.outputs['scn1_5_lb_fip'].value }}"
