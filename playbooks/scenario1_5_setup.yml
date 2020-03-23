@@ -2,7 +2,6 @@
 - name: Build infrastructure
   hosts: localhost
   roles:
-    - darkwizard242.terraform
     - build_infrastructure
   vars:
     terraform_base_dir: "../scenarios"
