@@ -1,6 +1,6 @@
 ---
 - name: Build infrastructure
-  hosts: test_host
+  hosts: local
   roles:
     - darkwizard242.terraform
     - build_infrastructure
