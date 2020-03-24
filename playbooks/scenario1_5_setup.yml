@@ -1,7 +1,8 @@
 ---
 - name: Build infrastructure
-  hosts: localhost
+  hosts: test_host
   roles:
+    - darkwizard242.terraform
     - build_infrastructure
   vars:
     terraform_base_dir: "../scenarios"
@@ -11,7 +12,7 @@
     infra_state: present
 
 - name : Register existing settings and hosts
-  hosts: localhost
+  hosts: test_host
   vars:
     bastion_public_ip: "{{ tf_output.outputs['scn1_5_bastion_fip'].value }}"
     loadbalancer_public_ip:  "{{ tf_output.outputs['scn1_5_lb_fip'].value }}"
