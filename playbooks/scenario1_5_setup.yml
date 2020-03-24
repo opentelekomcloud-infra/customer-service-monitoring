@@ -1,8 +1,14 @@
 ---
-- name: Build infrastructure
+- name: Install terraform
   hosts: test_host
+  become: yes
   roles:
     - darkwizard242.terraform
+
+- name: Build infrastructure
+  hosts: test_host
+  become: yes
+  roles:
     - build_infrastructure
   vars:
     terraform_base_dir: "../scenarios"
