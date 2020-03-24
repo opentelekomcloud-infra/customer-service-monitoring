@@ -41,6 +41,7 @@
     fetch:
       src: "{{ tmp_dir }}/{{ key_name }}"
       dest:  "{{ local_private_key }}"
+      flat: yes
   - name: Register bastion
     add_host:
       name: "bastion"
