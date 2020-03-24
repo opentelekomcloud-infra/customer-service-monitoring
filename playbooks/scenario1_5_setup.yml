@@ -40,29 +40,27 @@
   - name: Download private key from test_host
     fetch:
       src: "{{ tmp_dir }}/{{ key_name }}"
-      dest:  "~/.ssh/{{ key_name }}"
+      dest:  "{{ local_private_key }}"
   - name: Register bastion
     add_host:
       name: "bastion"
       ansible_host: "{{ bastion_public_ip }}"
       ansible_ssh_user: "linux"
-      ansible_ssh_private_key_file: "{{ private_key }}"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
   - name: Register host
     add_host:
       host: "{{ item  }}"
       groups: "gatewayed"
       ansible_ssh_user: "linux"
-      ansible_ssh_private_key_file: "{{ private_key }}"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
     loop: "{{ tf_output.outputs['scn1_5_ecs_local_ips'].value }}"
 
 - name: Setup local executor
   hosts: local
-  vars:
-    private_key: "~/.ssh/{{ key_name }}"
   tasks:
   - name: Private key chmod 600
     file:
-      path: "{{ private_key }}"
+      path: "{{ local_private_key }}"
       mode: 0600
 
 - name: Wait for bastion
