@@ -31,6 +31,14 @@
   vars:
     infra_state: present
 
+- name: Cleanup local executor
+  hosts: local
+  tasks:
+  - name: Remove anything that was in place of `local_private_key`
+    file:
+      path: "{{ local_private_key }}"
+      state: absent
+
 - name : Register existing settings and hosts
   hosts: test_host
   vars:
