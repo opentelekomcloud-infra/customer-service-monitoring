@@ -13,10 +13,8 @@
   tasks:
   - name: Register scenario 1.5 vars
     set_fact:
-      scenario_name: "scenario1_5"
       tmp_dir: "~/.csm"
       terraform_base_dir: "../scenarios"
-      key_name: "key_scenario1_5"
       requirements: "requirements.txt"
   - name: Create tmp dir
     file:
@@ -38,7 +36,6 @@
   vars:
     bastion_public_ip: "{{ tf_output.outputs['scn1_5_bastion_fip'].value }}"
     loadbalancer_public_ip:  "{{ tf_output.outputs['scn1_5_lb_fip'].value }}"
-    ansible_ssh_private_key_file: "~/.ssh/{{ key_name }}"
   tasks:
   - name: Download private key from test_host
     fetch:
