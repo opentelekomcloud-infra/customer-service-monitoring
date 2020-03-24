@@ -6,7 +6,7 @@
     - darkwizard242.terraform
 
 - name: Prepare clouds.yaml
-  include: prepare_config.yml
+  import_playbook: prepare_config.yml
 
 - name: Set scenario 1.5 variables
   hosts: test_host
