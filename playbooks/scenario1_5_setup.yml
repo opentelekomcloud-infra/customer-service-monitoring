@@ -1,11 +1,6 @@
 ---
-- name: Install terraform
-  hosts: test_host
-  become: yes
-  roles:
-    - darkwizard242.terraform
 
-- name: Prepare clouds.yaml
+- name: Prepare clouds.yaml for test_host
   import_playbook: prepare_config.yml
 
 - name: Prepare variables
@@ -13,13 +8,8 @@
   tasks:
   - name: Register scenario 1.5 vars
     set_fact:
-      tmp_dir: "~/.csm"
       terraform_base_dir: "../scenarios"
       requirements: "requirements.txt"
-  - name: Create tmp dir
-    file:
-      path: "{{ tmp_dir }}"
-      state: directory
 
 - name: Build infrastructure
   hosts: test_host
@@ -27,50 +17,44 @@
     - build_infrastructure
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
-    OS_CLOUDS: 'devstack'
   vars:
     infra_state: present
-
-- name: Cleanup local executor
-  hosts: local
   tasks:
-  - name: Remove anything that was in place of `local_private_key`
-    file:
-      path: "{{ local_private_key }}"
-      state: absent
-
-- name : Register existing settings and hosts
-  hosts: test_host
-  vars:
-    bastion_public_ip: "{{ tf_output.outputs['scn1_5_bastion_fip'].value }}"
-    loadbalancer_public_ip:  "{{ tf_output.outputs['scn1_5_lb_fip'].value }}"
-  tasks:
+  - name: Register build result
+    set_fact:
+      bastion_public_ip: "{{ tf_output.outputs['scn1_5_bastion_fip'].value }}"
+      loadbalancer_public_ip:  "{{ tf_output.outputs['scn1_5_lb_fip'].value }}"
+      node_ips: "{{ tf_output.outputs['scn1_5_ecs_local_ips'].value }}"
   - name: Download private key from test_host
     fetch:
       src: "{{ tmp_dir }}/{{ key_name }}"
       dest:  "{{ local_private_key }}"
+      mode: 0600
       flat: yes
-  - name: Register bastion
+
+- name: Register used hosts
+  hosts: local
+  tasks:
+  - name: Set local facts
+    set_fact:
+      loadbalancer_public_ip: "{{ hostvars.test_host.loadbalancer_public_ip }}"
+      bastion_public_ip: "{{ hostvars.test_host.bastion_public_ip }}"
+      node_ips: "{{ hostvars.test_host.node_ips }}"
+  - name: Register Bastion
     add_host:
       name: "bastion"
       ansible_host: "{{ bastion_public_ip }}"
       ansible_ssh_user: "linux"
       ansible_ssh_private_key_file: "{{ local_private_key }}"
-  - name: Register host
+  - name: Register nodes
     add_host:
-      host: "{{ item  }}"
+      name: "{{ item }}"
       groups: "gatewayed"
       ansible_ssh_user: "linux"
       ansible_ssh_private_key_file: "{{ local_private_key }}"
-    loop: "{{ tf_output.outputs['scn1_5_ecs_local_ips'].value }}"
+      ansible_ssh_common_args: '-J linux@{{ bastion_public_ip }} -o PasswordAuthentication=no'
+    loop: "{{ node_ips }}"
 
-- name: Setup local executor
-  hosts: local
-  tasks:
-  - name: Private key chmod 600
-    file:
-      path: "{{ local_private_key }}"
-      mode: 0600
 
 - name: Wait for bastion
   hosts: bastion
@@ -96,6 +80,7 @@
   vars:
     debug: True
     server_port: 80
+
 
 - name: Install telegraf client on Bastion
   hosts: bastion
@@ -136,7 +121,7 @@
     project_path: /home/linux/customer-service-monitoring
     keys_path: "{{ project_path }}/scenarios/scenario1_5"
     inventory_path: "{{ test_path }}/inventory/prod"
-    loadbalancer_public_ip: "{{ hostvars.load_balancer.ansible_host }}"
+    loadbalancer_public_ip: "{{ hostvars.local.loadbalancer_public_ip }}"
     version: "HEAD"
   tasks:
   - name: Checkout roles from git
