@@ -8,19 +8,23 @@
 - name: Prepare clouds.yaml
   import_playbook: prepare_config.yml
 
-- name: Set scenario 1.5 variables
+- name: Prepare variables
   hosts: test_host
   tasks:
   - name: Register scenario 1.5 vars
     set_fact:
       scenario_name: "scenario1_5"
+      tmp_dir: "~/.csm"
       terraform_base_dir: "../scenarios"
       key_name: "key_scenario1_5"
       requirements: "requirements.txt"
+  - name: Create tmp dir
+    file:
+      path: "{{ tmp_dir }}"
+      state: directory
 
 - name: Build infrastructure
   hosts: test_host
-  become: yes
   roles:
     - build_infrastructure
   environment:
@@ -30,7 +34,6 @@
     infra_state: present
 
 - name : Register existing settings and hosts
-  become: yes
   hosts: test_host
   vars:
     bastion_public_ip: "{{ tf_output.outputs['scn1_5_bastion_fip'].value }}"
