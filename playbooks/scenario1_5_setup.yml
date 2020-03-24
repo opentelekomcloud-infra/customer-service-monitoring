@@ -39,16 +39,11 @@
     bastion_public_ip: "{{ tf_output.outputs['scn1_5_bastion_fip'].value }}"
     loadbalancer_public_ip:  "{{ tf_output.outputs['scn1_5_lb_fip'].value }}"
     ansible_ssh_private_key_file: "~/.ssh/{{ key_name }}"
-    AWS_variables:
-      AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-      AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
   tasks:
   - name: Download private key from test_host
     fetch:
       src: "{{ tmp_dir }}/{{ key_name }}"
       dest: "{{ ansible_ssh_private_key_file }}"
-      mode: 0600
-      force: yes
   - name: Register bastion
     add_host:
       name: "bastion"
@@ -62,6 +57,14 @@
       ansible_ssh_user: "linux"
       ansible_ssh_private_key_file: "{{ ansible_ssh_private_key_file }}"
     loop: "{{ tf_output.outputs['scn1_5_ecs_local_ips'].value }}"
+
+- name: Change permissions for private key
+  hosts: local
+  tasks:
+  - name: chmod 600
+    file:
+      path: "{{ ansible_ssh_private_key_file }}"
+      mode: 0600
 
 - name: Wait for bastion
   hosts: bastion
