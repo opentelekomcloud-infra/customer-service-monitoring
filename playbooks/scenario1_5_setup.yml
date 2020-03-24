@@ -52,11 +52,13 @@
       name: "bastion"
       ansible_host: "{{ bastion_public_ip }}"
       ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ ansible_ssh_private_key_file }}"
   - name: Register host
     add_host:
       host: "{{ item  }}"
       groups: "gatewayed"
       ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ ansible_ssh_private_key_file }}"
     loop: "{{ tf_output.outputs['scn1_5_ecs_local_ips'].value }}"
 
 - name: Wait for bastion
