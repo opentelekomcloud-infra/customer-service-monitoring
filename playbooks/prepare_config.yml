@@ -1,0 +1,15 @@
+- name: Prepare clouds.yaml
+  hosts: test_host
+  become: yes
+  tasks:
+  - name: Register clouds location
+    set_fact:
+      clouds_yaml_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
+  - name: Create tmp dir
+    file:
+      path: "{{ clouds_yaml_file | dirname }}"
+      state: directory
+  - name: Copy clouds.yaml
+    copy:
+      src: "{{ clouds_yaml_file }}"
+      dest: "{{ clouds_yaml_file }}"

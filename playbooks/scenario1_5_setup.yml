@@ -6,20 +6,17 @@
     - darkwizard242.terraform
 
 - name: Prepare clouds.yaml
+  include: prepare_config.yml
+
+- name: Set scenario 1.5 variables
   hosts: test_host
-  become: yes
   tasks:
-  - name: Register clouds location
+  - name: Register scenario 1.5 vars
     set_fact:
-      clouds_yaml_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
-  - name: Create tmp dir
-    file:
-      path: "{{ clouds_yaml_file | dirname }}"
-      state: directory
-  - name: Copy clouds.yaml
-    copy:
-      src: "{{ clouds_yaml_file }}"
-      dest: "{{ clouds_yaml_file }}"
+      scenario_name: "scenario1_5"
+      terraform_base_dir: "../scenarios"
+      key_name: "key_scenario1_5"
+      requirements: "requirements.txt"
 
 - name: Build infrastructure
   hosts: test_host
@@ -30,10 +27,6 @@
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
     OS_CLOUDS: 'devstack'
   vars:
-    terraform_base_dir: "../scenarios"
-    scenario_name: "scenario1_5"
-    key_name: "key_scenario1_5"
-    requirements: "requirements.txt"
     infra_state: present
 
 - name : Register existing settings and hosts
