@@ -8,7 +8,7 @@
   tasks:
   - name: Register scenario 1.5 vars
     set_fact:
-      terraform_base_dir: "../scenarios"
+      terraform_base_dir: "terraform"
       requirements: "requirements.txt"
 
 - name: Build infrastructure
@@ -122,6 +122,7 @@
     keys_path: "{{ project_path }}/scenarios/scenario1_5"
     inventory_path: "{{ test_path }}/inventory/prod"
     loadbalancer_public_ip: "{{ hostvars.local.loadbalancer_public_ip }}"
+    remote_pk: "{{ test_path }}/{{ key_name }}"
     version: "HEAD"
   tasks:
 
@@ -158,8 +159,6 @@
       mode: 0600
 
   - name: Generate .pub file for used private one
-    var:
-      remote_pk: "{{ test_path }}/{{ key_name }}"
     openssl_publickey:
       privatekey_path: "{{ remote_pk }}"
       path: "{{ remote_pk }}.pub"
