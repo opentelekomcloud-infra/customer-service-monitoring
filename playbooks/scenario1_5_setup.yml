@@ -158,9 +158,11 @@
       mode: 0600
 
   - name: Generate .pub file for used private one
+    var:
+      remote_pk: "{{ test_path }}/{{ key_name }}"
     openssl_publickey:
-      privatekey_path: "{{ local_private_key }}"
-      path: "{{ local_private_key }}.pub"
+      privatekey_path: "{{ remote_pk }}"
+      path: "{{ remote_pk }}.pub"
 
   - name: Copy playbooks and test script to bastion
     copy:
