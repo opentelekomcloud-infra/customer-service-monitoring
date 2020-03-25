@@ -52,7 +52,7 @@
       groups: "gatewayed"
       ansible_ssh_user: "linux"
       ansible_ssh_private_key_file: "{{ local_private_key }}"
-      ansible_ssh_common_args: '-J linux@{{ bastion_public_ip }} -o PasswordAuthentication=no'
+      ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ bastion_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
     loop: "{{ node_ips }}"
 
 
