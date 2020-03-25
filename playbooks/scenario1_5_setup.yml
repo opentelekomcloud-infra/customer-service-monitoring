@@ -124,6 +124,7 @@
     loadbalancer_public_ip: "{{ hostvars.local.loadbalancer_public_ip }}"
     version: "HEAD"
   tasks:
+
   - name: Checkout roles from git
     git:
       repo: 'https://github.com/opentelekomcloud-infra/csm-ansible-roles.git'
@@ -150,14 +151,16 @@
       src: "scenario1_5.yml"
       dest: "{{ inventory_path }}"
 
-  - name: Ensure private key and public one are present
+  - name: Ensure private key exists
     copy:
-      src: "{{ item }}"
+      src: "{{ local_private_key }}"
       dest: "{{ test_path }}"
       mode: 0600
-    with_items:
-    - "/tmp/key_scenario1_5.pub"
-    - "/tmp/key_scenario1_5"
+
+  - name: Generate .pub file for used private one
+    openssl_publickey:
+      privatekey_path: "{{ local_private_key }}"
+      path: "{{ local_private_key }}.pub"
 
   - name: Copy playbooks and test script to bastion
     copy:
