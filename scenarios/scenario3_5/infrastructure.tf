@@ -1,4 +1,3 @@
-
 locals {
   workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
   key_pair = {
@@ -58,5 +57,5 @@ output "scn3_5_initiator_instance_ip" {
 }
 
 output "scn3_5_target_instance_ip" {
-  value = module.resources.target_instance_id
+  value = module.resources.target_instance_ip
 }

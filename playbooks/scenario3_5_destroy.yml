@@ -5,8 +5,8 @@
     - darkwizard242.terraform
     - build_infrastructure
   vars:
-    terraform_base_dir: "../scenarios"
     scenario_name: "scenario3_5"
+    terraform_base_dir: "../scenarios"
     key_name: "key_scenario3_5"
     requirements: "requirements.txt"
     infra_state: absent
