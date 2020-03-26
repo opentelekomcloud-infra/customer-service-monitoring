@@ -1,12 +1,15 @@
 ---
-- name: Build infrastructure
+
+- name: Prepare clouds.yaml for test_host
+  import_playbook: prepare_config.yml
+
+- name: Prepare variables
   hosts: test_host
-  roles:
-    - darkwizard242.terraform
-    - build_infrastructure
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
   vars:
-    terraform_base_dir: "../scenarios"
-    scenario_name: "scenario1_5"
-    key_name: "key_scenario1_5"
+    terraform_base_dir: "terraform"
     requirements: "requirements.txt"
     infra_state: absent
+  roles:
+    - build_infrastructure
