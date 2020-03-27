@@ -7,6 +7,6 @@ variable "ecs_image" {}
 variable "scenario" {}
 variable "psql_version" {}
 variable "psql_port" {}
-variable "psql_password" {}
+variable "psql_password" { default = "AErg#98/*9YUI"}
 
 variable "public_key" {}
