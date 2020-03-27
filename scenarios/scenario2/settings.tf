@@ -1,6 +1,6 @@
 terraform {
   required_providers {
-    opentelekomcloud = ">= 1.13.1"
+    opentelekomcloud = ">= 1.16.0"
   }
   backend "s3" {
     key      = "terraform_state/scenario2"
