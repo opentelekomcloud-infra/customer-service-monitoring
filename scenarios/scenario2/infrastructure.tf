@@ -27,16 +27,16 @@ module "postgresql" {
   psql_password = var.psql_password
 }
 
-output "out-scn2_public_ip" {
+output "scn2_public_ip" {
   value = module.resources.scn2_eip
 }
-output "out-db_password" {
+output "db_password" {
   value     = module.postgresql.db_password
   sensitive = true
 }
-output "out-db_username" {
+output "db_username" {
   value = module.postgresql.db_username
 }
-output "out-db_address" {
+output "db_address" {
   value = module.postgresql.db_address
 }

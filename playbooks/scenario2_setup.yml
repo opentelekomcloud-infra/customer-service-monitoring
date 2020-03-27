@@ -1,11 +1,44 @@
 ---
-- name: Register existing settings
+- name: Prepare clouds.yaml for test_host
+  import_playbook: prepare_config.yml
+
+- name: Prepare variables
+  hosts: test_host
+  tasks:
+  - name: Register scenario 2 vars
+    set_fact:
+      terraform_base_dir: "terraform"
+      requirements: "requirements.txt"
+
+- name: Build infrastructure
+  hosts: test_host
+  roles:
+    - build_infrastructure
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+  vars:
+    infra_state: present
+  tasks:
+  - name: Register build result
+    set_fact:
+      db_password: "{{ tf_output.outputs[\"db_password\"].value }}"
+      db_username: "{{ tf_output.outputs[\"db_username\"].value }}"
+      db_address: "{{ tf_output.outputs[\"db_address\"].value }}"
+      scn2_public_ip: "{{ tf_output.outputs[\"scn2_public_ip\"].value }}"
+  - name: Download private key from test_host
+    fetch:
+      src: "{{ tmp_dir }}/{{ key_name }}"
+      dest:  "{{ local_private_key }}"
+      mode: 0600
+      flat: yes
+
+- name: Register used hosts
   hosts: local
   tasks:
     - name: Register host
       add_host:
         hostname: "scn2_ecs"
-        ansible_ssh_host: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+        ansible_ssh_host: "{{ hostvars.test_host.scn2_public_ip }}"
         ansible_ssh_user: "linux"
 
 - name: Wait for host
@@ -27,10 +60,10 @@
   roles:
     - role: too_simple_server
       vars:
-        pg_db_url: "{{ lookup('env', 'PSQL_ADDRESS') }}"
+        pg_db_url: "{{ hostvars.test_host.pg_db_url }}"
         pg_database: "entities"
-        pg_username: "{{ lookup('env', 'PSQL_USERNAME') }}"
-        pg_password: "{{ lookup('env', 'PSQL_PASSWORD') }}"
+        pg_username: "{{ hostvars.test_host.pg_username }}"
+        pg_password: "{{ hostvars.test_host.pg_password }}"
         debug: False
   tasks:
     - name: Register facts
@@ -53,7 +86,7 @@
               data_format: "influx"
           - name: postgresql
             options:
-              address: "postgres://{{ lookup('env', 'PSQL_USERNAME') }}:{{ lookup('env', 'PSQL_PASSWORD') }}@{{ lookup('env', 'PSQL_ADDRESS') }}/entities"
+              address: "postgres://{{ hostvars.test_host.pg_username }}:{{ hostvars.test_host.pg_password }}@{{ hostvars.test_host.pg_db_url }}/entities"
     - role: geerlingguy.nginx
       vars:
         nginx_remove_default_vhost: yes
