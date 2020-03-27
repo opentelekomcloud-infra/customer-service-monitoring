@@ -1,4 +1,3 @@
-region                      = "eu-de"
 target_availability_zone    = "eu-de-01"
 initiator_availability_zone = "eu-de-03"
 scenario                    = "scn3_5"

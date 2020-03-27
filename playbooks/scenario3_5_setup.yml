@@ -1,7 +1,85 @@
 ---
+- name: Prepare clouds.yaml for test_host
+  import_playbook: prepare_config.yml
+
+- name: Prepare variables
+  hosts: test_host
+  tasks:
+  - name: Register scenario 3.5 vars
+    set_fact:
+      terraform_base_dir: "terraform"
+      requirements: "requirements.txt"
+
+- name: Build infrastructure
+  hosts: test_host
+  roles:
+    - build_infrastructure
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+  vars:
+    infra_state: present
+  tasks:
+  - name: Register build result
+    set_fact:
+      bastion_public_ip: "{{ tf_output.outputs['scn3_5_bastion_fip'].value }}"
+      scn3_5_initiator_ip: "{{ tf_output.outputs['scn3_5_initiator_instance_ip'].value }}"
+      scn3_5_target_ip: "{{ tf_output.outputs['scn3_5_target_instance_ip'].value }}"
+  - name: Download private key from test_host
+    fetch:
+      src: "{{ tmp_dir }}/{{ key_name }}"
+      dest:  "{{ local_private_key }}"
+      mode: 0600
+      flat: yes
+
+- name: Register used hosts
+  hosts: local
+  tasks:
+  - name: Set local facts
+    set_fact:
+      bastion_public_ip: "{{ hostvars.test_host.bastion_public_ip }}"
+      scn3_5_initiator_ip: "{{ hostvars.test_host.scn3_5_initiator_ip }}"
+      scn3_5_target_ip: "{{ hostvars.test_host.scn3_5_target_ip }}"
+  - name: Register Bastion
+    add_host:
+      name: "bastion"
+      ansible_host: "{{ bastion_public_ip }}"
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+  - name: Register scn3_5_initiator
+    add_host:
+      name: "scn3_5_initiator"
+      groups: "gatewayed"
+      ansible_host: "{{ scn3_5_initiator_ip }}"
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+      ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ bastion_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
+  - name: Register scn3_5_target
+    add_host:
+      name: "scn3_5_target"
+      groups: "gatewayed"
+      ansible_host: "{{ scn3_5_target_ip }}"
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+      ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ bastion_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
+
+- name: Wait for bastion
+  hosts: bastion
+  gather_facts: no
+  tasks:
+  - name: Wait for host to be up
+    wait_for_connection:
+      timeout: 120
+
+- name: Wait for hosts
+  hosts: gatewayed
+  gather_facts: no
+  tasks:
+  - name: Wait for host to be up
+    wait_for_connection:
+      timeout: 120
+
 - name: Prepare attached device on target server
-  hosts: scn3_5_target_instance
-  gather_facts: yes
+  hosts: scn3_5_target
   become: yes
   vars_files:
     - "./vars/scenario_3_5_vars.yml"
@@ -9,7 +87,7 @@
     - iscsi_target
 
 - name: Prepare initiator and connect device
-  hosts: scn3_5_initiator_instance
+  hosts: scn3_5_initiator
   become: yes
   vars_files:
     - "./vars/scenario_3_5_vars.yml"
@@ -18,7 +96,7 @@
       open_iscsi:
         show_nodes: yes
         discover: yes
-        portal: "{{ hostvars.scn3_5_target_instance.ansible_host }}"
+        portal: "{{ hostvars.scn3_5_target.ansible_host }}"
 
     - name: Connect to the target
       open_iscsi:
@@ -26,10 +104,10 @@
         login: yes
         node_user: "{{ incominguser_username }}"
         node_pass: "{{ incominguser_password }}"
-        portal: "{{ hostvars.scn3_5_target_instance.ansible_host }}"
+        portal: "{{ hostvars.scn3_5_target.ansible_host }}"
 
 - name: Prepare attached iSCSI device on initiator
-  hosts: scn3_5_initiator_instance
+  hosts: scn3_5_initiator
   become: yes
   vars_files:
     - "./vars/scenario_3_5_vars.yml"
@@ -80,7 +158,7 @@
         job: /sbin/hdparm -tT "{{ device }}"
 
 - name: Install telegraf client on initiator
-  hosts: scn3_5_initiator_instance
+  hosts: scn3_5_initiator
   become: yes
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
@@ -105,7 +183,7 @@
           data_format: "influx"
 
 - name: Prepare test
-  hosts: scn3_5_initiator_instance
+  hosts: scn3_5_initiator
   become: yes
   tasks:
     - name: copy test script on initiator

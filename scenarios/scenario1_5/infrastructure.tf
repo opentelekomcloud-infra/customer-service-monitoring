@@ -58,10 +58,14 @@ module "loadbalancer" {
   workspace_prefix      = local.workspace_prefix
 }
 
-output "out-scn1_5_lb_fip" {
+output "scn1_5_lb_fip" {
   value = module.loadbalancer.loadbalancer_fip
 }
 
-output "out-scn1_5_bastion_fip" {
+output "scn1_5_bastion_fip" {
   value = opentelekomcloud_networking_floatingip_v2.bastion_public_ip.address
+}
+
+output "scn1_5_ecs_local_ips" {
+  value = [ for instance in module.nodes.instances: instance.access_ip_v4 ]
 }
