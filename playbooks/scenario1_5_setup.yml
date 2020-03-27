@@ -1,5 +1,4 @@
 ---
-
 - name: Prepare clouds.yaml for test_host
   import_playbook: prepare_config.yml
 
@@ -53,7 +52,6 @@
       ansible_ssh_private_key_file: "{{ local_private_key }}"
       ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ bastion_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
     loop: "{{ hostvars.test_host.node_ips }}"
-
 
 - name: Wait for bastion
   hosts: bastion

@@ -1,5 +1,4 @@
 ---
-
 - name: Prepare clouds.yaml for test_host
   import_playbook: prepare_config.yml
 
