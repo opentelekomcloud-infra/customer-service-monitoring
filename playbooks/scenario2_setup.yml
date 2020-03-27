@@ -60,10 +60,10 @@
   roles:
     - role: too_simple_server
       vars:
-        pg_db_url: "{{ hostvars.test_host.pg_db_url }}"
+        pg_db_url: "{{ hostvars.test_host.db_address }}"
         pg_database: "entities"
-        pg_username: "{{ hostvars.test_host.pg_username }}"
-        pg_password: "{{ hostvars.test_host.pg_password }}"
+        pg_username: "{{ hostvars.test_host.db_username }}"
+        pg_password: "{{ hostvars.test_host.db_password }}"
         debug: False
   tasks:
     - name: Register facts
@@ -86,7 +86,7 @@
               data_format: "influx"
           - name: postgresql
             options:
-              address: "postgres://{{ hostvars.test_host.pg_username }}:{{ hostvars.test_host.pg_password }}@{{ hostvars.test_host.pg_db_url }}/entities"
+              address: "postgres://{{ hostvars.test_host.db_username }}:{{ hostvars.test_host.db_password }}@{{ hostvars.test_host.db_address }}/entities"
     - role: geerlingguy.nginx
       vars:
         nginx_remove_default_vhost: yes
