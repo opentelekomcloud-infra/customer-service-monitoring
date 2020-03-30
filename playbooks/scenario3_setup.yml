@@ -1,10 +1,53 @@
 ---
+- name: Prepare clouds.yaml for test_host
+  import_playbook: prepare_config.yml
+
+- name: Prepare variables
+  hosts: test_host
+  tasks:
+  - name: Register scenario 1 vars
+    set_fact:
+      terraform_base_dir: "terraform"
+      requirements: "requirements.txt"
+
+- name: Build infrastructure
+  hosts: test_host
+  roles:
+    - build_infrastructure
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+  vars:
+    infra_state: present
+  tasks:
+  - name: Register build result
+    set_fact:
+      server_public_ip: "{{ tf_output.outputs['scn3_server_fip'].value }}"
+  - name: Download private key from test_host
+    fetch:
+      src: "{{ tmp_dir }}/{{ key_name }}"
+      dest:  "{{ local_private_key }}"
+      mode: 0600
+      flat: yes
+
+- name: Register used hosts
+  hosts: local
+  tasks:
+  - name: Set local facts
+    set_fact:
+      server_public_ip: "{{ hostvars.test_host.server_public_ip }}"
+  - name: Register Bastion
+    add_host:
+      name: "bastion"
+      ansible_host: "{{ server_public_ip }}"
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+
 - name: Register existing settings
   hosts: local
   roles:
     - register_host
   vars:
-    dnsname_or_ip: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+    dnsname_or_ip: "{{ server_public_ip }}"
     group: "scn3_ecs"
 
 - name: Prepare attached devices on server
