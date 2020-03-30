@@ -1,9 +1,4 @@
-variable "username" {}
-variable "password" {}
-variable "region" {}
-variable "tenant_name" {}
-variable "availability_zone" {}
-variable "domain_name" {}
+variable "availability_zone" { default = "eu-de-03" }
 variable "ecs_flavor" {}
 variable "ecs_image" {}
 variable "addr_3_octets" { default = "192.168.0" }
