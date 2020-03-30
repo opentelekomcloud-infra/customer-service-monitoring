@@ -8,4 +8,3 @@ scenario          = "scn2"
 
 psql_version = "10"
 psql_port    = 8669
-psql_password = "{{ psql_password }}"

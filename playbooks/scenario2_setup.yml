@@ -16,6 +16,7 @@
     - build_infrastructure
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+    TF_VAR_psql_password: "{{ psql_password }}"
   vars:
     infra_state: present
   tasks:
