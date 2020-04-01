@@ -145,34 +145,28 @@
   tasks:
     - name: Get running delatore processes list from remote host
       ignore_errors: yes
-      shell: "ps -few | grep 'csm_test_utils monitor' | awk '{print $2}'"
+      shell: "ps aux | grep 'csm_test_utils monitor' | awk '{print $2}'"
       register: process_monitor
       tags:
         - skip_ansible_lint
     - name: Kill running delatore processes
       ignore_errors: yes
-      shell: "kill {{ process_monitor }}"
+      shell: "kill {{ process_monitor.stdout_lines[0] }}"
       tags:
         - skip_ansible_lint
     - name: Waiting for status
       wait_for:
-        path: "/proc/{{ process_monitor }}/status"
+        path: "/proc/{{ process_monitor.stdout_lines[0] }}/status"
         state: absent
       ignore_errors: yes
 
-- name: Run test.sh for scenario
+- name: Run test for scenario
   hosts: test_host
-  become: yes
-  environment:
-     AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-     AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-     INFLUX_PASSWORD: "{{ telegraf_influxdb_password }}"
-     OS_CLOUD: "devstack"
+  vars:
+    clouds_yaml_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
+    tmp_dir: "{{ clouds_yaml_file | dirname }}"
   tasks:
-  - name: Execute test.sh
-    shell: "{{ start_ssh_agent }} && ./test.sh {{ scenario_name }}"
-    args:
-      chdir: "../scenarios"
-    tags:
-      - skip_ansible_lint
-
+  - name: Execute csm_test_utils
+    command:
+       cmd: "python -m csm_test_utils monitor --target {{ loadbalancer_public_ip }} --telegraf "http://{{ bastion_public_ip }}"
+       chdir: "{{ tmp_dir }}/project"
