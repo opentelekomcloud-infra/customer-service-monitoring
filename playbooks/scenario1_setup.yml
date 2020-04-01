@@ -162,11 +162,20 @@
 
 - name: Run test for scenario
   hosts: test_host
-  vars:
-    clouds_yaml_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
-    tmp_dir: "{{ clouds_yaml_file | dirname }}"
   tasks:
   - name: Execute csm_test_utils
     command:
-       cmd: "python -m csm_test_utils monitor --target {{ loadbalancer_public_ip }} --telegraf "http://{{ bastion_public_ip }}"
-       chdir: "{{ tmp_dir }}/project"
+       cmd: "python3.7 -m csm_test_utils monitor --target {{ loadbalancer_public_ip }} --telegraf 'http://{{ bastion_public_ip }}'"
+    async: 20
+    poll: 0
+  - name: Find pid for process
+    command:
+       cmd: "$$"
+    register: pid
+  - name: Find pid for process
+    command:
+       cmd: "kill ${{ pid }}"
+    register: pid
+
+
+
