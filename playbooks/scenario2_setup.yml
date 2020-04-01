@@ -112,33 +112,26 @@
   tasks:
     - name: Get running delatore processes list from remote host
       ignore_errors: yes
-      shell: "ps -few | grep delatore | awk '{print $2}'"
-      register: delatore_running_processes
+      shell: "ps aux | grep 'csm_test_utils rds_monitor' | awk '{print $2}'"
+      register: process_monitor
       tags:
         - skip_ansible_lint
     - name: Kill running delatore processes
       ignore_errors: yes
-      shell: "kill {{ delatore_running_processes.stdout_lines.['csm_test_utils rds_monitor'].value }}"
+      shell: "kill {{ process_monitor.stdout_lines[0] }}"
       tags:
         - skip_ansible_lint
     - name: Waiting for status
       wait_for:
-        path: "/proc/{{ delatore_running_processes.stdout_lines.['csm_test_utils rds_monitor'].value }}/status"
+        path: "/proc/{{ process_monitor.stdout_lines[0] }}/status"
         state: absent
       ignore_errors: yes
 
-- name: Run test.sh for scenario
+- name: Run test for scenario
   hosts: test_host
-  become: yes
-  environment:
-     AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-     AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-     INFLUX_PASSWORD: "{{ telegraf_influxdb_password }}"
-     OS_CLOUD: "devstack"
   tasks:
-  - name: Execute test.sh
-    shell: "{{ start_ssh_agent }} && ./test.sh {{ scenario_name }}"
-    args:
-      chdir: "../scenarios"
-    tags:
-      - skip_ansible_lint
+  - name: Execute csm_test_utils
+    command:
+       cmd: "python3.7 -m csm_test_utils rds_monitor --target {{ scn2_public_ip }} --telegraf 'http://{{ scn2_public_ip }}'"
+    async: 20
+    poll: 0
