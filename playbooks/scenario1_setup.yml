@@ -140,10 +140,41 @@
             - "lo"
             - "ens3"
 
-- name: 'Run test.sh for scenario' # noqa 301 305
+- name: Checking delatore processes
+  hosts: test_host
+  tasks:
+    - name: Get running delatore processes list from remote host
+      ignore_errors: yes
+      shell: "ps -few | grep delatore | awk '{print $2}'"
+      register: delatore_running_processes
+      tags:
+        - skip_ansible_lint
+    - name: Kill running delatore processes
+      ignore_errors: yes
+      shell: "kill {{ item }}"
+      with_items: "{{ delatore_running_processes.stdout_lines }}"
+      tags:
+        - skip_ansible_lint
+    - name: Waiting for status
+      wait_for:
+        path: "/proc/{{ item }}/status"
+        state: absent
+      with_items: "{{ delatore_running_processes.stdout_lines }}"
+      ignore_errors: yes
+
+- name: Run test.sh for scenario
   hosts: test_host
   become: yes
-  environment: "{{ credentials_env }}"
-  shell: "{{ start_ssh_agent }} && ./test.sh {{ scenario_name }}"
-  args:
-    chdir: "../scenarios"
+  environment:
+     AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+     AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+     INFLUX_PASSWORD: "{{ telegraf_influxdb_password }}"
+     OS_CLOUD: "devstack"
+  tasks:
+  - name: Execute test.sh
+    shell: "{{ start_ssh_agent }} && ./test.sh {{ scenario_name }}"
+    args:
+      chdir: "../scenarios"
+    tags:
+      - skip_ansible_lint
+
