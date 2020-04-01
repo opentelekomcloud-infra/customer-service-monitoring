@@ -131,3 +131,11 @@
           totalcpu: "true"
           fielddrop:
             - "time_*"
+
+- name: 'Run test.sh for scenario' # noqa 301 305
+  hosts: test_host
+  become: yes
+  environment: "{{ credentials_env }}"
+  shell: "{{ start_ssh_agent }} && ./test.sh {{ scenario_name }}"
+  args:
+    chdir: "../scenarios"
