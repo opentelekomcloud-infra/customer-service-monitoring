@@ -145,21 +145,19 @@
   tasks:
     - name: Get running delatore processes list from remote host
       ignore_errors: yes
-      shell: "ps -few | grep delatore | awk '{print $2}'"
-      register: delatore_running_processes
+      shell: "ps -few | grep 'csm_test_utils monitor' | awk '{print $2}'"
+      register: process_monitor
       tags:
         - skip_ansible_lint
     - name: Kill running delatore processes
       ignore_errors: yes
-      shell: "kill {{ item }}"
-      with_items: "{{ delatore_running_processes.stdout_lines }}"
+      shell: "kill {{ process_monitor }}"
       tags:
         - skip_ansible_lint
     - name: Waiting for status
       wait_for:
-        path: "/proc/{{ item }}/status"
+        path: "/proc/{{ process_monitor }}/status"
         state: absent
-      with_items: "{{ delatore_running_processes.stdout_lines }}"
       ignore_errors: yes
 
 - name: Run test.sh for scenario
