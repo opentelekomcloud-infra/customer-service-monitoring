@@ -25,5 +25,5 @@ variable "key_pair" {
 }
 
 locals {
-  workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
+  workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}_"
 }

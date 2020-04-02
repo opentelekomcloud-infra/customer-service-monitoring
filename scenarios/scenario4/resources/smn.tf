@@ -1,5 +1,5 @@
 resource "opentelekomcloud_ces_alarmrule" "instances_count" {
-  alarm_name = "${var.prefix}_instances_count"
+  alarm_name = "scn4_instances_count"
   condition {
     comparison_operator = ">="
     count               = 1
@@ -33,7 +33,7 @@ resource "opentelekomcloud_ces_alarmrule" "instances_count" {
 }
 
 resource "opentelekomcloud_smn_topic_v2" "instances_count_topic" {
-  name            = "${var.prefix}_instances_count_topic"
+  name            = "scn4_instances_count_topic"
   display_name    = "Topic for scenario4"
 }
 

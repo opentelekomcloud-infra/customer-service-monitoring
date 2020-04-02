@@ -6,7 +6,7 @@ data "opentelekomcloud_images_image_v2" "current_image" {
 # Create instance
 resource "opentelekomcloud_compute_instance_v2" "http" {
   count             = var.nodes_count
-  name              = "${local.workspace_prefix}${var.prefix}_basic_${count.index}"
+  name              = "${var.prefix}_basic_${count.index}"
   flavor_name       = var.ecs_flavor
   key_pair          = var.key_pair.key_name
   user_data         = file("${path.module}/first_boot.sh")
@@ -33,7 +33,7 @@ resource "opentelekomcloud_compute_instance_v2" "http" {
 # Create network port
 resource "opentelekomcloud_networking_port_v2" "http" {
   count          = var.nodes_count
-  name           = "${local.workspace_prefix}${var.prefix}_port_${count.index}"
+  name           = "${var.prefix}_port_${count.index}"
   network_id     = var.network_id
   admin_state_up = true
   security_group_ids = [
