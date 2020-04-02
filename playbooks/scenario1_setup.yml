@@ -143,17 +143,13 @@
 - name: Checking reporting processes
   hosts: test_host
   tasks:
-    - name: Get reporting delatore processes list from remote host
+    - name: Get reporting delatore processes list from remote host  # noqa 301 305
       ignore_errors: yes
       shell: "ps aux | grep 'csm_test_utils monitor' | awk '{print $2}'"
       register: process_monitor
-      tags:
-        - skip_ansible_lint
-    - name: Kill running reporting processes
+    - name: Kill running reporting processes  # noqa 301 305
       ignore_errors: yes
       shell: "kill {{ process_monitor.stdout_lines[0] }}"
-      tags:
-        - skip_ansible_lint
     - name: Waiting for status
       wait_for:
         path: "/proc/{{ process_monitor.stdout_lines[0] }}/status"
@@ -163,13 +159,8 @@
 - name: Run test for scenario
   hosts: test_host
   tasks:
-  - name: Execute csm_test_utils
-    command:
-       cmd: "python3.7 -m csm_test_utils monitor --target {{ loadbalancer_public_ip }} --telegraf 'http://{{ bastion_public_ip }}'"
-    async: 20
-    poll: 0
-  tags:
-    - skip_ansible_lint
+  - name: Execute csm_test_utils  # noqa 301 305
+    shell: "nohup python3 -m csm_test_utils monitor --target {{ loadbalancer_public_ip }} --telegraf 'http://{{ bastion_public_ip }}' &"
 
 
 
