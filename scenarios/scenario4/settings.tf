@@ -1,6 +1,6 @@
 terraform {
   required_providers {
-    opentelekomcloud = ">= 1.16.0"
+    opentelekomcloud = ">= 1.13.1"
   }
 
   backend "s3" { # use OBS for remote state
@@ -15,5 +15,9 @@ terraform {
 
 # Configure the OpenTelekomCloud Provider
 provider "opentelekomcloud" {
-    cloud = "devstack"
+  user_name   = var.username
+  password    = var.password
+  domain_name = var.domain_name
+  tenant_name = var.tenant_name
+  auth_url    = "https://iam.eu-de.otc.t-systems.com:443/v3"
 }

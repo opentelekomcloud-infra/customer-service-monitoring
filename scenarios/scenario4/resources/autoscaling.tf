@@ -52,7 +52,7 @@ resource "opentelekomcloud_as_policy_v1" "alarm_scaling_policy" {
 }
 
 resource "opentelekomcloud_ces_alarmrule" "alarm" {
-  alarm_name = "scn4_alarm_cpu_rule-1"
+  alarm_name = "${var.prefix}_alarm_cpu_rule"
   condition {
     comparison_operator = ">="
     count               = 1
@@ -93,7 +93,7 @@ resource "opentelekomcloud_as_policy_v1" "reduce_policy" {
 }
 
 resource "opentelekomcloud_ces_alarmrule" "reduce" {
-  alarm_name = "scn4_alarm_cpu_rule-2"
+  alarm_name = "${var.prefix}_alarm_cpu_rule"
   condition {
     comparison_operator = "<="
     count               = 1

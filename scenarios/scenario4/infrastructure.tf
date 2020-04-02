@@ -66,14 +66,10 @@ module "resources" {
   lb_pool               = module.loadbalancer.pool
 }
 
-output "scn4_lb_fip" {
+output "out-scn4_lb_fip" {
   value = module.loadbalancer.loadbalancer_fip
 }
 
-output "scn4_bastion_fip" {
+output "out-scn4_bastion_fip" {
   value = opentelekomcloud_networking_floatingip_v2.server_fip.address
-}
-
-output "scn4_vms" {
-  value = [ for instance in module.resources.instances: instance.access_ip_v4 ]
 }

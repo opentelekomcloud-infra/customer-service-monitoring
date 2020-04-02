@@ -140,16 +140,16 @@
             - "lo"
             - "ens3"
 
-- name: Checking delatore processes
+- name: Checking reporting processes
   hosts: test_host
   tasks:
-    - name: Get running delatore processes list from remote host
+    - name: Get reporting delatore processes list from remote host
       ignore_errors: yes
       shell: "ps aux | grep 'csm_test_utils monitor' | awk '{print $2}'"
       register: process_monitor
       tags:
         - skip_ansible_lint
-    - name: Kill running delatore processes
+    - name: Kill running reporting processes
       ignore_errors: yes
       shell: "kill {{ process_monitor.stdout_lines[0] }}"
       tags:
@@ -168,6 +168,8 @@
        cmd: "python3.7 -m csm_test_utils monitor --target {{ loadbalancer_public_ip }} --telegraf 'http://{{ bastion_public_ip }}'"
     async: 20
     poll: 0
+  tags:
+    - skip_ansible_lint
 
 
 

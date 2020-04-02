@@ -8,7 +8,7 @@ variable "router_id" {}
 variable "bastion_local_ip" {}
 variable "bastion_eip" {}
 variable "nodes_count" {}
-variable "prefix" { default = "prefix" }
+variable "prefix" {}
 variable "scenario" {}
 variable "availability_zone" {}
 variable "disc_volume" {

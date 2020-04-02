@@ -1,3 +1,5 @@
+region            = "eu-de"
+availability_zone = "eu-de-01"
 scenario          = "scn4"
 ecs_flavor        = "s2.large.2"
 bastion_image     = "Standard_Debian_10_latest"

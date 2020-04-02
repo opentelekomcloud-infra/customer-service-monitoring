@@ -1,5 +1,9 @@
-variable "region" { default = "eu-de"}
-variable "availability_zone" { default = "eu-de-01" }
+variable "username" {}
+variable "password" {}
+variable "region" {}
+variable "tenant_name" {}
+variable "availability_zone" {}
+variable "domain_name" {}
 variable "ecs_flavor" {}
 variable "bastion_image" {}
 variable "host_image" {}
