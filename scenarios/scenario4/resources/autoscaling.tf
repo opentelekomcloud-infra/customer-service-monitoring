@@ -1,6 +1,6 @@
 # Create Autoscaling
 resource "opentelekomcloud_as_configuration_v1" "as_config" {
-  scaling_configuration_name = "scn4_autoscaled_instance"
+  scaling_configuration_name = "${var.prefix}_autoscaled_instance"
   instance_config {
     instance_id = opentelekomcloud_compute_instance_v2.http[0].id
     key_name    = var.key_pair.key_name
@@ -12,7 +12,7 @@ resource "opentelekomcloud_as_configuration_v1" "as_config" {
 }
 
 resource "opentelekomcloud_as_group_v1" "autoscaling_group_with_lb" {
-  scaling_group_name       = "scn4_autoscaling_group_with_lb"
+  scaling_group_name       = "${var.prefix}_autoscaling_group_with_lb"
   scaling_configuration_id = opentelekomcloud_as_configuration_v1.as_config.id
   desire_instance_number   = 0
   min_instance_number      = 0
@@ -41,7 +41,7 @@ resource "opentelekomcloud_as_group_v1" "autoscaling_group_with_lb" {
 
 resource "opentelekomcloud_as_policy_v1" "alarm_scaling_policy" {
   scaling_group_id    = opentelekomcloud_as_group_v1.autoscaling_group_with_lb.id
-  scaling_policy_name = "scn4_alarm_policy"
+  scaling_policy_name = "${var.prefix}_alarm_policy"
   scaling_policy_type = "ALARM"
   alarm_id            = opentelekomcloud_ces_alarmrule.alarm.id
   scaling_policy_action {
@@ -52,7 +52,7 @@ resource "opentelekomcloud_as_policy_v1" "alarm_scaling_policy" {
 }
 
 resource "opentelekomcloud_ces_alarmrule" "alarm" {
-  alarm_name = "scn4_cpu_rule_scale"
+  alarm_name = "${var.prefix}_cpu_rule_scale"
   condition {
     comparison_operator = ">="
     count               = 1
@@ -82,7 +82,7 @@ resource "opentelekomcloud_ces_alarmrule" "alarm" {
 
 resource "opentelekomcloud_as_policy_v1" "reduce_policy" {
   scaling_group_id    = opentelekomcloud_as_group_v1.autoscaling_group_with_lb.id
-  scaling_policy_name = "scn4_reduce_policy"
+  scaling_policy_name = "${var.prefix}_reduce_policy"
   scaling_policy_type = "ALARM"
   alarm_id            = opentelekomcloud_ces_alarmrule.reduce.id
   scaling_policy_action {
@@ -93,7 +93,7 @@ resource "opentelekomcloud_as_policy_v1" "reduce_policy" {
 }
 
 resource "opentelekomcloud_ces_alarmrule" "reduce" {
-  alarm_name = "scn4_cpu_rule_reduce"
+  alarm_name = "${var.prefix}_cpu_rule_reduce"
   condition {
     comparison_operator = "<="
     count               = 1
