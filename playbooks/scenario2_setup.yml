@@ -123,7 +123,7 @@
         state: absent
       ignore_errors: yes
 
-- name: Run test for scenario
+- name: Run reporting for scenario
   hosts: test_host
   tasks:
   - name: Execute csm_test_utils  # noqa 301 305
