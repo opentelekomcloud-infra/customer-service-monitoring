@@ -161,7 +161,3 @@
   tasks:
   - name: Execute csm_test_utils  # noqa 301 305
     shell: "nohup python3 -m csm_test_utils monitor --target {{ loadbalancer_public_ip }} --telegraf 'http://{{ bastion_public_ip }}' &"
-
-
-
-

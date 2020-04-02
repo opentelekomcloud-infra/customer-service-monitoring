@@ -5,7 +5,7 @@
 - name: Prepare variables
   hosts: test_host
   tasks:
-  - name: Register scenario 1 vars
+  - name: Register scenario 3 vars
     set_fact:
       terraform_base_dir: "terraform"
       requirements: "requirements.txt"

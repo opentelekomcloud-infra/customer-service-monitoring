@@ -1,5 +1,5 @@
 resource "opentelekomcloud_compute_keypair_v2" "pair" {
-  name       = "${var.prefix}-kl"
+  name       = "${var.prefix}-kp"
   public_key = var.public_key
 }
 
