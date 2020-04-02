@@ -143,7 +143,7 @@
 - name: Checking reporting processes
   hosts: test_host
   tasks:
-    - name: Get reporting delatore processes list from remote host  # noqa 301 305
+    - name: Get reporting processes list from remote host  # noqa 301 305
       ignore_errors: yes
       shell: "ps aux | grep 'csm_test_utils monitor' | awk '{print $2}'"
       register: process_monitor
