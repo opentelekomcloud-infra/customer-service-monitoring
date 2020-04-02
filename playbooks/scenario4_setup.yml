@@ -1,4 +1,74 @@
 ---
+- name: Prepare clouds.yaml for test_host
+  import_playbook: prepare_config.yml
+
+- name: Prepare variables
+  hosts: test_host
+  tasks:
+  - name: Register scenario 4 vars
+    set_fact:
+      terraform_base_dir: "terraform"
+      requirements: "requirements.txt"
+
+- name: Build infrastructure
+  hosts: test_host
+  roles:
+    - build_infrastructure
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+  vars:
+    infra_state: present
+  tasks:
+  - name: Register build result
+    set_fact:
+      bastion_public_ip: "{{ tf_output.outputs['scn4_bastion_fip'].value }}"
+      loadbalancer_public_ip:  "{{ tf_output.outputs['scn4_lb_fip'].value }}"
+      node_ips: "{{ tf_output.outputs['scn4_vms'].value }}"
+  - name: Download private key from test_host
+    fetch:
+      src: "{{ tmp_dir }}/{{ key_name }}"
+      dest:  "{{ local_private_key }}"
+      mode: 0600
+      flat: yes
+
+- name: Register used hosts
+  hosts: local
+  tasks:
+  - name: Set local facts
+    set_fact:
+      loadbalancer_public_ip: "{{ hostvars.test_host.loadbalancer_public_ip }}"
+      bastion_public_ip: "{{ hostvars.test_host.bastion_public_ip }}"
+  - name: Register Bastion
+    add_host:
+      name: "bastion"
+      ansible_host: "{{ bastion_public_ip }}"
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+  - name: Register nodes
+    add_host:
+      name: "{{ item }}"
+      groups: "gatewayed"
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+      ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ bastion_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
+    loop: "{{ hostvars.test_host.node_ips }}"
+
+- name: Wait for bastion
+  hosts: bastion
+  gather_facts: no
+  tasks:
+  - name: Wait for host to be up
+    wait_for_connection:
+      timeout: 120
+
+- name: Wait for hosts
+  hosts: gatewayed
+  gather_facts: no
+  tasks:
+  - name: Wait for host to be up
+    wait_for_connection:
+      timeout: 120
+
 - name: Register existing settings
   hosts: local
   roles:

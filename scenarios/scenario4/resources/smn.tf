@@ -37,8 +37,8 @@ resource "opentelekomcloud_smn_topic_v2" "instances_count_topic" {
   display_name    = "Topic for scenario4"
 }
 
-resource "opentelekomcloud_smn_subscription_v2" "subscription" {
+resource "opentelekomcloud_smn_subscription_v2" "subscription_v2" {
   topic_urn       = opentelekomcloud_smn_topic_v2.instances_count_topic.id
-  endpoint        = "http://${var.bastion_eip}/smn"
+  endpoint        = "http://${var.bastion_eip}/smn/"
   protocol        = "http"
 }
