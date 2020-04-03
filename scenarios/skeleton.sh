@@ -31,47 +31,16 @@ function init_if_missing() {
   fi
 }
 
-# init pre-/post-build scripts
-init_if_missing "pre_build.sh" "${shebang}"
-init_if_missing "post_build.sh" "$(<"./core/post_build_template.sh")"
-
-# init tests
-mkdir -p "${target_dir}/test"
-
-init_if_missing "test/main.sh" "${shebang}
-start_dir=\$( pwd )
-local_dir=\$( cd \$( dirname \"\$0\" ); pwd )
-project_root=\$1
-echo \"Project root: \${project_root}\"
-
-
-scenario_dir=\$(cd \"\${local_dir}/..\"; pwd)
-echo \"Scenario directory: \${scenario_dir}\"
-cd \"\${scenario_dir}\" || exit 1
-# source ./pre_build.sh
-
-cd \"\${project_root}\" || exit 1
-
-function run_test() {
-    python \"\${local_dir}/main.py\"  # <arguments>
-}
-
-cd \${start_dir}"
-init_if_missing "test/main.py" ""
-
 # init terraform configuration
 init_if_missing "terraform.tfvars" \
 "region = \"eu-de\"
 availability_zone = \"eu-de-01\""
-init_if_missing "secrets.auto.tfvars" \
-"username = \"\"
-password = \"\""
 # create empty ansible playbook
 target_dir="${project_root}/playbooks" init_if_missing "${target_name}_setup.yml" "---"
 
 init_if_missing "settings.tf" "terraform {
   required_providers {
-    opentelekomcloud = \">= 1.13.1\"
+    opentelekomcloud = \">= 1.16.0\"
   }
 
   backend \"s3\" {  # use OBS for remote state
@@ -86,19 +55,8 @@ init_if_missing "settings.tf" "terraform {
 
 # Configure the OpenTelekomCloud Provider
 provider \"opentelekomcloud\" {
-  user_name = var.username
-  password = var.password
-  domain_name = var.domain_name
-  tenant_name = var.tenant_name
-  auth_url = \"https://iam.eu-de.otc.t-systems.com:443/v3\"
+    cloud = \"devstack\"
 }"
 
-init_if_missing "variables.tf" "variable \"username\" {}
-variable \"password\" {}
-variable \"region\" {}
-variable \"tenant_name\" {}
-variable \"availability_zone\" {}
-variable \"domain_name\" {}"
+init_if_missing "variables.tf" "---"
 
-cd "${target_dir}" || exit 2
-terraform init

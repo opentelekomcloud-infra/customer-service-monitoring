@@ -5,10 +5,10 @@
       - "requirements"
     req_dir: "/tmp/requirements/"
   roles:
-    - role: darkwizard242.terraform
+    - role: anton_sidelnikov.terraform
       become: yes
       vars:
-        terraform_version: "0.12.12"
+        terraform_version: "0.12.20"
   tasks:
     - name: Update and upgrade apt packages
       become: yes
