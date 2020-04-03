@@ -134,7 +134,7 @@
   hosts: bastion
   become: yes
   vars:
-    lb_ip: "{{ lookup('env', 'LOADBALANCER_PUBLIC_IP') }}"
+    lb_ip: "{{ hostvars.test_host.loadbalancer_public_ip }}"
     nohup_py3: "nohup /usr/bin/python3 -m csm_test_utils"
     telegraf_host: "http://localhost"
   tasks:
