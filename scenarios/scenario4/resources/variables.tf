@@ -8,7 +8,7 @@ variable "router_id" {}
 variable "bastion_local_ip" {}
 variable "bastion_eip" {}
 variable "nodes_count" {}
-variable "prefix" {}
+variable "prefix" { default = "prefix" }
 variable "scenario" {}
 variable "availability_zone" {}
 variable "disc_volume" {
@@ -25,5 +25,5 @@ variable "key_pair" {
 }
 
 locals {
-  workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
+  workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}_"
 }

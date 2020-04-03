@@ -1,0 +1,15 @@
+---
+- name: Prepare clouds.yaml for test_host
+  import_playbook: prepare_config.yml
+
+- name: Prepare variables
+  hosts: test_host
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+    TF_VAR_psql_password: "{{ psql_password }}"
+  vars:
+    terraform_base_dir: "terraform"
+    requirements: "requirements.txt"
+    infra_state: absent
+  roles:
+    - build_infrastructure

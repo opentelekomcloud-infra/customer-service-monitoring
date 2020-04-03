@@ -1,12 +1,47 @@
 ---
-- name: Register existing settings
+- name: Prepare clouds.yaml for test_host
+  import_playbook: prepare_config.yml
+
+- name: Prepare variables
+  hosts: test_host
+  tasks:
+  - name: Register scenario 2 vars
+    set_fact:
+      terraform_base_dir: "terraform"
+      requirements: "requirements.txt"
+
+- name: Build infrastructure
+  hosts: test_host
+  roles:
+    - build_infrastructure
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+    TF_VAR_psql_password: "{{ psql_password }}"
+  vars:
+    infra_state: present
+  tasks:
+  - name: Register build result
+    set_fact:
+      db_password: "{{ tf_output.outputs[\"db_password\"].value }}"
+      db_username: "{{ tf_output.outputs[\"db_username\"].value }}"
+      db_address: "{{ tf_output.outputs[\"db_address\"].value }}"
+      scn2_public_ip: "{{ tf_output.outputs[\"scn2_public_ip\"].value }}"
+  - name: Download private key from test_host
+    fetch:
+      src: "{{ tmp_dir }}/{{ key_name }}"
+      dest:  "{{ local_private_key }}"
+      mode: 0600
+      flat: yes
+
+- name: Register used hosts
   hosts: local
   tasks:
     - name: Register host
       add_host:
         hostname: "scn2_ecs"
-        ansible_ssh_host: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+        ansible_ssh_host: "{{ hostvars.test_host.scn2_public_ip }}"
         ansible_ssh_user: "linux"
+        ansible_ssh_private_key_file: "{{ local_private_key }}"
 
 - name: Wait for host
   hosts: scn2_ecs
@@ -27,10 +62,10 @@
   roles:
     - role: too_simple_server
       vars:
-        pg_db_url: "{{ lookup('env', 'PSQL_ADDRESS') }}"
+        pg_db_url: "{{ hostvars.test_host.db_address }}"
         pg_database: "entities"
-        pg_username: "{{ lookup('env', 'PSQL_USERNAME') }}"
-        pg_password: "{{ lookup('env', 'PSQL_PASSWORD') }}"
+        pg_username: "{{ hostvars.test_host.db_username }}"
+        pg_password: "{{ hostvars.test_host.db_password }}"
         debug: False
   tasks:
     - name: Register facts
@@ -53,7 +88,7 @@
               data_format: "influx"
           - name: postgresql
             options:
-              address: "postgres://{{ lookup('env', 'PSQL_USERNAME') }}:{{ lookup('env', 'PSQL_PASSWORD') }}@{{ lookup('env', 'PSQL_ADDRESS') }}/entities"
+              address: "postgres://{{ hostvars.test_host.db_username }}:{{ hostvars.test_host.db_password }}@{{ hostvars.test_host.db_address }}/entities"
     - role: geerlingguy.nginx
       vars:
         nginx_remove_default_vhost: yes
@@ -71,3 +106,25 @@
                   proxy_pass         http://localhost:{{ telegraf_local_port }};
                   proxy_set_header   Host $host;
               }
+
+- name: Checking reporting processes
+  hosts: test_host
+  tasks:
+    - name: Get running reporting processes list from remote host  # noqa 301 305
+      ignore_errors: yes
+      shell: "ps aux | grep 'csm_test_utils rds_monitor' | awk '{print $2}'"
+      register: process_monitor
+    - name: Kill running reporting processes  # noqa 301 305
+      ignore_errors: yes
+      shell: "kill {{ process_monitor.stdout_lines[0] }}"
+    - name: Waiting for status
+      wait_for:
+        path: "/proc/{{ process_monitor.stdout_lines[0] }}/status"
+        state: absent
+      ignore_errors: yes
+
+- name: Run reporting for scenario
+  hosts: test_host
+  tasks:
+  - name: Execute csm_test_utils  # noqa 301 305
+    shell: "nohup python3 -m csm_test_utils rds_monitor --target {{ scn2_public_ip }} --telegraf 'http://{{ scn2_public_ip }}' &"

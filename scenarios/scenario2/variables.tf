@@ -1,8 +1,3 @@
-variable "username" {}
-variable "password" {}
-variable "domain_name" {}
-variable "tenant_name" {}
-
 variable "prefix" {}
 variable "addr_3_octets" {}
 variable "region" {}
@@ -14,4 +9,4 @@ variable "psql_version" {}
 variable "psql_port" {}
 variable "psql_password" {}
 
-variable "public_key" { default = "" }
+variable "public_key" {}

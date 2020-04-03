@@ -1,6 +1,6 @@
 
 locals {
-  workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
+  workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}_"
   prefix           = "${local.workspace_prefix}${var.scenario}"
   key_pair = {
     public_key = var.public_key
@@ -66,10 +66,14 @@ module "resources" {
   lb_pool               = module.loadbalancer.pool
 }
 
-output "out-scn4_lb_fip" {
+output "scn4_lb_fip" {
   value = module.loadbalancer.loadbalancer_fip
 }
 
-output "out-scn4_bastion_fip" {
+output "scn4_bastion_fip" {
   value = opentelekomcloud_networking_floatingip_v2.server_fip.address
+}
+
+output "scn4_vms" {
+  value = [ for instance in module.resources.instances: instance.access_ip_v4 ]
 }

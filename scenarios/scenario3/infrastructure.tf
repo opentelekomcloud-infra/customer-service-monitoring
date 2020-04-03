@@ -41,6 +41,6 @@ module "resources" {
   availability_zone = var.availability_zone
 }
 
-output "out-scn3_server_fip" {
+output "scn3_server_fip" {
   value = opentelekomcloud_networking_floatingip_v2.server_fip.address
 }
