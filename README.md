@@ -28,17 +28,21 @@ E.g. for scenario 2 following should be used:
 cd scenarios
 export AWS_ACCESS_KEY_ID=myau_id
 export AWS_SECRET_ACCESS_KEY=sekret_myau
-./build.sh scenario2
+ansible-playbook "playbooks/scneario2_setup.yml"
 ```
 This script performs the following actions:
  1. Build required infrastructure using the configuration from `scenarios/scenario2/` directory
  1. Run `scenario2_setup.yml` playbook from `playbooks/` for created host
 
-There are no credentials stored in `terraform.tfvars` file for the scenario. Recommended way to
-define credentials and overriding is to create some `*.auto.tfvars` file in scenario directory,
-e.g. `secrets.auto.tfvars`. See [variables documentation](https://www.terraform.io/docs/configuration/variables.html) for details.
+There are no credentials stored in `terraform.tfvars` file for the scenario. It is used file called "clouds.yaml" for authentication.
+It must contain credentials and locate in one of the next places:
+ 1. `current directory`
+ 2. `~/.config/openstack`
+ 3. `/etc/openstack`
+In case of you have more than one cloud you should set environment variable `OS_CLOUD`
+See [openstack configuration](https://docs.openstack.org/python-openstackclient/pike/configuration/index.html) for details.
 
 ### Execution
 
-There is `test.sh` script for running tests/monitoring defined in `scenario/test/main.sh` \
+Executed playbook also starts test/monitoring for created/refreshed infrastructure. \
 Implementation of most tests can be found in [csm test utils](https://github.com/opentelekomcloud-infra/csm-test-utils) repository
