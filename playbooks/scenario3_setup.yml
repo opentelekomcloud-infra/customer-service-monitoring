@@ -122,6 +122,7 @@
   vars:
     telegraf_plugins_base:
       - name: mem
+      - name: system
       - name: diskio
         options:
           devices: ["vdb", "vdc", "vdd"]
