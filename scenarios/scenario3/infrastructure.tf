@@ -15,7 +15,7 @@ module "network" {
   prefix        = local.prefix
 }
 
-resource "opentelekomcloud_networking_floatingip_v2" "server_fip" {
+resource "opentelekomcloud_networking_floatingip_v2" "bastion_fip" {
   pool = "admin_external_net"
 }
 
@@ -23,24 +23,33 @@ module "bastion" {
   source = "../modules/bastion"
 
   bastion_image     = var.ecs_image
-  bastion_eip       = opentelekomcloud_networking_floatingip_v2.server_fip.address
+  bastion_eip       = opentelekomcloud_networking_floatingip_v2.bastion_fip.address
   ecs_flavor        = var.ecs_flavor
   key_pair          = local.key_pair
   network           = module.network.network
   subnet            = module.network.subnet
   router            = module.network.router
-  name              = "${local.workspace_prefix}server"
+  name              = "${local.workspace_prefix}bastion"
   availability_zone = var.availability_zone
   scenario          = var.scenario
 }
 
-module "resources" {
-  source = "./resources"
-
-  bastion_vm_id     = module.bastion.bastion_vm_id
-  availability_zone = var.availability_zone
+module "nodes" {
+  source               = "./nodes"
+  ecs_flavor           = var.ecs_flavor
+  ecs_image            = var.ecs_image
+  key_pair_name        = local.key_pair.key_name
+  net_address          = var.addr_3_octets
+  network_id           = module.network.network.id
+  subnet_id            = module.network.subnet.id
+  bastion_sec_group_id = module.bastion.bastion_group_id
+  scenario             = var.scenario
 }
 
 output "scn3_server_fip" {
-  value = opentelekomcloud_networking_floatingip_v2.server_fip.address
+  value = opentelekomcloud_networking_floatingip_v2.bastion_fip.address
+}
+
+output "scn3_ecs_local_ips" {
+  value = [ for instance in module.nodes.instances: instance.access_ip_v4 ]
 }
