@@ -25,7 +25,7 @@ resource "opentelekomcloud_compute_volume_attach_v2" "attach-az1-2" {
   instance_id = opentelekomcloud_compute_instance_v2.http[0].id
   volume_id   = opentelekomcloud_blockstorage_volume_v2.volumes_az1[2].id
   depends_on = [
-    opentelekomcloud_compute_volume_attach_v2.attach-az1
+    opentelekomcloud_compute_volume_attach_v2.attach-az1-1
   ]
 }
 
@@ -55,7 +55,7 @@ resource "opentelekomcloud_compute_volume_attach_v2" "attach-az2-2" {
   instance_id = opentelekomcloud_compute_instance_v2.http[1].id
   volume_id   = opentelekomcloud_blockstorage_volume_v2.volumes_az2[2].id
   depends_on = [
-    opentelekomcloud_compute_volume_attach_v2.attach-az2
+    opentelekomcloud_compute_volume_attach_v2.attach-az2-1
   ]
 }
 
@@ -85,6 +85,6 @@ resource "opentelekomcloud_compute_volume_attach_v2" "attach-az3-2" {
   instance_id = opentelekomcloud_compute_instance_v2.http[2].id
   volume_id   = opentelekomcloud_blockstorage_volume_v2.volumes_az3[2].id
   depends_on = [
-    opentelekomcloud_compute_volume_attach_v2.attach-az3
+    opentelekomcloud_compute_volume_attach_v2.attach-az3-1
   ]
 }
