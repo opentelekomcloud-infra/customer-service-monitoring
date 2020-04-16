@@ -1,4 +1,4 @@
-variable "region" { default = "eu-de"}
+variable "region" { default = "eu-de" }
 variable "availability_zone" { default = "eu-de-03" }
 variable "ecs_flavor" {}
 variable "ecs_image" {}

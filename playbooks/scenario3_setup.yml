@@ -22,6 +22,7 @@
   - name: Register build result
     set_fact:
       server_public_ip: "{{ tf_output.outputs['scn3_server_fip'].value }}"
+      node_ips: "{{ tf_output.outputs['scn3_ecs_local_ips'].value }}"
   - name: Download private key from test_host
     fetch:
       src: "{{ tmp_dir }}/{{ key_name }}"
@@ -41,6 +42,14 @@
       ansible_host: "{{ server_public_ip }}"
       ansible_ssh_user: "linux"
       ansible_ssh_private_key_file: "{{ local_private_key }}"
+  - name: Register nodes
+    add_host:
+      name: "{{ item }}"
+      groups: "gatewayed"
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+      ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ server_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
+    loop: "{{ hostvars.test_host.node_ips }}"
 
 - name: Wait for bastion
   hosts: bastion
@@ -50,16 +59,8 @@
     wait_for_connection:
       timeout: 120
 
-- name: Register existing settings
-  hosts: local
-  roles:
-    - register_host
-  vars:
-    dnsname_or_ip: "{{ server_public_ip }}"
-    group: "scn3_ecs"
-
 - name: Prepare attached devices on server
-  hosts: scn3_ecs
+  hosts: gatewayed
   become: yes
   vars:
     devices:
@@ -113,7 +114,7 @@
       with_items: "{{ lookup('dict', devices) }}"
 
 - name: Install telegraf client on server
-  hosts: scn3_ecs
+  hosts: gatewayed
   become: yes
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
