@@ -6,7 +6,7 @@ variable "network_id" {}
 variable "subnet_id" {}
 variable "scenario" {}
 variable "key_pair_name" {}
-variable "availability_zone" {
+variable "availability_zones" {
     type    = list(string)
     default = ["eu-de-01", "eu-de-02","eu-de-03"]
 }
@@ -15,7 +15,7 @@ variable "disc_volume" {
   type    = number
   default = 5
 }
-variable "volume_type" {
+variable "volume_types" {
   type    = list(string)
   default = ["SATA", "SAS", "SSD"]
 }

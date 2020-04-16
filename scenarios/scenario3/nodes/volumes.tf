@@ -1,10 +1,10 @@
 # Create volumes
 resource "opentelekomcloud_blockstorage_volume_v2" "volumes_az1" {
   count             = 3
-  name              = format("vol-%s", "${var.volume_type[count.index]}_${opentelekomcloud_compute_instance_v2.http[0].name}")
+  name              = "vol-${var.volume_types[count.index]}_${opentelekomcloud_compute_instance_v2.http[0].name}"
   size              = 2
-  volume_type       = var.volume_type[count.index]
-  availability_zone = var.availability_zone[0]
+  volume_type       = var.volume_types[count.index]
+  availability_zone = var.availability_zones[0]
 }
 
 # Attach volumes to instance
@@ -31,10 +31,10 @@ resource "opentelekomcloud_compute_volume_attach_v2" "attach-az1-2" {
 
 resource "opentelekomcloud_blockstorage_volume_v2" "volumes_az2" {
   count             = 3
-  name              = format("vol-%s", "${var.volume_type[count.index]}_${opentelekomcloud_compute_instance_v2.http[1].name}")
+  name              = "vol-${var.volume_types[count.index]}_${opentelekomcloud_compute_instance_v2.http[1].name}"
   size              = 2
-  volume_type       = var.volume_type[count.index]
-  availability_zone = var.availability_zone[1]
+  volume_type       = var.volume_types[count.index]
+  availability_zone = var.availability_zones[1]
 }
 
 # Attach volumes to instance
@@ -61,10 +61,10 @@ resource "opentelekomcloud_compute_volume_attach_v2" "attach-az2-2" {
 
 resource "opentelekomcloud_blockstorage_volume_v2" "volumes_az3" {
   count             = 3
-  name              = format("vol-%s", "${var.volume_type[count.index]}_${opentelekomcloud_compute_instance_v2.http[2].name}")
+  name              = "vol-${var.volume_types[count.index]}_${opentelekomcloud_compute_instance_v2.http[2].name}"
   size              = 2
-  volume_type       = var.volume_type[count.index]
-  availability_zone = var.availability_zone[2]
+  volume_type       = var.volume_types[count.index]
+  availability_zone = var.availability_zones[2]
 }
 
 # Attach volumes to instance

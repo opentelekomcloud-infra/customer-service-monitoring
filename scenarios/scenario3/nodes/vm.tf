@@ -6,12 +6,12 @@ data "opentelekomcloud_images_image_v2" "current_image" {
 # Create instance
 resource "opentelekomcloud_compute_instance_v2" "http" {
   count       = length(opentelekomcloud_networking_port_v2.http)
-  name        = "${local.workspace_prefix}${var.scenario}_eu-de-0${count.index + 1}"
+  name        = "${local.workspace_prefix}${var.scenario}_${var.availability_zones[count.index]}"
   flavor_name = var.ecs_flavor
   key_pair    = var.key_pair_name
   user_data   = file("${path.module}/first_boot.sh")
 
-  availability_zone = var.availability_zone[count.index]
+  availability_zone = var.availability_zones[count.index]
 
   depends_on = [
     opentelekomcloud_networking_port_v2.http
