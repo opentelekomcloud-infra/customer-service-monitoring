@@ -53,4 +53,3 @@ resource "opentelekomcloud_networking_port_v2" "http" {
 output "instances" {
   value = opentelekomcloud_compute_instance_v2.http
 }
-
