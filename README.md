@@ -18,7 +18,7 @@ Installing terraform for Linux can be done using `install_terraform.sh`
 
 ### Build
 
-Existing scenario infrastructure build can be triggered using `scenarios/build.sh`
+Existing scenario infrastructure build can be triggered using `ansible-playbook playbooks/scenario*_setup.yml`
 
 **!NB** Terraform is using OBS for storing remote state
 Following variables have to be set: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
