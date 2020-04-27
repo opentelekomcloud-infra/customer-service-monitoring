@@ -77,6 +77,29 @@
     dnsname_or_ip: "{{ hostvars.bastion.ansible_host }}"
     group: "scn4_ecs"
 
+- name: Checking load processes
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Get reporting processes list from remote host  # noqa 301 305
+      ignore_errors: yes
+      shell: "ps aux | grep 'cpu_load' | awk '{print $2}'"
+      register: process_monitor
+
+    - name: Kill running reporting processes  # noqa 301 305
+      ignore_errors: yes
+      shell: "kill {{ process_monitor.stdout_lines[0] }}"
+
+    - name: Kill running lookbusy processes  # noqa 301 305
+      ignore_errors: yes
+      shell: "pkill lookbusy"
+
+    - name: Waiting for status
+      wait_for:
+        path: "/proc/{{ process_monitor.stdout_lines[0] }}/status"
+        state: absent
+      ignore_errors: yes
+
 - name: Configure main host for stress testing
   become: yes
   hosts: gatewayed
