@@ -108,7 +108,6 @@
       apt:
         name:
           - build-essential
-          - python3-dev
 
     - name: install lookbusy
       script: install_lookbusy.sh
