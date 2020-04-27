@@ -41,16 +41,22 @@ def main():
         LOGGER.error("interval must be an integer >= 0")
 
     utilization = []
-    for line in open(args.source):
-        if line.strip():
-            try:
-                level = float(line)
-                if level < 0 or level > 100:
-                    raise ValueError
-                utilization.append(int(level))
-            except ValueError:
-                LOGGER.error("the source file must only contain new line separated numbers in the [0, 100] range")
-    process(args.interval, utilization, args.ncpus)
+    with open(args.source, 'r') as file:
+        for line in file:
+            if line.strip():
+                try:
+                    level = float(line)
+                    if level < 0 or level > 100:
+                        raise ValueError
+                    utilization.append(int(level))
+                except ValueError:
+                    LOGGER.error("the source file must only contain new line separated numbers in the [0, 100] range")
+    while True:
+        try:
+            process(args.interval, utilization, args.ncpus)
+        except KeyboardInterrupt:
+            LOGGER.info("Script Stopped")
+            sys.exit(0)
 
 
 if __name__ == '__main__':

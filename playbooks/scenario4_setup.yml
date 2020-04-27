@@ -77,21 +77,29 @@
     dnsname_or_ip: "{{ hostvars.bastion.ansible_host }}"
     group: "scn4_ecs"
 
-- name: Configure cron on main host for stress testing
+- name: Configure main host for stress testing
   become: yes
   hosts: gatewayed
   tasks:
-    - name: Install stress and cron package
+    - name: Install required packages
       apt:
-        name: ["stress", "cron"]
-        update_cache: yes
-        cache_valid_time: 3600
+        name:
+          - build-essential
+          - python3-dev
 
-    - name: Cron job for stress CPU every 30 minutes for 8 minutes
-      cron:
-        name: Load cpu via stress package
-        minute: "*/30"
-        job: /usr/bin/stress --cpu 2 --vm 2 --vm-bytes 512M --timeout 480
+    - name: install lookbusy
+      script: install_lookbusy.sh
+
+    - name: copy test script to host
+      copy:
+        src: "{{ item }}"
+        dest: /tmp/
+      with_items:
+       - "cpu_load.py"
+       - "load_levels.dat"
+
+    - name: Run load generation script  # noqa 301 305
+      shell: "nohup /usr/bin/python3 /tmp/cpu_load.py --source /tmp/load_levels.dat --interval 60 --ncpus 2 &"
 
 - name: Install telegraf client on Bastion
   hosts: bastion
