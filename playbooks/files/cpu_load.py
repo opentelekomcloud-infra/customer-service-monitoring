@@ -10,13 +10,11 @@ LOGGER.setLevel(logging.DEBUG)
 
 
 def process(interval, utilization_list, ncpus):
-    ncpus_str = str(ncpus)
     for utilization in utilization_list:
-        utilization_str = str(utilization)
-        print(f"\nSwitching to {utilization_str}%")
+        print(f"\nSwitching to {utilization}%")
         proc = subprocess.Popen(["lookbusy",
-                                 "--ncpus", ncpus_str,
-                                 "--cpu-util", utilization_str])
+                                 "--ncpus", str(ncpus),
+                                 "--cpu-util", utilization])
         time.sleep(interval)
         proc.terminate()
 
@@ -42,15 +40,16 @@ def main():
 
     utilization = []
     with open(args.source, 'r') as file:
-        for line in file:
-            if line.strip():
-                try:
-                    level = float(line)
-                    if level < 0 or level > 100:
-                        raise ValueError
-                    utilization.append(int(level))
-                except ValueError:
-                    LOGGER.error("the source file must only contain new line separated numbers in the [0, 100] range")
+        levels = file.read().splitlines()
+    file.close()
+    for line in levels:
+        if line.strip():
+            try:
+                if int(line) < 0 or int(line) > 100:
+                    raise ValueError
+                utilization.append(line)
+            except ValueError:
+                LOGGER.error("the source file must only contain new line separated numbers in the [0, 100] range")
     while True:
         try:
             process(args.interval, utilization, args.ncpus)
