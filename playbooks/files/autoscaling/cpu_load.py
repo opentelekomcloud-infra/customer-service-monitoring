@@ -36,7 +36,7 @@ def main():
         sys.exit(0)
 
     if args.interval <= 0:
-        LOGGER.error("interval must be an >= 0")
+        LOGGER.error("interval must be >= 0")
 
     utilization = []
     with open(args.source, 'r') as file:
