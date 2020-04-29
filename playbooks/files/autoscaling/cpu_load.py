@@ -32,7 +32,7 @@ def main():
     try:
         int(args.interval)
     except ValueError:
-        LOGGER.error("interval must be an >= 0")
+        LOGGER.error("interval must be an integer >= 0")
         sys.exit(0)
 
     if args.interval <= 0:
