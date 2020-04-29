@@ -77,21 +77,62 @@
     dnsname_or_ip: "{{ hostvars.bastion.ansible_host }}"
     group: "scn4_ecs"
 
-- name: Configure cron on main host for stress testing
+- name: Checking load processes
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Get reporting processes list from remote host  # noqa 301 305
+      ignore_errors: yes
+      shell: "ps aux | grep 'cpu_load' | awk '{print $2}'"
+      register: process_monitor
+
+    - name: Kill running reporting processes  # noqa 301 305
+      ignore_errors: yes
+      shell: "kill {{ process_monitor.stdout_lines[0] }}"
+
+    - name: Kill running lookbusy processes  # noqa 301 305
+      ignore_errors: yes
+      shell: "pkill lookbusy"
+
+    - name: Waiting for status
+      wait_for:
+        path: "/proc/{{ process_monitor.stdout_lines[0] }}/status"
+        state: absent
+      ignore_errors: yes
+
+- name: Configure main host for stress testing
   become: yes
   hosts: gatewayed
   tasks:
-    - name: Install stress and cron package
+    - name: Install required packages
       apt:
-        name: ["stress", "cron"]
-        update_cache: yes
-        cache_valid_time: 3600
+        name:
+          - build-essential
+          - cron
 
-    - name: Cron job for stress CPU every 30 minutes for 8 minutes
+    - name: install lookbusy
+      script: "autoscaling/install_lookbusy.sh"
+
+    - name: copy test script to host
+      copy:
+        src: "autoscaling/{{ item }}"
+        dest: /tmp/
+      with_items:
+       - "cpu_load.py"
+       - "load_levels.dat"
+       - "check_cpu_load_status.sh"
+
+    - name: Run load generation script  # noqa 301 305
+      shell: "start-stop-daemon -Sbmvp /tmp/cpu_load.pid -x /usr/bin/python3 /tmp/cpu_load.py -- --source /tmp/load_levels.dat --interval 60 --ncpus 2"
+
+    - name: Changing perm of "check_cpu_load_status.sh", adding "+x"
+      file: dest=/tmp/check_cpu_load_status.sh mode=a+x
+
+    - name: Schedule load script status check
       cron:
-        name: Load cpu via stress package
-        minute: "*/30"
-        job: /usr/bin/stress --cpu 2 --vm 2 --vm-bytes 512M --timeout 480
+        name: "Check status of CPU load script"
+        minute: "*/59"
+        job: /tmp/check_cpu_load_status.sh
 
 - name: Install telegraf client on Bastion
   hosts: bastion
