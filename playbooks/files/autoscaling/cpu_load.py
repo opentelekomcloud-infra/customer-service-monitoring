@@ -32,11 +32,11 @@ def main():
     try:
         int(args.interval)
     except ValueError:
-        LOGGER.error("interval must be an integer >= 0")
+        LOGGER.error("interval must be an >= 0")
         sys.exit(0)
 
     if args.interval <= 0:
-        LOGGER.error("interval must be an integer >= 0")
+        LOGGER.error("interval must be an >= 0")
 
     utilization = []
     with open(args.source, 'r') as file:
