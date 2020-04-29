@@ -108,20 +108,31 @@
       apt:
         name:
           - build-essential
+          - cron
 
     - name: install lookbusy
-      script: install_lookbusy.sh
+      script: "autoscaling/install_lookbusy.sh"
 
     - name: copy test script to host
       copy:
-        src: "{{ item }}"
+        src: "autoscaling/{{ item }}"
         dest: /tmp/
       with_items:
        - "cpu_load.py"
        - "load_levels.dat"
+       - "check_cpu_load_status.sh"
 
     - name: Run load generation script  # noqa 301 305
       shell: "start-stop-daemon -Sbmvp /tmp/cpu_load.pid -x /usr/bin/python3 /tmp/cpu_load.py -- --source /tmp/load_levels.dat --interval 60 --ncpus 2"
+
+    - name: Changing perm of "check_cpu_load_status.sh", adding "+x"
+      file: dest=/tmp/check_cpu_load_status.sh mode=a+x
+
+    - name: Schedule load script status check
+      cron:
+        name: "Check status of CPU load script"
+        minute: "*/59"
+        job: /tmp/check_cpu_load_status.sh
 
 - name: Install telegraf client on Bastion
   hosts: bastion
