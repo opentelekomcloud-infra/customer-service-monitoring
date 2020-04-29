@@ -41,14 +41,11 @@ def main():
     utilization = []
     with open(args.source, 'r') as file:
         levels = file.read().splitlines()
-    file.close()
     for line in levels:
         if line.strip():
-            try:
-                if int(line) < 0 or int(line) > 100:
-                    raise ValueError
+            if int(line) < 0 or int(line) > 100:
                 utilization.append(line)
-            except ValueError:
+            else:
                 LOGGER.error("the source file must only contain new line separated numbers in the [0, 100] range")
     while True:
         try:
