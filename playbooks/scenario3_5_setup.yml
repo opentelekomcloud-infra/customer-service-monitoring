@@ -91,16 +91,10 @@
       pkg: nfs-common
       state: present
 
-  - name: Check if mount folder already exists
-    stat:
-      path: "{{ mount_path }}"
-    register: mount_exist
-
   - name: Unmount a mounted volume
     mount:
       path: "{{ mount_path }}"
       state: unmounted
-    when: mount_exist.stat.exists
 
   - name: Mount NFS share
     mount:
