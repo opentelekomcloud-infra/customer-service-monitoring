@@ -110,6 +110,11 @@
       src: "{{ sfs_shared_path }}"
       state: mounted
 
+  - name: copy nfs stats script to bastion
+    copy:
+      src: "nfs/nfsiostat.sh"
+      dest: /tmp/
+
 - name: Install telegraf client on Bastion
   hosts: bastion
   become: yes
@@ -121,10 +126,11 @@
   vars:
     telegraf_plugins_base:
       - name: mem
-      - name: nfs
+      - name: exec
         options:
-          iostat: "true"
-          fullstat: "true"
+          commands: ["/tmp/nfsiostat.sh"]
+          timeout: "10s"
+          data_format : "influx"
       - name: cpu
         options:
           percpu: "false"
