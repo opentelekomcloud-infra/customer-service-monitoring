@@ -87,13 +87,11 @@
     - mount_path: "/mnt/sfs_share"
   tasks:
   - name: Install NFS mount utility
-    become: true
     apt:
       pkg: nfs-common
       state: present
 
   - name: Mount NFS share
-    become: true
     mount:
       fstype: nfs
       name: "{{ mount_path }}"
