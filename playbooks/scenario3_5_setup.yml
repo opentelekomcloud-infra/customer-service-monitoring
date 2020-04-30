@@ -99,6 +99,7 @@
       name: "{{ mount_path }}"
       opts: "vers=3,timeo=600,nolock"
       src: "{{ sfs_shared_path }}"
+      state: mounted
 
 - name: Install telegraf client on Bastion
   hosts: bastion
