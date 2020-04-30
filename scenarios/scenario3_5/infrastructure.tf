@@ -45,6 +45,7 @@ module "resources" {
   net_address = var.addr_3_octets
   subnet      = module.network.subnet
   network     = module.network.network
+  router      = module.network.router
   scenario    = var.scenario
 }
 

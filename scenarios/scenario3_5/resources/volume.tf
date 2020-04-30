@@ -23,7 +23,7 @@ resource "opentelekomcloud_kms_key_v1" "sfs_key" {
 resource "opentelekomcloud_sfs_file_system_v2" "sharefile" {
   size = 20
   name = "sfs_${var.scenario}"
-  access_to = var.network.name
+  access_to = var.router.id
   access_level = "rw"
   description = "sfs with kms encryption"
   metadata = {
