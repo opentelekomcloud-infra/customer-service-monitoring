@@ -110,7 +110,10 @@
   vars:
     telegraf_plugins_base:
       - name: mem
-      - name: diskio
+      - name: nfs
+        options:
+          iostat: "true"
+          fullstat: "true"
       - name: cpu
         options:
           percpu: "false"
