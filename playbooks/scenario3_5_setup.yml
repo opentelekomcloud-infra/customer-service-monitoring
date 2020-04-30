@@ -109,6 +109,9 @@
       src: "nfs/nfsiostat.sh"
       dest: /tmp/
 
+  - name: Changing perm of "nfsiostat.sh", adding "+x"
+    file: dest=/tmp/nfsiostat.sh mode=a+x
+
 - name: Install telegraf client on Bastion
   hosts: bastion
   become: yes
