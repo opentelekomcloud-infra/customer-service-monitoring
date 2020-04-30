@@ -24,6 +24,7 @@
       bastion_public_ip: "{{ tf_output.outputs['scn3_5_bastion_fip'].value }}"
       scn3_5_initiator_ip: "{{ tf_output.outputs['scn3_5_initiator_instance_ip'].value }}"
       scn3_5_target_ip: "{{ tf_output.outputs['scn3_5_target_instance_ip'].value }}"
+      scn3_5_sfs_path: "{{ tf_output.outputs['scn3_5_sfs_data'].value }}"
   - name: Download private key from test_host
     fetch:
       src: "{{ tmp_dir }}/{{ key_name }}"
@@ -77,6 +78,50 @@
   - name: Wait for host to be up
     wait_for_connection:
       timeout: 120
+
+- name: Mount sfs to bastion
+  hosts: bastion
+  become: yes
+  vars:
+    - sfs_shared_path: "{{ hostvars.test_host.scn3_5_sfs_path }}"
+    - mount_path: "/mnt/sfs_share"
+  tasks:
+  - name: Install NFS mount utility
+    become: true
+    apt:
+      pkg: nfs-common
+      state: present
+
+  - name: Mount NFS share
+    become: true
+    mount:
+      fstype: nfs
+      name: "{{ mount_path }}"
+      opts: "vers=3,timeo=600,nolock"
+      src: "{{ sfs_shared_path }}"
+
+- name: Install telegraf client on Bastion
+  hosts: bastion
+  become: yes
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
+    - "./vars/scenario_3_5_vars.yml"
+  roles:
+    - telegraf-client
+  vars:
+    telegraf_plugins_base:
+      - name: mem
+      - name: diskio
+      - name: cpu
+        options:
+          percpu: "false"
+          totalcpu: "true"
+          fielddrop:
+            - "time_*"
+      - name: http_listener_v2
+        options:
+          service_address: "localhost:8080"
+          data_format: "influx"
 
 - name: Prepare attached device on target server
   hosts: scn3_5_target
