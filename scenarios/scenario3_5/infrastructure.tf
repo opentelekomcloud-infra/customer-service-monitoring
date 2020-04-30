@@ -59,3 +59,7 @@ output "scn3_5_initiator_instance_ip" {
 output "scn3_5_target_instance_ip" {
   value = module.resources.target_instance_ip
 }
+
+output "scn3_5_sfs_data" {
+  value = module.resources.sfs
+}
