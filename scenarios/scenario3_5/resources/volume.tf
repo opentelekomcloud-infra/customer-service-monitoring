@@ -14,7 +14,7 @@ resource "opentelekomcloud_compute_volume_attach_v2" "attach-SCSI-volume" {
 }
 
 resource "opentelekomcloud_kms_key_v1" "sfs_key" {
-  key_alias       = "sfs_key_{var.scenario}"
+  key_alias       = "sfs_key_${var.scenario}"
   pending_days    = "7"
   key_description = "sfs kms key"
   is_enabled      = true
