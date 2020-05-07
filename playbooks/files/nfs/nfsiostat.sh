@@ -26,9 +26,9 @@ do
     general_ops_sec=$(echo "$general"|awk '{print $1}')
     general_rpc_bklog=$(echo "$general"|awk '{print $2}')
 
-    echo "execnfsiostat,mount=$mount,option=none,type=read ops_sec=$read_ops_sec,kbs=$read_kbs,kbop=$read_kbop,retrans=$read_retrans,avg_rtt=$read_avg_rtt,avg_exe=$read_avg_exe"
-    echo "execnfsiostat,mount=$mount,option=none,type=write ops_sec=$write_ops_sec,kbs=$write_kbs,kbop=$write_kbop,retrans=$write_retrans,avg_rtt=$write_avg_rtt,avg_exe=$write_avg_exe"
-    echo "execnfsiostat,mount=$mount,option=none,type=general ops_sec=$general_ops_sec,rpc_bklog=$general_rpc_bklog"
+    echo "nfsiostat,mount=$mount,option=none,type=read ops_sec=$read_ops_sec,kbs=$read_kbs,kbop=$read_kbop,retrans=$read_retrans,avg_rtt=$read_avg_rtt,avg_exe=$read_avg_exe"
+    echo "nfsiostat,mount=$mount,option=none,type=write ops_sec=$write_ops_sec,kbs=$write_kbs,kbop=$write_kbop,retrans=$write_retrans,avg_rtt=$write_avg_rtt,avg_exe=$write_avg_exe"
+    echo "nfsiostat,mount=$mount,option=none,type=general ops_sec=$general_ops_sec,rpc_bklog=$general_rpc_bklog"
 done
 
 mounts_info=$(nfsiostat)
@@ -68,9 +68,9 @@ do
     general_ops_sec=$(echo "$general"|awk '{print $1}')
     general_rpc_bklog=$(echo "$general"|awk '{print $2}')
 
-    echo "execnfsiostat,mount=$mount,option=none,type=read ops_sec=$read_ops_sec,kbs=$read_kbs,kbop=$read_kbop,retrans=$read_retrans,avg_rtt=$read_avg_rtt,avg_exe=$read_avg_exe"
-    echo "execnfsiostat,mount=$mount,option=none,type=write ops_sec=$write_ops_sec,kbs=$write_kbs,kbop=$write_kbop,retrans=$write_retrans,avg_rtt=$write_avg_rtt,avg_exe=$write_avg_exe"
-    echo "execnfsiostat,mount=$mount,option=none,type=general ops_sec=$general_ops_sec,rpc_bklog=$general_rpc_bklog"
+    echo "nfsiostat,mount=$mount,option=none,type=read ops_sec=$read_ops_sec,kbs=$read_kbs,kbop=$read_kbop,retrans=$read_retrans,avg_rtt=$read_avg_rtt,avg_exe=$read_avg_exe"
+    echo "nfsiostat,mount=$mount,option=none,type=write ops_sec=$write_ops_sec,kbs=$write_kbs,kbop=$write_kbop,retrans=$write_retrans,avg_rtt=$write_avg_rtt,avg_exe=$write_avg_exe"
+    echo "nfsiostat,mount=$mount,option=none,type=general ops_sec=$general_ops_sec,rpc_bklog=$general_rpc_bklog"
 done
 
 mounts_info=$(nfsiostat)
@@ -98,7 +98,7 @@ do
     general_ops_sec=$(echo "$general"|awk '{print $1}')
     general_rpc_bklog=$(echo "$general"|awk '{print $2}')
 
-    echo "execnfsiostat,mount=$mount,option=total,type=read ops_sec=$read_ops_sec,kbs=$read_kbs,kbop=$read_kbop,retrans=$read_retrans,avg_rtt=$read_avg_rtt,avg_exe=$read_avg_exe"
-    echo "execnfsiostat,mount=$mount,option=total,type=write ops_sec=$write_ops_sec,kbs=$write_kbs,kbop=$write_kbop,retrans=$write_retrans,avg_rtt=$write_avg_rtt,avg_exe=$write_avg_exe"
-    echo "execnfsiostat,mount=$mount,option=total,type=general ops_sec=$general_ops_sec,rpc_bklog=$general_rpc_bklog"
+    echo "nfsiostat,mount=$mount,option=total,type=read ops_sec=$read_ops_sec,kbs=$read_kbs,kbop=$read_kbop,retrans=$read_retrans,avg_rtt=$read_avg_rtt,avg_exe=$read_avg_exe"
+    echo "nfsiostat,mount=$mount,option=total,type=write ops_sec=$write_ops_sec,kbs=$write_kbs,kbop=$write_kbop,retrans=$write_retrans,avg_rtt=$write_avg_rtt,avg_exe=$write_avg_exe"
+    echo "nfsiostat,mount=$mount,option=total,type=general ops_sec=$general_ops_sec,rpc_bklog=$general_rpc_bklog"
 done
