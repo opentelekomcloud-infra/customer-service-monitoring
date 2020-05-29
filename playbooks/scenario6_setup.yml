@@ -1,4 +1,8 @@
 ---
+#Fix me :
+#- name: Prepare clouds.yaml for test_host
+#  import_playbook: prepare_config.yml
+
 - name: Prepare variables
   hosts: test_host
   tasks:
@@ -12,8 +16,8 @@
   roles:
     - build_infrastructure
   environment:
-    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
-    TF_VAR_psql_password: "{{ psql_password }}"
+    OS_CLIENT_CONFIG_FILE: "~/.config/openstack/clouds.yaml"                    #"{{ clouds_yaml_file }}"
+    TF_VAR_psql_password: "test1234!"                                           #"{{ psql_password }}"
   vars:
     infra_state: present
   tasks:
@@ -52,8 +56,8 @@
 - name: Start Server
   hosts: scn6_ecs
   become: yes
-  vars_files:
-    - "./vars/telegraf_dbconnection_vars.yml"
+  #vars_files:
+  #  - "./vars/telegraf_dbconnection_vars.yml"
   vars:
     server_port: 8081
   roles:
