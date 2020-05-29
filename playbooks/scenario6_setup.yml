@@ -1,7 +1,4 @@
 ---
-- name: Prepare clouds.yaml for test_host
-  import_playbook: prepare_config.yml
-
 - name: Prepare variables
   hosts: test_host
   tasks:
