@@ -13,6 +13,7 @@
 
 - name: Build infrastructure
   hosts: test_host
+  become: yes
   roles:
     - build_infrastructure
   environment:
