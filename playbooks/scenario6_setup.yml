@@ -6,7 +6,6 @@
 - name: Prepare variables
   hosts: test_host
   tasks:
-  - debug: var=key_name
   - name: Register scenario 6 vars
     set_fact:
       terraform_base_dir: "terraform"
