@@ -22,6 +22,7 @@
     TF_VAR_psql_password: "test1234!"                                           #"{{ psql_password }}"
   vars:
     key_name: "key_scn6"
+    scenario_name: "scenario6"
     infra_state: present
   tasks:
   - name: Register build result
