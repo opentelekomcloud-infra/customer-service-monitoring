@@ -6,12 +6,11 @@
 - name: Prepare variables
   hosts: test_host
   tasks:
+  - debug: var=key_name
   - name: Register scenario 6 vars
     set_fact:
       terraform_base_dir: "terraform"
       requirements: "requirements.txt"
-  - debug:
-      msg: "tmpdir and keyname is {{ tmp_dir }}/{{ key_name }}"
 
 - name: Build infrastructure
   hosts: test_host
