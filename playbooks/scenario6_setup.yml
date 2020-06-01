@@ -22,12 +22,16 @@
   vars:
     infra_state: present
   tasks:
+  - name: Check variables
+    debug:
+      var: key_name
   - name: Register build result
     set_fact:
       db_password: "{{ tf_output.outputs[\"db_password\"].value }}"
       db_username: "{{ tf_output.outputs[\"db_username\"].value }}"
       db_address: "{{ tf_output.outputs[\"db_address\"].value }}"
       scn6_public_ip: "{{ tf_output.outputs[\"scn_public_ip\"].value }}"
+  - name: Download private key from test_host
     fetch:
       src: "{{ tmp_dir }}/{{ key_name }}"
       dest:  "{{ local_private_key }}"
