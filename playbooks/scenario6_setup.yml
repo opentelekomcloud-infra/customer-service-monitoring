@@ -3,6 +3,27 @@
 #- name: Prepare clouds.yaml for test_host
 #  import_playbook: prepare_config.yml
 
+#Stub for step above^
+- name: Prepare clouds.yaml
+  hosts: test_host
+  environment:
+    OS_CLIENT_CONFIG_FILE: "~/.config/openstack/clouds.yaml"
+  vars:
+    clouds_yaml_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
+  tasks:
+  - name: Register clouds location
+    set_fact:
+      clouds_yaml_file: "{{ clouds_yaml_file }}"
+      tmp_dir: "{{ clouds_yaml_file | dirname }}"
+  - name: Create tmp dir
+    file:
+      path: "{{ tmp_dir }}"
+      state: directory
+  - name: Copy clouds.yaml
+    copy:
+      src: "{{ clouds_yaml_file }}"
+      dest: "{{ clouds_yaml_file }}"
+
 - name: Prepare variables
   hosts: test_host
   tasks:
