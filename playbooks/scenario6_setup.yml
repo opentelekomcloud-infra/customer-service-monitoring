@@ -10,6 +10,8 @@
     set_fact:
       terraform_base_dir: "terraform"
       requirements: "requirements.txt"
+    debug:
+      msg: "tmpdir and keyname is {{ tmp_dir }}/{{ key_name }}"
 
 - name: Build infrastructure
   hosts: test_host
@@ -28,8 +30,6 @@
       db_username: "{{ tf_output.outputs[\"db_username\"].value }}"
       db_address: "{{ tf_output.outputs[\"db_address\"].value }}"
       scn6_public_ip: "{{ tf_output.outputs[\"scn_public_ip\"].value }}"
-    debug:
-      msg: "tmpdir and keyname is {{ tmp_dir }}/{{ key_name }}"
     fetch:
       src: "{{ tmp_dir }}/{{ key_name }}"
       dest:  "{{ local_private_key }}"
