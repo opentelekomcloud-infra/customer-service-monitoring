@@ -29,6 +29,8 @@
       db_address: "{{ tf_output.outputs[\"db_address\"].value }}"
       scn6_public_ip: "{{ tf_output.outputs[\"scn_public_ip\"].value }}"
   - name: Download private key from test_host
+    debug:
+      msg: "tmpdir and keyname is {{ tmp_dir }}/{{ key_name }}"
     fetch:
       src: "{{ tmp_dir }}/{{ key_name }}"
       dest:  "{{ local_private_key }}"
