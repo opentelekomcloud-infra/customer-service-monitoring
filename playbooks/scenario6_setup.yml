@@ -10,9 +10,7 @@
     set_fact:
       terraform_base_dir: "terraform"
       requirements: "requirements.txt"
-  - name: Check variables
-    debug:
-      msg: "Dir is {{ tmp_dir }} and keyname is {{ key_name }}"
+
 
 - name: Build infrastructure
   hosts: test_host
@@ -31,6 +29,9 @@
       db_username: "{{ tf_output.outputs[\"db_username\"].value }}"
       db_address: "{{ tf_output.outputs[\"db_address\"].value }}"
       scn6_public_ip: "{{ tf_output.outputs[\"scn_public_ip\"].value }}"
+  - name: Check variables
+    debug:
+      msg: "Dir is {{ tmp_dir }} and keyname is {{ key_name }}"
   - name: Download private key from test_host
     fetch:
       src: "{{ tmp_dir }}/{{ key_name }}"
