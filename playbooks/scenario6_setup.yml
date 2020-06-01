@@ -10,6 +10,9 @@
     set_fact:
       terraform_base_dir: "terraform"
       requirements: "requirements.txt"
+  - name: Check variables
+    debug:
+      msg: "Dir is {{ tmp_dir }} and keyname is {{ key_name }}"
 
 - name: Build infrastructure
   hosts: test_host
@@ -22,9 +25,6 @@
   vars:
     infra_state: present
   tasks:
-  - name: Check variables
-    debug:
-      var: key_name
   - name: Register build result
     set_fact:
       db_password: "{{ tf_output.outputs[\"db_password\"].value }}"
