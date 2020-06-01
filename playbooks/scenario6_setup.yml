@@ -10,10 +10,8 @@
     set_fact:
       terraform_base_dir: "terraform"
       requirements: "requirements.txt"
-
-- name: Check dirs
-  debug:
-    msg: "tmpdir and keyname is {{ tmp_dir }}/{{ key_name }}"
+  - debug:
+      msg: "tmpdir and keyname is {{ tmp_dir }}/{{ key_name }}"
 
 - name: Build infrastructure
   hosts: test_host
