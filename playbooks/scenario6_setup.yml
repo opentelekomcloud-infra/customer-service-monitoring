@@ -13,7 +13,7 @@
 
 - name: Build infrastructure
   hosts: test_host
-  become: yes                                                            #need to delete
+  #become: yes                                                            #need to delete
   roles:
     - build_infrastructure
   environment:
