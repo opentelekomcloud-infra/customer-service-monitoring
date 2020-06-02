@@ -17,7 +17,7 @@
   roles:
     - build_infrastructure
   environment:
-    OS_CLIENT_CONFIG_FILE: "~/.config/openstack/clouds.yaml"                    #"{{ clouds_yaml_file }}"
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
     TF_VAR_psql_password: "test1234!"                                           #"{{ psql_password }}"
   vars:                                                                        #need to delete after play will be ready
     key_name: "key_scn6"
