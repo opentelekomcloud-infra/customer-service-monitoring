@@ -6,7 +6,7 @@
   - name: Register clouds location
     set_fact:
       clouds_yaml_file: "{{ clouds_yaml_file }}"
-      tmp_dir: "/home/linux/.config/openstack"          #"{{ clouds_yaml_file | dirname }}"
+      tmp_dir: "{{ clouds_yaml_file | dirname }}"         #/home/linux/.config/openstack          #
   - name: Create tmp dir
     file:
       path: "{{ tmp_dir }}"
@@ -14,4 +14,4 @@
   - name: Copy clouds.yaml
     copy:
       src: "{{ clouds_yaml_file }}"
-      dest: "/home/linux/.config/openstack/clouds.yaml"    #  "{{ clouds_yaml_file }}"                                      "{{ clouds_yaml_file }}"
+      dest: "{{ clouds_yaml_file }}
