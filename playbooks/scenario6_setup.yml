@@ -7,7 +7,7 @@
   tasks:
   - name: Register scenario 6 vars
     set_fact:
-      terraform_base_dir: "terraform"
+      terraform_base_dir: "infrastructure"
       requirements: "requirements.txt"
 
 
