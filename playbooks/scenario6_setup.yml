@@ -9,7 +9,9 @@
     set_fact:
       terraform_base_dir: "terraform"
       requirements: "requirements.txt"
-      tmp_dir: "~/tmp"  #delete before push to master
+      tmp_dir: "~/tmp"                                       #delete before push to master
+      key_name: "key_scn6"                                   #delete before push to master
+      scenario_name: "scenario6"                             #delete before push to master
   - name: Create tmp dir   #delete this step before push to master
     file:
       path: "{{ tmp_dir }}"
@@ -22,10 +24,8 @@
     - build_infrastructure
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
-    TF_VAR_psql_password: "test1234!"                      #"{{ psql_password }}"
-  vars:                                                                        #need to delete after play will be ready
-    key_name: "key_scn6"
-    scenario_name: "scenario6"
+    TF_VAR_psql_password: "test1234!"                      #change to "{{ psql_password }}" before push to master
+  vars:
     infra_state: present
   tasks:
   - name: Register build result
