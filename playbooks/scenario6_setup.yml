@@ -9,6 +9,11 @@
     set_fact:
       terraform_base_dir: "terraform"
       requirements: "requirements.txt"
+      tmp_dir: "~/tmp"  #delete before push to master
+  - name: Create tmp dir   #delete this step before push to master
+    file:
+      path: "{{ tmp_dir }}"
+      state: directory
 
 
 - name: Build infrastructure

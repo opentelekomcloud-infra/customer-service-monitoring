@@ -10,7 +10,7 @@
       tmp_dir_clouds_yml: "/home/linux/.config/openstack"  #delete when push to master
   - name: Create tmp dir
     file:
-      path: "{{ tmp_dir_clouds_yml }}"
+      path: "{{ tmp_dir_clouds_yml }}"                #return to {{ tmp_dir }}
       state: directory
   - name: Copy clouds.yaml
     copy:
