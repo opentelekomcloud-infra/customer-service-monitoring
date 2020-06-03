@@ -1,4 +1,20 @@
 ---
+- name: Register existing settings
+  hosts: local
+  roles:
+    - register_host
+  vars:
+    dnsname_or_ip: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
+    group: "scn6_ecs"
+
+- name: Stop Server
+  hosts: scn6_ecs
+  become: yes
+  roles:
+    - too_simple_server
+  vars:
+    server_state: absent
+
 - name: Prepare clouds.yaml for test_host
   import_playbook: prepare_config.yml
 
