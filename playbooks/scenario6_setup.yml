@@ -12,7 +12,7 @@
       tmp_dir: "~/tmp"                                       #delete before push to master
       key_name: "key_scn6"                                   #delete before push to master
       scenario_name: "scenario6"                             #delete before push to master
-  - name: Create tmp dir   #delete this step before push to master
+  - name: Create tmp dir                                     #delete this step before push to master
     file:
       path: "{{ tmp_dir }}"
       state: directory
@@ -43,6 +43,8 @@
 
 - name: Register used hosts
   hosts: local
+  vars:
+    key_name: {{ key_name }}
   tasks:
     - name: Register host
       add_host:
