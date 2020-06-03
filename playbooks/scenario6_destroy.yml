@@ -10,6 +10,9 @@
   vars:
     terraform_base_dir: "terraform"
     requirements: "requirements.txt"
+    tmp_dir: "~/tmp"                                         #delete before push to master
+    key_name: "key_scn6"                                     #delete before push to master
+    scenario_name: "scenario6"                               #delete before push to master
     infra_state: absent
   roles:
     - build_infrastructure
