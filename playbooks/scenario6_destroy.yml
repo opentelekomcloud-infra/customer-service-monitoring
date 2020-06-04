@@ -12,17 +12,10 @@
 - name: Stop Server
   hosts: scn6_ecs
   become: yes
-  vars:
-    server_port: 8081
-    server_state: absent
   roles:
     - role: too_simple_server
-      vars:
-        pg_db_url: "{{ hostvars.test_host.db_address }}"
-        pg_database: "entities"
-        pg_username: "{{ hostvars.test_host.db_username }}"
-        pg_password: "{{ hostvars.test_host.db_password }}"
-        debug: True
+  vars:
+    server_state: absent
 
 - name: Prepare clouds.yaml for test_host
   import_playbook: prepare_config.yml
