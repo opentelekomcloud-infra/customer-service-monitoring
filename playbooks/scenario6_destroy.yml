@@ -6,7 +6,7 @@
   vars:
     hostname: "scn6_ecs"
     ansible_ssh_user: "linux"
-    dnsname_or_ip: "{{ hostvars.test_host.scn6_public_ip }}"
+    dnsname_or_ip:  "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
     group: "scn6_ecs"
 
 - name: Stop Server
