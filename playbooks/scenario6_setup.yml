@@ -52,10 +52,9 @@
         ansible_ssh_host: "{{ hostvars.test_host.scn6_public_ip }}"
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ local_private_key }}"
-    - name: Add ip to local envs
-      environment:
-        SERVER_PUBLIC_IP: "{{ hostvars.test_host.scn6_public_ip }}"
-      register: server_public_ip
+  environment:                                             #delete this before push to master
+    SERVER_PUBLIC_IP: "{{ hostvars.test_host.scn6_public_ip }}"
+    register: server_public_ip
 
 - name: Wait for host
   hosts: scn6_ecs
