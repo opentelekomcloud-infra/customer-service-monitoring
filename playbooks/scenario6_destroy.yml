@@ -6,7 +6,6 @@
   vars:
     hostname: "scn6_ecs"
     ansible_ssh_user: "linux"
-    ansible_ssh_private_key_file: "{{ local_private_key }}"
     dnsname_or_ip: "{{ hostvars.test_host.scn6_public_ip }}"
     group: "scn6_ecs"
 
