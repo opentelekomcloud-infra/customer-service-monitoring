@@ -1,14 +1,4 @@
 ---
-- name: Register existing settings
-  hosts: local
-  roles:
-    - register_host
-  vars:
-    hostname: "scn6_ecs"
-    ansible_ssh_user: "linux"
-    dnsname_or_ip:  "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
-    group: "scn6_ecs"
-
 - name: Stop Server
   hosts: scn6_ecs
   become: yes
