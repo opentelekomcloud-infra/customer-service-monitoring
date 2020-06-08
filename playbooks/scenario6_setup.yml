@@ -65,8 +65,6 @@
 - name: Start Server
   hosts: scn6_ecs
   become: yes
-  #vars_files:
-  #  - "./vars/telegraf_dbconnection_vars.yml"
   vars:
     server_port: 8081
   roles:
@@ -81,3 +79,20 @@
     - name: Register facts
       set_fact:
         server_local_port: "{{ server_port }}"
+
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+
+    - name: Install PIP
+      apt:
+        name:
+          - python3-setuptools
+          - python3-pip
+
+    - name: Install psycopg2 for Postgresql
+      pip:
+        executable: pip3
+        name: psycopg2
+        state: forcereinstall
