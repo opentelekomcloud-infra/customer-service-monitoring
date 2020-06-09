@@ -96,5 +96,5 @@
     - name: Install psycopg2 for Postgresql
       pip:
         executable: pip3
-        name: psycopg2
+        name: psycopg2-binary
         state: forcereinstall
