@@ -45,4 +45,4 @@ def execute_sql(sql_command: str = None):
 
 if __name__ == '__main__':
     args = _parse_param()
-    execute_sql("""SELECT pg_database_size('"""+args.database+"""');""")
+    execute_sql("""SELECT pg_database_size('entities');""")
