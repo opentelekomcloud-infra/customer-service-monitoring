@@ -28,9 +28,9 @@ def _create_connection_dict() -> dict:
     return db_connect
 
 
-def _sql_command(command: str = None) -> str:
+def _sql_command(command) -> str:
     """Create sql command"""
-    _command = r'{}'.format(command)
+    _command = command
     return _command
 
 
