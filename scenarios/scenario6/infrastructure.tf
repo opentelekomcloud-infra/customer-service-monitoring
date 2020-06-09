@@ -40,3 +40,11 @@ output "db_username" {
 output "db_address" {
   value = module.postgresql.db_address
 }
+
+output "db_host" {
+  value = module.postgresql.db_host
+}
+
+output "db_port" {
+  value = module.postgresql.db_port
+}

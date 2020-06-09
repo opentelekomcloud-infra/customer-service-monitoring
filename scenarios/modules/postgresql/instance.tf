@@ -43,3 +43,11 @@ output "db_password" {
 output "db_address" {
   value = "${opentelekomcloud_rds_instance_v3.instance.private_ips[0]}:${var.psql_port}"
 }
+
+output "db_host" {
+  value = opentelekomcloud_rds_instance_v3.instance.private_ips[0]
+}
+
+output "db_port" {
+  value = var.psql_port
+}
