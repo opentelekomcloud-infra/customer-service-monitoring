@@ -15,7 +15,7 @@ def _parse_param():
 
 
 def _create_connection_dict() -> dict:
-    """Create dict for connection to database"""
+    """Create connection to database"""
     args = _parse_param()
     db_connect = {
         'host': args.db_url,
@@ -33,13 +33,13 @@ def _sql_command(command: str = None) -> str:
 
 
 def execute_sql(sql_command: str = None):
-    _connection_dict = _create_connection_dict()
-    with closing(psycopg2.connect(_connection_dict)) as conn:
+    connection_dict = _create_connection_dict()
+    with closing(psycopg2.connect(**connection_dict)) as conn:
         with conn.cursor() as cursor:
-            cursor.execute("""SELECT pg_database_size('current_database()');""")
+            cursor.execute(sql_command)
             for row in cursor:
                 print(row)
 
 
 if __name__ == '__main__':
-    execute_sql()
+    execute_sql("""SELECT pg_database_size('current_database()');""")
