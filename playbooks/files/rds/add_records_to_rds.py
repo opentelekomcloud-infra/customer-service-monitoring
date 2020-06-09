@@ -6,7 +6,8 @@ from argparse import ArgumentParser
 
 def _parse_param():
     parser = ArgumentParser(description = 'Get data for connection string')
-    parser.add_argument('--db_url', '-url', required = True)
+    parser.add_argument('--host', required = True)
+    parser.add_argument('--port', required = True)
     parser.add_argument('--database', '-db', required = True)
     parser.add_argument('--username', '-user', required = True)
     parser.add_argument('--password', '-pass', required = True)
@@ -18,7 +19,8 @@ def _create_connection_dict() -> dict:
     """Create connection to database"""
     args = _parse_param()
     db_connect = {
-        'host': args.db_url,
+        'host': args.host,
+        'port': args.port,
         'user': args.username,
         'password': args.password,
         'database': args.database
