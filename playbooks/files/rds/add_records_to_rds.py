@@ -44,4 +44,5 @@ def execute_sql(sql_command: str = None):
 
 
 if __name__ == '__main__':
-    execute_sql("""SELECT pg_database_size('current_database()');""")
+    args = _parse_param()
+    execute_sql("""SELECT pg_database_size('"""+args.database+"""');""")
