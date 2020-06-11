@@ -41,6 +41,8 @@ module "nodes" {
   key_pair_name = local.key_pair.key_name
   nodes_count   = var.nodes_count
   scenario      = var.scenario
+  use_single_az    = var.use_single_az
+  availability_zone = var.availability_zone
 
   net_address          = var.addr_3_octets
   network_id           = module.network.network.id
