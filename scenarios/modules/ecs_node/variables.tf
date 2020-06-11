@@ -7,10 +7,19 @@ variable "subnet_id" {}
 variable "scenario" {}
 variable "nodes_count" {}
 variable "key_pair_name" {}
+variable "az_default" {
+  description = "if set to true, availability_zone set to default"
+  type        = bool
+  default     = true
+}
 variable "availability_zone" { default = "eu-de-03" }
+variable "availability_zones" {
+  type        = list(string)
+  default     = ["eu-de-01", "eu-de-02", "eu-de-03"]
+}
 variable "disc_volume" {
-  type    = number
-  default = 5
+  type        = number
+  default     = 5
 }
 
 locals {
