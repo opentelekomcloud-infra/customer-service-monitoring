@@ -7,7 +7,7 @@ variable "subnet_id" {}
 variable "scenario" {}
 variable "nodes_count" {}
 variable "key_pair_name" {}
-variable "az_default" {
+variable "use_default_az" {
   description = "if set to true, availability_zone set to default"
   type        = bool
   default     = true
