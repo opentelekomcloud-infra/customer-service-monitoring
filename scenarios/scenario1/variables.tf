@@ -9,8 +9,5 @@ variable "ecs_flavor" {}
 variable "ecs_image" {}
 variable "addr_3_octets" { default = "192.168.0" }
 variable "scenario" {}
-variable "nodes_count" {
-  type    = number
-  default = 3
-}
+variable "nodes_count" {}
 variable "public_key" { default = "" }
