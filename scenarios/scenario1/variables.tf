@@ -1,5 +1,5 @@
 variable "region" { default = "eu-de" }
-variable "az_default" {default = false}
+variable "az_default" { default = false}
 variable "availability_zone" { default = "eu-de-03" }
 variable "availability_zones" {
   type        = list(string)
