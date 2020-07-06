@@ -6,7 +6,7 @@
   - name: Set local facts
     set_fact:
       vcloud_bastion: "{{ vbastion_public_ip }}"
-      vcloud_private_key: "{{ apimon_vcloud_key }}"
+      vcloud_private_key: "~/.ssh/apimon_kp.pem"
   - name: Register nodes
     add_host:
       name: csmrunner
