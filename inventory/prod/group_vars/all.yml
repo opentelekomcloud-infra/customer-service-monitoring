@@ -1,3 +1,4 @@
 terraform_version: 0.12.20
 local_private_key: "~/.ssh/{{ key_name }}"
 test_host_keyfile: "/tmp/test_host_rsa"
+vbastion_public_ip: "80.158.8.101"
