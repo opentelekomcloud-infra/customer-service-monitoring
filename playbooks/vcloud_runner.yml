@@ -8,7 +8,7 @@
       name: "csmrunner"
       ansible_host: "{{ csm_runner_addr }}"
       ansible_ssh_user: "linux"
-      ansible_ssh_private_key_file: "{{ vcloud_private_key }}"
+      ansible_ssh_private_key_file: "{{ ssh_key }}"
       ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ vcloud_bastion }} -i {{ ssh_key }}' -o PasswordAuthentication=no"
 
 
