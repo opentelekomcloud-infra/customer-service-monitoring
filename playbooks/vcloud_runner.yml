@@ -6,7 +6,7 @@
   - name: Set local facts
     set_fact:
       vcloud_bastion: "{{ vbastion_public_ip }}"
-      vcloud_private_key: "~/.ssh/apimon_kp.pem"
+      vcloud_private_key: "{{ ssh_key_data }}"
   - name: Register vBastion
     add_host:
       name: "vbastion"
