@@ -6,7 +6,7 @@
   - name: Set local facts
     set_fact:
       vcloud_bastion: "{{ vbastion_public_ip }}"
-      vcloud_private_key: "{{ lookup('env', 'apimon_vcloud_key') }}"
+      vcloud_private_key: "{{ apimon_vcloud_key }}"
   - name: Register nodes
     add_host:
       name: csmrunner
@@ -14,7 +14,6 @@
       ansible_ssh_user: "linux"
       ansible_ssh_private_key_file: "{{ vcloud_private_key }}"
       ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ vcloud_bastion }} -i {{ vcloud_private_key }}' -o PasswordAuthentication=no"
-    loop: "{{ hostvars.test_host.node_ips }}"
 
 
 - name: Checking reporting processes
