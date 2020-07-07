@@ -38,8 +38,6 @@
     set_fact:
       loadbalancer_public_ip: "{{ hostvars.test_host.loadbalancer_public_ip }}"
       bastion_public_ip: "{{ hostvars.test_host.bastion_public_ip }}"
-      vcloud_bastion: "{{ vbastion_public_ip }}"
-      vcloud_private_key: "{{ apimon_vcloud_key }}"
   - name: Register Bastion
     add_host:
       name: "bastion"
