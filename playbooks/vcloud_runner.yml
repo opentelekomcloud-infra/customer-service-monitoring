@@ -2,13 +2,13 @@
 - name: Register used hosts
   hosts: local
   tasks:
-  - name: Register Bastion
+  - name: Register vcloud_Bastion
     add_host:
       name: "vcloud_bastion"
       ansible_host: "{{ vbastion_public_ip }}"
       ansible_ssh_user: "linux"
       ansible_ssh_private_key_file: "{{ vcloud_private_key }}"
-  - name: Register csmrunner
+  - name: Register vcloud_csmrunner
     add_host:
       name: "vcloud_csmrunner"
       groups: "vcloud"
@@ -34,7 +34,7 @@
       ignore_errors: yes
 
 #- name: Start reporting for scenario
-#  hosts: csmrunner
+#  hosts: vcloud_csmrunner
 #  tasks:
 #  - name: Execute csm_test_utils  # noqa 301 305
 #    shell: "nohup python3 -m csm_test_utils monitor --target {{ loadbalancer_public_ip }} --telegraf 'http://{{ bastion_public_ip }}' &"

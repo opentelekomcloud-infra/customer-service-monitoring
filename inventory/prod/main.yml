@@ -9,3 +9,12 @@ all:
       ansible_user: "linux"
       ansible_host: "{{ test_host_address }}"
       ansible_ssh_private_key_file: "{{ test_host_keyfile }}"
+    vcloud_bastion:
+      ansible_host: "{{ vbastion_public_ip }}"
+      ansible_user: "linux"
+      ansible_ssh_private_key_file: "{{ vcloud_private_key }}"
+    vcloud_csmrunner:
+      ansible_host: "{{ vrunner_public_ip }}"
+      ansible_user: "linux"
+      ansible_ssh_private_key_file: "{{ vcloud_private_key }}"
+      ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ vbastion_public_ip }} -i {{ vcloud_private_key }}' -o PasswordAuthentication=no"
