@@ -1,16 +1,5 @@
 ---
 
-- name: Register used hosts
-  hosts: local
-  tasks:
-  - name: Register vRunner
-    add_host:
-      name: "csmrunner"
-      ansible_host: "{{ csm_runner_addr }}"
-      ansible_ssh_user: "linux"
-      ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ vbastion_public_ip }}' -o PasswordAuthentication=no"
-
-
 - name: Checking reporting processes
   hosts: csmrunner
   tasks:
