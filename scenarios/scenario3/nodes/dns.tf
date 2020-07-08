@@ -32,7 +32,7 @@ resource "opentelekomcloud_compute_instance_v2" "dns_host" {
 # Create network port for DNS resolving
 resource "opentelekomcloud_networking_port_v2" "dns_port" {
   name           = "${local.workspace_prefix}${var.scenario}_port_dns_host"
-  network_id     = var.vpc_id
+  network_id     = var.network_id
   admin_state_up = true
   security_group_ids = [
     var.bastion_sec_group_id
