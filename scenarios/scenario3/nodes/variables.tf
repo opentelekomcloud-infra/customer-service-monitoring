@@ -6,6 +6,7 @@ variable "network_id" {}
 variable "subnet_id" {}
 variable "scenario" {}
 variable "key_pair_name" {}
+variable "region" { default = "eu-de" }
 variable "availability_zones" {
     type    = list(string)
     default = ["eu-de-01", "eu-de-02","eu-de-03"]

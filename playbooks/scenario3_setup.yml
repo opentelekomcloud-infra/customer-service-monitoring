@@ -23,6 +23,8 @@
     set_fact:
       server_public_ip: "{{ tf_output.outputs['scn3_server_fip'].value }}"
       node_ips: "{{ tf_output.outputs['scn3_ecs_local_ips'].value }}"
+      dns_instance: "{{ tf_output.outputs['scn5_instance_address'].value }}"
+      dns_record: "{{ tf_output.outputs['scn5_dns_record_name'].value }}"
   - name: Download private key from test_host
     fetch:
       src: "{{ tmp_dir }}/{{ key_name }}"
@@ -50,6 +52,13 @@
       ansible_ssh_private_key_file: "{{ local_private_key }}"
       ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ server_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
     loop: "{{ hostvars.test_host.node_ips }}"
+  - name: Register instance for DNS resolving
+    add_host:
+      name: "dns_host"
+      ansible_host: "{{ dns_instance }}"
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+      ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ server_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
 
 - name: Wait for bastion
   hosts: bastion
@@ -134,3 +143,33 @@
           fielddrop:
             - "time_*"
 
+- name: Install telegraf client on Bastion
+  hosts: bastion
+  become: yes
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
+    - "./vars/nginx_telegraf_local.yml"
+  roles:
+    - role: telegraf-client
+      vars:
+        telegraf_plugins_base:
+          - name: http_listener_v2
+            options:
+              service_address: "localhost:{{ telegraf_local_port }}"
+              data_format: "influx"
+    - role: geerlingguy.nginx
+      vars:
+        nginx_remove_default_vhost: yes
+        nginx_vhosts:
+          - listen: "80"
+            server_name: "localhost"
+            extra_parameters: "{{ extra_parameters }}"
+
+- name: Start Server on dns host
+  hosts: dns_host
+  become: yes
+  roles:
+    - too_simple_server
+  vars:
+    debug: True
+    server_port: 80

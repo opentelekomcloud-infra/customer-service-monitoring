@@ -53,3 +53,11 @@ output "scn3_server_fip" {
 output "scn3_ecs_local_ips" {
   value = [ for instance in module.nodes.instances: instance.access_ip_v4 ]
 }
+
+output "scn5_instance_address" {
+  value = module.nodes.dns_instance_address
+}
+
+output "scn5_dns_record_name" {
+  value = module.nodes.dns_record
+}
