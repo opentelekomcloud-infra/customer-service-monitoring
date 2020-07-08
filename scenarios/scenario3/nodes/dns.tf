@@ -17,7 +17,7 @@ resource "opentelekomcloud_dns_recordset_v2" "host_scenario5_com" {
   description = "An record set for dns_host in csm scenario5"
   ttl = 300
   type = "A"
-  records = [opentelekomcloud_networking_port_v2.dns_port.fixed_ip.ip_address]
+  records = [opentelekomcloud_compute_instance_v2.dns.access_ip_v4]
 }
 
 output "dns_record" {
