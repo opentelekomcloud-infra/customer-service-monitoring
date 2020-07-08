@@ -4,6 +4,7 @@ variable "ecs_image" {}
 variable "bastion_sec_group_id" {}
 variable "network_id" {}
 variable "subnet_id" {}
+variable "vpc_id" {}
 variable "scenario" {}
 variable "key_pair_name" {}
 variable "region" { default = "eu-de" }

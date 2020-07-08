@@ -42,6 +42,7 @@ module "nodes" {
   net_address          = var.addr_3_octets
   network_id           = module.network.network.id
   subnet_id            = module.network.subnet.id
+  vpc_id               = module.network.router.id
   bastion_sec_group_id = module.bastion.bastion_group_id
   scenario             = var.scenario
 }
