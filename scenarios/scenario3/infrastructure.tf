@@ -58,6 +58,6 @@ output "scn5_instance_address" {
   value = module.nodes.dns_instance_address
 }
 
-output "scn5_dns_record_name" {
-  value = module.nodes.dns_record
-}
+//output "scn5_dns_record_name" {
+//  value = module.nodes.dns_record
+//}
