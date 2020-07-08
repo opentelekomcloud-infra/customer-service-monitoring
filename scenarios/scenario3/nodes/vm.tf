@@ -100,5 +100,5 @@ resource "opentelekomcloud_networking_port_v2" "dns_port" {
 }
 
 output "dns_instance_address" {
-  value = opentelekomcloud_compute_instance_v2.dns.network.fixed_ip_v4
+  value = opentelekomcloud_compute_instance_v2.dns.access_ip_v4
 }
