@@ -18,6 +18,9 @@ resource "opentelekomcloud_dns_recordset_v2" "host_scenario5_com" {
   ttl = 300
   type = "A"
   records = [opentelekomcloud_compute_instance_v2.dns.access_ip_v4]
+  depends_on = [
+    opentelekomcloud_compute_instance_v2.dns
+  ]
 }
 
 output "dns_record" {
