@@ -55,7 +55,7 @@ resource "opentelekomcloud_dns_zone_v2" "private_scenario5_com" {
   type = "private"
 
   router {
-     router_id     = var.vpc_id
+     router_id     = var.subnet_id
      router_region = var.region
   }
 }
