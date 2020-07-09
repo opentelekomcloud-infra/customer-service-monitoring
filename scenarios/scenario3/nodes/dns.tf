@@ -60,18 +60,18 @@ resource "opentelekomcloud_dns_zone_v2" "private_scenario5_com" {
   }
 }
 
-//resource "opentelekomcloud_dns_recordset_v2" "host_scenario5_com" {
-//  zone_id = opentelekomcloud_dns_zone_v2.private_scenario5_com.id
-//  name = "host.private.scenario5.com."
-//  description = "An record set for dns_host in csm scenario5"
-//  ttl = 300
-//  type = "A"
-//  records = [opentelekomcloud_compute_instance_v2.dns_host.access_ip_v4]
-//  depends_on = [
-//    opentelekomcloud_compute_instance_v2.dns_host
-//  ]
-//}
-//
-//output "dns_record" {
-//  value = opentelekomcloud_dns_recordset_v2.host_scenario5_com.name
-//}
+resource "opentelekomcloud_dns_recordset_v2" "host_scenario5_com" {
+  zone_id = opentelekomcloud_dns_zone_v2.private_scenario5_com.id
+  name = "host.private.scenario5.com."
+  description = "An record set for dns_host in csm scenario5"
+  ttl = 300
+  type = "A"
+  records = [opentelekomcloud_compute_instance_v2.dns_host.access_ip_v4]
+  depends_on = [
+    opentelekomcloud_compute_instance_v2.dns_host
+  ]
+}
+
+output "dns_record" {
+  value = opentelekomcloud_dns_recordset_v2.host_scenario5_com.name
+}
