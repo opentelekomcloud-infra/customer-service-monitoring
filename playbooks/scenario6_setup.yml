@@ -9,13 +9,13 @@
     set_fact:
       terraform_base_dir: "terraform"
       requirements: "requirements.txt"
-      tmp_dir: "~/tmp"                                       #delete before push to master
-      key_name: "key_scn6"                                   #delete before push to master
-      scenario_name: "scenario6"                             #delete before push to master
-  - name: Create tmp dir                                     #delete this step before push to master
-    file:
-      path: "{{ tmp_dir }}"
-      state: directory
+      #tmp_dir: "~/tmp"                                       #delete before push to master
+      #key_name: "key_scn6"                                   #delete before push to master
+      #scenario_name: "scenario6"                             #delete before push to master
+  #- name: Create tmp dir                                     #delete this step before push to master
+    #file:
+      #path: "{{ tmp_dir }}"
+      #state: directory
 
 
 - name: Build infrastructure
@@ -24,7 +24,7 @@
     - build_infrastructure
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
-    TF_VAR_psql_password: "test1234!"                      #change to "{{ psql_password }}" before push to master
+    TF_VAR_psql_password: "{{ psql_password }}"                      #change to {{ psql_password }} before push to master
   vars:
     infra_state: present
   tasks:
@@ -45,8 +45,8 @@
 
 - name: Register used hosts
   hosts: local
-  vars:
-    key_name: "key_scn6"                                   #delete before push to master
+  #vars:
+  #  key_name: "key_scn6"                                   #delete before push to master
   tasks:
     - name: Register host
       add_host:
