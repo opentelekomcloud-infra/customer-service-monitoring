@@ -30,12 +30,12 @@
   tasks:
   - name: Register build result
     set_fact:
-      db_password: "{{ tf_output.outputs[\"db_password\"].value }}"
-      db_username: "{{ tf_output.outputs[\"db_username\"].value }}"
-      db_address: "{{ tf_output.outputs[\"db_address\"].value }}"
-      db_host: "{{tf_output.outputs[\"db_host\"].value}}"
-      db_port: "{{tf_output.outputs[\"db_port\"].value}}"
-      scn6_public_ip: "{{ tf_output.outputs[\"scn_public_ip\"].value }}"
+      db_password: "{{ tf_output.outputs['db_password'].value }}"
+      db_username: "{{ tf_output.outputs['db_username'].value }}"
+      db_address: "{{ tf_output.outputs['db_address'].value }}"
+      db_host: "{{tf_output.outputs['db_host'].value}}"
+      db_port: "{{tf_output.outputs['db_port'].value}}"
+      scn6_public_ip: "{{ tf_output.outputs['scn_public_ip'].value }}"
   - name: Download private key from test_host
     fetch:
       src: "{{ tmp_dir }}/{{ key_name }}"
@@ -104,4 +104,4 @@
         state: forcereinstall
 
     - name: Add records to rds
-      script: rds/add_records_to_rds.py --host {{pg_host}} --port {{pg_port}}  --user{{pg_username}} --password{{pg_password}}  --database{{pg_database}}
+      script: rds/add_records_to_rds.py --host {{pg_host}} --port {{pg_port}}  --username {{pg_username}} --password {{pg_password}}  --database{{pg_database}}
