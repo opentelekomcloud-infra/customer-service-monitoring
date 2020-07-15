@@ -104,4 +104,4 @@
         state: forcereinstall
 
     - name: Add records to rds
-      script: "rds/add_records_to_rds.py --host {{pg_host}} --port {{pg_port}}  --username {{pg_username}} --password {{pg_password}}  --database{{pg_database}}"
+      script: "rds/add_records_to_rds.py --host {{pg_host}} --port {{pg_port}}  --username {{pg_username}} --password {{pg_password}}  --database 'entities'"
