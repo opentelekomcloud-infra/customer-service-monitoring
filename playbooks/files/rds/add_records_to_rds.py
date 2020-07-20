@@ -75,10 +75,18 @@ def generate_random_values_and_insert_into_table(schema_name: str, table_name: s
     _execute_sql(record_query)
 
 
+def get_db_size(db_name: str):
+    """Returns db size"""
+    model_query = sql.SQL("select pg_database_size({}) as dbsize;")
+    db_size_query = model_query.format(sql.Identifier(db_name))
+    _execute_sql(db_size_query)
+
+
 if __name__ == '__main__':
     n = 14027776
     args = _parse_param()
     create_table('public', 'test', 'content')
-    for i in range(1, 11):
+    for i in range(1, 2):
         generate_random_values_and_insert_into_table('public', 'test', i+(i-1)*n, i*n, 'content')
+    print(get_db_size())
 
