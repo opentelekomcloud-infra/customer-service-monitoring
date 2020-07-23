@@ -62,7 +62,7 @@ resource "opentelekomcloud_dns_zone_v2" "private_scn5_com" {
 
 resource "opentelekomcloud_dns_recordset_v2" "host_scn5_com" {
   zone_id = opentelekomcloud_dns_zone_v2.private_scn5_com.id
-  name = "host.private.scenario5.com."
+  name = "host.private.scn5.com."
   description = "An record set for dns_host in csm scenario5"
   ttl = 300
   type = "A"
