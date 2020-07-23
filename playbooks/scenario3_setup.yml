@@ -24,7 +24,7 @@
       server_public_ip: "{{ tf_output.outputs['scn3_server_fip'].value }}"
       node_ips: "{{ tf_output.outputs['scn3_ecs_local_ips'].value }}"
       dns_instance: "{{ tf_output.outputs['scn5_instance_address'].value }}"
-#      dns_record: "{{ tf_output.outputs['scn5_dns_record_name'].value }}"
+      dns_record: "{{ tf_output.outputs['scn5_dns_record_name'].value }}"
   - name: Download private key from test_host
     fetch:
       src: "{{ tmp_dir }}/{{ key_name }}"
