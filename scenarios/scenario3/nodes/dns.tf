@@ -47,9 +47,9 @@ output "dns_instance_address" {
   value = opentelekomcloud_compute_instance_v2.dns_host.access_ip_v4
 }
 
-resource "opentelekomcloud_dns_zone_v2" "private_scenario5_com" {
-  name  = "private.scenario5.com."
-  email = "private@scenario5.com"
+resource "opentelekomcloud_dns_zone_v2" "private_scn5_com" {
+  name  = "private.scn5.com."
+  email = "private@scn5.com"
   description = "Private zone for csm scenario5"
   ttl  = 300
   type = "private"
@@ -60,8 +60,8 @@ resource "opentelekomcloud_dns_zone_v2" "private_scenario5_com" {
   }
 }
 
-resource "opentelekomcloud_dns_recordset_v2" "host_scenario5_com" {
-  zone_id = opentelekomcloud_dns_zone_v2.private_scenario5_com.id
+resource "opentelekomcloud_dns_recordset_v2" "host_scn5_com" {
+  zone_id = opentelekomcloud_dns_zone_v2.private_scn5_com.id
   name = "host.private.scenario5.com."
   description = "An record set for dns_host in csm scenario5"
   ttl = 300
@@ -73,5 +73,5 @@ resource "opentelekomcloud_dns_recordset_v2" "host_scenario5_com" {
 }
 
 output "dns_record" {
-  value = opentelekomcloud_dns_recordset_v2.host_scenario5_com.name
+  value = opentelekomcloud_dns_recordset_v2.host_scn5_com.name
 }
