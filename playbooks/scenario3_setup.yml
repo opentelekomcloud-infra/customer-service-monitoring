@@ -82,9 +82,11 @@
         repo: deb http://deb.debian.org/debian stretch main
         state: present
 
-    - name: Install hdparm
+    - name: Install required packages
       apt:
-        name: hdparm
+        name:
+          - hdparm
+          - cron
         update_cache: yes
 
     - name: Create a ext4 filesystem on attached disks
