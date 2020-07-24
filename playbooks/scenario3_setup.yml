@@ -192,7 +192,7 @@
         state: absent
       ignore_errors: yes
 
-- name: Install csm test utils, run as_monitoring and as_load
+- name: Install csm test utils
   hosts: bastion
   become: yes
   vars:
@@ -210,7 +210,6 @@
         name:
           - python3-setuptools
           - python3-pip
-          - cron
 
     - name: Install test utils
       pip:
