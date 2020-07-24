@@ -42,6 +42,7 @@ module "nodes" {
   net_address          = var.addr_3_octets
   network_id           = module.network.network.id
   subnet_id            = module.network.subnet.id
+  vpc_id               = module.network.router.id
   bastion_sec_group_id = module.bastion.bastion_group_id
   scenario             = var.scenario
 }
@@ -52,4 +53,12 @@ output "scn3_server_fip" {
 
 output "scn3_ecs_local_ips" {
   value = [ for instance in module.nodes.instances: instance.access_ip_v4 ]
+}
+
+output "scn5_instance_address" {
+  value = module.nodes.dns_instance_address
+}
+
+output "scn5_dns_record_name" {
+  value = module.nodes.dns_record
 }
