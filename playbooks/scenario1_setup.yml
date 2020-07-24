@@ -69,23 +69,6 @@
     wait_for_connection:
       timeout: 120
 
-- name: Register existing settings
-  hosts: local
-  tasks:
-    - name: Register host
-      add_host:
-        hostname: "scn1_ecs"
-        ansible_ssh_host: "{{ hostvars.bastion.ansible_host }}"
-        ansible_ssh_user: "linux"
-
-- name: Wait for host
-  hosts: scn1_ecs
-  gather_facts: no
-  tasks:
-    - name: Wait for host to be up
-      wait_for_connection:
-        timeout: 120
-
 - name: Start Server
   hosts: gatewayed
   become: yes
@@ -140,8 +123,18 @@
             - "lo"
             - "ens3"
 
+- name: Prepare csm runner
+  hosts: vcloud_csmrunner
+  become: yes
+  tasks:
+  - name: Install csm-test-utils
+    pip:
+      executable: pip3
+      name: csm-test-utils
+
 - name: Checking reporting processes
-  hosts: test_host
+  hosts: vcloud_csmrunner
+  become: yes
   tasks:
     - name: Get reporting processes list from remote host  # noqa 301 305
       ignore_errors: yes
@@ -157,7 +150,11 @@
       ignore_errors: yes
 
 - name: Start reporting for scenario
-  hosts: test_host
+  hosts: vcloud_csmrunner
+  become: yes
+  vars:
+    elb_ip: "{{ hostvars.test_host.loadbalancer_public_ip }}"
+    bastion_ip: "{{ hostvars.test_host.bastion_public_ip }}"
   tasks:
   - name: Execute csm_test_utils  # noqa 301 305
-    shell: "nohup python3 -m csm_test_utils monitor --target {{ loadbalancer_public_ip }} --telegraf 'http://{{ bastion_public_ip }}' &"
+    shell: "nohup python3 -m csm_test_utils monitor --target {{ elb_ip }} --telegraf 'http://{{ bastion_ip }}' &"
