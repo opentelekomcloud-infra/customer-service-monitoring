@@ -1,0 +1,68 @@
+---
+- name: Prepare clouds.yaml for test_host
+  import_playbook: prepare_config.yml
+
+- name: Prepare variables
+  hosts: test_host
+  tasks:
+  - name: Register scenario checking ssh
+    set_fact:
+      terraform_base_dir: "terraform"
+      requirements: "requirements.txt"
+
+- name: Build infrastructure
+  hosts: test_host
+  roles:
+    - build_infrastructure
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+  vars:
+    infra_state: present
+  tasks:
+  - name: Register build result
+    set_fact:
+      server_ip: "{{ tf_output.outputs['ssh-check-server_ip'].value }}"
+  - name: Download private key from test_host
+    fetch:
+      src: "{{ tmp_dir }}/{{ key_name }}"
+      dest:  "{{ local_private_key }}"
+      mode: 0600
+      flat: yes
+
+- name: Register used hosts
+  hosts: local
+  tasks:
+  - name: Set local facts
+    set_fact:
+      server_ip: "{{ hostvars.test_host.server_ip }}"
+  - name: Register server
+    add_host:
+      name: "server"
+      ansible_host: "{{ bastion_public_ip }}"
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+
+- name: Installing packages on server
+  hosts: server
+  gather_facts: no
+  tasks:
+  - name: Wait for host to be up
+    wait_for_connection:
+      timeout: 120
+  - name: Install OpenSSH and netcat
+    apt:
+      pkg:
+        - openssh-server
+        - netcat
+      state: present
+  - name: Make server listen to some ports
+    script: ./tcp_listener.sh
+
+- name: Make test_host ssh-client
+  hosts: test_host
+  gather_facts: no
+  tasks:
+  - name: Open ssh connection and keeps it opened     #writes a few bytes every minute, but keeps the connection open
+    script: ../ssh_check_scripts/keep_ssh_connection.sh
+
+

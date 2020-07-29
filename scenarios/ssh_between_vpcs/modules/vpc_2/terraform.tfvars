@@ -1,0 +1,5 @@
+vpc_2_cidr   = "192.168.0"
+ecs_image    = "Standard_Debian_10_latest"
+ecs_flavor   = "s2.large.2"
+availability_zone    = "eu-de-01"
+scenario     = "tmp-scn"

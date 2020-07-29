@@ -1,0 +1,85 @@
+---
+- name: Prepare clouds.yaml for test_host
+  import_playbook: prepare_config.yml
+
+- name: Prepare variables
+  hosts: test_host
+  tasks:
+  - name: Register scenario checking ssh
+    set_fact:
+      terraform_base_dir: "terraform"
+      requirements: "requirements.txt"
+
+- name: Build infrastructure
+  hosts: test_host
+  roles:
+    - build_infrastructure
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+  vars:
+    infra_state: present
+  tasks:
+  - name: Register build result
+    set_fact:
+      ecs_1_ip: "{{ tf_output.outputs['ecs_1_private_ip'].value }}"
+      ecs_2_ip: "{{ tf_output.outputs['ecs_2_private_ip'].value }}"
+  - name: Download private key from test_host
+    fetch:
+      src: "{{ tmp_dir }}/{{ key_name }}"
+      dest:  "{{ local_private_key }}"
+      mode: 0600
+      flat: yes
+
+- name: Register used hosts
+  hosts: local
+  tasks:
+  - name: Set local facts
+    set_fact:
+      ecs_1_ip: "{{ hostvars.test_host.ecs_1_ip }}"
+      ecs_2_ip: "{{ hostvars.test_host.ecs_2_ip }}"
+  - name: Register ecs_1
+    add_host:
+      name: "server"
+      ansible_host: "{{ ecs_1_private_ip }}"
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+  - name: Register ecs_2
+    add_host:
+      name: "server"
+      ansible_host: "{{ ecs_2_private_ip }}"
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+
+
+- name: Installing packages on server
+  become: yes
+  hosts: ecs_1, ecs_2
+  gather_facts: no
+  tasks:
+  - name: Wait for host to be up
+    wait_for_connection:
+      timeout: 120
+  - name: Install OpenSSH and netcat
+    apt:
+      pkg:
+        - openssh-server
+        - iperf
+        - netperf
+        - Flent
+      state: present
+
+- name: Make iperf server
+  become: yes
+  hosts: ecs_1
+  gather_facts: no
+  tasks:
+  - name: Make ecs_1 iperf server
+    script: ../ssh_check_sciprts/iperf_server.sh
+
+- name: Make iperf client
+  become: yes
+  hosts: ecs_1
+  gather_facts: no
+  tasks:
+  - name: Make ecs_1 iperf server
+    script: ../ssh_check_sciprts/iperf_client.sh {{ ecs_1_ip }}
