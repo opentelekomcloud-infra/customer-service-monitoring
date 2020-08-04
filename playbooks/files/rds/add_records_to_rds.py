@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import psycopg2
+import logging
+import uuid
 
 from contextlib import closing
 from argparse import ArgumentParser
@@ -16,6 +18,7 @@ def _parse_param():
     parser.add_argument('--username', '-user', required = True)
     parser.add_argument('--password', '-pass', required = True)
     args = parser.parse_args()
+    logging.info('Parse args')
     return args
 
 
@@ -43,11 +46,12 @@ def _execute_sql(sql_query: str) -> list:
                     cursor.execute(sql_query)
                     if cursor.description is not None:
                         res = cursor.fetchall()
+                    logging.info('SQL was executed')
             except OperationalError as err:
-                print(f"The error '{err}' occurred")
+                logging.error('Exception occured when try to execute SQL', exc_info = True)
             conn.commit()
     except Error as e:
-        print(f"The error '{e}' occurred")
+        logging.error('Exception occured', exc_info = True)
     return res
 
 
@@ -61,6 +65,7 @@ def create_table(schema_name: str, table_name: str, *columns):
                                             sql.SQL(', ').join(map(sql.Identifier, columns))
                                            )
     _execute_sql(create_table_query)
+    logging.info('Table was created')
 
 
 def generate_random_values_and_insert_into_table(schema_name: str, table_name: str, range_start: int, range_stop: int, *columns):
@@ -75,18 +80,40 @@ def generate_random_values_and_insert_into_table(schema_name: str, table_name: s
     _execute_sql(record_query)
 
 
-def get_db_size(db_name: str):
-    """Returns db size"""
-    model_query = sql.SQL("select pg_database_size({}) as dbsize;")
-    db_size_query = model_query.format(sql.Identifier(db_name))
-    _execute_sql(db_size_query)
+def _get_database_size(db_name: str) -> int:
+    """Get database size, returns bytes"""
+    model_query = sql.SQL("select pg_database_size({});")
+    get_size_query = model_query.format(sql.Literal(db_name))
+    return _execute_sql(get_size_query)[0][0]
+
+
+def is_database_fulfilled(db_name: str, db_max_size: int) -> bool:
+    """Check database size and return false if database size is not enough"""
+    return _get_database_size(db_name) >= db_max_size
+
+
+def _logging_configuration():
+    """Basic configuration for logging"""
+    return logging.basicConfig(
+        filename = 'logs.log',
+        filemode = 'w',
+        level = logging.DEBUG,
+        format='%(levelname)s:%(asctime)s:%(message)s')
+
+
+def main():
+    _logging_configuration()
+    logging.info('Script starts')
+    n = 14027776
+    i = 1
+    schema_name = 'public'
+    table_name = str(uuid.uuid4())
+    create_table(schema_name, table_name, 'content')
+    while not is_database_fulfilled('entities', 10737418240):
+        generate_random_values_and_insert_into_table(schema_name, table_name, i + (i - 1) * n, i * n, 'content')
+        i = i + 1
+    logging.info('Script finished')
 
 
 if __name__ == '__main__':
-    n = 14027776
-    args = _parse_param()
-    create_table('public', 'test', 'content')
-    for i in range(1, 2):
-        generate_random_values_and_insert_into_table('public', 'test', i+(i-1)*n, i*n, 'content')
-    print(get_db_size())
-
+    main()
