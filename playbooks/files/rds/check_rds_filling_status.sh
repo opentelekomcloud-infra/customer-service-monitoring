@@ -10,7 +10,7 @@ then
     echo "rds filling script is running"
 elif [$(grep -c -i "error" "$log_file")>0] || [$(grep -c -i "Script finished" "$log_file")==0]
 then
-    start-stop-daemon -Sbmvp /tmp/add_records_to_rds.pid -x /usr/bin/python3 /tmp/add_records_to_rds.py -- --host "$pg_host" --port "$pg_port"  --username "$pg_username" --password "$pg_password"  --database 'entities'
+    start-stop-daemon -Sbmvp /tmp/add_records_to_rds.pid -x /usr/bin/python3 /tmp/add_records_to_rds.py -- --host $pg_host --port $pg_port  --username $pg_username --password $pg_password  --database 'entities'
     echo "rds filling script is restarted"
 else
     echo "rds filling script finished"
