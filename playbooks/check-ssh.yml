@@ -41,15 +41,23 @@
       ansible_host: "{{ server_ip }}"
       ansible_ssh_user: "linux"
       ansible_ssh_private_key_file: "{{ local_private_key }}"
+      ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ bastion_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
 
-- name: Installing packages on server
+
+- name: Wait server to be up
   hosts: server
   gather_facts: no
-  become: yes
   tasks:
   - name: Wait for host to be up
     wait_for_connection:
       timeout: 120
+
+
+- name: Installing packages on server
+  hosts: server
+  become: yes
+  gather_facts: no
+  tasks:
   - name: Install OpenSSH and netcat
     apt:
       pkg:

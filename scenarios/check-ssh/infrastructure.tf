@@ -2,7 +2,7 @@ locals {
   workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
   key_pair = {
     public_key = var.public_key
-    key_name   = "${local.workspace_prefix}kp_${var.scenario}_3"
+    key_name   = "${local.workspace_prefix}kp_${var.scenario}_4"
   }
 }
 
