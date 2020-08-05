@@ -14,6 +14,29 @@ resource "opentelekomcloud_vpc_subnet_v1" "subnet_1" {
   ]
 }
 
+resource "opentelekomcloud_compute_secgroup_v2" "ecs_1_group" {
+  description = "Allow external connections to ssh, http, and https ports"
+  name        = "ecs_1_group"
+  rule {
+    cidr        = "0.0.0.0/0"
+    from_port   = 80
+    ip_protocol = "tcp"
+    to_port     = 80
+  }
+  rule {
+    cidr        = "0.0.0.0/0"
+    from_port   = 22
+    ip_protocol = "tcp"
+    to_port     = 22
+  }
+  rule {
+    cidr        = "0.0.0.0/0"
+    from_port   = 443
+    ip_protocol = "tcp"
+    to_port     = 443
+  }
+}
+
 data "opentelekomcloud_images_image_v2" "ecs_image_1" {
   name        = var.ecs_image
   most_recent = true
@@ -41,6 +64,7 @@ resource "opentelekomcloud_compute_instance_v2" "ecs_1" {
   image_name  = var.ecs_image
   flavor_name = var.ecs_flavor
   availability_zone = var.availability_zone
+  security_groups = ["ecs_1_group"]
 
   network {
     uuid = opentelekomcloud_vpc_subnet_v1.subnet_1.id
