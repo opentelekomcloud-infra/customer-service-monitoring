@@ -9,6 +9,7 @@ locals {
 module "vpc_1" {
   source = "./modules/vpc_1"
 
+  key_pair = local.key_pair
   vpc_1_cidr   = "192.168.0"
   ecs_image    = "Standard_Debian_10_latest"
   ecs_flavor   = "s2.large.2"
@@ -19,6 +20,7 @@ module "vpc_1" {
 module "vpc_2" {
   source = "./modules/vpc_2"
 
+  key_pair = local.key_pair
   vpc_2_cidr   = "192.168.0"
   ecs_image    = "Standard_Debian_10_latest"
   ecs_flavor   = "s2.large.2"

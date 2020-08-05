@@ -1,3 +1,8 @@
+resource "opentelekomcloud_compute_keypair_v2" "pair" {
+  name       = var.key_pair.key_name
+  public_key = var.key_pair.public_key
+}
+
 resource "opentelekomcloud_vpc_v1" "vpc_1" {
   name = "${var.scenario}-vpc_1"
   cidr = "${var.vpc_1_cidr}.0/16"
@@ -65,6 +70,7 @@ resource "opentelekomcloud_compute_instance_v2" "ecs_1" {
   flavor_name = var.ecs_flavor
   availability_zone = var.availability_zone
   security_groups = ["ecs_1_group"]
+  key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
 
   network {
     uuid = opentelekomcloud_vpc_subnet_v1.subnet_1.id

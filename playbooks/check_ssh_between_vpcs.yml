@@ -73,12 +73,11 @@
       pkg:
         - openssh-server
         - iperf
-        - netperf
-        - Flent
       state: present
 
 
 - name: Create directories and copy scripts to ecs_1
+  become: yes
   hosts: ecs_1
   gather_facts: no
   tasks:
@@ -94,6 +93,7 @@
 
 
 - name: Create directories and copy scripts to ecs_2
+  become: yes
   hosts: ecs_2
   gather_facts: no
   tasks:

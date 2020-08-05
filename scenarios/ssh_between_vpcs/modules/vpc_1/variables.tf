@@ -7,3 +7,9 @@ variable "volume_ecs" {
   default = 10
 }
 variable "scenario" {}
+variable "key_pair" {
+  type = object({
+    key_name : string
+    public_key : string
+  })
+}
