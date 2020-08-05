@@ -39,14 +39,14 @@
       ecs_2_ip: "{{ hostvars.test_host.ecs_2_ip }}"
   - name: Register ecs_1
     add_host:
-      name: "server"
-      ansible_host: "{{ ecs_1_private_ip }}"
+      name: "ecs_1"
+      ansible_host: "{{ ecs_1_ip }}"
       ansible_ssh_user: "linux"
       ansible_ssh_private_key_file: "{{ local_private_key }}"
   - name: Register ecs_2
     add_host:
-      name: "server"
-      ansible_host: "{{ ecs_2_private_ip }}"
+      name: "ecs_2"
+      ansible_host: "{{ ecs_2_ip }}"
       ansible_ssh_user: "linux"
       ansible_ssh_private_key_file: "{{ local_private_key }}"
 
@@ -112,8 +112,11 @@
     script: ../ssh_check_sciprts/iperf_server.sh
 
 - name: Make iperf client
-  hosts: ecs_1
+  hosts: ecs_2
   gather_facts: no
   tasks:
-  - name: Make ecs_1 iperf server
+  - name: Set local facts
+    set_fact:
+      ecs_1_ip: "{{ hostvars.test_host.ecs_1_ip }}"
+  - name: Make ecs_2 iperf client
     script: ../ssh_check_sciprts/iperf_client.sh {{ ecs_1_ip }}
