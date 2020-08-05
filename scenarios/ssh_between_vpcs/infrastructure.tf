@@ -41,3 +41,12 @@ output "ecs_1_private_ip" {
 output "ecs_2_private_ip" {
   value = module.vpc_2.ecs_2_private_ip
 }
+
+
+output "ecs_1_public_ip" {
+  value = module.vpc_1.ecs_1_public_ip
+}
+
+output "ecs_2_public_ip" {
+  value = module.vpc_2.ecs_2_public_ip
+}

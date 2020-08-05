@@ -23,6 +23,8 @@
     set_fact:
       ecs_1_ip: "{{ tf_output.outputs['ecs_1_private_ip'].value }}"
       ecs_2_ip: "{{ tf_output.outputs['ecs_2_private_ip'].value }}"
+      ecs_1_public_ip: "{{ tf_output.outputs['ecs_1_public_ip'].value }}"
+      ecs_2_public_ip: "{{ tf_output.outputs['ecs_2_public_ip'].value }}"
   - name: Download private key from test_host
     fetch:
       src: "{{ tmp_dir }}/{{ key_name }}"
@@ -37,16 +39,18 @@
     set_fact:
       ecs_1_ip: "{{ hostvars.test_host.ecs_1_ip }}"
       ecs_2_ip: "{{ hostvars.test_host.ecs_2_ip }}"
+      ecs_1_public_ip: "{{ hostvars.test_host.ecs_1_public_ip }}"
+      ecs_2_public_ip: "{{ hostvars.test_host.ecs_2_public_ip }}"
   - name: Register ecs_1
     add_host:
       name: "ecs_1"
-      ansible_host: "{{ ecs_1_ip }}"
+      ansible_host: "{{ ecs_1_public_ip }}"
       ansible_ssh_user: "linux"
       ansible_ssh_private_key_file: "{{ local_private_key }}"
   - name: Register ecs_2
     add_host:
       name: "ecs_2"
-      ansible_host: "{{ ecs_2_ip }}"
+      ansible_host: "{{ ecs_2_public_ip }}"
       ansible_ssh_user: "linux"
       ansible_ssh_private_key_file: "{{ local_private_key }}"
 

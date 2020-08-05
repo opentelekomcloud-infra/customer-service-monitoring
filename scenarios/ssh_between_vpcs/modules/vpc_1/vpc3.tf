@@ -14,10 +14,26 @@ resource "opentelekomcloud_vpc_subnet_v1" "subnet_1" {
   ]
 }
 
-
 data "opentelekomcloud_images_image_v2" "ecs_image_1" {
   name        = var.ecs_image
   most_recent = true
+}
+
+resource "opentelekomcloud_vpc_eip_v1" "vpc1_eip" {
+
+  bandwidth {
+    name       = "scn2_limit"
+    share_type = "PER"
+    size       = 10
+  }
+
+  publicip {
+    type = "5_bgp"
+  }
+}
+
+output "ecs_1_public_ip" {
+  value = opentelekomcloud_vpc_eip_v1.vpc1_eip.publicip[0].ip_address
 }
 
 resource "opentelekomcloud_compute_instance_v2" "ecs_1" {
@@ -41,6 +57,11 @@ resource "opentelekomcloud_compute_instance_v2" "ecs_1" {
   tag = {
     "scenario" : var.scenario
   }
+}
+
+resource "opentelekomcloud_compute_floatingip_associate_v2" "assign_ip" {
+  floating_ip = opentelekomcloud_vpc_eip_v1.vpc1_eip.publicip[0].ip_address
+  instance_id = opentelekomcloud_compute_instance_v2.ecs_1.id
 }
 
 
