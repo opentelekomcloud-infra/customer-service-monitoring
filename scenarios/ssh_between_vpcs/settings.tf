@@ -4,7 +4,7 @@ terraform {
   }
 
   backend "s3" { # use OBS for remote state
-    key                         = "terraform_state/tmp_scn"
+    key                         = "terraform_state/ssh_between_vpcs"
     endpoint                    = "obs.eu-de.otc.t-systems.com"
     bucket                      = "obs-csm"
     region                      = "eu-de"
