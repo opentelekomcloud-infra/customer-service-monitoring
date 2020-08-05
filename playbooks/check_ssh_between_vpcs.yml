@@ -51,14 +51,19 @@
       ansible_ssh_private_key_file: "{{ local_private_key }}"
 
 
-- name: Installing packages on server
-  become: yes
+- name: Wait for hosts
   hosts: ecs_1, ecs_2
   gather_facts: no
   tasks:
   - name: Wait for host to be up
     wait_for_connection:
       timeout: 120
+
+- name: Installing packages on server
+  become: yes
+  hosts: ecs_1, ecs_2
+  gather_facts: no
+  tasks:
   - name: Install OpenSSH and netcat
     apt:
       pkg:
@@ -68,8 +73,38 @@
         - Flent
       state: present
 
+
+- name: Create directories and copy scripts to ecs_1
+  hosts: ecs_1
+  gather_facts: no
+  tasks:
+  - name: Create directory scripts on ecs_1
+    file:
+      path: /home/scripts
+      state: directory
+      mode: "0755"
+  - name: Copy script for iperf server
+    copy:
+      src: ../ssh_check_scripts/iperf_server.sh
+      dest: /home/scripts/iperf_server.sh
+
+
+- name: Create directories and copy scripts to ecs_2
+  hosts: ecs_2
+  gather_facts: no
+  tasks:
+  - name: Create directory scripts on ecs_2
+    file:
+      path: /home/scripts
+      state: directory
+      mode: "0755"
+  - name: Copy script for iperf server
+    copy:
+      src: ../ssh_check_scripts/iperf_client.sh
+      dest: /home/scripts/iperf_client.sh
+
+
 - name: Make iperf server
-  become: yes
   hosts: ecs_1
   gather_facts: no
   tasks:
@@ -77,7 +112,6 @@
     script: ../ssh_check_sciprts/iperf_server.sh
 
 - name: Make iperf client
-  become: yes
   hosts: ecs_1
   gather_facts: no
   tasks:
