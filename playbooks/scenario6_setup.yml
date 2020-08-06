@@ -107,11 +107,11 @@
     - name: Add records to rds in background
       shell: "start-stop-daemon -Sbmvp /tmp/add_records_to_rds.pid -x /usr/bin/python3 /tmp/add_records_to_rds.py -- --host {{pg_host}} --port {{pg_port}}  --username {{pg_username}} --password {{pg_password}}  --database 'entities'"
 
-    - name: Changing permissions of "check_rds_filling_status.sh"
-      file: dest=/tmp/check_rds_filling_status.sh mode=a+x
+    #- name: Changing permissions of "check_rds_filling_status.sh"
+    #  file: dest=/tmp/check_rds_filling_status.sh mode=a+x
 
-    - name: Schedule load script status check
-      cron:
-        name: "Check status of RDS filling script"
-        minute: "*/59"
-        job: "/tmp/check_rds_filling_status.sh {{pg_host}} {{pg_port}} {{pg_username}} {{pg_password}}"
+    #- name: Schedule load script status check
+    #  cron:
+    #    name: "Check status of RDS filling script"
+    #    minute: "*/59"
+    #    job: "/tmp/check_rds_filling_status.sh {{pg_host}} {{pg_port}} {{pg_username}} {{pg_password}}"
