@@ -91,7 +91,9 @@
     - name: Install psycopg2 for Postgresql
       pip:
         executable: pip3
-        name: psycopg2-binary
+        name:
+          - psycopg2-binary
+          - pyyml
         state: forcereinstall
 
     - name: Copy script to host

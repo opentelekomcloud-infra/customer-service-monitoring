@@ -3,6 +3,7 @@
 import psycopg2
 import logging
 import uuid
+import yaml
 
 from contextlib import closing
 from argparse import ArgumentParser
@@ -104,14 +105,16 @@ def _logging_configuration():
 def main():
     _logging_configuration()
     logging.info('Script starts')
-    n = 14027776
-    i = 1
-    schema_name = 'public'
-    table_name = str(uuid.uuid4())
-    create_table(schema_name, table_name, 'content')
-    while not is_database_fulfilled('entities', 10737418240):
-        generate_random_values_and_insert_into_table(schema_name, table_name, i + (i - 1) * n, i * n, 'content')
-        i = i + 1
+    with open('data.yaml') as data_file:
+        data = yaml.safe_load(data_file)
+        n = data['psycopg']['record_count']
+        i = 1
+        schema_name = 'public'
+        table_name = str(uuid.uuid4())
+        create_table(schema_name, table_name, 'content')
+        while not is_database_fulfilled('entities', data['psycopg']['max_size_in_bytes']):
+            generate_random_values_and_insert_into_table(schema_name, table_name, i + (i - 1) * n, i * n, 'content')
+            i = i + 1
     logging.info('Script finished')
 
 
