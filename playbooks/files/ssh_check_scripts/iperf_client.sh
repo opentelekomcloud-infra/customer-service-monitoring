@@ -1,5 +1,4 @@
 #!/bin/bash
-ip_client = $1
-result=$(iperf -c $ip_client -b)
+result=$(iperf -c ${1} -b)
 echo $result
 

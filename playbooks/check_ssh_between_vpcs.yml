@@ -68,7 +68,7 @@
   hosts: ecs_1, ecs_2
   gather_facts: no
   tasks:
-  - name: Install OpenSSH and netcat
+  - name: Install OpenSSH and iperf
     apt:
       pkg:
         - openssh-server
