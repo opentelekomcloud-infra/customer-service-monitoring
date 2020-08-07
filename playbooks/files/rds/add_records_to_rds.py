@@ -111,8 +111,8 @@ def main():
         i = 1
         schema_name = 'public'
         table_name = str(uuid.uuid4())
-        create_table(schema_name, table_name, 'content')
         while not is_database_fulfilled('entities', data['psycopg']['max_size_in_bytes']):
+            create_table(schema_name, table_name, 'content')
             generate_random_values_and_insert_into_table(schema_name, table_name, i + (i - 1) * n, i * n, 'content')
             i = i + 1
     logging.info('Script finished')
