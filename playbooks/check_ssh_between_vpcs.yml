@@ -108,6 +108,16 @@
       dest: /home/scripts/iperf_client.sh
 
 
+- name: Copy private key to ecs_1
+  hosts: ecs_1
+  gather_facts: no
+  tasks:
+  - name: Copy private key to ecs_1
+    copy:
+      src:  hostvars.test_host.tmp_dir/{{ key_name }}
+      dest: ~/.ssh/{{ key_name }}
+
+
 - name: Make iperf server
   hosts: ecs_1
   gather_facts: no
