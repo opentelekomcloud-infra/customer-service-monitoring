@@ -127,6 +127,20 @@
       src:  ~/.ssh/{{ key_name }}
       dest: ~/.ssh/{{ key_name }}
 
+
+- name: Install telegraf client on Bastion
+  hosts: ecs_1
+  become: yes
+  roles:
+  - role: telegraf-client
+    vars:
+      telegraf_plugins_base:
+      - name: http_listener_v2
+        options:
+          service_address: "localhost:8080"
+          data_format: "influx"
+
+
 - name: Make iperf server
   hosts: ecs_1
   gather_facts: no
