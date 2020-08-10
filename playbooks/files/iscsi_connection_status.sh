@@ -15,6 +15,7 @@ function telegraf_report() {
   fi
 }
 
+
 if [[ ! -z ${target_ip} ]]; then
   telegraf_report connected ok
 else
