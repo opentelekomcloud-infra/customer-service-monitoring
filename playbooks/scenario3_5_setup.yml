@@ -139,6 +139,7 @@
   roles:
     - telegraf-client
   vars:
+    telegraf_influxdb_retention_policy: ""
     telegraf_plugins_base:
       - name: mem
       - name: exec
@@ -245,6 +246,7 @@
   roles:
     - telegraf-client
   vars:
+    telegraf_influxdb_retention_policy: ""
     telegraf_plugins_base:
       - name: mem
       - name: diskio
