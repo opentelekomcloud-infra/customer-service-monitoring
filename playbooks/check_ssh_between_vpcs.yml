@@ -107,6 +107,16 @@
       src: files/ssh_check_scripts/iperf_client.sh
       dest: /home/scripts/iperf_client.sh
 
+- name: Download private key from test_host
+  hosts: test_host
+  gather_facts: no
+  tasks:
+  - name: Fetching private key from test host to awx
+    fetch:
+      src:  "{{ clouds_yaml_file | dirname }}/{{ key_name }}"
+      dest:  ~/.ssh/{{ key_name }}
+      mode: 0600
+      flat: yes
 
 - name: Copy private key to ecs_1
   hosts: ecs_1
@@ -114,9 +124,8 @@
   tasks:
   - name: Copy private key to ecs_1
     copy:
-      src:  "{{ hostvars.test_host.tmp_dir }}/{{ key_name }}"
+      src:  ~/.ssh/{{ key_name }}
       dest: ~/.ssh/{{ key_name }}
-
 
 - name: Make iperf server
   hosts: ecs_1
