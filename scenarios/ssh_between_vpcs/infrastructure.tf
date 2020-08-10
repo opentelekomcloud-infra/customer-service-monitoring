@@ -38,7 +38,7 @@ resource "opentelekomcloud_vpc_peering_connection_v2" "peering_connection" {
 resource "opentelekomcloud_vpc_route_v2" "vpc_route" {
   type  = "peering"
   nexthop  = opentelekomcloud_vpc_peering_connection_v2.peering_connection.id
-  destination = vpc_2_cidr
+  destination = "172.16.0.0/24"
   vpc_id = module.vpc_1.vpc_1_id
  }
 
