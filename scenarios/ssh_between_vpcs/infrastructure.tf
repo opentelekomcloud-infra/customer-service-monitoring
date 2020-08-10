@@ -21,7 +21,7 @@ module "vpc_2" {
   source = "./modules/vpc_2"
 
   key_pair = local.key_pair
-  vpc_2_cidr   = "192.169.0"
+  vpc_2_cidr   = "172.16.0"
   ecs_image    = "Standard_Debian_10_latest"
   ecs_flavor   = "s2.large.2"
   availability_zone    = "eu-de-01"
