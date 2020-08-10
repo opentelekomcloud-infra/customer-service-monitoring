@@ -114,7 +114,7 @@
   tasks:
   - name: Copy private key to ecs_1
     copy:
-      src:  hostvars.test_host.tmp_dir/{{ key_name }}
+      src:  "{{ hostvars.test_host.tmp_dir }}/{{ key_name }}"
       dest: ~/.ssh/{{ key_name }}
 
 
