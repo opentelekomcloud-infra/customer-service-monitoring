@@ -127,6 +127,18 @@
       src:  ~/.ssh/{{ key_name }}
       dest: ~/.ssh/{{ key_name }}
 
+- name: Install packages for telegraf installation
+  hosts: ecs_1
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: Install PIP
+    apt:
+      name:
+        - python3-setuptools
+        - python3-pip
+        - aptitude
+
 
 - name: Install telegraf client on Bastion
   hosts: ecs_1
