@@ -153,19 +153,11 @@
           data_format: "influx"
 
 
-- name: Make iperf server
+
+- name: Check ssh connection
   hosts: ecs_1
   gather_facts: no
   tasks:
-  - name: Make ecs_1 iperf server
-    script: ssh_check_scripts/iperf_server.sh
+  - name: Run script for monitoring ssh connection
+    script: ssh_check_scripts/monitoring_ssh.sh
 
-- name: Make iperf client
-  hosts: ecs_2
-  gather_facts: no
-  tasks:
-  - name: Set local facts
-    set_fact:
-      ecs_1_ip: "{{ hostvars.test_host.ecs_1_ip }}"
-  - name: Make ecs_2 iperf client
-    script: ssh_check_scripts/iperf_client.sh {{ ecs_1_ip }}
