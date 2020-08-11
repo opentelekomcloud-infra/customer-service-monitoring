@@ -14,6 +14,7 @@ resource "opentelekomcloud_vpc_subnet_v1" "subnet_2" {
   cidr   = "${var.vpc_2_cidr}.0/24"
   vpc_id = opentelekomcloud_vpc_v1.vpc_2.id
   gateway_ip    = "${var.vpc_2_cidr}.1"
+  dns_list = ["100.125.4.25", "100.125.129.199"]
 }
 
 resource "opentelekomcloud_compute_secgroup_v2" "ecs_2_group" {

@@ -13,6 +13,7 @@ resource "opentelekomcloud_vpc_subnet_v1" "subnet_1" {
   cidr   = "${var.vpc_1_cidr}.0/24"
   vpc_id = opentelekomcloud_vpc_v1.vpc_1.id
   gateway_ip    = "${var.vpc_1_cidr}.1"
+  dns_list = ["100.125.4.25", "100.125.129.199"]
 
   depends_on = [
     opentelekomcloud_vpc_v1.vpc_1
