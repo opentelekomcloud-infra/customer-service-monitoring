@@ -81,31 +81,16 @@
   hosts: ecs_1
   gather_facts: no
   tasks:
-  - name: Create directory scripts on ecs_1
+  - name: Create directory for scripts on ecs_1
     file:
       path: /home/scripts
       state: directory
       mode: "0755"
-  - name: Copy script for iperf server
+  - name: Copy scripts
     copy:
-      src: files/ssh_check_scripts/iperf_server.sh
-      dest: /home/scripts/iperf_server.sh
+      src: files/ssh_check_scripts/
+      dest: /home/scripts/
 
-
-- name: Create directories and copy scripts to ecs_2
-  become: yes
-  hosts: ecs_2
-  gather_facts: no
-  tasks:
-  - name: Create directory scripts on ecs_2
-    file:
-      path: /home/scripts
-      state: directory
-      mode: "0755"
-  - name: Copy script for iperf client
-    copy:
-      src: files/ssh_check_scripts/iperf_client.sh
-      dest: /home/scripts/iperf_client.sh
 
 - name: Download private key from test_host
   hosts: test_host
@@ -152,12 +137,12 @@
           service_address: "localhost:8080"
           data_format: "influx"
 
-
-
 - name: Check ssh connection
   hosts: ecs_1
   gather_facts: no
+  vars:
+    ecs_2_private_ip: "{{ hostvars.test_host.ecs_2_ip }}"
   tasks:
   - name: Run script for monitoring ssh connection
-    script: ssh_check_scripts/monitoring_ssh.sh
+    script: ssh_check_scripts/monitoring_ssh.sh {{ ecs_2_private_ip }}
 
