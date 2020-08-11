@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 telegraf="localhost:8080/telegraf"
 MEASUREMENT="ssh_connection_monitoring"
-while (true)
-do
-  ./keep_ssh_connection.sh
-  if $?!=0
-  then
-    telegraf_report connection_lost fail
-  fi
-done
+
+./keep_ssh_connection.sh
+if [ $? -eq 0 ]
+then
+  telegraf_report connection_lost fail
+fi
+
 
 
 function telegraf_report() {
