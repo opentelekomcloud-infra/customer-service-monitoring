@@ -96,6 +96,12 @@
           - pyyml
         state: forcereinstall
 
+    - name: Install pgAdmin4
+      apt:
+        name:
+          - pgadmin4
+          - pgadmin4-apache2
+
     - name: Copy script to host
       copy:
         src: "rds/{{item}}"
