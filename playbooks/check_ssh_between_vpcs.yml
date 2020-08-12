@@ -105,6 +105,7 @@
 
 - name: Copy private key to ecs_1
   hosts: ecs_1
+  become: yes
   gather_facts: no
   tasks:
   - name: Copy private key to ecs_1
@@ -139,6 +140,7 @@
 
 - name: Check ssh connection
   hosts: ecs_1
+  become: yes
   gather_facts: no
   vars:
     ecs_2_private_ip: "{{ hostvars.test_host.ecs_2_ip }}"
