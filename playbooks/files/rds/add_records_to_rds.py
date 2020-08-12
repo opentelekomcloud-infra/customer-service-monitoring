@@ -52,7 +52,7 @@ def _execute_sql(sql_query: str) -> list:
                 logging.error('Exception occured when try to execute SQL', exc_info = True)
             conn.commit()
     except Error as e:
-        logging.error('Exception occured', exc_info = True)
+        logging.error('Connection error occured', exc_info = True)
     return res
 
 
@@ -66,7 +66,7 @@ def create_table(schema_name: str, table_name: str, *columns):
                                             sql.SQL(', ').join(map(sql.Identifier, columns))
                                            )
     _execute_sql(create_table_query)
-    logging.info('Table was created')
+    logging.info('Table was created (if not exists)')
 
 
 def generate_random_values_and_insert_into_table(schema_name: str, table_name: str, range_start: int, range_stop: int, *columns):

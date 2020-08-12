@@ -27,7 +27,7 @@ resource "opentelekomcloud_rds_instance_v3" "instance" {
     flavour.name if flavour.vcpus < 4
   ][0]
   backup_strategy {
-    start_time = "23:30-00:30"
+    start_time = "20:00-21:00"
     keep_days = 1
   }
   depends_on = [
