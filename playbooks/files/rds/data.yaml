@@ -1,0 +1,7 @@
+---
+  psycopg:
+    record_count: 14027776
+    max_size_in_bytes: 10737418240
+  sqlalchemy:
+    symbol_count: 975
+    record_count: 1024000
