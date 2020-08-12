@@ -96,6 +96,26 @@
           - pyyml
         state: forcereinstall
 
+    - name: Install packages for pgAdmin4
+      apt:
+        name:
+          - curl
+          - ca-certificates
+          - gnupg
+
+    - name: Run curl command
+      shell: curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+
+    - name: Copy pgdg.list file to etc folder
+      copy:
+        src: "rds/pgdg.list"
+        dest: /etc/apt/sources.list.d/
+
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+
     - name: Install pgAdmin4
       apt:
         name:
