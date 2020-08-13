@@ -127,11 +127,6 @@
         src: "rds/config_local.py"
         dest: /usr/share/pgadmin4/web/
 
-    - name: Set master password to false
-      script:  /usr/lib/python3.6/site-packages/pgadmin4/setup.py
-      args:
-        executable: /usr/bin/python3
-
     - name: Copy script to host
       copy:
         src: "rds/{{item}}"
