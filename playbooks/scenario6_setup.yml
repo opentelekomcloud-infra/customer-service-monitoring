@@ -128,7 +128,7 @@
         dest: /usr/web/
 
     - name: Set master password to false
-      script:  /usr/web/setup.py
+      script:  /usr/share/pgadmin4/web/setup.py
       args:
         executable: python3
 
