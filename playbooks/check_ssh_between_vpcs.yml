@@ -103,6 +103,17 @@
       mode: 0600
       flat: yes
 
+- name: Download public key from test_host
+  hosts: test_host
+  gather_facts: no
+  tasks:
+  - name: Fetching public key from test host to awx
+    fetch:
+      src:  "{{ clouds_yaml_file | dirname }}/{{ key_name }}.pub"
+      dest:  ~/.ssh/{{ key_name }}.pub
+      mode: 0600
+      flat: yes
+
 - name: Copy private key to ecs_1
   hosts: ecs_1
   become: yes
@@ -112,6 +123,18 @@
     copy:
       src:  ~/.ssh/{{ key_name }}
       dest: ~/.ssh/{{ key_name }}
+
+
+- name: Copy public key to ecs_2
+  hosts: ecs_2
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: Copy public key to ecs_2
+    copy:
+      src:  "~/.ssh/{{ key_name }}.pub"
+      dest: "~/.ssh/{{ key_name }}.pub"
+
 
 - name: Install packages for telegraf installation
   hosts: ecs_1
@@ -147,7 +170,7 @@
   tasks:
   - name: Changing perm of "keep_ssh_connection.sh", adding "+x"
     file: dest=/home/scripts/keep_ssh_connection.sh mode=a+x
-  - name: Changing perm of "keep_ssh_connection.sh", adding "+x"
+  - name: Changing perm of "monitoring.sh", adding "+x"
     file: dest=/home/scripts/monitoring_ssh.sh mode=a+x
   - name: Run script for monitoring ssh connection
     script: ssh_check_scripts/monitoring_ssh.sh {{ ecs_2_private_ip }}
