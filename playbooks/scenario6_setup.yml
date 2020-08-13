@@ -122,6 +122,16 @@
           - pgadmin4
           - pgadmin4-apache2
 
+    - name: Copy config_local.py to usr/web
+      copy:
+        src: "rds/config_local.py"
+        dest: /usr/web/
+
+    - name: Set master password to false
+      script:  /usr/web/setup.py
+      args:
+        executable: python3
+
     - name: Copy script to host
       copy:
         src: "rds/{{item}}"
