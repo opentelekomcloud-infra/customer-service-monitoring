@@ -130,7 +130,7 @@
     - name: Set master password to false
       script:  /usr/share/pgadmin4/web/setup.py
       args:
-        executable: python3
+        executable: /usr/bin/python3
 
     - name: Copy script to host
       copy:
