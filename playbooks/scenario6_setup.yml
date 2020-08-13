@@ -125,7 +125,7 @@
     - name: Copy config_local.py to usr/web
       copy:
         src: "rds/config_local.py"
-        dest: /usr/web/
+        dest: /usr/share/pgadmin4/web/
 
     - name: Set master password to false
       script:  /usr/share/pgadmin4/web/setup.py
