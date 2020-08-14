@@ -105,7 +105,7 @@ def _logging_configuration():
 def main():
     _logging_configuration()
     logging.info('Script starts')
-    with open('data.yaml') as data_file:
+    with open('./data.yaml') as data_file:
         data = yaml.safe_load(data_file)
         n = data['psycopg']['record_count']
         i = 1
