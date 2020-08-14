@@ -96,37 +96,6 @@
           - pyyml
         state: forcereinstall
 
-    - name: Install packages for pgAdmin4
-      apt:
-        name:
-          - curl
-          - ca-certificates
-          - gnupg
-
-    - name: Run curl command
-      shell: curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-
-    - name: Copy pgdg.list file to etc folder
-      copy:
-        src: "rds/pgdg.list"
-        dest: /etc/apt/sources.list.d/
-
-    - name: Update and upgrade apt packages
-      apt:
-        upgrade: yes
-        update_cache: yes
-
-    - name: Install pgAdmin4
-      apt:
-        name:
-          - pgadmin4
-          - pgadmin4-apache2
-
-    - name: Copy config_local.py to usr/web
-      copy:
-        src: "rds/config_local.py"
-        dest: /usr/share/pgadmin4/web/
-
     - name: Copy script to host
       copy:
         src: "rds/{{item}}"
@@ -137,9 +106,8 @@
        - "data.yaml"
 
     - name: Add records to rds in background
-      script: /rds/add_records_to_rds.py
-      args:
-         executable: python3
+      script: rds/add_records_to_rds.py --host {{pg_host}} --port {{pg_port}}  --user{{pg_username}} --password{{pg_password}}  --database{{pg_database}}
+
     #  shell: "start-stop-daemon -Sbmvp /tmp/add_records_to_rds.pid -x /usr/bin/python3 /tmp/add_records_to_rds.py -- --host {{pg_host}} --port {{pg_port}}  --username {{pg_username}} --password {{pg_password}}  --database 'entities'"
 
     #- name: Changing permissions of "check_rds_filling_status.sh"
