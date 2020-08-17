@@ -3,6 +3,7 @@
 import psycopg2
 import logging
 import uuid
+import os
 import yaml
 
 from contextlib import closing
@@ -25,13 +26,13 @@ def _parse_param():
 
 def _create_connection_dict() -> dict:
     """Create connection to database"""
-    args = _parse_param()
+    #args = _parse_param()
     db_connect = {
-        'host': args.host,
-        'port': args.port,
-        'user': args.username,
-        'password': args.password,
-        'database': args.database
+        'host': '127.0.0.1' ,#args.host,
+        'port': 8669,#args.port,
+        'user': 'postgres',#args.username,
+        'password': 'test1234!',#args.password,
+        'database': 'entities' #args.database
     }
     return db_connect
 
@@ -96,7 +97,7 @@ def is_database_fulfilled(db_name: str, db_max_size: int) -> bool:
 def _logging_configuration():
     """Basic configuration for logging"""
     return logging.basicConfig(
-        filename = '/tmp/logs.log',
+        filename = 'logs.log',
         filemode = 'w',
         level = logging.DEBUG,
         format='%(levelname)s:%(asctime)s:%(message)s')
@@ -105,7 +106,7 @@ def _logging_configuration():
 def main():
     _logging_configuration()
     logging.info('Script starts')
-    with open('./data.yaml') as data_file:
+    with open(os.path.abspath('data.yaml')) as data_file:
         data = yaml.safe_load(data_file)
         n = data['psycopg']['record_count']
         i = 1
