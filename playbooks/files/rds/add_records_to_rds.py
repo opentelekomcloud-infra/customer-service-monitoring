@@ -14,6 +14,7 @@ from psycopg2._psycopg import Error, OperationalError
 
 def _parse_param():
     parser = ArgumentParser(description = 'Get data for connection string')
+    parser.add_argument('--source', required = True)
     parser.add_argument('--host', required = True)
     parser.add_argument('--port', required = True)
     parser.add_argument('--database', '-db', required = True)
@@ -105,8 +106,9 @@ def _logging_configuration():
 
 def main():
     _logging_configuration()
+    args = _parse_param()
     logging.info('Script starts')
-    with open(os.path.join(os.getcwd(), 'data.yaml')) as data_file:
+    with open(args.datafile) as data_file:
         data = yaml.safe_load(data_file)
         n = data['psycopg']['record_count']
         i = 1
