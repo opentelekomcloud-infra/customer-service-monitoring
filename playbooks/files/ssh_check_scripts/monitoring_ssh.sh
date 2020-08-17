@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 telegraf="localhost:8080/telegraf"
 MEASUREMENT="ssh_connection_monitoring"
-/home/scripts/keep_ssh_connection.sh $1
+source ~/scripts/keep_ssh_connection.sh $1
 if [ $? -eq 0 ]
 then
   telegraf_report connection_lost fail

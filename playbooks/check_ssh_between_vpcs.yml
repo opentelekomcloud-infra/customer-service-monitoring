@@ -78,7 +78,6 @@
 
 - name: Create directories and copy scripts to ecs_1
   hosts: ecs_1
-  become: yes
   gather_facts: no
   tasks:
   - name: Create directory for scripts on ecs_1
@@ -89,45 +88,38 @@
   - name: Copy scripts
     copy:
       src: files/ssh_check_scripts/
-      dest: /home/scripts/
+      dest: ~/scripts/
 
 
-- name: Download private key from test_host
+- name: Download private ans public key from test_host
   hosts: test_host
   gather_facts: no
   tasks:
   - name: Fetching private key from test host to awx
     fetch:
       src:  "{{ clouds_yaml_file | dirname }}/{{ key_name }}"
-      dest:  ~/.ssh/{{ key_name }}
+      dest:  /tmp/{{ key_name }}
       mode: 0600
       flat: yes
-
-- name: Download public key from test_host
-  hosts: test_host
-  gather_facts: no
-  tasks:
   - name: Fetching public key from test host to awx
     fetch:
       src:  "{{ clouds_yaml_file | dirname }}/{{ key_name }}.pub"
-      dest:  ~/.ssh/{{ key_name }}.pub
+      dest: /tmp/{{ key_name }}.pub
       mode: 0600
       flat: yes
 
 - name: Copy private key to ecs_1
   hosts: ecs_1
-  become: yes
   gather_facts: no
   tasks:
   - name: Copy private key to ecs_1
     copy:
-      src:  ~/.ssh/{{ key_name }}
+      src:  /tmp/{{ key_name }}
       dest: ~/.ssh/{{ key_name }}
 
 
 - name: Copy public key to ecs_2
   hosts: ecs_2
-  become: yes
   gather_facts: no
   tasks:
   - name: Copy public key to ecs_2
@@ -148,8 +140,7 @@
         - python3-pip
         - aptitude
 
-
-- name: Install telegraf client on Bastion
+- name: Install telegraf client on ecs_1
   hosts: ecs_1
   become: yes
   roles:
@@ -164,14 +155,13 @@
 
 - name: Check ssh connection
   hosts: ecs_1
-  become: yes
   vars:
     ecs_2_private_ip: "{{ hostvars.test_host.ecs_2_ip }}"
   tasks:
   - name: Changing perm of "keep_ssh_connection.sh", adding "+x"
-    file: dest=/home/scripts/keep_ssh_connection.sh mode=a+x
+    file: dest=~/scripts/keep_ssh_connection.sh mode=a+x
   - name: Changing perm of "monitoring.sh", adding "+x"
-    file: dest=/home/scripts/monitoring_ssh.sh mode=a+x
+    file: dest=~/scripts/monitoring_ssh.sh mode=a+x
   - name: Run script for monitoring ssh connection
     script: ssh_check_scripts/monitoring_ssh.sh {{ ecs_2_private_ip }}
 
