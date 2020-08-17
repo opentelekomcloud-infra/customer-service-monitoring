@@ -26,13 +26,13 @@ def _parse_param():
 
 def _create_connection_dict() -> dict:
     """Create connection to database"""
-    #args = _parse_param()
+    args = _parse_param()
     db_connect = {
-        'host': '127.0.0.1' ,#args.host,
-        'port': 8669,#args.port,
-        'user': 'postgres',#args.username,
-        'password': 'test1234!',#args.password,
-        'database': 'entities' #args.database
+        'host': args.host,
+        'port': args.port,
+        'user': args.username,
+        'password': args.password,
+        'database': args.database
     }
     return db_connect
 
@@ -106,7 +106,7 @@ def _logging_configuration():
 def main():
     _logging_configuration()
     logging.info('Script starts')
-    with open(os.path.abspath('data.yaml')) as data_file:
+    with open(os.path.join(os.getcwd(), 'data.yaml')) as data_file:
         data = yaml.safe_load(data_file)
         n = data['psycopg']['record_count']
         i = 1
