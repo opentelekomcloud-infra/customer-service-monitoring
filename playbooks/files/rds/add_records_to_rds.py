@@ -108,7 +108,7 @@ def main():
     _logging_configuration()
     args = _parse_param()
     logging.info('Script starts')
-    with open(args.datafile) as data_file:
+    with open(args.source) as data_file:
         data = yaml.safe_load(data_file)
         n = data['psycopg']['record_count']
         i = 1
