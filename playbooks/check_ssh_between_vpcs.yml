@@ -163,5 +163,5 @@
   - name: Changing perm of "monitoring.sh", adding "+x"
     file: dest=~/scripts/monitoring_ssh.sh mode=a+x
   - name: Run script for monitoring ssh connection
-    script: ssh_check_scripts/monitoring_ssh.sh {{ ecs_2_private_ip }}
+    script: ssh_check_scripts/monitoring_ssh.sh  ~/.ssh/{{ key_name }} {{ ecs_2_private_ip }}
 
