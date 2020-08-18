@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
-telegraf="localhost:8080/telegraf"
+telegraf="http://localhost:8080/telegraf"
 MEASUREMENT="ssh_connection_monitoring"
-source ~/scripts/keep_ssh_connection.sh $1 $2
-if [ $? -eq 0 ]
-then
-  telegraf_report connection_lost fail
-fi
-
 
 function telegraf_report() {
   result=$1
@@ -18,3 +12,10 @@ function telegraf_report() {
     exit 3
   fi
 }
+
+source ~/scripts/keep_ssh_connection.sh $1 $2
+if [ $? -eq 0 ]
+then
+  telegraf_report connection_lost fail
+fi
+
