@@ -98,7 +98,7 @@ def is_database_fulfilled(db_name: str, db_max_size: int) -> bool:
 def _logging_configuration():
     """Basic configuration for logging"""
     return logging.basicConfig(
-        filename = os.path.join(os.getcwd(), 'rds_logs.log'),
+        filename = '/tmp/rds_logs.log',
         filemode = 'w',
         level = logging.DEBUG,
         format='%(levelname)s:%(asctime)s:%(message)s')
