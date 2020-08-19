@@ -72,7 +72,6 @@
     apt:
       pkg:
         - openssh-server
-        - iperf
       state: present
 
 
@@ -98,13 +97,13 @@
   - name: Fetching private key from test host to awx
     fetch:
       src:  "{{ clouds_yaml_file | dirname }}/{{ key_name }}"
-      dest:  /tmp/{{ key_name }}
+      dest:  "/tmp/{{ key_name }}"
       mode: 0600
       flat: yes
   - name: Fetching public key from test host to awx
     fetch:
       src:  "{{ clouds_yaml_file | dirname }}/{{ key_name }}.pub"
-      dest: /tmp/{{ key_name }}.pub
+      dest: "/tmp/{{ key_name }}.pub"
       mode: 0600
       flat: yes
 
@@ -114,8 +113,8 @@
   tasks:
   - name: Copy private key to ecs_1
     copy:
-      src:  /tmp/{{ key_name }}
-      dest: ~/.ssh/{{ key_name }}
+      src:  "/tmp/{{ key_name }}"
+      dest: "{{ local_private_key }}"
 
 
 - name: Copy public key to ecs_2
@@ -124,8 +123,8 @@
   tasks:
   - name: Copy public key to ecs_2
     copy:
-      src:  "~/.ssh/{{ key_name }}.pub"
-      dest: "~/.ssh/{{ key_name }}.pub"
+      src:  "/tmp/{{ key_name }}.pub"
+      dest: "{{ local_private_key }}.pub"
 
 
 - name: Install packages for telegraf installation
@@ -157,7 +156,6 @@
           service_address: "localhost:{{ telegraf_local_port }}"
           data_format: "influx"
 
-
 - name: Check ssh connection
   hosts: ecs_1
   vars:
@@ -167,6 +165,7 @@
     file: dest=~/scripts/keep_ssh_connection.sh mode=a+x
   - name: Changing perm of "monitoring.sh", adding "+x"
     file: dest=~/scripts/monitoring_ssh.sh mode=a+x
+  - name: Changing perm of private key, adding "+x"
+    file: dest={{ local_private_key }} mode='700'
   - name: Run script for monitoring ssh connection
-    script: ssh_check_scripts/monitoring_ssh.sh  ~/.ssh/{{ key_name }} {{ ecs_2_private_ip }}
-
+    shell: "nohup ssh_check_scripts/monitoring_ssh.sh {{ local_private_key }} {{ ecs_2_private_ip }} &"

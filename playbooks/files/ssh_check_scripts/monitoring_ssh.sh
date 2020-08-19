@@ -13,9 +13,12 @@ function telegraf_report() {
   fi
 }
 
-source ~/scripts/keep_ssh_connection.sh $1 $2
-if [ $? -eq 0 ]
-then
-  telegraf_report 1 fail
-fi
+while(true)
+do
+  source ~/scripts/keep_ssh_connection.sh $1 $2
+  if [ $? != 0 ]
+  then
+    telegraf_report 1 fail
+  fi
+done
 
