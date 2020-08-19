@@ -143,13 +143,18 @@
 - name: Install telegraf client on ecs_1
   hosts: ecs_1
   become: yes
+  vars:
+    telegraf_local_port: 8080
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
   roles:
   - role: telegraf-client
     vars:
+      telegraf_influxdb_retention_policy: ""
       telegraf_plugins_base:
       - name: http_listener_v2
         options:
-          service_address: "localhost:8080"
+          service_address: "localhost:{{ telegraf_local_port }}"
           data_format: "influx"
 
 
