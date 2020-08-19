@@ -41,6 +41,12 @@ resource "opentelekomcloud_compute_secgroup_v2" "ecs_1_group" {
     ip_protocol = "tcp"
     to_port     = 443
   }
+  rule {
+    cidr        = "0.0.0.0/0"
+    from_port   = -1
+    ip_protocol = "icmp"
+    to_port     = -1
+  }
 }
 
 data "opentelekomcloud_images_image_v2" "ecs_image_1" {
