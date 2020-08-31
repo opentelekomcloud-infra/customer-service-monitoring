@@ -88,11 +88,11 @@
           - python-dev
           - cron
 
-    - name: Install psycopg2 for Postgresql
+    - name: Install pg2 for Postgresql
       pip:
         executable: pip3
         name:
-          - psycopg2-binary
+          - pg2-binary
           - pyyml
         state: forcereinstall
 

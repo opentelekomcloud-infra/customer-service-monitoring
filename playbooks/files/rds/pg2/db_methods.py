@@ -1,58 +1,38 @@
-#!/usr/bin/env python3
-
-import psycopg2
 import logging
 import uuid
-import os
-import yaml
-
 from contextlib import closing
-from argparse import ArgumentParser
+
+import psycopg2
+import yaml
 from psycopg2 import sql
-from psycopg2._psycopg import Error, OperationalError
+from psycopg2 import Error, OperationalError
+
+from .connection import get_source, get_connection_dict
 
 
-def _parse_param():
-    parser = ArgumentParser(description = 'Get data for connection string')
-    parser.add_argument('--source', required = True)
-    parser.add_argument('--host', required = True)
-    parser.add_argument('--port', required = True)
-    parser.add_argument('--database', '-db', required = True)
-    parser.add_argument('--username', '-user', required = True)
-    parser.add_argument('--password', '-pass', required = True)
-    args = parser.parse_args()
-    logging.info('Parse args')
-    return args
-
-
-def _create_connection_dict() -> dict:
-    """Create connection to database"""
-    args = _parse_param()
-    db_connect = {
-        'host': args.host,
-        'port': args.port,
-        'user': args.username,
-        'password': args.password,
-        'database': args.database
-    }
-    return db_connect
+def _logging_configuration():
+    """Basic configuration for logging"""
+    return logging.basicConfig(
+        filename = 'rds_logs.log',
+        filemode = 'w',
+        level = logging.DEBUG,
+        format='%(levelname)s:%(asctime)s:%(message)s')
 
 
 def _execute_sql(sql_query: str) -> list:
     """Execute sql query"""
-    connection_dict = _create_connection_dict()
+    connection_dict = get_connection_dict()
     res = list()
     try:
-        with closing(psycopg2.connect(**connection_dict)) as conn:
+        with closing(psycopg2.connect(**connection_dict)) as connection:
             try:
-                with conn.cursor() as cursor:
+                with connection.cursor() as cursor:
                     cursor.execute(sql_query)
                     if cursor.description is not None:
                         res = cursor.fetchall()
-                    logging.info('SQL was executed')
             except OperationalError as err:
                 logging.error('Exception occured when try to execute SQL', exc_info = True)
-            conn.commit()
+            connection.commit()
     except Error as e:
         logging.error('Connection error occured', exc_info = True)
     return res
@@ -68,11 +48,11 @@ def create_table(schema_name: str, table_name: str, *columns):
                                             sql.SQL(', ').join(map(sql.Identifier, columns))
                                            )
     _execute_sql(create_table_query)
-    logging.info('Table was created (if not exists)')
+    logging.info('Table was created (if it not existed before)')
 
 
 def generate_random_values_and_insert_into_table(schema_name: str, table_name: str, range_start: int, range_stop: int, *columns):
-
+    """Generate random values and insert it into tables"""
     model_query = sql.SQL("insert into {}.{} select generate_series({},{}) as id, md5(random()::text) AS {};")
     record_query = model_query.format(
                                       sql.Identifier(schema_name),
@@ -81,10 +61,11 @@ def generate_random_values_and_insert_into_table(schema_name: str, table_name: s
                                       sql.Literal(range_stop),
                                       sql.SQL(', ').join(map(sql.Identifier, columns)))
     _execute_sql(record_query)
+    logging.info('Generate random content and insert it into table')
 
 
-def _get_database_size(db_name: str) -> int:
-    """Get database size, returns bytes"""
+def get_database_size(db_name: str) -> int:
+    """Get database size which returned in bytes"""
     model_query = sql.SQL("select pg_database_size({});")
     get_size_query = model_query.format(sql.Literal(db_name))
     return _execute_sql(get_size_query)[0][0]
@@ -92,34 +73,21 @@ def _get_database_size(db_name: str) -> int:
 
 def is_database_fulfilled(db_name: str, db_max_size: int) -> bool:
     """Check database size and return false if database size is not enough"""
-    return _get_database_size(db_name) >= db_max_size
-
-
-def _logging_configuration():
-    """Basic configuration for logging"""
-    return logging.basicConfig(
-        filename = '/tmp/rds_logs.log',
-        filemode = 'w',
-        level = logging.DEBUG,
-        format='%(levelname)s:%(asctime)s:%(message)s')
+    return get_database_size(db_name) >= db_max_size
 
 
 def main():
     _logging_configuration()
-    args = _parse_param()
+    data_source = get_source()
     logging.info('Script starts')
-    with open(args.source) as data_file:
+    with open(data_source) as data_file:
         data = yaml.safe_load(data_file)
-        n = data['psycopg']['record_count']
+        n = data['record_count']
         i = 1
         schema_name = 'public'
         table_name = str(uuid.uuid4())
-        while not is_database_fulfilled('entities', data['psycopg']['max_size_in_bytes']):
+        while not is_database_fulfilled('entities', data['max_size_in_bytes']):
             create_table(schema_name, table_name, 'content')
             generate_random_values_and_insert_into_table(schema_name, table_name, i + (i - 1) * n, i * n, 'content')
             i = i + 1
     logging.info('Script finished')
-
-
-if __name__ == '__main__':
-    main()
