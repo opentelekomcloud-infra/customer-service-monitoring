@@ -78,7 +78,7 @@ resource "opentelekomcloud_compute_instance_v2" "ecs_1" {
   availability_zone = var.availability_zone
   security_groups = ["ecs_1_group"]
   key_pair    = opentelekomcloud_compute_keypair_v2.pair.name
-  user_data   = file("../first_boot.sh")
+  user_data   = file("${path.module}/first_boot.sh")
 
   network {
     uuid = opentelekomcloud_vpc_subnet_v1.subnet_1.id

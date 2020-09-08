@@ -168,4 +168,4 @@
   - name: Changing perm of private key, adding "+x"
     file: dest={{ local_private_key }} mode='700'
   - name: Run script for monitoring ssh connection
-    shell: "nohup ssh_check_scripts/monitoring_ssh.sh {{ local_private_key }} {{ ecs_2_private_ip }} &"
+    shell: "nohup ~/scripts/monitoring_ssh.sh {{ local_private_key }} {{ ecs_2_private_ip }} &"
