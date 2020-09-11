@@ -222,4 +222,4 @@
     - name: Start monitoring  # noqa 301 305
       shell: "{{ nohup_py3 }} {{ item }} --telegraf {{ telegraf_host }} --dns_name  {{ dns }} &"
       loop:
-        - "internal_dns_host_check"
+        - "internal_dns_resolve"
