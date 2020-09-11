@@ -223,4 +223,3 @@
       shell: "{{ nohup_py3 }} {{ item }} --telegraf {{ telegraf_host }} --dns_name  {{ dns }} &"
       loop:
         - "internal_dns_resolve"
-        - "internal_dns_host_check"
