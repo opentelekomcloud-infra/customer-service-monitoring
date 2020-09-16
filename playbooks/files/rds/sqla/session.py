@@ -3,7 +3,7 @@ from sqlalchemy.engine import url
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker
 
-from .connection import get_connection_dict
+from arg_parser import get_connection_dict
 
 
 def get_db_engine() -> engine:

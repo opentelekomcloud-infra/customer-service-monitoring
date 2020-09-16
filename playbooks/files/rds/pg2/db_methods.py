@@ -4,10 +4,9 @@ from contextlib import closing
 
 import psycopg2
 import yaml
-from psycopg2 import sql
-from psycopg2 import Error, OperationalError
+from psycopg2 import sql, Error, OperationalError
 
-from .connection import get_source, get_connection_dict
+from arg_parser import get_connection_dict, get_source
 
 
 def _logging_configuration():
@@ -78,9 +77,8 @@ def is_database_fulfilled(db_name: str, db_max_size: int) -> bool:
 
 def main():
     _logging_configuration()
-    data_source = get_source()
     logging.info('Script starts')
-    with open(data_source) as data_file:
+    with open(get_source()) as data_file:
         data = yaml.safe_load(data_file)
         n = data['record_count']
         i = 1
@@ -91,3 +89,7 @@ def main():
             generate_random_values_and_insert_into_table(schema_name, table_name, i + (i - 1) * n, i * n, 'content')
             i = i + 1
     logging.info('Script finished')
+
+
+if __name__ == "__main__":
+    main()
