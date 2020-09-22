@@ -22,7 +22,8 @@ then
      `--port ${pg_port} `
      `--username ${pg_username} `
      `--password ${pg_password} `
-     `--database ${pg_database}
+     `--database ${pg_database} `
+     `--drivername ${drivername}
     echo "rds filling script is restarted"
 else
     echo "rds filling script finished"
