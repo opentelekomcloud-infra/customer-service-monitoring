@@ -73,13 +73,16 @@
     - name: Register facts
       set_fact:
         server_local_port: "{{ server_port }}"
+        run_option: "sqla"
+        drivername: "postgresql+psycopg2"
+        source: "/tmp/rds/{{run_option}}/data.yaml"
 
     - name: Update and upgrade apt packages
       apt:
         upgrade: yes
         update_cache: yes
 
-    - name: Install PIP, libpq-dev and python-dev
+    - name: Install PIP, rsync libpq-dev and python-dev
       apt:
         name:
           - python3-setuptools
@@ -87,32 +90,38 @@
           - libpq-dev
           - python-dev
           - cron
+          - rsync
 
-    - name: Install pg2 for Postgresql
+    - name: Install pg2 and SQLAlchemy for Postgresql
       pip:
         executable: pip3
         name:
           - pg2-binary
           - pyyml
+          - SQLAlchemy
         state: forcereinstall
 
-    - name: Copy script to host
-      copy:
-        src: "rds/{{item}}"
-        dest: /tmp/
-      with_items:
-       - "add_records_to_rds.py"
-       - "check_rds_filling_status.sh"
-       - "data.yaml"
+    - name: Copy scripts to host
+      synchronize:
+        src: rds/
+        dest: /tmp/rds/
 
     - name: Changing permissions of "check_rds_filling_status.sh"
-      file: dest=/tmp/check_rds_filling_status.sh mode=a+x
+      file: dest=/tmp/rds/check_rds_filling_status.sh mode=a+x
 
     - name: Add records to rds in background
-      shell: "start-stop-daemon -Sbmvp /tmp/add_records_to_rds.pid -x /usr/bin/python3 /tmp/add_records_to_rds.py -- --source /tmp/data.yaml --host {{pg_host}} --port {{pg_port}}  --username {{pg_username}} --password {{pg_password}}  --database 'entities'"
+      shell: "start-stop-daemon -Sbmvp /tmp/rds/__main__.pid -x /usr/bin/python3 /tmp/rds/__main__.py -- `
+              `--run_option {{run_option}} `
+              `--source {{source}} `
+              `--drivername {{drivername}} `
+              `--host {{pg_host}} `
+              `--port {{pg_port}} `
+              `--username {{pg_username}} `
+              `--password {{pg_password}} `
+              `--database {{pg_database}}"
 
     - name: Schedule load script status check
       cron:
         name: "Check status of RDS filling script"
         minute: "*/59"
-        job: "/tmp/check_rds_filling_status.sh {{pg_host}} {{pg_port}} {{pg_username}} {{pg_password}}"
+        job: "/tmp/rds/check_rds_filling_status.sh {{run_option}} {{source}} {{pg_host}} {{pg_port}} {{pg_username}} {{pg_password}} {{drivername}} {{pg_database}}"

@@ -26,9 +26,9 @@ def get_connection_dict() -> dict:
     }
     if args.run_option == 'pg2':
         db_connect['user'] = args.username
-    else:
-        db_connect['drivername'] = args.drivername
+    if args.run_option == 'sqla':
         db_connect['username'] = args.username
+        db_connect['drivername'] = args.drivername
     return db_connect
 
 
