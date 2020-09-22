@@ -1,6 +1,6 @@
 #Key pair for vm access
 resource "opentelekomcloud_compute_keypair_v2" "pair" {
-  name       = "${var.prefix}-kp"
+  name       = "${var.prefix}_kp"
   public_key = var.public_key
 }
 
@@ -21,7 +21,7 @@ resource "opentelekomcloud_vpc_eip_v1" "scn_eip" {
 #Security group creation
 resource "opentelekomcloud_compute_secgroup_v2" "scn_public_secgroup" {
   description = "Allow external connections to ssh, http, and https ports"
-  name        = "scn_public_secgroup"
+  name        = "scn_public_secgroup_rds"
 
   rule {
     cidr        = "0.0.0.0/0"
