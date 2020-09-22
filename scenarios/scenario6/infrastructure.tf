@@ -16,7 +16,7 @@ module "postgresql" {
   source = "../modules/postgresql"
 
   availability_zone = var.availability_zone
-  instance_name     = "scn6-db"
+  instance_name     = "scn_6-db"
 
   network_id  = module.resources.vpc_id
   subnet_id   = module.resources.subnet.id
