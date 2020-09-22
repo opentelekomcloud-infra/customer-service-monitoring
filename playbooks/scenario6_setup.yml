@@ -59,6 +59,8 @@
   become: yes
   vars:
     server_port: 8081
+    run_option: "sqla"
+    drivername: "postgresql+psycopg2"
   roles:
     - role: too_simple_server
       vars:
@@ -73,8 +75,8 @@
     - name: Register facts
       set_fact:
         server_local_port: "{{ server_port }}"
-        run_option: "sqla"
-        drivername: "postgresql+psycopg2"
+        run_option: "{{run_option}}"
+        drivername: "{{drivername}}"
         source: "/tmp/rds/{{run_option}}/data.yaml"
 
     - name: Update and upgrade apt packages
