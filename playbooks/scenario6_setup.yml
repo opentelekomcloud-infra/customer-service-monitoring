@@ -98,7 +98,7 @@
       pip:
         executable: pip3
         name:
-          - pg2-binary
+          - psycopg2-binary
           - pyyml
           - SQLAlchemy
         state: forcereinstall
