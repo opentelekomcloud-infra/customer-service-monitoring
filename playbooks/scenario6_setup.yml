@@ -22,6 +22,7 @@
   tasks:
   - name: Register build result
     set_fact:
+      rds_instance_id: "{{ tf_output.outputs['rds_id'].value }}"
       db_password: "{{ tf_output.outputs['db_password'].value }}"
       db_username: "{{ tf_output.outputs['db_username'].value }}"
       db_address: "{{ tf_output.outputs['db_address'].value }}"
