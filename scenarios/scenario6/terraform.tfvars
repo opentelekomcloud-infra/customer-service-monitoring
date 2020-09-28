@@ -1,3 +1,4 @@
+cloud             = "devstack"
 prefix            = "scn_6"
 addr_3_octets     = "192.168.0"
 region            = "eu-de"

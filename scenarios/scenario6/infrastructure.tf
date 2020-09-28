@@ -30,13 +30,20 @@ module "postgresql" {
 output "scn_public_ip" {
   value = module.resources.scn_eip
 }
+
+output "rds_id"{
+  value = module.postgresql.rds_instance_id
+}
+
 output "db_password" {
   value     = module.postgresql.db_password
   sensitive = true
 }
+
 output "db_username" {
   value = module.postgresql.db_username
 }
+
 output "db_address" {
   value = module.postgresql.db_address
 }

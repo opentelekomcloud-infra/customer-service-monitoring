@@ -1,3 +1,4 @@
+variable "cloud" {}
 variable "prefix" {}
 variable "addr_3_octets" {default = "192.168.0"}
 variable "region" {default = "eu-de"}

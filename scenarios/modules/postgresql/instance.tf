@@ -35,6 +35,10 @@ resource "opentelekomcloud_rds_instance_v3" "instance" {
   ]
 }
 
+output "rds_instance_id"{
+  value = opentelekomcloud_rds_instance_v3.instance.id
+}
+
 output "db_username" {
   value = opentelekomcloud_rds_instance_v3.instance.db[0].user_name
 }
