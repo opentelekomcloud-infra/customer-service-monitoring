@@ -163,3 +163,25 @@
                   proxy_pass         http://localhost:{{ telegraf_local_port }};
                   proxy_set_header   Host $host;
               }
+
+- name: Checking reporting processes
+  hosts: test_host
+  tasks:
+    - name: Get running reporting processes list from remote host
+      ignore_errors: yes
+      shell: "ps aux | grep 'csm_test_utils rds_backup_monitor' | awk '{print $2}'"
+      register: process_monitor
+    - name: Kill running reporting processes
+      ignore_errors: yes
+      shell: "kill {{ process_monitor.stdout_lines[0] }}"
+    - name: Waiting for status
+      wait_for:
+        path: "/proc/{{ process_monitor.stdout_lines[0] }}/status"
+        state: absent
+      ignore_errors: yes
+
+- name: Run reporting for scenario
+  hosts: test_host
+  tasks:
+  - name: Execute csm_test_utils
+    shell: "nohup python3 -m csm_test_utils rds_backup_monitor {{ rds_instance_id }} --target {{ scn6_public_ip }} --telegraf 'http://{{ scn6_public_ip }}' &"
