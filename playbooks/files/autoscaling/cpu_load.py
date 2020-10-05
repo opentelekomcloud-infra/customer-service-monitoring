@@ -43,7 +43,7 @@ def main():
         levels = file.read().splitlines()
     for line in levels:
         if line.strip():
-            if int(line) < 0 or int(line) > 100:
+            if 0 <= int(line) <= 100:
                 utilization.append(line)
             else:
                 LOGGER.error("the source file must only contain new line separated numbers in the [0, 100] range")
