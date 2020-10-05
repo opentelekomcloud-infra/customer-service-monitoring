@@ -137,6 +137,7 @@
   roles:
     - role: telegraf-client
       vars:
+        telegraf_influxdb_retention_policy: ""
         telegraf_local_port: 8080
         telegraf_plugins_base:
           - name: http_listener_v2
