@@ -62,7 +62,7 @@
     server_port: 8081
     run_option: "sqla"
     drivername: "postgresql+psycopg2"
-    clouds_yaml: {{ clouds_yaml_file }}
+    clouds_yaml: "{{ clouds_yaml_file }}"
   roles:
     - role: too_simple_server
       vars:
