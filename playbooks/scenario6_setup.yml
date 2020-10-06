@@ -84,7 +84,7 @@
 
     - name: Copy cloud.yaml to host
       copy:
-        content: "{{ hostvars.test_host.clouds_yaml_file }}"
+        src: "{{ hostvars.test_host.clouds_yaml_file }}"
         dest: "{{ cloud_yaml }}"
       environment:
         OS_CLIENT_CONFIG_FILE: "{{ cloud_yaml }}"
