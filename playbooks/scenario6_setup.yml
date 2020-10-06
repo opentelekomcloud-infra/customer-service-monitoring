@@ -59,10 +59,10 @@
   hosts: scn6_ecs
   become: yes
   vars:
+    cloud_yaml: "/tmp/clouds.yaml"
     server_port: 8081
     run_option: "sqla"
     drivername: "postgresql+psycopg2"
-    clouds_yaml: "{{ clouds_yaml_file }}"
   roles:
     - role: too_simple_server
       vars:
@@ -76,16 +76,18 @@
   tasks:
     - name: Register facts
       set_fact:
+        cloud_yaml: "{{ cloud_yaml }}"
         server_local_port: "{{ server_port }}"
         run_option: "{{run_option}}"
         drivername: "{{drivername}}"
         source: "/tmp/rds/{{run_option}}/data.yaml"
-        clouds_yaml: "{{ clouds_yaml}}"
 
-    - name: Copy clouds.yaml to host
+    - name: Copy cloud.yaml to host
       copy:
-        src: "{{ clouds_yaml_file }}"
-        dest: "{{ clouds_yaml_file }}"
+        content: "{{ clouds_yaml_file }}"
+        dest: "{{ cloud_yaml }}"
+      environment:
+        OS_CLIENT_CONFIG_FILE: "{{ cloud_yaml }}"
 
     - name: Update and upgrade apt packages
       apt:
