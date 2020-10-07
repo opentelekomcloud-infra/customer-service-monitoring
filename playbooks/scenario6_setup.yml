@@ -151,7 +151,7 @@
             options:
               service_address: "localhost:{{ telegraf_local_port }}"
               data_format: "influx"
-          - name: postgresql
+          - name: rds_backup
             options:
               address: "postgres://{{ hostvars.test_host.db_username }}:{{ hostvars.test_host.db_password }}@{{ hostvars.test_host.db_address }}/entities"
     - role: geerlingguy.nginx
@@ -175,9 +175,6 @@
 - name: Install csm test utils and run reporting proccess
   hosts: scn6_ecs
   become: yes
-  vars:
-    cloud_name: "{{ hostvars.test_host.default_variables.TF_VAR_ecs_image }}"
-    cloud_config: "{{ clouds_config }}"
   tasks:
     - name: Install test utils
       pip:

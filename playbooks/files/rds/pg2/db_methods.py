@@ -12,7 +12,7 @@ from arg_parser import get_connection_dict, get_source
 def _logging_configuration():
     """Basic configuration for logging"""
     return logging.basicConfig(
-        filename = 'rds_logs.log',
+        filename = 'tmp/rds/rds_logs.log',
         filemode = 'w',
         level = logging.DEBUG,
         format='%(levelname)s:%(asctime)s:%(message)s')
