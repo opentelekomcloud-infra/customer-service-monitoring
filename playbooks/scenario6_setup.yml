@@ -175,6 +175,9 @@
 - name: Install csm test utils and run reporting proccess
   hosts: scn6_ecs
   become: yes
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_config }}"
+    CLOUD_NAME: "devstack"
   tasks:
     - name: Install test utils
       pip:
