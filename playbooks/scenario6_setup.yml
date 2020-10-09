@@ -170,17 +170,40 @@
               location /telegraf {
                   proxy_pass         http://localhost:{{ telegraf_local_port }};
                   proxy_set_header   Host $host;
-              }
+
+- name: Checking reporting processes
+  hosts: scn6_ecs
+  tasks:
+    - name: Get running reporting processes list from remote host
+      ignore_errors: yes
+      shell: "ps aux | grep 'csm_test_utils rds_backup_monitor' | awk '{print $2}'"
+      register: process_monitor
+    - name: Kill running reporting processes
+      ignore_errors: yes
+      shell: "kill {{ process_monitor.stdout_lines[0] }}"
+    - name: Waiting for status
+      wait_for:
+        path: "/proc/{{ process_monitor.stdout_lines[0] }}/status"
+        state: absent
+      ignore_errors: yes
 
 - name: Install csm test utils and run reporting proccess
   hosts: scn6_ecs
   become: yes
-  environment:
-    OS_CLIENT_CONFIG_FILE: "{{ clouds_config }}"
-    CLOUD_NAME: "devstack"
+  vars:
+    cloud_config: "{{ clouds_config }}"
+    cloud_name: "devstack"
   tasks:
     - name: Install test utils
       pip:
         executable: pip3
         name: csm-test-utils
         state: forcereinstall
+
+    - name: Start monitoring RDS backups
+      shell: "nohup python3 -m csm_test_utils rds_backup_monitor `
+              `--instance_id {{ rds_instance_id }} `
+              `--cloud_config {{ cloud_config }} `
+              `--cloud_name {{ cloud_name }} `
+              `--target {{ scn6_public_ip }} `
+              `--telegraf 'http://{{ scn6_public_ip }}' &"
