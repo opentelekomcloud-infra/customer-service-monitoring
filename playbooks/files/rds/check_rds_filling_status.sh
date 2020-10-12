@@ -28,3 +28,4 @@ then
 else
     echo "rds filling script finished"
 fi
+
