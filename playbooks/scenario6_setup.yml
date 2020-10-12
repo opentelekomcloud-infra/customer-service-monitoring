@@ -131,10 +131,18 @@
               `--database {{ pg_database }}"
 
     - name: Schedule load script status check
-      cron: 
+      cron:
         name: "Check status of RDS filling script"
         minute: "*/59"
-        job: "/tmp/rds/check_rds_filling_status.sh {{ run_option }} {{ source }} {{ pg_host }} {{ pg_port }} {{ pg_username }} {{ pg_password }} {{ drivername }} {{ pg_database }}"
+        job: "/tmp/rds/check_rds_filling_status.sh `
+              `{{ run_option }} `
+              `{{ source }} `
+              `{{ pg_host }} `
+              `{{ pg_port }} `
+              `{{ pg_username }} `
+              `{{ pg_password }} `
+              `{{ drivername }} `
+              `{{ pg_database }}"
 
 - name: Install telegraf client on Server
   hosts: scn6_ecs
@@ -174,11 +182,11 @@
 - name: Checking reporting processes
   hosts: scn6_ecs
   tasks:
-    - name: Get running reporting processes list from remote host
+    - name: Get running reporting processes list from remote host  # noqa 301 305
       ignore_errors: yes
       shell: "ps aux | grep 'csm_test_utils rds_backup_monitor' | awk '{print $2}'"
       register: process_monitor
-    - name: Kill running reporting processes
+    - name: Kill running reporting processes  # noqa 301 305
       ignore_errors: yes
       shell: "kill {{ process_monitor.stdout_lines[0] }}"
     - name: Waiting for status
@@ -200,7 +208,7 @@
         name: csm-test-utils
         state: forcereinstall
 
-    - name: Start monitoring RDS backups
+    - name: Start monitoring RDS backups  # noqa 301 305
       shell: "nohup python3 -m csm_test_utils rds_backup_monitor `
               `--instance_id {{ rds_instance_id }} `
               `--cloud_config {{ cloud_config }} `
