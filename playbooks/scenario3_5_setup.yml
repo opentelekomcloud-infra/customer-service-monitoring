@@ -86,6 +86,23 @@
     - sfs_shared_path: "{{ hostvars.test_host.scn3_5_sfs_path }}"
     - mount_path: "/mnt/sfs_share"
   tasks:
+  - name: Update and upgrade apt packages
+    apt:
+      upgrade: yes
+      update_cache: yes
+
+  - name: Install PIP
+    apt:
+      name:
+        - python3-setuptools
+        - python3-pip
+
+  - name: Install test utils
+    pip:
+      executable: pip3
+      name: csm-test-utils
+      state: forcereinstall
+
   - name: Install NFS mount utility
     apt:
       pkg: nfs-common
@@ -128,7 +145,7 @@
     ignore_errors: yes
 
   - name: Execute csm_test_utils  # noqa 301 305
-    shell: "nohup python3 -m csm_test_utils sfs_compare --telegraf localhost:8080 &"
+    shell: "nohup python3 -m csm_test_utils sfs_compare --telegraf http://localhost:8080 &"
 
 - name: Install telegraf client on Bastion
   hosts: bastion
