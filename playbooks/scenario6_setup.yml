@@ -26,8 +26,8 @@
       db_password: "{{ tf_output.outputs['db_password'].value }}"
       db_username: "{{ tf_output.outputs['db_username'].value }}"
       db_address: "{{ tf_output.outputs['db_address'].value }}"
-      db_host: "{{tf_output.outputs['db_host'].value}}"
-      db_port: "{{tf_output.outputs['db_port'].value}}"
+      db_host: "{{ tf_output.outputs['db_host'].value }}"
+      db_port: "{{ tf_output.outputs['db_port'].value }}"
       scn6_public_ip: "{{ tf_output.outputs['scn_public_ip'].value }}"
   - name: Download private key from test_host
     fetch:
@@ -70,17 +70,17 @@
         pg_database: "entities"
         pg_username: "{{ hostvars.test_host.db_username }}"
         pg_password: "{{ hostvars.test_host.db_password }}"
-        pg_host: "{{hostvars.test_host.db_host}}"
-        pg_port: "{{hostvars.test_host.db_port}}"
+        pg_host: "{{ hostvars.test_host.db_host }}"
+        pg_port: "{{ hostvars.test_host.db_port }}"
         debug: True
   tasks:
     - name: Register facts
       set_fact:
         clouds_config: "{{ clouds_config }}"
         server_local_port: "{{ server_port }}"
-        run_option: "{{run_option}}"
-        drivername: "{{drivername}}"
-        source: "/tmp/rds/{{run_option}}/data.yaml"
+        run_option: "{{ run_option }}"
+        drivername: "{{ drivername }}"
+        source: "/tmp/rds/{{ run_option }}/data.yaml"
 
     - name: Copy cloud.yaml to host
       copy:
@@ -121,20 +121,20 @@
 
     - name: Add records to rds in background
       shell: "start-stop-daemon -Sbmvp /tmp/rds/__main__.pid -x /usr/bin/python3 /tmp/rds/__main__.py -- `
-              `--run_option {{run_option}} `
-              `--source {{source}} `
-              `--drivername {{drivername}} `
-              `--host {{pg_host}} `
-              `--port {{pg_port}} `
-              `--username {{pg_username}} `
-              `--password {{pg_password}} `
-              `--database {{pg_database}}"
+              `--run_option {{ run_option }} `
+              `--source {{ source }} `
+              `--drivername {{ drivername }} `
+              `--host {{ pg_host }} `
+              `--port {{ pg_port }} `
+              `--username {{ pg_username }} `
+              `--password {{ pg_password }} `
+              `--database {{ pg_database }}"
 
     - name: Schedule load script status check
       cron: 
         name: "Check status of RDS filling script"
         minute: "*/59"
-        job: "/tmp/rds/check_rds_filling_status.sh {{run_option}} {{source}} {{pg_host}} {{pg_port}} {{pg_username}} {{pg_password}} {{drivername}} {{pg_database}}"
+        job: "/tmp/rds/check_rds_filling_status.sh {{ run_option }} {{ source }} {{ pg_host }} {{ pg_port }} {{ pg_username }} {{ pg_password }} {{ drivername }} {{ pg_database }}"
 
 - name: Install telegraf client on Server
   hosts: scn6_ecs
