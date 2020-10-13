@@ -55,3 +55,4 @@ output "db_host" {
 output "db_port" {
   value = module.postgresql.db_port
 }
+

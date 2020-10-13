@@ -8,7 +8,7 @@ resource "opentelekomcloud_compute_keypair_v2" "pair" {
 resource "opentelekomcloud_vpc_eip_v1" "scn_eip" {
 
   bandwidth {
-    name       = "scn_limit"
+    name       = "scn6_limit"
     share_type = "PER"
     size       = 10
   }
@@ -21,7 +21,7 @@ resource "opentelekomcloud_vpc_eip_v1" "scn_eip" {
 #Security group creation
 resource "opentelekomcloud_compute_secgroup_v2" "scn_public_secgroup" {
   description = "Allow external connections to ssh, http, and https ports"
-  name        = "scn_public_secgroup_rds"
+  name        = "scn6_public_secgroup_rds"
 
   rule {
     cidr        = "0.0.0.0/0"
@@ -82,3 +82,4 @@ resource "opentelekomcloud_compute_floatingip_associate_v2" "assign_ip" {
 output "scn_eip" {
   value = opentelekomcloud_vpc_eip_v1.scn_eip.publicip[0].ip_address
 }
+

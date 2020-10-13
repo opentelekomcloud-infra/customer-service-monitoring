@@ -9,3 +9,4 @@ scenario          = "scn_6"
 
 psql_version = "10"
 psql_port    = 8669
+

@@ -1,4 +1,3 @@
-#need to combine with scenario2/resources and create module
 #VPC creation
 resource "opentelekomcloud_vpc_v1" "vpc" {
   name = "${var.prefix}-vpc"
@@ -27,3 +26,4 @@ output "subnet" {
 output "vpc_id" {
   value = opentelekomcloud_vpc_v1.vpc.id
 }
+

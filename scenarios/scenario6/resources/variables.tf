@@ -6,3 +6,4 @@ variable "scenario" {}
 variable "public_key" {default = ""}
 variable "ecs_flavor" {}
 variable "ecs_image" {}
+
