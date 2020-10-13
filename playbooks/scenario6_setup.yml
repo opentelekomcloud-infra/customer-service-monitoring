@@ -204,6 +204,7 @@
     cloud_name: "devstack"
     endpoint: "https://rds.eu-de.otc.t-systems.com"
     rds_instance_id: "{{ hostvars.test_host.rds_instance_id }}"
+    scn6_public_ip: "{{ hostvars.test_host.scn6_public_ip }}"
   tasks:
     - name: Install test utils
       pip:
