@@ -15,3 +15,4 @@
     copy:
       src: "{{ clouds_yaml_file }}"
       dest: "{{ clouds_yaml_file }}"
+

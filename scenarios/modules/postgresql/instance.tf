@@ -24,11 +24,19 @@ resource "opentelekomcloud_rds_instance_v3" "instance" {
   }
   flavor = [
     for flavour in data.opentelekomcloud_rds_flavors_v3.flavours.flavors :
-    flavour.name if flavour.vcpus < 4
+    flavour.name if flavour.memory > 4
   ][0]
+  backup_strategy {
+    start_time = "20:00-21:00"
+    keep_days = 1
+  }
   depends_on = [
     opentelekomcloud_compute_secgroup_v2.db_local
   ]
+}
+
+output "rds_instance_id"{
+  value = opentelekomcloud_rds_instance_v3.instance.id
 }
 
 output "db_username" {
@@ -42,4 +50,12 @@ output "db_password" {
 
 output "db_address" {
   value = "${opentelekomcloud_rds_instance_v3.instance.private_ips[0]}:${var.psql_port}"
+}
+
+output "db_host" {
+  value = opentelekomcloud_rds_instance_v3.instance.private_ips[0]
+}
+
+output "db_port" {
+  value = var.psql_port
 }
