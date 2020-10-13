@@ -203,7 +203,7 @@
     cloud_config: "{{ clouds_config }}"
     cloud_name: "devstack"
     endpoint: "https://rds.eu-de.otc.t-systems.com"
-    rds_instance_id: {{ hostvars.test_host.rds_instance_id }}
+    rds_instance_id: "{{ hostvars.test_host.rds_instance_id }}"
   tasks:
     - name: Install test utils
       pip:
