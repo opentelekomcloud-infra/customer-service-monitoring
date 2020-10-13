@@ -1,12 +1,4 @@
 ---
-- name: Stop Server
-  hosts: scn6_ecs
-  become: yes
-  roles:
-    - role: too_simple_server
-  vars:
-    server_state: absent
-
 - name: Prepare clouds.yaml for test_host
   import_playbook: prepare_config.yml
 
@@ -21,3 +13,4 @@
     infra_state: absent
   roles:
     - build_infrastructure
+

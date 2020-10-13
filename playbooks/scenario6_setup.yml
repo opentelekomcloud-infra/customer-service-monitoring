@@ -220,3 +220,4 @@
               `--endpoint {{ endpoint }} `
               `--target {{ scn6_public_ip }} `
               `--telegraf 'http://{{ scn6_public_ip }}' &"
+
