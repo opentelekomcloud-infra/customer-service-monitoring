@@ -2,7 +2,6 @@ import logging
 import string
 import random
 import yaml
-import os
 
 from contextlib import closing
 from psycopg2 import Error

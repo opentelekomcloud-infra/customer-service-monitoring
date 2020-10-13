@@ -50,7 +50,7 @@ def create_table(schema_name: str, table_name: str, *columns):
     logging.info('Table was created (if it not existed before)')
 
 
-def generate_random_values_and_insert_into_table(schema_name: str, table_name: str, range_start: int, range_stop: int, *columns):
+def fill_table_by_random_values(schema_name: str, table_name: str, range_start: int, range_stop: int, *columns):
     """Generate random values and insert it into tables"""
     model_query = sql.SQL("insert into {}.{} select generate_series({},{}) as id, md5(random()::text) AS {};")
     record_query = model_query.format(
@@ -86,8 +86,8 @@ def main():
         table_name = str(uuid.uuid4())
         while not is_database_fulfilled('entities', data['max_size_in_bytes']):
             create_table(schema_name, table_name, 'content')
-            generate_random_values_and_insert_into_table(schema_name, table_name, i + (i - 1) * n, i * n, 'content')
-            i = i + 1
+            fill_table_by_random_values(schema_name, table_name, i + (i - 1) * n, i * n, 'content')
+            i += 1
     logging.info('Script finished')
 
 
