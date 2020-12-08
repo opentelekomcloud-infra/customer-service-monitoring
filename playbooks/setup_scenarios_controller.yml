@@ -1,0 +1,49 @@
+---
+- name: Build Controller
+  hosts: localhost
+  tasks:
+  - name: Download/create key  # noqa 301 - get_key is more or less idempotent
+    script: "get_key.py --output {{ key_path }} --key key/{{ key_name }}"
+    args:
+      executable: 'python3'
+
+  - name: Save public key
+    set_fact:
+      public_key: "{{ item }}"
+    with_file:
+    - "{{ key_path }}.pub"
+
+  - name: Add key pair
+    os_keypair:
+      state: "{{ state }}"
+      name: "{{ key_pair_name }}"
+      public_key_file: "{{ key_path }}.pub"
+
+  - include_role:
+      name: opentelekomcloud.vpc
+  - include_role:
+      name: opentelekomcloud.bastion
+
+  - name: Bastion SecGrp LetsEncrypt Rule
+    os_security_group_rule:
+      security_group: "{{ security_group }}"
+      protocol: tcp
+      port_range_min: 80
+      port_range_max: 80
+      remote_ip_prefix: 0.0.0.0/0
+
+  - name: Bastion SecGrp Https Rule
+    os_security_group_rule:
+      security_group: "{{ security_group }}"
+      protocol: tcp
+      port_range_min: 443
+      port_range_max: 443
+      remote_ip_prefix: 0.0.0.0/0
+
+  - name: Register created host
+    add_host:
+      hostname: 'test_host'
+      ansible_ssh_host: "{{ bastion_interface_ip }}"
+      ansible_ssh_user: 'linux'
+      ansible_ssh_private_key_file: "{{ key_path }}"
+    when: state == 'present'

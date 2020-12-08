@@ -1,2 +1,4 @@
 - src: anton_sidelnikov.terraform
 - src: geerlingguy.nginx
+- src: opentelekomcloud.vpc
+- src: opentelekomcloud.bastion
