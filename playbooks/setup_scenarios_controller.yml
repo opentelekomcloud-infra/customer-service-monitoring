@@ -15,7 +15,6 @@
 
   - name: Add key pair
     os_keypair:
-      state: "{{ state }}"
       name: "{{ key_pair_name }}"
       public_key_file: "{{ controller_key_path }}.pub"
 
