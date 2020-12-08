@@ -19,5 +19,6 @@ availability_zone: "eu-de-03"
 server_name: "{{ prefix }}_server"
 server_net: "{{ network_name }}"
 server_subnet: "{{ subnet_name }}"
+enable_snat: true
 domain_name: ""
 fixed_floating_ip: ""
