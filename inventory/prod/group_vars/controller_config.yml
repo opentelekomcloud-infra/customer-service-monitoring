@@ -1,15 +1,16 @@
 prefix: "csm_controller"
-key_pair_name: "{{ prefix }}-kp"
+controller_key_name: '{{ prefix }}_rsa'
+controller_key_path: "{{ tmp_dir }}/{{ controller_key_name }}"
 
+key_pair_name: "{{ controller_key_name }}"
 network_name: "{{ prefix }}_vpc"
 subnet_name: "{{ prefix }}_subnet"
 subnet_cidr: "192.168.0.0/29"
-
 security_group: "public_ssh"
 server_keypair_name: "{{ key_pair_name }}"
 server_image: "Debian_CSM_test_host"
 server_flavor: "s2.large.2"
-ansible_ssh_private_key_file: "{{ key_path }}"
+ansible_ssh_private_key_file: "{{ controller_key_path }}"
 availability_zone: "eu-de-03"
 server_name: "{{ prefix }}_server"
 server_net: "{{ network_name }}"

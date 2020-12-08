@@ -3,7 +3,7 @@
   hosts: localhost
   tasks:
   - name: Download/create key  # noqa 301 - get_key is more or less idempotent
-    script: "get_key.py --output {{ key_path }} --key key/{{ key_name }}"
+    script: "get_key.py --output {{ controller_key_path }} --key key/{{ controller_key_name }}"
     args:
       executable: 'python3'
 
@@ -11,13 +11,13 @@
     set_fact:
       public_key: "{{ item }}"
     with_file:
-    - "{{ key_path }}.pub"
+    - "{{ controller_key_path }}.pub"
 
   - name: Add key pair
     os_keypair:
       state: "{{ state }}"
       name: "{{ key_pair_name }}"
-      public_key_file: "{{ key_path }}.pub"
+      public_key_file: "{{ controller_key_path }}.pub"
 
   - include_role:
       name: opentelekomcloud.vpc
@@ -42,8 +42,8 @@
 
   - name: Register created host
     add_host:
-      hostname: 'test_host'
+      hostname: 'csm_controller_host'
       ansible_ssh_host: "{{ bastion_interface_ip }}"
       ansible_ssh_user: 'linux'
-      ansible_ssh_private_key_file: "{{ key_path }}"
+      ansible_ssh_private_key_file: "{{ controller_key_path }}"
     when: state == 'present'
