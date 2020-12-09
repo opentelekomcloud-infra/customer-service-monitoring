@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     opentelekomcloud = {
-      source = "opentelekomcloud/opentelekomcloud"
+      source  = "opentelekomcloud/opentelekomcloud"
       version = ">= 1.22.0"
     }
   }
@@ -17,5 +17,5 @@ terraform {
 
 # Configure the OpenTelekomCloud Provider
 provider "opentelekomcloud" {
-    cloud = "devstack"
+  cloud = "devstack"
 }
