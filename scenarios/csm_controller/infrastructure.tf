@@ -28,7 +28,7 @@ module "bastion" {
   network  = module.network.network
   subnet   = module.network.subnet
   router   = module.network.router
-  name     = "${local.workspace_prefix}csm_controller"
+  name     = local.workspace_prefix
   scenario = var.scenario
 
   availability_zone = var.availability_zone
