@@ -1,0 +1,3 @@
+---
+- name: Prepare controller variables
+  import_playbook: ../setup_scenarios_controller.yml
