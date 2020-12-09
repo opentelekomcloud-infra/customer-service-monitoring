@@ -7,7 +7,6 @@
         terraform_base_dir: "terraform"
         requirements: "requirements.txt"
         terraform_workspace: 'prod'
-        scenario_name: 'csm_controller'
         key_name: "key_{{ scenario_name }}"
         controller_eip: ""
 
