@@ -3,7 +3,7 @@ resource "opentelekomcloud_networking_floatingip_v2" "controller_eip" {
 }
 
 locals {
-  workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
+  workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}"
   key_pair = {
     public_key = var.public_key
     key_name   = "${local.workspace_prefix}kp_${var.scenario}"
