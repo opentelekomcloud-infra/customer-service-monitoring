@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "s3" {
-    key                         = "terraform_state/scsi_hdd_monitoring"
+    key                         = "terraform_state/iscsi_monitoring"
     endpoint                    = "obs.eu-de.otc.t-systems.com"
     bucket                      = "obs-csm"
     region                      = "eu-de"
