@@ -2,47 +2,41 @@
 - name: Build Controller
   hosts: localhost
   tasks:
-  - name: Download/create key  # noqa 301 - get_key is more or less idempotent
-    script: "get_key.py --output {{ controller_key_path }} --key key/{{ controller_key_name }}"
-    args:
-      executable: 'python3'
+    - name: Prepare variables for build
+      set_fact:
+        terraform_base_dir: "terraform"
+        requirements: "requirements.txt"
+        terraform_workspace: 'prod'
+        scenario_name: 'csm_controller'
+        key_name: "key_{{ scenario_name }}"
+        controller_eip: ""
 
-  - name: Save public key
+- name: Build/Check controller infrastructure
+  hosts: localhost
+  roles:
+    - build_infrastructure
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+  vars:
+    infra_state: present
+  tasks:
+  - name: Register build result
     set_fact:
-      public_key: "{{ item }}"
-    with_file:
-    - "{{ controller_key_path }}.pub"
+      controller_public_ip: "{{ tf_output.outputs['csm_controller_fip'].value }}"
+      network_id: "{{ tf_output.outputs['network'].value }}"
+      subnet_id: "{{ tf_output.outputs['subnet'].value }}"
+      router_id: "{{ tf_output.outputs['router'].value }}"
 
-  - name: Add key pair
-    os_keypair:
-      name: "{{ key_pair_name }}"
-      public_key_file: "{{ controller_key_path }}.pub"
+  - name: Download private key from test_host
+    fetch:
+      src: "{{ tmp_dir }}/{{ key_name }}"
+      dest:  "{{ local_private_key }}"
+      mode: 0600
+      flat: yes
 
-  - include_role:
-      name: opentelekomcloud.vpc
-  - include_role:
-      name: opentelekomcloud.bastion
-
-  - name: Bastion SecGrp LetsEncrypt Rule
-    os_security_group_rule:
-      security_group: "{{ security_group }}"
-      protocol: tcp
-      port_range_min: 80
-      port_range_max: 80
-      remote_ip_prefix: 0.0.0.0/0
-
-  - name: Bastion SecGrp Https Rule
-    os_security_group_rule:
-      security_group: "{{ security_group }}"
-      protocol: tcp
-      port_range_min: 443
-      port_range_max: 443
-      remote_ip_prefix: 0.0.0.0/0
-
-  - name: Register created host
+  - name: Register Bastion
     add_host:
-      hostname: 'csm_controller_host'
-      ansible_ssh_host: "{{ bastion_interface_ip }}"
-      ansible_ssh_user: 'linux'
-      ansible_ssh_private_key_file: "{{ controller_key_path }}"
-    when: state == 'present'
+      name: "controller"
+      ansible_host: "{{ controller_public_ip }}"
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
