@@ -12,3 +12,10 @@
     requirements: "requirements.txt"
   roles:
     - build_infrastructure
+  tasks:
+    - name: Register build result
+      set_fact:
+        bastion_public_ip: "{{ tf_output.outputs['scn3_5_bastion_fip'].value }}"
+        scn3_5_initiator_ip: "{{ tf_output.outputs['scn3_5_initiator_instance_ip'].value }}"
+        scn3_5_target_ip: "{{ tf_output.outputs['scn3_5_target_instance_ip'].value }}"
+        scn3_5_sfs_path: "{{ tf_output.outputs['scn3_5_sfs_data'].value }}"
