@@ -13,6 +13,7 @@ resource "opentelekomcloud_compute_volume_attach_v2" "attach-SCSI-volume" {
   volume_id   = opentelekomcloud_blockstorage_volume_v2.SCSI-volume.id
 }
 
+# Create KMS key for the SFS
 resource "opentelekomcloud_kms_key_v1" "sfs_key" {
   key_alias       = "sfs_key_${var.scenario}"
   pending_days    = "7"
@@ -21,16 +22,16 @@ resource "opentelekomcloud_kms_key_v1" "sfs_key" {
 }
 
 resource "opentelekomcloud_sfs_file_system_v2" "sharefile" {
-  size = 20
-  name = "sfs_${var.scenario}"
-  access_to = var.router.id
+  size         = 20
+  name         = "sfs_${var.scenario}"
+  access_to    = var.router.id
   access_level = "rw"
-  description = "sfs with kms encryption"
+  description  = "sfs with kms encryption"
   metadata = {
-    "type"="nfs"
-     "#sfs_crypt_key_id": opentelekomcloud_kms_key_v1.sfs_key.id,
-     "#sfs_crypt_domain_id": opentelekomcloud_kms_key_v1.sfs_key.domain_id,
-     "#sfs_crypt_alias": opentelekomcloud_kms_key_v1.sfs_key.key_alias
+    "type" = "nfs"
+    "#sfs_crypt_key_id" : opentelekomcloud_kms_key_v1.sfs_key.id,
+    "#sfs_crypt_domain_id" : opentelekomcloud_kms_key_v1.sfs_key.domain_id,
+    "#sfs_crypt_alias" : opentelekomcloud_kms_key_v1.sfs_key.key_alias
   }
 }
 

@@ -4,9 +4,10 @@ data "opentelekomcloud_images_image_v2" "current_image" {
 }
 
 # Create security group for instances
-resource "opentelekomcloud_compute_secgroup_v2" "scn3_5_group" {
-  description = "Allow external connections to ssh, http, and https ports"
+resource "opentelekomcloud_compute_secgroup_v2" "sfs_monitoring_grp" {
   name        = "${var.scenario}_grp"
+  description = "Allow external connections to ssh, http, and https ports"
+
   rule {
     cidr        = "0.0.0.0/0"
     from_port   = 22
@@ -18,6 +19,22 @@ resource "opentelekomcloud_compute_secgroup_v2" "scn3_5_group" {
     from_port   = 3260
     ip_protocol = "tcp"
     to_port     = 3260
+  }
+}
+
+# Create network port for iscsi target
+resource "opentelekomcloud_networking_port_v2" "target_instance_port" {
+  name           = "${var.scenario}_target_port"
+  network_id     = var.network.id
+  admin_state_up = true
+
+  security_group_ids = [
+    opentelekomcloud_compute_secgroup_v2.sfs_monitoring_grp.id
+  ]
+
+  fixed_ip {
+    subnet_id  = var.subnet.id
+    ip_address = "${var.net_address}.10"
   }
 }
 
@@ -42,24 +59,24 @@ resource "opentelekomcloud_compute_instance_v2" "target_instance" {
   }
 
   tag = {
-    "group" : "gatewayed",
-    "scenario" : var.scenario
+    group    = "gatewayed"
+    scenario = var.scenario
   }
 }
 
-# Create network port for iscsi target
-resource "opentelekomcloud_networking_port_v2" "target_instance_port" {
-  name           = "${var.scenario}_target_port"
+# Create network port for iscsi initiator
+resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
+  name           = "${var.scenario}_initiator_port"
   network_id     = var.network.id
   admin_state_up = true
 
   security_group_ids = [
-    opentelekomcloud_compute_secgroup_v2.scn3_5_group.id
+    opentelekomcloud_compute_secgroup_v2.sfs_monitoring_grp.id
   ]
 
   fixed_ip {
     subnet_id  = var.subnet.id
-    ip_address = "${var.net_address}.10"
+    ip_address = "${var.net_address}.11"
   }
 }
 
@@ -89,21 +106,6 @@ resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
   }
 }
 
-# Create network port for iscsi initiator
-resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
-  name           = "${var.scenario}_initiator_port"
-  network_id     = var.network.id
-  admin_state_up = true
-
-  security_group_ids = [
-    opentelekomcloud_compute_secgroup_v2.scn3_5_group.id
-  ]
-
-  fixed_ip {
-    subnet_id  = var.subnet.id
-    ip_address = "${var.net_address}.11"
-  }
-}
 
 output "target_instance_ip" {
   value = opentelekomcloud_compute_instance_v2.target_instance.access_ip_v4
