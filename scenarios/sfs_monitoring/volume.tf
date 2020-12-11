@@ -21,6 +21,7 @@ resource "opentelekomcloud_kms_key_v1" "sfs_key" {
   is_enabled      = true
 }
 
+# Create SFS system
 resource "opentelekomcloud_sfs_file_system_v2" "sharefile" {
   size         = 20
   name         = "sfs_${var.scenario}"

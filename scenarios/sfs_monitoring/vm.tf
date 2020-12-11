@@ -1,4 +1,5 @@
-data "opentelekomcloud_images_image_v2" "current_image" {
+# Get info about image
+data "opentelekomcloud_images_image_v2" "image" {
   name        = var.ecs_image
   most_recent = true
 }
@@ -22,7 +23,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "sfs_monitoring_grp" {
   }
 }
 
-# Create network port for iscsi target
+# Create network port for iSCSI target
 resource "opentelekomcloud_networking_port_v2" "target_instance_port" {
   name           = "${var.scenario}_target_port"
   network_id     = var.network.id
@@ -38,7 +39,7 @@ resource "opentelekomcloud_networking_port_v2" "target_instance_port" {
   }
 }
 
-# Create instance for iscsi target
+# Create instance for iSCSI target
 resource "opentelekomcloud_compute_instance_v2" "target_instance" {
   name        = "${var.scenario}_target_instance"
   flavor_name = var.ecs_flavor
@@ -55,7 +56,7 @@ resource "opentelekomcloud_compute_instance_v2" "target_instance" {
     destination_type      = "volume"
     delete_on_termination = true
     source_type           = "image"
-    uuid                  = data.opentelekomcloud_images_image_v2.current_image.id
+    uuid                  = data.opentelekomcloud_images_image_v2.image.id
   }
 
   tag = {
@@ -64,7 +65,7 @@ resource "opentelekomcloud_compute_instance_v2" "target_instance" {
   }
 }
 
-# Create network port for iscsi initiator
+# Create network port for iSCSI initiator
 resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
   name           = "${var.scenario}_initiator_port"
   network_id     = var.network.id
@@ -80,7 +81,7 @@ resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
   }
 }
 
-# Create instance for iscsi initiator
+# Create instance for iSCSI initiator
 resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
   name        = "${var.scenario}_initiator_instance"
   flavor_name = var.ecs_flavor
@@ -97,7 +98,7 @@ resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
     destination_type      = "volume"
     delete_on_termination = true
     source_type           = "image"
-    uuid                  = data.opentelekomcloud_images_image_v2.current_image.id
+    uuid                  = data.opentelekomcloud_images_image_v2.image.id
   }
 
   tag = {
