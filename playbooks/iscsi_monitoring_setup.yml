@@ -6,15 +6,15 @@
   hosts: localhost
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+    TF_VAR_network_id: "{{ main_network_id }}"
+    TF_VAR_router_id: "{{ main_router_id }}"
+    TF_VAR_subnet_id: "{{ main_subnet_id }}"
   vars:
     scenario_name: iscsi_monitoring
     terraform_base_dir: terraform
     requirements: requirements.txt
     terraform_workspace: prod
     key_name: "key_{{ scenario_name }}"
-    network_id: "{{ hostvars.localhost.network_id }}"
-    router_id: "{{ hostvars.localhost.router_id }}"
-    subnet_id: "{{ hostvars.localhost.subnet_id }}"
     infra_state: present
   roles:
     - build_infrastructure
