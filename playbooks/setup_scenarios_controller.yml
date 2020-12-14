@@ -17,8 +17,10 @@
   - name: Register build result
     set_fact:
       controller_public_ip: "{{ tf_output.outputs['csm_controller_fip'].value }}"
+
       main_network_id: "{{ tf_output.outputs['network'].value }}"
       main_subnet_id: "{{ tf_output.outputs['subnet'].value }}"
+      main_subnet_cidr: "{{ tf_output.outputs['subnet_cidr'].value }}"
       main_router_id: "{{ tf_output.outputs['router'].value }}"
 
   - name: Download private key from test_host
