@@ -24,6 +24,7 @@
       controller_public_ip: "{{ tf_output.outputs['csm_controller_fip'].value }}"
       network_id: "{{ tf_output.outputs['network'].value }}"
       subnet_id: "{{ tf_output.outputs['subnet'].value }}"
+      subnet_cidr: "{{ tf_output.outputs['subnet_cidr'].value }}"
       router_id: "{{ tf_output.outputs['router'].value }}"
 
   - name: Download private key from test_host
