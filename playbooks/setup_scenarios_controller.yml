@@ -8,7 +8,7 @@
         requirements: "requirements.txt"
         terraform_workspace: "prod"
         key_name: "key_{{ scenario_name }}"
-        controller_eip: ""
+        controller_eip: {{ controller_eip }}
 
 - name: Build/Check controller infrastructure
   hosts: localhost
