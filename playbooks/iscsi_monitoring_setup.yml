@@ -15,6 +15,7 @@
     network_id: "{{ hostvars.localhost.network_id }}"
     router_id: "{{ hostvars.localhost.router_id }}"
     subnet_id: "{{ hostvars.localhost.subnet_id }}"
+    infra_state: present
   roles:
     - build_infrastructure
   tasks:
