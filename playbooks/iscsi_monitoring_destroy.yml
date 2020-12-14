@@ -1,6 +1,6 @@
 ---
-- name: Prepare clouds.yaml for test_host
-  import_playbook: prepare_config.yml
+- name: Prepare controller variables
+  import_playbook: setup_scenarios_controller.yml
 
 - name: Prepare variables
   hosts: localhost
@@ -13,6 +13,8 @@
     scenario_name: iscsi_monitoring
     terraform_base_dir: terraform
     requirements: requirements.txt
+    terraform_workspace: prod
+    key_name: "key_{{ scenario_name }}"
     infra_state: absent
   roles:
     - build_infrastructure

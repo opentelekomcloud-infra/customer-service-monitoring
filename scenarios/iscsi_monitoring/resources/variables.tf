@@ -1,5 +1,5 @@
 variable "volume_type" { default = "SATA" }
-variable "key_pair_name" {}
+variable "key_pair" {}
 variable "ecs_image" {}
 variable "ecs_flavor" {}
 variable "disc_volume" {}

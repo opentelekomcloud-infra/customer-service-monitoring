@@ -6,11 +6,6 @@ locals {
   }
 }
 
-resource "opentelekomcloud_compute_keypair_v2" "kp" {
-  name       = local.key_pair.key_name
-  public_key = local.key_pair.public_key
-}
-
 module "resources" {
   source = "./resources"
 
@@ -19,7 +14,7 @@ module "resources" {
   target_availability_zone    = var.target_availability_zone
   ecs_flavor                  = var.ecs_flavor
   disc_volume                 = var.disc_volume
-  key_pair_name               = local.key_pair.key_name
+  key_pair                    = local.key_pair
 
 
   net_address    = var.addr_3_octets
