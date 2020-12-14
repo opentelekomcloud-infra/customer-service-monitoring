@@ -22,11 +22,11 @@ module "resources" {
   key_pair_name               = local.key_pair.key_name
 
 
-  net_address = var.addr_3_octets
+  net_address    = var.addr_3_octets
   subnet_id      = var.subnet_id
   network_id     = var.network_id
   router_id      = var.router_id
-  scenario    = var.scenario
+  scenario       = var.scenario
 }
 
 output "iscsi_initiator_instance_ip" {
