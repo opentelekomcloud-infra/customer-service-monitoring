@@ -1,16 +1,4 @@
 ---
-- name: Build Controller
-  hosts: localhost
-  tasks:
-    - name: Prepare variables for build
-      set_fact:
-        scenario_name: csm_controller
-        terraform_base_dir: terraform
-        requirements: requirements.txt
-        terraform_workspace: prod
-        key_name: "key_{{ scenario_name }}"
-        controller_eip: "{{ controller_address }}"
-
 - name: Build/Check controller infrastructure
   hosts: localhost
   roles:
@@ -18,6 +6,12 @@
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
   vars:
+    scenario_name: csm_controller
+    terraform_base_dir: terraform
+    requirements: requirements.txt
+    terraform_workspace: prod
+    key_name: "key_{{ scenario_name }}"
+    controller_eip: "{{ controller_address }}"
     infra_state: present
   tasks:
   - name: Register build result
