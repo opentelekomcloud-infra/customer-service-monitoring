@@ -4,9 +4,10 @@
   tasks:
     - name: Prepare variables for build
       set_fact:
-        terraform_base_dir: "terraform"
-        requirements: "requirements.txt"
-        terraform_workspace: "prod"
+        scenario_name: csm_controller
+        terraform_base_dir: terraform
+        requirements: requirements.txt
+        terraform_workspace: prod
         key_name: "key_{{ scenario_name }}"
         controller_eip: "{{ controller_address }}"
 
@@ -35,7 +36,7 @@
 
   - name: Register Bastion
     add_host:
-      name: "controller"
+      name: controller
       ansible_host: "{{ controller_public_ip }}"
-      ansible_ssh_user: "linux"
+      ansible_ssh_user: linux
       ansible_ssh_private_key_file: "{{ local_private_key }}"

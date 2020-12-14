@@ -7,9 +7,9 @@
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
   vars:
-    scenario_name: "iscsi_monitoring"
-    terraform_base_dir: "terraform"
-    requirements: "requirements.txt"
+    scenario_name: iscsi_monitoring
+    terraform_base_dir: terraform
+    requirements: requirements.txt
     infra_state: absent
   roles:
     - build_infrastructure

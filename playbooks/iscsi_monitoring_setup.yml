@@ -7,10 +7,10 @@
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
   vars:
-    scenario_name: "iscsi_monitoring"
-    terraform_base_dir: "terraform"
-    requirements: "requirements.txt"
-    terraform_workspace: "prod"
+    scenario_name: iscsi_monitoring
+    terraform_base_dir: terraform
+    requirements: requirements.txt
+    terraform_workspace: prod
     key_name: "key_{{ scenario_name }}"
     network_id: "{{ hostvars.localhost.network_id }}"
     router_id: "{{ hostvars.localhost.router_id }}"
