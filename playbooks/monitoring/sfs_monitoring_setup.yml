@@ -22,10 +22,6 @@
 - name: Register used hosts
   hosts: localhost
   tasks:
-    - name: Set local facts
-      set_fact:
-        sfs_monitoring_initiator_ip: "{{ hostvars.localhost.sfs_monitoring_initiator_ip }}"
-        sfs_monitoring_target_ip: "{{ hostvars.localhost.sfs_monitoring_target_ip }}"
     - name: Register sfs_monitoring_initiator
       add_host:
         name: "sfs_monitoring_initiator"
@@ -119,7 +115,7 @@
     - name: Execute csm_test_utils  # noqa 301 305
       shell: "nohup python3 -m csm_test_utils sfs_compare --telegraf http://localhost:8080 &"
 
-- name: Install telegraf client on Bastion
+- name: Install telegraf client on controller
   hosts: controller
   become: yes
   vars_files:
