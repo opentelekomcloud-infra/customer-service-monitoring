@@ -1,5 +1,4 @@
 variable "prefix" {}
-variable "addr_3_octets" {}
 variable "region" {}
 variable "availability_zone" {}
 variable "ecs_flavor" {}
