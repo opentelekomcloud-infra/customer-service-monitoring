@@ -62,6 +62,10 @@
         show_nodes: yes
         discover: yes
         portal: "{{ hostvars.iscsi_target.ansible_host }}"
+      register: res
+      retries: 3
+      delay: 3
+      until: res is success
 
     - name: Connect to the target
       open_iscsi:
