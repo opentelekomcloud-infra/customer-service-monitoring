@@ -4,7 +4,7 @@ data "opentelekomcloud_images_image_v2" "current_image" {
 }
 
 # Create security group for instances
-resource "opentelekomcloud_compute_secgroup_v2" "scn3_5_group" {
+resource "opentelekomcloud_compute_secgroup_v2" "sfs_group" {
   description = "Allow external connections to ssh, http, and https ports"
   name        = "${var.scenario}_grp"
   rule {
@@ -21,16 +21,16 @@ resource "opentelekomcloud_compute_secgroup_v2" "scn3_5_group" {
   }
 }
 
-# Create instance for iscsi target
-resource "opentelekomcloud_compute_instance_v2" "target_instance" {
-  name        = "${var.scenario}_target_instance"
+# Create instance for sfs
+resource "opentelekomcloud_compute_instance_v2" "sfs_instance" {
+  name        = "${var.scenario}_instance"
   flavor_name = var.ecs_flavor
   key_pair    = var.key_pair_name
 
-  availability_zone = var.target_availability_zone
+  availability_zone = var.availability_zone
 
   network {
-    port = opentelekomcloud_networking_port_v2.target_instance_port.id
+    port = opentelekomcloud_networking_port_v2.sfs_instance_port.id
   }
 
   block_device {
@@ -47,56 +47,14 @@ resource "opentelekomcloud_compute_instance_v2" "target_instance" {
   }
 }
 
-# Create network port for iscsi target
-resource "opentelekomcloud_networking_port_v2" "target_instance_port" {
-  name           = "${var.scenario}_target_port"
+# Create network port for sfs
+resource "opentelekomcloud_networking_port_v2" "sfs_instance_port" {
+  name           = "${var.scenario}_sfs_port"
   network_id     = var.network.id
   admin_state_up = true
 
   security_group_ids = [
-    opentelekomcloud_compute_secgroup_v2.scn3_5_group.id
-  ]
-
-  fixed_ip {
-    subnet_id  = var.subnet.id
-    ip_address = "${var.net_address}.10"
-  }
-}
-
-# Create instance for iscsi initiator
-resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
-  name        = "${var.scenario}_initiator_instance"
-  flavor_name = var.ecs_flavor
-  key_pair    = var.key_pair_name
-
-  availability_zone = var.initiator_availability_zone
-
-  network {
-    port = opentelekomcloud_networking_port_v2.initiator_instance_port.id
-  }
-
-  block_device {
-    volume_size           = var.disc_volume
-    destination_type      = "volume"
-    delete_on_termination = true
-    source_type           = "image"
-    uuid                  = data.opentelekomcloud_images_image_v2.current_image.id
-  }
-
-  tag = {
-    "group" : "gatewayed",
-    "scenario" : var.scenario
-  }
-}
-
-# Create network port for iscsi initiator
-resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
-  name           = "${var.scenario}_initiator_port"
-  network_id     = var.network.id
-  admin_state_up = true
-
-  security_group_ids = [
-    opentelekomcloud_compute_secgroup_v2.scn3_5_group.id
+    opentelekomcloud_compute_secgroup_v2.sfs_group.id
   ]
 
   fixed_ip {
@@ -105,10 +63,6 @@ resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
   }
 }
 
-output "target_instance_ip" {
-  value = opentelekomcloud_compute_instance_v2.target_instance.access_ip_v4
-}
-
-output "initiator_instance_ip" {
-  value = opentelekomcloud_compute_instance_v2.initiator_instance.access_ip_v4
+output "sfs_instance_ip" {
+  value = opentelekomcloud_compute_instance_v2.sfs_instance.access_ip_v4
 }
