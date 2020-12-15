@@ -10,7 +10,7 @@
     terraform_base_dir: terraform
     requirements: requirements.txt
     terraform_workspace: prod
-    key_name: "key_{{ scenario_name }}"
+    key_name: key_csm_controller
     controller_eip: "{{ controller_address }}"
     infra_state: present
   tasks:
