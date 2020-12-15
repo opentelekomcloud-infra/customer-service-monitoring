@@ -30,7 +30,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "sfs_group" {
 resource "opentelekomcloud_compute_instance_v2" "sfs_instance" {
   name        = "${var.scenario}_instance"
   flavor_name = var.ecs_flavor
-  key_pair    = var.key_pair_name
+  key_pair    = opentelekomcloud_compute_keypair_v2.kp.name
 
   availability_zone = var.availability_zone
 

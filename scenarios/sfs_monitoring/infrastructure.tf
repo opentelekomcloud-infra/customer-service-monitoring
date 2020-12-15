@@ -15,7 +15,7 @@ module "resources" {
   disc_volume = var.disc_volume
   key_pair = local.key_pair
 
-  net_address = var.addr_3
+  net_address = var.addr_3_octets
   subnet_id = var.subnet_id
   network_id = var.network_id
   router_id = var.router_id

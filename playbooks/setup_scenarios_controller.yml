@@ -14,23 +14,23 @@
     controller_eip: "{{ controller_address }}"
     infra_state: present
   tasks:
-  - name: Register build result
-    set_fact:
-      controller_public_ip: "{{ tf_output.outputs['csm_controller_fip'].value }}"
-      main_network_id: "{{ tf_output.outputs['network'].value }}"
-      main_subnet_id: "{{ tf_output.outputs['subnet'].value }}"
-      main_router_id: "{{ tf_output.outputs['router'].value }}"
+    - name: Register build result
+      set_fact:
+        controller_public_ip: "{{ tf_output.outputs['csm_controller_fip'].value }}"
+        main_network_id: "{{ tf_output.outputs['network'].value }}"
+        main_subnet_id: "{{ tf_output.outputs['subnet'].value }}"
+        main_router_id: "{{ tf_output.outputs['router'].value }}"
 
-  - name: Download private key from test_host
-    fetch:
-      src: "{{ tmp_dir }}/{{ key_name }}"
-      dest:  "{{ local_private_key }}"
-      mode: 0600
-      flat: yes
+    - name: Download private key from test_host
+      fetch:
+        src: "{{ tmp_dir }}/{{ key_name }}"
+        dest: "{{ local_private_key }}"
+        mode: 0600
+        flat: yes
 
-  - name: Register Bastion
-    add_host:
-      name: controller
-      ansible_host: "{{ controller_public_ip }}"
-      ansible_ssh_user: linux
-      ansible_ssh_private_key_file: "{{ local_private_key }}"
+    - name: Register Bastion
+      add_host:
+        name: controller
+        ansible_host: "{{ controller_public_ip }}"
+        ansible_ssh_user: linux
+        ansible_ssh_private_key_file: "{{ local_private_key }}"

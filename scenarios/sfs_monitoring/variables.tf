@@ -1,13 +1,15 @@
 variable "availability_zone" {}
 variable "ecs_flavor" {}
 variable "ecs_image" {}
-variable "addr_3" { default = "192.168.9" }
+variable "addr_3_octets" {}
 variable "scenario" {}
-variable "public_key" {}
+variable "public_key" {
+  default = ""
+}
 variable "network_id" {}
 variable "router_id" {}
 variable "subnet_id" {}
 variable "disc_volume" {
-  type    = number
+  type = number
   default = 10
 }
