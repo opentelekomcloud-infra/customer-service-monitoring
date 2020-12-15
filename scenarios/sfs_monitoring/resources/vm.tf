@@ -1,3 +1,8 @@
+resource "opentelekomcloud_compute_keypair_v2" "kp" {
+  name       = var.key_pair.key_name
+  public_key = var.key_pair.public_key
+}
+
 data "opentelekomcloud_images_image_v2" "current_image" {
   name        = var.ecs_image
   most_recent = true
@@ -50,7 +55,7 @@ resource "opentelekomcloud_compute_instance_v2" "sfs_instance" {
 # Create network port for sfs
 resource "opentelekomcloud_networking_port_v2" "sfs_instance_port" {
   name           = "${var.scenario}_sfs_port"
-  network_id     = var.network.id
+  network_id     = var.network_id
   admin_state_up = true
 
   security_group_ids = [
@@ -58,7 +63,7 @@ resource "opentelekomcloud_networking_port_v2" "sfs_instance_port" {
   ]
 
   fixed_ip {
-    subnet_id  = var.subnet.id
+    subnet_id  = var.subnet_id
     ip_address = "${var.net_address}.11"
   }
 }

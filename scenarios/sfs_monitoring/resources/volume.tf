@@ -3,7 +3,7 @@ resource "opentelekomcloud_blockstorage_volume_v2" "SCSI-volume" {
   name              = "scsi-volume"
   size              = var.disc_volume
   volume_type       = var.volume_type
-  availability_zone = var.target_availability_zone
+  availability_zone = var.availability_zone
   device_type       = "SCSI"
 }
 
@@ -23,7 +23,7 @@ resource "opentelekomcloud_kms_key_v1" "sfs_key" {
 resource "opentelekomcloud_sfs_file_system_v2" "sharefile" {
   size = 20
   name = "sfs_${var.scenario}"
-  access_to = var.router.id
+  access_to = var.router_id
   access_level = "rw"
   description = "sfs with kms encryption"
   metadata = {
