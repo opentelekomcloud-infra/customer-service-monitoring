@@ -16,14 +16,16 @@ variable "ecs_image" {
 variable "volume_type" {
   default = "SATA"
 }
-variable "public_key" {}
+variable "public_key" {
+  default = ""
+}
 variable "subnet_id" {}
 variable "network_id" {}
 variable "router_id" {}
-variable "addr_3" {
-  default = "192.168.4"
+variable "addr_3_octets" {
+  default = "192.168.9"
 }
 variable "disk_volume" {
-  type    = number
+  type = number
   default = 10
 }

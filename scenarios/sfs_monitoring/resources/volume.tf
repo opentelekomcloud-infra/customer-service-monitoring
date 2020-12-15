@@ -36,6 +36,6 @@ resource "opentelekomcloud_sfs_file_system_v2" "sharefile" {
   }
 }
 
-output "sfs_path" {
+output "path_export_location" {
   value = opentelekomcloud_sfs_file_system_v2.sharefile.export_location
 }

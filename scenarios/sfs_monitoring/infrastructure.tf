@@ -16,7 +16,7 @@ module "resources" {
   disk_volume                 = var.disk_volume
   key_pair                    = local.key_pair
 
-  net_address = var.addr_3
+  net_address = var.addr_3_octets
   subnet_id   = var.subnet_id
   network_id  = var.network_id
   router_id   = var.router_id
@@ -32,6 +32,6 @@ output "sfs_target_instance_ip" {
   value = module.resources.target_instance_ip
 }
 
-output "sfs_path" {
-  value = module.resources.sfs_path
+output "export_path" {
+  value = module.resources.path_export_location
 }

@@ -6,7 +6,7 @@
   hosts: localhost
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
-    TF_VAR_addr_3: "192.168.4"
+    TF_VAR_addr_3_octets: "192.168.9"
     TF_VAR_network_id: "{{ main_network_id }}"
     TF_VAR_router_id: "{{ main_router_id }}"
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
@@ -22,8 +22,8 @@
   tasks:
     - name: Register build result
       set_fact:
-        sfs_monitoring_initiator_ip: "{{ tf_output.outputs['initiator_instance_ip'].value }}"
-        sfs_monitoring_target_ip: "{{ tf_output.outputs['target_instance_ip'].value }}"
+        sfs_monitoring_initiator_ip: "{{ tf_output.outputs['sfs_initiator_instance_ip'].value }}"
+        sfs_monitoring_target_ip: "{{ tf_output.outputs['sfs_target_instance_ip'].value }}"
         sfs_monitoring_sfs_path: "{{ tf_output.outputs['sfs_path'].value }}"
 
 #- name: Register used hosts
