@@ -1,3 +1,8 @@
+resource "opentelekomcloud_compute_keypair_v2" "kp" {
+  name       = var.key_pair.key_name
+  public_key = var.key_pair.public_key
+}
+
 # Get info about image
 data "opentelekomcloud_images_image_v2" "image" {
   name        = var.ecs_image
@@ -26,7 +31,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "sfs_monitoring_grp" {
 # Create network port for iSCSI target
 resource "opentelekomcloud_networking_port_v2" "target_instance_port" {
   name           = "${var.scenario}_target_port"
-  network_id     = var.network.id
+  network_id     = var.network_id
   admin_state_up = true
 
   security_group_ids = [
@@ -34,7 +39,7 @@ resource "opentelekomcloud_networking_port_v2" "target_instance_port" {
   ]
 
   fixed_ip {
-    subnet_id  = var.subnet.id
+    subnet_id  = var.subnet_id
     ip_address = "${var.net_address}.10"
   }
 }
@@ -43,7 +48,7 @@ resource "opentelekomcloud_networking_port_v2" "target_instance_port" {
 resource "opentelekomcloud_compute_instance_v2" "target_instance" {
   name        = "${var.scenario}_target_instance"
   flavor_name = var.ecs_flavor
-  key_pair    = var.key_pair_name
+  key_pair    = opentelekomcloud_compute_keypair_v2.kp.name
 
   availability_zone = var.target_availability_zone
 
@@ -52,7 +57,7 @@ resource "opentelekomcloud_compute_instance_v2" "target_instance" {
   }
 
   block_device {
-    volume_size           = var.disc_volume
+    volume_size           = var.disk_volume
     destination_type      = "volume"
     delete_on_termination = true
     source_type           = "image"
@@ -68,7 +73,7 @@ resource "opentelekomcloud_compute_instance_v2" "target_instance" {
 # Create network port for iSCSI initiator
 resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
   name           = "${var.scenario}_initiator_port"
-  network_id     = var.network.id
+  network_id     = var.network_id
   admin_state_up = true
 
   security_group_ids = [
@@ -76,7 +81,7 @@ resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
   ]
 
   fixed_ip {
-    subnet_id  = var.subnet.id
+    subnet_id  = var.subnet_id
     ip_address = "${var.net_address}.11"
   }
 }
@@ -85,7 +90,7 @@ resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
 resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
   name        = "${var.scenario}_initiator_instance"
   flavor_name = var.ecs_flavor
-  key_pair    = var.key_pair_name
+  key_pair    = opentelekomcloud_compute_keypair_v2.kp.name
 
   availability_zone = var.initiator_availability_zone
 
@@ -94,7 +99,7 @@ resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
   }
 
   block_device {
-    volume_size           = var.disc_volume
+    volume_size           = var.disk_volume
     destination_type      = "volume"
     delete_on_termination = true
     source_type           = "image"
@@ -106,7 +111,6 @@ resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
     "scenario" : var.scenario
   }
 }
-
 
 output "target_instance_ip" {
   value = opentelekomcloud_compute_instance_v2.target_instance.access_ip_v4
