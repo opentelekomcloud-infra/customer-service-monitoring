@@ -114,58 +114,58 @@
         pkg:
           - cron
 
-#    - name: Cron job for create big files on SCSI device every 5 minutes
-#      cron:
-#        name: "Creating big file on iSCSI device"
-#        minute: "*/5"
-#        job: /bin/dd if=/dev/urandom of="{{ mount_point }}/bigfile.txt" bs=5000000 count=100 oflag=dsync
-#
-#    - name: Cron job for reading big files on all devices every 2 minutes
-#      cron:
-#        name: "Reading big files from iSCSI device"
-#        minute: "*/2"
-#        job: /sbin/hdparm -tT "{{ device }}"
-#
-#- name: Install telegraf client on initiator
-#  hosts: iscsi_initiator
-#  become: yes
-#  vars_files:
-#    - "./vars/telegraf_dbconnection_vars.yml"
-#    - "./vars/scenario_iscsi_vars.yml"
-#  roles:
-#    - telegraf-client
-#  vars:
-#    telegraf_influxdb_retention_policy: ""
-#    telegraf_plugins_base:
-#      - name: mem
-#      - name: diskio
-#        options:
-#          devices: ["{{ device }}"]
-#      - name: cpu
-#        options:
-#          percpu: "false"
-#          totalcpu: "true"
-#          fielddrop:
-#            - "time_*"
-#      - name: http_listener_v2
-#        options:
-#          service_address: "localhost:8080"
-#          data_format: "influx"
-#
-#- name: Prepare test
-#  hosts: iscsi_initiator
-#  become: yes
-#  tasks:
-#    - name: copy test script on initiator
-#      copy:
-#        src: iscsi_connection_status.sh
-#        dest: /tmp/
-#
-#    - name: Changing perm of "iscsi_connection_status.sh", adding "+x"
-#      file: dest=/tmp/iscsi_connection_status.sh mode=a+x
-#
-#    - name: Schedule connection test
-#      cron:
-#        name: "Check status of iSCSI connection"
-#        minute: "*/1"
-#        job: /tmp/iscsi_connection_status.sh
+    - name: Cron job for create big files on SCSI device every 5 minutes
+      cron:
+        name: "Creating big file on iSCSI device"
+        minute: "*/5"
+        job: /bin/dd if=/dev/urandom of="{{ mount_point }}/bigfile.txt" bs=5000000 count=100 oflag=dsync
+
+    - name: Cron job for reading big files on all devices every 2 minutes
+      cron:
+        name: "Reading big files from iSCSI device"
+        minute: "*/2"
+        job: /sbin/hdparm -tT "{{ device }}"
+
+- name: Install telegraf client on initiator
+  hosts: iscsi_initiator
+  become: yes
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
+    - "./vars/scenario_iscsi_vars.yml"
+  roles:
+    - telegraf-client
+  vars:
+    telegraf_influxdb_retention_policy: ""
+    telegraf_plugins_base:
+      - name: mem
+      - name: diskio
+        options:
+          devices: ["{{ device }}"]
+      - name: cpu
+        options:
+          percpu: "false"
+          totalcpu: "true"
+          fielddrop:
+            - "time_*"
+      - name: http_listener_v2
+        options:
+          service_address: "localhost:8080"
+          data_format: "influx"
+
+- name: Prepare test
+  hosts: iscsi_initiator
+  become: yes
+  tasks:
+    - name: copy test script on initiator
+      copy:
+        src: iscsi_connection_status.sh
+        dest: /tmp/
+
+    - name: Changing perm of "iscsi_connection_status.sh", adding "+x"
+      file: dest=/tmp/iscsi_connection_status.sh mode=a+x
+
+    - name: Schedule connection test
+      cron:
+        name: "Check status of iSCSI connection"
+        minute: "*/1"
+        job: /tmp/iscsi_connection_status.sh
