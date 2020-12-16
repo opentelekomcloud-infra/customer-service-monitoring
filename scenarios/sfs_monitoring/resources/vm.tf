@@ -10,19 +10,13 @@ data "opentelekomcloud_images_image_v2" "current_image" {
 
 # Create security group for instances
 resource "opentelekomcloud_compute_secgroup_v2" "sfs_group" {
-  description = "Allow external connections to ssh, http, and https ports"
+  description = "Allow external connections to ssh"
   name        = "${var.scenario}_grp"
   rule {
     cidr        = "0.0.0.0/0"
     from_port   = 22
     ip_protocol = "tcp"
     to_port     = 22
-  }
-  rule {
-    cidr        = "0.0.0.0/0"
-    from_port   = 3260
-    ip_protocol = "tcp"
-    to_port     = 3260
   }
 }
 
