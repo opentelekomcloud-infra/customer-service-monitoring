@@ -1,0 +1,23 @@
+---
+- job:
+    name: python-lint
+    parent: tox-pep8
+    voting: false
+    vars:
+      python_version: 3.8
+
+- job:
+    name: ansible-lint
+    parent: tox
+    voting: false
+
+- project:
+    merge-mode: squash-merge
+    check:
+      jobs:
+        - python-lint
+        - ansible-lint
+    gate:
+      jobs:
+        - python-lint
+        - ansible-lint

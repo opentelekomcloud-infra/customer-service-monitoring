@@ -1,0 +1,10 @@
+---
+extends: default
+
+rules:
+  document-start: disable
+
+ignore: |
+  .tox/
+  */templates/
+  roles/

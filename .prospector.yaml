@@ -1,0 +1,4 @@
+inherits:
+  - strictness_veryhigh
+autodetect: false
+max-line-length: 100
