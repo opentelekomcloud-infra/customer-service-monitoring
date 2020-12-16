@@ -1,16 +1,16 @@
 resource "opentelekomcloud_kms_key_v1" "sfs_key" {
-  key_alias = "sfs_KMS_${var.scenario}"
+  key_alias = var.scenario
   pending_days = "7"
   key_description = "sfs kms key"
   is_enabled = true
 }
 
 resource "opentelekomcloud_sfs_file_system_v2" "sharefile" {
-  name = "${var.scenario}_volume"
+  name = var.scenario
   size = 20
   access_to = var.router_id
   access_level = "rw"
-  description = "SFS with KMS encryption"
+  description = "sfs kms key"
   metadata = {
     "type" = "nfs"
     "#sfs_crypt_key_id": opentelekomcloud_kms_key_v1.sfs_key.id,

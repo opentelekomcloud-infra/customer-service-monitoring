@@ -26,6 +26,6 @@ output "sfs_instance_ip" {
   value = module.resources.sfs_instance_ip
 }
 
-output "sfs_data" {
+output "sfs_path" {
   value = module.resources.sfs
 }
