@@ -28,7 +28,7 @@
         mode: 0600
         flat: yes
 
-    - name: Register Bastion
+    - name: Register csm_controller
       add_host:
         name: controller
         ansible_host: "{{ controller_public_ip }}"
