@@ -5,6 +5,7 @@ module "postgresql" {
   instance_name     = "scn2-db"
 
   network_id  = var.network_id
+  router_id = var.router_id
   subnet_id   = var.subnet_id
   subnet_cidr = var.subnet_cidr
 
