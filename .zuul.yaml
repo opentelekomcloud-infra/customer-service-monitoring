@@ -1,10 +1,8 @@
 ---
 - job:
     name: python-lint
-    parent: otc-tox
+    parent: otc-tox-pep8
     voting: false
-    vars:
-      tox_envlist: lint
 
 - job:
     name: ansible-lint
