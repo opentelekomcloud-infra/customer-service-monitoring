@@ -1,9 +1,9 @@
-resource "opentelekomcloud_compute_keypair_v2" "kp" {
+resource "opentelekomcloud_compute_keypair_v2" "dns-kp" {
   name       = var.key_pair.key_name
   public_key = var.key_pair.public_key
 }
 
-data "opentelekomcloud_images_image_v2" "current_image" {
+data "opentelekomcloud_images_image_v2" "dns_monitoring_image" {
   name        = var.ecs_image
   most_recent = true
 }
@@ -24,7 +24,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "dns_group" {
 resource "opentelekomcloud_compute_instance_v2" "dns_instance" {
   name        = "${var.scenario}_instance"
   flavor_name = var.ecs_flavor
-  key_pair    = opentelekomcloud_compute_keypair_v2.kp.name
+  key_pair    = opentelekomcloud_compute_keypair_v2.dns-kp.name
 
   availability_zone = var.availability_zone
 
@@ -41,7 +41,7 @@ resource "opentelekomcloud_compute_instance_v2" "dns_instance" {
     destination_type      = "volume"
     delete_on_termination = true
     source_type           = "image"
-    uuid                  = data.opentelekomcloud_images_image_v2.current_image.id
+    uuid                  = data.opentelekomcloud_images_image_v2.dns_monitoring_image.id
   }
 
   tag = {
