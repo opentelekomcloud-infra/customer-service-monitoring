@@ -1,14 +1,12 @@
 ---
 - job:
     name: python-lint
-    parent: tox-pep8
+    parent: otc-tox
     voting: false
-    vars:
-      python_version: 3.8
 
 - job:
     name: ansible-lint
-    parent: tox
+    parent: otc-tox
     voting: false
 
 - project:
