@@ -1,6 +1,6 @@
 # Create SCSI volume
 resource "opentelekomcloud_blockstorage_volume_v2" "SCSI-volume" {
-  name              = "scsi-volume"
+  name              = "${var.scenario}_volume_${local.workspace_prefix}"
   size              = var.disc_volume
   volume_type       = var.volume_type
   availability_zone = var.target_availability_zone

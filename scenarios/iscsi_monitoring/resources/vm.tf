@@ -28,7 +28,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "iscsi_group" {
 
 # Create instance for iscsi target
 resource "opentelekomcloud_compute_instance_v2" "target_instance" {
-  name        = "${var.scenario}_target_instance"
+  name        = "${var.scenario}_target_instance_${local.workspace_prefix}"
   flavor_name = var.ecs_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.kp.name
 
@@ -54,7 +54,7 @@ resource "opentelekomcloud_compute_instance_v2" "target_instance" {
 
 # Create network port for iscsi target
 resource "opentelekomcloud_networking_port_v2" "target_instance_port" {
-  name           = "${var.scenario}_target_port"
+  name           = "${var.scenario}_target_port_${local.workspace_prefix}"
   network_id     = var.network_id
   admin_state_up = true
 
@@ -70,7 +70,7 @@ resource "opentelekomcloud_networking_port_v2" "target_instance_port" {
 
 # Create instance for iscsi initiator
 resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
-  name        = "${var.scenario}_initiator_instance"
+  name        = "${var.scenario}_initiator_instance_${local.workspace_prefix}"
   flavor_name = var.ecs_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.kp.name
 
@@ -96,7 +96,7 @@ resource "opentelekomcloud_compute_instance_v2" "initiator_instance" {
 
 # Create network port for iscsi initiator
 resource "opentelekomcloud_networking_port_v2" "initiator_instance_port" {
-  name           = "${var.scenario}_initiator_port"
+  name           = "${var.scenario}_initiator_port_${local.workspace_prefix}"
   network_id     = var.network_id
   admin_state_up = true
 

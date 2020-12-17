@@ -24,5 +24,5 @@ variable "volume_types" {
 }
 
 locals {
-  workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
+  workspace_prefix = terraform.workspace == "default" ? "" : terraform.workspace
 }

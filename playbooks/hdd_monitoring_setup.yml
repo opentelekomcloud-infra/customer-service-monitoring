@@ -22,7 +22,7 @@
   tasks:
   - name: Register build result
     set_fact:
-      node_ips: "{{ tf_output.outputs['scn3_ecs_local_ips'].value }}"
+      node_ips: "{{ tf_output.outputs['hdd_ecs_local_ips'].value }}"
 
   - name: Register nodes
     add_host:

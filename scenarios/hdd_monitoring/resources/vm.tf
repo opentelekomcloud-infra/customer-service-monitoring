@@ -23,7 +23,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "hdd_group" {
 # Create instance
 resource "opentelekomcloud_compute_instance_v2" "http" {
   count       = length(opentelekomcloud_networking_port_v2.http)
-  name        = "${local.workspace_prefix}${var.scenario}_${var.availability_zones[count.index]}"
+  name        = "${var.scenario}_${var.availability_zones[count.index]}_${local.workspace_prefix}"
   flavor_name = var.ecs_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.kp.name
   user_data   = file("${path.module}/first_boot.sh")
@@ -55,7 +55,7 @@ resource "opentelekomcloud_compute_instance_v2" "http" {
 # Create network port
 resource "opentelekomcloud_networking_port_v2" "http" {
   count          = var.nodes_count
-  name           = "${local.workspace_prefix}${var.scenario}_port_${count.index}"
+  name           = "${var.scenario}_port_${count.index}_${local.workspace_prefix}"
   network_id     = var.network_id
   admin_state_up = true
   security_group_ids = [
