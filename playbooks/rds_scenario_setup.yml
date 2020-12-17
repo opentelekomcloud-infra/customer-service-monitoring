@@ -27,4 +27,4 @@
         db_password: "{{ tf_output.outputs[\"db_password\"].value }}"
         db_username: "{{ tf_output.outputs[\"db_username\"].value }}"
         db_address: "{{ tf_output.outputs[\"db_address\"].value }}"
-        scn2_public_ip: "{{ tf_output.outputs[\"scn2_public_ip\"].value }}"
+
