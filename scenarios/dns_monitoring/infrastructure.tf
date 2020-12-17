@@ -7,24 +7,26 @@ locals {
 }
 
 module "resources" {
-  source = "../resources"
+  source = "./resources"
 
-  bastion_image     = var.ecs_image
-  bastion_eip       = .bastion_fip.address
+  ecs_image         = var.ecs_image
+  availability_zone = var.availability_zone
   ecs_flavor        = var.ecs_flavor
   key_pair          = local.key_pair
-  network           = module.network.network
-  subnet            = module.network.subnet
-  router            = module.network.router
-  name              = "${local.workspace_prefix}bastion"
-  availability_zone = var.availability_zone
-  scenario          = var.scenario
+  disc_volume       = var.disc_volume
+
+  net_address = var.addr_3_octets
+  subnet_id   = var.subnet_id
+  network_id  = var.network_id
+  router_id   = var.router_id
+  scenario    = var.scenario
+  region      = var.region
 }
 
-output "dns_instance_fip" {
-  value = module.nodes.dns_instance_address
+output "dns_instance_ip" {
+  value = module.resources.dns_instance
 }
 
 output "dns_record_name" {
-  value = module.nodes.dns_record
+  value = module.resources.dns_record
 }
