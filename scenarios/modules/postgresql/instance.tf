@@ -16,8 +16,8 @@ resource "opentelekomcloud_rds_instance_v3" "instance" {
   }
   name              = var.instance_name
   security_group_id = opentelekomcloud_compute_secgroup_v2.db_local.id
-  subnet_id         = var.subnet_id
-  vpc_id            = var.network_id
+  subnet_id         = var.network_id
+  vpc_id            = var.router_id
   volume {
     type = "COMMON"
     size = 50
