@@ -1,6 +1,6 @@
 ---
 - name: Prepare controller variables
-  import_playbook: ./setup_scenarios_controller.yml
+  import_playbook: setup_scenarios_controller.yml
 
 - name: Prepare variables
   hosts: localhost

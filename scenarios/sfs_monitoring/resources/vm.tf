@@ -1,3 +1,7 @@
+locals {
+  workspace_prefix = terraform.workspace == "default" ? "" : terraform.workspace
+}
+
 resource "opentelekomcloud_compute_keypair_v2" "kp" {
   name       = var.key_pair.key_name
   public_key = var.key_pair.public_key
@@ -22,7 +26,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "sfs_group" {
 
 # Create instance for sfs
 resource "opentelekomcloud_compute_instance_v2" "sfs_instance" {
-  name        = "${var.scenario}_instance"
+  name        = "${var.scenario}_instance_${local.workspace_prefix}"
   flavor_name = var.ecs_flavor
   key_pair    = opentelekomcloud_compute_keypair_v2.kp.name
 
