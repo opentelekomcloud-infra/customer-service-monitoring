@@ -8,7 +8,7 @@ locals {
 }
 
 module "nodes" {
-  source               = "./nodes"
+  source               = "./resources"
   ecs_flavor           = var.ecs_flavor
   ecs_image            = var.ecs_image
   key_pair             = local.key_pair
