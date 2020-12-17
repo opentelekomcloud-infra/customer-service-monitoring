@@ -70,9 +70,9 @@
   hosts: dns_instance
   become: yes
   vars:
-    dns: "{{ hostvars.localhost.dns_record }}"
+    dns: "{{ hostvars.localhost.dns_monitoring_record_name }}"
     nohup_py3: "nohup /usr/bin/python3 -m csm_test_utils"
-    telegraf_host: "http://localhost"
+    telegraf_host: "http://localhost:8080"
   tasks:
     - name: Update and upgrade apt packages
       apt:
