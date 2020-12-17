@@ -1,4 +1,4 @@
-prefix            = "scn2"
+prefix            = "rds_scn"
 region            = "eu-de"
 availability_zone = "eu-de-03"
 ecs_flavor        = "c3.large.2"
