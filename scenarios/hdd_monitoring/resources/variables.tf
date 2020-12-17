@@ -1,6 +1,8 @@
 variable "net_address" {}
 variable "ecs_flavor" {}
-variable "ecs_image" {}
+variable "ecs_image" {
+  default = "Standard_Debian_10_latest"
+}
 variable "network_id" {}
 variable "subnet_id" {}
 variable "vpc_id" {}
