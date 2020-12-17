@@ -1,7 +1,7 @@
 # Customer Service Monitoring
 T-Systems solution for customer KPI monitoring for Open Telekom Cloud
 
-[![Build Status](https://travis-ci.org/opentelekomcloud-infra/customer-service-monitoring.svg?branch=master)](https://travis-ci.org/opentelekomcloud-infra/customer-service-monitoring)
+[![Zuul Check](https://zuul.eco.tsi-dev.otc-service.com/api/tenant/eco/badge?project=opentelekomcloud-infra/customer-service-monitoring&pipeline=check&branch=devel)](https://zuul.eco.tsi-dev.otc-service.com/t/eco/builds?project=opentelekomcloud-infra/customer-service-monitoring)
 
 This repository contains customer service monitoring test scenarios for 
 **Open Telekom Cloud**
@@ -12,7 +12,7 @@ Infrastructure for test scenarios is built using Terraform and Ansible.
 ### Requirements
 Existing scripts were checked to be working with:
  - Terraform 0.12
- - Ansible 2.7 (Python 3.7)
+ - Ansible 2.9 (Python 3.7)
 
 Installing terraform for Linux can be done using `install_terraform.sh`
 
