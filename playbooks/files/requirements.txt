@@ -1,8 +1,8 @@
-ocomone >= 0.3.3
-csm-test-utils >= 0.2.5
-boto3 == 1.10.13
-botocore == 1.13.13
-cryptography == 3.2
+ocomone==0.4.3
+csm-test-utils==0.2.12
+boto3==1.10.13
+botocore==1.13.13
+cryptography==3.2
 
-ansible >= 2.8.5
-ansible-lint >= 4.1.0
+ansible==2.9.16
+ansible-lint>=4.1.0
