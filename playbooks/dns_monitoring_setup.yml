@@ -1,6 +1,6 @@
 ---
 - name: Prepare controller variables
-  import_playbook: ./setup_scenarios_controller.yml
+  import_playbook: setup_scenarios_controller.yml
 
 - name: Prepare variables
   hosts: localhost
@@ -21,14 +21,14 @@
   tasks:
     - name: Register build result
       set_fact:
-        sfs_monitoring_instance_ip: "{{ tf_output.outputs['sfs_instance_ip'].value }}"
-        sfs_monitoring_sfs_path: "{{ tf_output.outputs['sfs_path'].value }}"
+        dns_monitoring_instance_ip: "{{ tf_output.outputs['dns_instance_ip'].value }}"
+        dns_monitoring_record_name: "{{ tf_output.outputs['dns_record_name'].value }}"
 
     - name: Register dns_monitoring
       add_host:
-        name: "sfs_instance"
+        name: "dns_instance"
         groups: "gatewayed"
-        ansible_host: "{{ sfs_monitoring_instance_ip }}"
+        ansible_host: "{{ dns_monitoring_instance_ip }}"
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
