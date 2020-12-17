@@ -28,14 +28,14 @@
         db_username: "{{ tf_output.outputs[\"db_username\"].value }}"
         db_address: "{{ tf_output.outputs[\"db_address\"].value }}"
         ecs_instance_ip: "{{ tf_output.outputs[\"ecs_ip\"].value }}"
-  - name: Register ecs
-    add_host:
-      name: "rds_scn_ecs"
-      groups: "gatewayed"
-      ansible_host: "{{ ecs_instance_ip }}"
-      ansible_ssh_user: "linux"
-      ansible_ssh_private_key_file: "{{ local_private_key }}"
-      ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
+    - name: Register ecs
+      add_host:
+        name: "rds_scn_ecs"
+        groups: "gatewayed"
+        ansible_host: "{{ ecs_instance_ip }}"
+        ansible_ssh_user: "linux"
+        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
 
 - name: Wait for host
   hosts: rds_scn_ecs
