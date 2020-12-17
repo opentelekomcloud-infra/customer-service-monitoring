@@ -61,7 +61,7 @@ resource "opentelekomcloud_compute_instance_v2" "basic" {
   ]
 
   network {
-    uuid        = var.subnet_id
+    uuid        = var.network_id
   }
 
   tag = {
