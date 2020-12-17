@@ -28,6 +28,12 @@
         db_username: "{{ tf_output.outputs[\"db_username\"].value }}"
         db_address: "{{ tf_output.outputs[\"db_address\"].value }}"
         ecs_instance_ip: "{{ tf_output.outputs[\"ecs_ip\"].value }}"
+    - name: Download private key from controller
+      fetch:
+        src: "{{ tmp_dir }}/{{ key_name }}"
+        dest:  "{{ local_private_key }}"
+        mode: 0600
+        flat: yes
     - name: Register ecs
       add_host:
         name: "rds_scn_ecs"
