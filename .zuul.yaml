@@ -1,13 +1,15 @@
 ---
 - job:
     name: python-lint
-    parent: otc-tox
+    parent: otc-tox-pep8
     voting: false
 
 - job:
     name: ansible-lint
     parent: otc-tox
     voting: false
+    vars:
+      tox_envlist: yamllint
 
 - project:
     merge-mode: squash-merge
