@@ -1,29 +1,11 @@
-variable "net_address" {
-  default = ""
-}
-variable "ecs_flavor" {
-  default = ""
-}
-variable "ecs_image" {
-  default = ""
-}
-variable "subnet_id" {
-  default = ""
-}
-variable "network_id" {
-  default = ""
-}
-variable "router_id" {
-  default = ""
-}
-variable "scenario" {
-  default = ""
-}
+variable "net_address" {}
+variable "ecs_flavor" {}
+variable "ecs_image" {}
+variable "subnet_id" {}
+variable "network_id" {}
+variable "router_id" {}
+variable "scenario" {}
 variable "key_pair" {}
-variable "region" {
-  default = ""
-}
-variable "availability_zone" {
-  default = ""
-}
+variable "region" {}
+variable "availability_zone" {}
 variable "disc_volume" {}
