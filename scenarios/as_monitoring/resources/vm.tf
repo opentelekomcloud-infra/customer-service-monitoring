@@ -68,6 +68,6 @@ resource "opentelekomcloud_compute_instance_v2" "as_instance" {
   }
 }
 
-output "as_instance" {
+output "as_instance_ip" {
   value = opentelekomcloud_compute_instance_v2.as_instance.access_ip_v4
 }

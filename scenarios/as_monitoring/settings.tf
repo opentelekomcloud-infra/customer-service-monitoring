@@ -8,7 +8,7 @@ terraform {
 
   # use OBS for remote state
   backend "s3" {
-    key                         = "terraform_state/autoscaling_monitoring"
+    key                         = "terraform_state/as_monitoring"
     endpoint                    = "obs.eu-de.otc.t-systems.com"
     bucket                      = "obs-csm"
     region                      = "eu-de"
