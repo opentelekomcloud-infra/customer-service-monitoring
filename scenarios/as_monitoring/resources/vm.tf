@@ -12,7 +12,7 @@ data "opentelekomcloud_images_image_v2" "current_image" {
   most_recent = true
 }
 
-# Create security group for instances
+# Create security group for instance
 resource "opentelekomcloud_compute_secgroup_v2" "as_group" {
   description = "Allow external connections to ssh port"
   name        = "${var.scenario}_grp"
@@ -24,10 +24,9 @@ resource "opentelekomcloud_compute_secgroup_v2" "as_group" {
   }
 }
 
-# Create network ports
-resource "opentelekomcloud_networking_port_v2" "as_instance_port" {
-  count          = var.nodes_count
-  name           = "${var.scenario}_${count.index}_${local.workspace_prefix}"
+# Create network port
+resource "opentelekomcloud_networking_port_v2" "as_port" {
+  name           = "${var.scenario}_${local.workspace_prefix}"
   network_id     = var.network_id
   admin_state_up = true
   security_group_ids = [
@@ -35,25 +34,24 @@ resource "opentelekomcloud_networking_port_v2" "as_instance_port" {
   ]
   fixed_ip {
     subnet_id  = var.subnet_id
-    ip_address = "${var.net_address}.${count.index + 10}"
+    ip_address = "${var.net_address}.10"
   }
 }
 
 # Create instances
 resource "opentelekomcloud_compute_instance_v2" "as_instance" {
-  count             = var.nodes_count
-  name              = "${var.scenario}_${count.index}_${local.workspace_prefix}"
+  name              = "${var.scenario}_instance_${local.workspace_prefix}"
   flavor_name       = var.ecs_flavor
   key_pair          = opentelekomcloud_compute_keypair_v2.kp.name
   user_data         = file("${path.module}/first_boot.sh")
   availability_zone = var.availability_zone
 
   depends_on = [
-    opentelekomcloud_networking_port_v2.as_instance_port
+    opentelekomcloud_networking_port_v2.as_port
   ]
 
   network {
-    port = opentelekomcloud_networking_port_v2.as_instance_port[count.index].id
+    port = opentelekomcloud_networking_port_v2.as_port.id
   }
 
   block_device {
@@ -70,6 +68,6 @@ resource "opentelekomcloud_compute_instance_v2" "as_instance" {
   }
 }
 
-output "autoscaling_instances" {
-  value = opentelekomcloud_compute_instance_v2.as_instance
+output "as_instance" {
+  value = opentelekomcloud_compute_instance_v2.as_instance.access_ip_v4
 }

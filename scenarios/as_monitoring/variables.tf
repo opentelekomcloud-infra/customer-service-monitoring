@@ -1,9 +1,5 @@
-variable "region" {
-  default = "eu-de"
-}
-variable "availability_zone" {
-  default = "eu-de-01"
-}
+variable "region" {}
+variable "availability_zone" {}
 variable "ecs_flavor" {}
 variable "bastion_image" {}
 variable "ecs_image" {}
@@ -14,14 +10,10 @@ variable "scenario" {}
 variable "public_key" {
   default = ""
 }
-variable "loadbalancer_eip" {
+variable "controller_ip" {
   default = ""
-}
-variable "bastion_eip" {
-  default = ""
-}
-variable "nodes_count" {
-  type = number
-  default = 1
 }
 variable "disc_volume" {}
+variable "subnet_id" {}
+variable "network_id" {}
+variable "router_id" {}
