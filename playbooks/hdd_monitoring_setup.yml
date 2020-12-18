@@ -1,0 +1,116 @@
+---
+- name: Prepare controller variables
+  import_playbook: setup_scenarios_controller.yml
+
+- name: Prepare variables
+  hosts: localhost
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+    TF_VAR_addr_3: "192.168.3"
+    TF_VAR_network_id: "{{ main_network_id }}"
+    TF_VAR_router_id: "{{ main_router_id }}"
+    TF_VAR_subnet_id: "{{ main_subnet_id }}"
+  vars:
+    scenario_name: hdd_monitoring
+    terraform_base_dir: terraform
+    requirements: requirements.txt
+    terraform_workspace: prod
+    key_name: key_csm_controller
+    infra_state: present
+  roles:
+    - build_infrastructure
+  tasks:
+    - name: Register build result
+      set_fact:
+        node_ips: "{{ tf_output.outputs['hdd_ecs_local_ips'].value }}"
+
+    - name: Register nodes
+      add_host:
+        name: "{{ item }}"
+        groups: "gatewayed"
+        ansible_ssh_user: "linux"
+        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_common_args: >
+          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}' -o PasswordAuthentication=no
+      loop: "{{ hostvars.localhost.node_ips }}"
+
+- name: Prepare attached devices on server
+  hosts: gatewayed
+  become: yes
+  vars:
+    devices:
+      sata: "/dev/vdb"
+      sas: "/dev/vdc"
+      ssd: "/dev/vdd"
+  tasks:
+    - name: Add hdparm repository [Debian/Ubuntu]
+      apt_repository:
+        repo: deb http://deb.debian.org/debian stretch main
+        state: present
+
+    - name: Install required packages
+      apt:
+        name:
+          - hdparm
+          - cron
+        update_cache: yes
+
+    - name: Create a ext4 filesystem on attached disks
+      filesystem:
+        fstype: ext4
+        dev: "{{ item.value }}"
+      with_items: "{{ lookup('dict', devices) }}"
+
+    - name: Create directories for mount
+      file:
+        path: "/mnt/{{ item.key }}"
+        state: directory
+        mode: "0755"
+      with_items: "{{ lookup('dict', devices) }}"
+
+    - name: Mount up devices
+      mount:
+        path: "/mnt/{{ item.key }}"
+        src: "{{ item.value }}"
+        fstype: ext4
+        state: mounted
+      with_items: "{{ lookup('dict', devices) }}"
+
+    - name: Cron job for create big files on all devices every 15 minutes
+      cron:
+        name: "Creating big file on {{ item.value }}"
+        minute: "*/5"
+        job: >
+          /bin/dd if=/dev/urandom of="/mnt/{{ item.key }}/bigfile.txt"
+          bs=1000000 count=1000 oflag=dsync
+      with_items: "{{ lookup('dict', devices) }}"
+
+    - name: Cron job for reading big files on all devices every 5 minutes
+      cron:
+        name: "Reading big files from {{ item.value }}"
+        minute: "*/2"
+        job: /sbin/hdparm -tT "{{ item.value }}"
+      with_items: "{{ lookup('dict', devices) }}"
+
+- name: Install telegraf client on server
+  hosts: gatewayed
+  become: yes
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
+  roles:
+    - telegraf-client
+  vars:
+    telegraf_influxdb_retention_policy: ""
+    telegraf_plugins_base:
+      - name: mem
+      - name: system
+      - name: diskio
+        options:
+          devices: ["vdb", "vdc", "vdd"]
+      - name: cpu
+        options:
+          percpu: "false"
+          totalcpu: "true"
+          fielddrop:
+            - "time_*"
