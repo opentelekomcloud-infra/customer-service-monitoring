@@ -89,24 +89,24 @@
         job: /sbin/hdparm -tT "{{ item.value }}"
       with_items: "{{ lookup('dict', devices) }}"
 
-#- name: Install telegraf client on server
-#  hosts: gatewayed
-#  become: yes
-#  vars_files:
-#    - "./vars/telegraf_dbconnection_vars.yml"
-#  roles:
-#    - telegraf-client
-#  vars:
-#    telegraf_influxdb_retention_policy: ""
-#    telegraf_plugins_base:
-#      - name: mem
-#      - name: system
-#      - name: diskio
-#        options:
-#          devices: ["vdb", "vdc", "vdd"]
-#      - name: cpu
-#        options:
-#          percpu: "false"
-#          totalcpu: "true"
-#          fielddrop:
-#            - "time_*"
+- name: Install telegraf client on server
+  hosts: gatewayed
+  become: yes
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
+  roles:
+    - telegraf-client
+  vars:
+    telegraf_influxdb_retention_policy: ""
+    telegraf_plugins_base:
+      - name: mem
+      - name: system
+      - name: diskio
+        options:
+          devices: ["vdb", "vdc", "vdd"]
+      - name: cpu
+        options:
+          percpu: "false"
+          totalcpu: "true"
+          fielddrop:
+            - "time_*"
