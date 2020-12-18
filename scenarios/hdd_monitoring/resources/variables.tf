@@ -22,7 +22,6 @@ variable "volume_types" {
   type    = list(string)
   default = ["SATA", "SAS", "SSD"]
 }
-
 locals {
   workspace_prefix = terraform.workspace == "default" ? "" : terraform.workspace
 }
