@@ -13,7 +13,7 @@ variable "controller_ip" {
   default = ""
 }
 variable "disc_volume" {
-  type = number
+  type    = number
   default = 10
 }
 variable "subnet_id" {}
