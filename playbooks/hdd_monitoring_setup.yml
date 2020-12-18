@@ -20,18 +20,20 @@
   roles:
     - build_infrastructure
   tasks:
-  - name: Register build result
-    set_fact:
-      node_ips: "{{ tf_output.outputs['hdd_ecs_local_ips'].value }}"
+    - name: Register build result
+      set_fact:
+        node_ips: "{{ tf_output.outputs['hdd_ecs_local_ips'].value }}"
 
-  - name: Register nodes
-    add_host:
-      name: "{{ item }}"
-      groups: "gatewayed"
-      ansible_ssh_user: "linux"
-      ansible_ssh_private_key_file: "{{ local_private_key }}"
-      ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
-    loop: "{{ hostvars.localhost.node_ips }}"
+    - name: Register nodes
+      add_host:
+        name: "{{ item }}"
+        groups: "gatewayed"
+        ansible_ssh_user: "linux"
+        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_common_args: >
+          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}' -o PasswordAuthentication=no
+      loop: "{{ hostvars.localhost.node_ips }}"
 
 - name: Prepare attached devices on server
   hosts: gatewayed
@@ -79,7 +81,9 @@
       cron:
         name: "Creating big file on {{ item.value }}"
         minute: "*/5"
-        job: /bin/dd if=/dev/urandom of="/mnt/{{ item.key }}/bigfile.txt" bs=1000000 count=1000 oflag=dsync
+        job: >
+          /bin/dd if=/dev/urandom of="/mnt/{{ item.key }}/bigfile.txt"
+          bs=1000000 count=1000 oflag=dsync
       with_items: "{{ lookup('dict', devices) }}"
 
     - name: Cron job for reading big files on all devices every 5 minutes
