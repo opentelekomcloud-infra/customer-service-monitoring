@@ -10,14 +10,13 @@
     TF_VAR_router_id: "{{ main_router_id }}"
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
     TF_VAR_subnet_cidr: "{{ main_subnet_cidr }}"
-    TF_VAR_controller_public_ip: "{{ controller_public_ip }}"
     TF_VAR_psql_password: "345y6~!UYT@hhjjfgj"
   vars:
     scenario_name: rds_scenario
     terraform_base_dir: terraform
     requirements: requirements.txt
     terraform_workspace: prod
-    key_name: "key_{{ scenario_name }}"
+    key_name: key_csm_controller
     infra_state: present
   roles:
     - build_infrastructure
@@ -28,12 +27,6 @@
         db_username: "{{ tf_output.outputs[\"db_username\"].value }}"
         db_address: "{{ tf_output.outputs[\"db_address\"].value }}"
         ecs_instance_ip: "{{ tf_output.outputs[\"ecs_ip\"].value }}"
-    - name: Download private key from controller
-      fetch:
-        src: "{{ tmp_dir }}/{{ key_name }}"
-        dest:  "{{ local_private_key }}"
-        mode: 0600
-        flat: yes
     - name: Register ecs
       add_host:
         name: "rds_scn_ecs"

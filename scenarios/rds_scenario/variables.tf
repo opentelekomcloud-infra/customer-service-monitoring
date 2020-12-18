@@ -13,4 +13,3 @@ variable "network_id" {}
 variable "subnet_id" {}
 variable "subnet_cidr" {}
 variable "router_id" {}
-variable "controller_public_ip" {}
