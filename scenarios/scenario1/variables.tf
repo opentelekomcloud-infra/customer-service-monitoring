@@ -1,9 +1,9 @@
 variable "region" { default = "eu-de" }
-variable "use_single_az" { default = false}
+variable "use_single_az" { default = false }
 variable "availability_zone" { default = "eu-de-03" }
 variable "availability_zones" {
-  type        = list(string)
-  default     = ["eu-de-01", "eu-de-02", "eu-de-03"]
+  type    = list(string)
+  default = ["eu-de-01", "eu-de-02", "eu-de-03"]
 }
 variable "ecs_flavor" {}
 variable "ecs_image" {}

@@ -11,7 +11,7 @@ resource "opentelekomcloud_lb_loadbalancer_v2" "loadbalancer" {
 resource "opentelekomcloud_compute_floatingip_v2" "lb_public_ip" {}
 
 # Assign FIP to Loadbalancer
-resource opentelekomcloud_networking_floatingip_associate_v2 "floatingip_associate_lb" {
+resource "opentelekomcloud_networking_floatingip_associate_v2" "floatingip_associate_lb" {
   floating_ip = opentelekomcloud_compute_floatingip_v2.lb_public_ip.address
   port_id     = opentelekomcloud_lb_loadbalancer_v2.loadbalancer.vip_port_id
 }

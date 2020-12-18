@@ -15,6 +15,6 @@ variable "network_id" {}
 variable "router_id" {}
 variable "subnet_id" {}
 variable "disc_volume" {
-  type = number
+  type    = number
   default = 10
 }

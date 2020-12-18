@@ -48,22 +48,22 @@ module "loadbalancer" {
 module "resources" {
   source = "./resources"
 
-  ecs_flavor            = var.ecs_flavor
-  host_image            = var.host_image
-  net_address           = var.addr_3_octets
-  nodes_count           = var.nodes_count
-  bastion_local_ip      = module.bastion.bastion_ip
-  bastion_sec_group_id  = module.bastion.bastion_group_id
-  network_id            = module.network.network.id
-  router_id             = module.network.router.id
-  subnet_id             = module.network.subnet.id
-  prefix                = local.prefix
-  availability_zone     = var.availability_zone
-  key_pair              = local.key_pair
-  scenario              = var.scenario
-  bastion_eip           = opentelekomcloud_networking_floatingip_v2.server_fip.address
-  lb_monitor            = module.loadbalancer.monitor
-  lb_pool               = module.loadbalancer.pool
+  ecs_flavor           = var.ecs_flavor
+  host_image           = var.host_image
+  net_address          = var.addr_3_octets
+  nodes_count          = var.nodes_count
+  bastion_local_ip     = module.bastion.bastion_ip
+  bastion_sec_group_id = module.bastion.bastion_group_id
+  network_id           = module.network.network.id
+  router_id            = module.network.router.id
+  subnet_id            = module.network.subnet.id
+  prefix               = local.prefix
+  availability_zone    = var.availability_zone
+  key_pair             = local.key_pair
+  scenario             = var.scenario
+  bastion_eip          = opentelekomcloud_networking_floatingip_v2.server_fip.address
+  lb_monitor           = module.loadbalancer.monitor
+  lb_pool              = module.loadbalancer.pool
 }
 
 output "scn4_lb_fip" {
@@ -75,5 +75,5 @@ output "scn4_bastion_fip" {
 }
 
 output "scn4_vms" {
-  value = [ for instance in module.resources.instances: instance.access_ip_v4 ]
+  value = [for instance in module.resources.instances : instance.access_ip_v4]
 }
