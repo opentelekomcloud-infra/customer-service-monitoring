@@ -10,8 +10,8 @@ variable "scenario" {}
 variable "key_pair" {}
 variable "region" { default = "eu-de" }
 variable "availability_zones" {
-    type    = list(string)
-    default = ["eu-de-01", "eu-de-02","eu-de-03"]
+  type    = list(string)
+  default = ["eu-de-01", "eu-de-02", "eu-de-03"]
 }
 variable "nodes_count" { default = 3 }
 variable "disc_volume" {
