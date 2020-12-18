@@ -1,0 +1,41 @@
+---
+- name: Prepare controller variables
+  import_playbook: setup_scenarios_controller.yml
+
+- name: Prepare variables
+  hosts: localhost
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+    TF_VAR_network_id: "{{ main_network_id }}"
+    TF_VAR_router_id: "{{ main_router_id }}"
+    TF_VAR_subnet_id: "{{ main_subnet_id }}"
+  vars:
+    scenario_name: as_monitoring
+    terraform_base_dir: terraform
+    requirements: requirements.txt
+    terraform_workspace: prod
+    key_name: key_csm_controller
+    infra_state: present
+  roles:
+    - build_infrastructure
+  tasks:
+    - name: Register build result
+      set_fact:
+        as_monitoring_instance_ip: "{{ tf_output.outputs['dns_instance_ip'].value }}"
+
+    - name: Register dns_monitoring
+      add_host:
+        name: "as_instance"
+        groups: "gatewayed"
+        ansible_host: "{{ dns_monitoring_instance_ip }}"
+        ansible_ssh_user: "linux"
+        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
+
+- name: Wait for hosts
+  hosts: gatewayed
+  gather_facts: no
+  tasks:
+    - name: Wait for host to be up
+      wait_for_connection:
+        timeout: 120
