@@ -15,7 +15,7 @@
     terraform_base_dir: terraform
     requirements: requirements.txt
     terraform_workspace: prod
-    key_name: "key_{{ scenario_name }}"
+    key_name: key_csm_controller
     infra_state: present
   roles:
     - build_infrastructure
@@ -24,3 +24,148 @@
     set_fact:
       iscsi_initiator_instance_ip: "{{ tf_output.outputs['iscsi_initiator_instance_ip'].value }}"
       iscsi_target_instance_ip: "{{ tf_output.outputs['iscsi_target_instance_ip'].value }}"
+
+  - name: Register iscsi_initiator
+    add_host:
+      name: "iscsi_initiator"
+      groups: "gatewayed"
+      ansible_host: "{{ iscsi_initiator_instance_ip }}"
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+      ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
+
+  - name: Register iscsi_target
+    add_host:
+      name: "iscsi_target"
+      groups: "gatewayed"
+      ansible_host: "{{ iscsi_target_instance_ip }}"
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+      ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
+
+- name: Prepare attached device on target server
+  hosts: iscsi_target
+  become: yes
+  vars_files:
+    - "./vars/scenario_iscsi_vars.yml"
+  roles:
+    - iscsi_target
+
+- name: Prepare initiator and connect device
+  hosts: iscsi_initiator
+  become: yes
+  vars_files:
+    - "./vars/scenario_iscsi_vars.yml"
+  tasks:
+    - name: Perform a discovery on target
+      open_iscsi:
+        show_nodes: yes
+        discover: yes
+        portal: "{{ hostvars.iscsi_target.ansible_host }}"
+      register: res
+      retries: 3
+      delay: 3
+      until: res is success
+
+    - name: Connect to the target
+      open_iscsi:
+        auto_node_startup: yes
+        login: yes
+        node_user: "{{ incominguser_username }}"
+        node_pass: "{{ incominguser_password }}"
+        portal: "{{ hostvars.iscsi_target.ansible_host }}"
+
+- name: Prepare attached iSCSI device on initiator
+  hosts: iscsi_initiator
+  become: yes
+  vars_files:
+    - "./vars/scenario_iscsi_vars.yml"
+  tasks:
+    - name: Add hdparm repository [Debian/Ubuntu]
+      apt_repository:
+        repo: deb http://deb.debian.org/debian stretch main
+        state: present
+
+    - name: Install hdparm
+      apt:
+        name: hdparm
+        update_cache: yes
+
+    - name: Create a ext4 filesystem on attached disks
+      filesystem:
+        fstype: ext4
+        dev: "{{ device }}"
+
+    - name: Create directories for mount
+      file:
+        path: "{{ mount_point }}"
+        state: directory
+        mode: "0755"
+
+    - name: Mount up devices
+      mount:
+        path: "{{ mount_point }}"
+        src: "{{ device }}"
+        fstype: ext4
+        state: mounted
+
+    - name: Install cron
+      apt:
+        pkg:
+          - cron
+
+    - name: Cron job for create big files on SCSI device every 5 minutes
+      cron:
+        name: "Creating big file on iSCSI device"
+        minute: "*/5"
+        job: /bin/dd if=/dev/urandom of="{{ mount_point }}/bigfile.txt" bs=5000000 count=100 oflag=dsync
+
+    - name: Cron job for reading big files on all devices every 2 minutes
+      cron:
+        name: "Reading big files from iSCSI device"
+        minute: "*/2"
+        job: /sbin/hdparm -tT "{{ device }}"
+
+- name: Install telegraf client on initiator
+  hosts: iscsi_initiator
+  become: yes
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
+    - "./vars/scenario_iscsi_vars.yml"
+  roles:
+    - telegraf-client
+  vars:
+    telegraf_influxdb_retention_policy: ""
+    telegraf_plugins_base:
+      - name: mem
+      - name: diskio
+        options:
+          devices: ["{{ device }}"]
+      - name: cpu
+        options:
+          percpu: "false"
+          totalcpu: "true"
+          fielddrop:
+            - "time_*"
+      - name: http_listener_v2
+        options:
+          service_address: "localhost:8080"
+          data_format: "influx"
+
+- name: Prepare test
+  hosts: iscsi_initiator
+  become: yes
+  tasks:
+    - name: copy test script on initiator
+      copy:
+        src: iscsi_connection_status.sh
+        dest: /tmp/
+
+    - name: Changing perm of "iscsi_connection_status.sh", adding "+x"
+      file: dest=/tmp/iscsi_connection_status.sh mode=a+x
+
+    - name: Schedule connection test
+      cron:
+        name: "Check status of iSCSI connection"
+        minute: "*/1"
+        job: /tmp/iscsi_connection_status.sh

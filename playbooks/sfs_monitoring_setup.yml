@@ -1,0 +1,137 @@
+---
+- name: Prepare controller variables
+  import_playbook: setup_scenarios_controller.yml
+
+- name: Prepare variables
+  hosts: localhost
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+    TF_VAR_network_id: "{{ main_network_id }}"
+    TF_VAR_router_id: "{{ main_router_id }}"
+    TF_VAR_subnet_id: "{{ main_subnet_id }}"
+  vars:
+    scenario_name: sfs_monitoring
+    terraform_base_dir: terraform
+    requirements: requirements.txt
+    terraform_workspace: prod
+    key_name: key_csm_controller
+    infra_state: present
+  roles:
+    - build_infrastructure
+  tasks:
+    - name: Register build result
+      set_fact:
+        sfs_monitoring_instance_ip: "{{ tf_output.outputs['sfs_instance_ip'].value }}"
+        sfs_monitoring_sfs_path: "{{ tf_output.outputs['sfs_path'].value }}"
+
+    - name: Register sfs_instance
+      add_host:
+        name: "sfs_instance"
+        groups: "gatewayed"
+        ansible_host: "{{ sfs_monitoring_instance_ip }}"
+        ansible_ssh_user: "linux"
+        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
+
+- name: Wait for hosts
+  hosts: gatewayed
+  gather_facts: no
+  tasks:
+    - name: Wait for host to be up
+      wait_for_connection:
+        timeout: 120
+
+- name: Setup sfs scenario on sfs_intance
+  hosts: sfs_instance
+  become: yes
+  vars:
+    - sfs_shared_path: "{{ hostvars.localhost.sfs_monitoring_sfs_path }}"
+    - mount_path: "/mnt/sfs_share"
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+
+    - name: Install PIP
+      apt:
+        name:
+          - python3-setuptools
+          - python3-pip
+
+    - name: Install test utils
+      pip:
+        executable: pip3
+        name: csm-test-utils
+        state: forcereinstall
+
+    - name: Install NFS mount utility
+      apt:
+        pkg: nfs-common
+        state: present
+
+    - name: Unmount a mounted volume
+      mount:
+        path: "{{ mount_path }}"
+        state: unmounted
+
+    - name: Mount NFS share
+      mount:
+        fstype: nfs
+        name: "{{ mount_path }}"
+        opts: "vers=3,timeo=600,nolock"
+        src: "{{ sfs_shared_path }}"
+        state: mounted
+
+    - name: Copy nfs stats script to sfs_instance
+      copy:
+        src: "nfs/nfsiostat.sh"
+        dest: /tmp/
+
+    - name: Changing perm of "nfsiostat.sh", adding "+x"
+      file: dest=/tmp/nfsiostat.sh mode=a+x
+
+    - name: Get reporting processes list from remote host  # noqa 301 305
+      ignore_errors: yes
+      shell: "ps aux | grep 'csm_test_utils sfs_compare' | awk '{print $2}'"
+      register: process_monitor
+
+    - name: Kill running reporting processes  # noqa 301 305
+      ignore_errors: yes
+      shell: "kill {{ process_monitor.stdout_lines[0] }}"
+
+    - name: Waiting for status
+      wait_for:
+        path: "/proc/{{ process_monitor.stdout_lines[0] }}/status"
+        state: absent
+      ignore_errors: yes
+
+    - name: Execute csm_test_utils  # noqa 301 305
+      shell: "nohup python3 -m csm_test_utils sfs_compare --telegraf http://localhost:8080 &"
+
+- name: Install telegraf client on sfs_instance
+  hosts: sfs_instance
+  become: yes
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
+  roles:
+    - telegraf-client
+  vars:
+    telegraf_influxdb_retention_policy: ""
+    telegraf_plugins_base:
+      - name: mem
+      - name: exec
+        options:
+          commands: ["/tmp/nfsiostat.sh"]
+          timeout: "10s"
+          data_format : "influx"
+      - name: cpu
+        options:
+          percpu: "false"
+          totalcpu: "true"
+          fielddrop:
+            - "time_*"
+      - name: http_listener_v2
+        options:
+          service_address: "localhost:8080"
+          data_format: "influx"
