@@ -14,12 +14,12 @@ variable "use_single_az" {
 }
 variable "availability_zone" { default = "eu-de-03" }
 variable "availability_zones" {
-  type        = list(string)
-  default     = ["eu-de-01", "eu-de-02", "eu-de-03"]
+  type    = list(string)
+  default = ["eu-de-01", "eu-de-02", "eu-de-03"]
 }
 variable "disc_volume" {
-  type        = number
-  default     = 5
+  type    = number
+  default = 5
 }
 
 locals {

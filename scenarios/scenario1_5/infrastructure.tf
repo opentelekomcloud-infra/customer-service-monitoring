@@ -51,11 +51,11 @@ module "nodes" {
 module "loadbalancer" {
   source = "../modules/loadbalancer"
 
-  instances             = module.nodes.instances
-  net_address           = var.addr_3_octets
-  scenario              = var.scenario
-  subnet_id             = module.network.subnet.id
-  workspace_prefix      = local.workspace_prefix
+  instances        = module.nodes.instances
+  net_address      = var.addr_3_octets
+  scenario         = var.scenario
+  subnet_id        = module.network.subnet.id
+  workspace_prefix = local.workspace_prefix
 }
 
 output "scn1_5_lb_fip" {
@@ -67,5 +67,5 @@ output "scn1_5_bastion_fip" {
 }
 
 output "scn1_5_ecs_local_ips" {
-  value = [ for instance in module.nodes.instances: instance.access_ip_v4 ]
+  value = [for instance in module.nodes.instances : instance.access_ip_v4]
 }

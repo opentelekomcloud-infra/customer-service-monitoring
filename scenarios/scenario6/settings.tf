@@ -15,6 +15,6 @@ terraform {
 
 # Configure the OpenTelekomCloud Provider
 provider "opentelekomcloud" {
-    cloud = var.cloud
+  cloud = var.cloud
 }
 

@@ -18,11 +18,11 @@ resource "opentelekomcloud_ces_alarmrule" "instances_count" {
   }
   alarm_action_enabled = true
   alarm_actions {
-    notification_list = [ opentelekomcloud_smn_topic_v2.instances_count_topic.topic_urn ]
+    notification_list = [opentelekomcloud_smn_topic_v2.instances_count_topic.topic_urn]
     type              = "notification"
   }
   ok_actions {
-    notification_list = [ opentelekomcloud_smn_topic_v2.instances_count_topic.topic_urn ]
+    notification_list = [opentelekomcloud_smn_topic_v2.instances_count_topic.topic_urn]
     type              = "notification"
   }
   alarm_description = "as instances notification"
@@ -33,18 +33,18 @@ resource "opentelekomcloud_ces_alarmrule" "instances_count" {
 }
 
 resource "opentelekomcloud_smn_topic_v2" "instances_count_topic" {
-  name            = "${var.prefix}_instances_count_topic"
-  display_name    = "Topic for scenario4"
+  name         = "${var.prefix}_instances_count_topic"
+  display_name = "Topic for scenario4"
 }
 
 resource "opentelekomcloud_smn_subscription_v2" "subscription" {
-  topic_urn       = opentelekomcloud_smn_topic_v2.instances_count_topic.id
-  endpoint        = "http://${var.bastion_eip}/smn"
-  protocol        = "http"
+  topic_urn = opentelekomcloud_smn_topic_v2.instances_count_topic.id
+  endpoint  = "http://${var.bastion_eip}/smn"
+  protocol  = "http"
 }
 
 resource "opentelekomcloud_smn_subscription_v2" "subscription_v2" {
-  topic_urn       = opentelekomcloud_smn_topic_v2.instances_count_topic.id
-  endpoint        = "http://${var.bastion_eip}/smn/"
-  protocol        = "http"
+  topic_urn = opentelekomcloud_smn_topic_v2.instances_count_topic.id
+  endpoint  = "http://${var.bastion_eip}/smn/"
+  protocol  = "http"
 }

@@ -36,12 +36,12 @@ module "bastion" {
 module "nodes" {
   source = "../modules/ecs_node"
 
-  ecs_flavor    = var.ecs_flavor
-  ecs_image     = var.ecs_image
-  key_pair_name = local.key_pair.key_name
-  nodes_count   = var.nodes_count
-  scenario      = var.scenario
-  use_single_az    = var.use_single_az
+  ecs_flavor        = var.ecs_flavor
+  ecs_image         = var.ecs_image
+  key_pair_name     = local.key_pair.key_name
+  nodes_count       = var.nodes_count
+  scenario          = var.scenario
+  use_single_az     = var.use_single_az
   availability_zone = var.availability_zone
 
   net_address          = var.addr_3_octets
@@ -69,5 +69,5 @@ output "scn1_bastion_fip" {
 }
 
 output "scn1_ecs_local_ips" {
-  value = [ for instance in module.nodes.instances: instance.access_ip_v4 ]
+  value = [for instance in module.nodes.instances : instance.access_ip_v4]
 }
