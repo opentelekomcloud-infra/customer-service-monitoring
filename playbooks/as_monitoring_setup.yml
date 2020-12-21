@@ -101,43 +101,43 @@
         minute: "*/59"
         job: /tmp/check_cpu_load_status.sh
 
-#- name: Install telegraf client on as_instance
-#  hosts: as_instance
-#  become: yes
-#  vars:
-#    telegraf_local_port: 8080
-#    monitoring_local_port: 23456
-#  vars_files:
-#    - "./vars/telegraf_dbconnection_vars.yml"
-#  roles:
-#    - role: telegraf-client
-#      vars:
-#        telegraf_influxdb_retention_policy: ""
-#        telegraf_plugins_base:
-#          - name: http_listener_v2
-#            options:
-#              service_address: "localhost:{{ telegraf_local_port }}"
-#              data_format: "influx"
-#    - role: geerlingguy.nginx
-#      vars:
-#        nginx_remove_default_vhost: yes
-#        nginx_vhosts:
-#          - listen: "80"
-#            server_name: "localhost"
-#            extra_parameters: |
-#              location / {
-#                  proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;
-#                  proxy_set_header Host $http_host;
-#                  proxy_http_version 1.1;
-#              }
-#              location /telegraf {
-#                  proxy_pass         http://localhost:{{ telegraf_local_port }};
-#                  proxy_set_header   Host $host;
-#              }
-#              location /smn {
-#                  proxy_pass         http://localhost:{{ monitoring_local_port }}/smn;
-#                  proxy_set_header   Host $host;
-#              }
+- name: Install telegraf client on as_instance
+  hosts: as_instance
+  become: yes
+  vars:
+    telegraf_local_port: 8080
+    monitoring_local_port: 23456
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
+  roles:
+    - role: telegraf-client
+      vars:
+        telegraf_influxdb_retention_policy: ""
+        telegraf_plugins_base:
+          - name: http_listener_v2
+            options:
+              service_address: "localhost:{{ telegraf_local_port }}"
+              data_format: "influx"
+    - role: geerlingguy.nginx
+      vars:
+        nginx_remove_default_vhost: yes
+        nginx_vhosts:
+          - listen: "80"
+            server_name: "localhost"
+            extra_parameters: |
+              location / {
+                  proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;
+                  proxy_set_header Host $http_host;
+                  proxy_http_version 1.1;
+              }
+              location /telegraf {
+                  proxy_pass         http://localhost:{{ telegraf_local_port }};
+                  proxy_set_header   Host $host;
+              }
+              location /smn {
+                  proxy_pass         http://localhost:{{ monitoring_local_port }}/smn;
+                  proxy_set_header   Host $host;
+              }
 
 - name: Install csm test utils, run as_monitoring and as_load
   hosts: as_instance
