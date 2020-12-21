@@ -25,21 +25,29 @@ resource "opentelekomcloud_compute_secgroup_v2" "rds_public" {
 
   rule {
     cidr        = "0.0.0.0/0"
-    from_port   = 80
-    ip_protocol = "tcp"
-    to_port     = 80
-  }
-  rule {
-    cidr        = "0.0.0.0/0"
-    from_port   = 443
-    ip_protocol = "tcp"
-    to_port     = 443
-  }
-  rule {
-    cidr        = "0.0.0.0/0"
     from_port   = 22
     ip_protocol = "tcp"
     to_port     = 22
+  }
+  rule {
+    cidr        = "0.0.0.0/0"
+    from_port   = 3260
+    ip_protocol = "tcp"
+    to_port     = 3260
+  }
+}
+
+resource "opentelekomcloud_networking_port_v2" "network_port" {
+  name           = "${var.scenario}_network_port"
+  network_id     = var.network_id
+  admin_state_up = true
+
+  security_group_ids = [
+    opentelekomcloud_compute_secgroup_v2.rds_public.id
+  ]
+
+  fixed_ip {
+    subnet_id  = var.subnet_id
   }
 }
 
@@ -61,7 +69,7 @@ resource "opentelekomcloud_compute_instance_v2" "basic" {
   ]
 
   network {
-    uuid        = var.network_id
+    port = opentelekomcloud_networking_port_v2.network_port.id
   }
 
   tag = {
