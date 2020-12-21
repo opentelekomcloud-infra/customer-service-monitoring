@@ -2,75 +2,36 @@ module "postgresql" {
   source = "../modules/postgresql"
 
   availability_zone = var.availability_zone
-  instance_name     = "scn2-db"
+  instance_name     = "${var.prefix}_db"
 
   network_id  = var.network_id
   router_id = var.router_id
   subnet_id   = var.subnet_id
-  subnet_cidr = var.subnet_cidr
+  subnet_cidr = "${var.addr_3}.0/24"
 
   psql_version  = var.psql_version
   psql_port     = var.psql_port
   psql_password = var.psql_password
 }
 
-resource "opentelekomcloud_compute_keypair_v2" "pair" {
-  name       = "${var.prefix}-kp"
-  public_key = var.public_key
-}
+module "resources" {
+  source = "./resources"
 
-resource "opentelekomcloud_compute_secgroup_v2" "rds_public" {
-  description = "Allow external connections to ssh, http, and https ports"
-  name        = "scn2_public"
-
-  rule {
-    cidr        = "0.0.0.0/0"
-    from_port   = 80
-    ip_protocol = "tcp"
-    to_port     = 80
-  }
-  rule {
-    cidr        = "0.0.0.0/0"
-    from_port   = 443
-    ip_protocol = "tcp"
-    to_port     = 443
-  }
-  rule {
-    cidr        = "0.0.0.0/0"
-    from_port   = 22
-    ip_protocol = "tcp"
-    to_port     = 22
-  }
-}
-
-resource "opentelekomcloud_compute_instance_v2" "basic" {
-  name       = "${var.prefix}-instance"
-  image_name = var.ecs_image
-  flavor_id  = var.ecs_flavor
-  security_groups = [
-    opentelekomcloud_compute_secgroup_v2.rds_public.id
-  ]
-
-  region            = var.region
   availability_zone = var.availability_zone
-  key_pair          = opentelekomcloud_compute_keypair_v2.pair.name
+  public_key     = var.public_key
+  ecs_image      = var.ecs_image
+  ecs_flavor     = var.ecs_flavor
+  prefix         = var.prefix
+  region         = var.region
 
-  depends_on = [
-    opentelekomcloud_compute_keypair_v2.pair,
-    opentelekomcloud_compute_secgroup_v2.rds_public
-  ]
-
-  network {
-    uuid        = var.network_id
-  }
-
-  tag = {
-    "scenario" : var.scenario
-  }
+  addr_3    = var.addr_3
+  subnet_id      = var.subnet_id
+  network_id     = var.network_id
+  router_id      = var.router_id
 }
 
 output "ecs_ip" {
-  value     = opentelekomcloud_compute_instance_v2.basic.access_ip_v4
+  value     = module.resources.ip
 }
 
 output "db_password" {
