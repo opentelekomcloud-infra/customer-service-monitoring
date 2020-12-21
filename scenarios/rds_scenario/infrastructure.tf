@@ -25,15 +25,21 @@ resource "opentelekomcloud_compute_secgroup_v2" "rds_public" {
 
   rule {
     cidr        = "0.0.0.0/0"
-    from_port   = 22
+    from_port   = 80
     ip_protocol = "tcp"
-    to_port     = 22
+    to_port     = 80
   }
   rule {
     cidr        = "0.0.0.0/0"
-    from_port   = 3260
+    from_port   = 443
     ip_protocol = "tcp"
-    to_port     = 3260
+    to_port     = 443
+  }
+  rule {
+    cidr        = "0.0.0.0/0"
+    from_port   = 22
+    ip_protocol = "tcp"
+    to_port     = 22
   }
 }
 
