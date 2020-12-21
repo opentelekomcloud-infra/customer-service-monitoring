@@ -40,6 +40,7 @@ resource "opentelekomcloud_networking_port_v2" "as_port" {
 
 # Create instances
 resource "opentelekomcloud_compute_instance_v2" "as_instance" {
+  count             = 1
   name              = "${var.scenario}_instance_${local.workspace_prefix}"
   flavor_name       = var.ecs_flavor
   key_pair          = opentelekomcloud_compute_keypair_v2.kp.name

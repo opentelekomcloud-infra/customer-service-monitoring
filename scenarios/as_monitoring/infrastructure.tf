@@ -42,5 +42,5 @@ output "lb_instance_ip" {
 }
 
 output "as_instance_ip" {
-  value = module.resources.as_instance.access_ip_v4
+  value = module.resources.as_instance[0].access_ip_v4
 }

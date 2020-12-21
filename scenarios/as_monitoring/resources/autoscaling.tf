@@ -2,7 +2,7 @@
 resource "opentelekomcloud_as_configuration_v1" "as_config" {
   scaling_configuration_name = "${var.scenario}_configuration"
   instance_config {
-    instance_id = opentelekomcloud_compute_instance_v2.as_instance.id
+    instance_id = opentelekomcloud_compute_instance_v2.as_instance[0].id
     key_name    = var.key_pair.key_name
     user_data   = file("${path.module}/first_boot.sh")
   }
@@ -65,7 +65,7 @@ resource "opentelekomcloud_ces_alarmrule" "ces_increase_rule" {
     namespace   = "SYS.ECS"
     dimensions {
       name  = "instance_id"
-      value = opentelekomcloud_compute_instance_v2.as_instance.id
+      value = opentelekomcloud_compute_instance_v2.as_instance[0].id
     }
   }
   alarm_action_enabled = true
@@ -106,7 +106,7 @@ resource "opentelekomcloud_ces_alarmrule" "ces_reduce_rule" {
     namespace   = "SYS.ECS"
     dimensions {
       name  = "instance_id"
-      value = opentelekomcloud_compute_instance_v2.as_instance.id
+      value = opentelekomcloud_compute_instance_v2.as_instance[0].id
     }
   }
   alarm_action_enabled = true
