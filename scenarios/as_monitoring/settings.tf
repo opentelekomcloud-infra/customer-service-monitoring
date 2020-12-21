@@ -5,7 +5,7 @@ terraform {
       version = ">= 1.22.0"
     }
   }
-  
+
   # use OBS for remote state
   backend "s3" {
     key                         = "terraform_state/as_monitoring"
