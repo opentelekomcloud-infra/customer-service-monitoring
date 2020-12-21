@@ -48,6 +48,10 @@ resource "opentelekomcloud_compute_instance_v2" "basic" {
     uuid                  = data.opentelekomcloud_images_image_v2.current_image.id
   }
 
+  depends_on = [
+    opentelekomcloud_networking_port_v2.network_port
+  ]
+
   network {
     port = opentelekomcloud_networking_port_v2.network_port.id
   }
