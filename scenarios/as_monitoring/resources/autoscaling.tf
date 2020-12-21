@@ -1,8 +1,8 @@
 # Create Autoscaling
 resource "opentelekomcloud_as_configuration_v1" "as_config" {
-  scaling_configuration_name = "${var.prefix}_autoscaled_instance"
+  scaling_configuration_name = "${var.scenario}_configuration"
   instance_config {
-    instance_id = opentelekomcloud_compute_instance_v2.http[0].id
+    instance_id = opentelekomcloud_compute_instance_v2.as_instance[0].id
     key_name    = var.key_pair.key_name
     user_data   = file("${path.module}/first_boot.sh")
   }
@@ -11,8 +11,8 @@ resource "opentelekomcloud_as_configuration_v1" "as_config" {
   ]
 }
 
-resource "opentelekomcloud_as_group_v1" "autoscaling_group_with_lb" {
-  scaling_group_name       = "${var.prefix}_autoscaling_group_with_lb"
+resource "opentelekomcloud_as_group_v1" "as_group_with_lb" {
+  scaling_group_name       = "${var.scenario}_group_with_lb"
   scaling_configuration_id = opentelekomcloud_as_configuration_v1.as_config.id
   desire_instance_number   = 0
   min_instance_number      = 0
@@ -21,7 +21,7 @@ resource "opentelekomcloud_as_group_v1" "autoscaling_group_with_lb" {
     id = var.network_id
   }
   security_groups {
-    id = var.bastion_sec_group_id
+    id = opentelekomcloud_compute_secgroup_v2.as_group.id
   }
   vpc_id = var.router_id
   lbaas_listeners {
@@ -39,11 +39,11 @@ resource "opentelekomcloud_as_group_v1" "autoscaling_group_with_lb" {
   ]
 }
 
-resource "opentelekomcloud_as_policy_v1" "alarm_scaling_policy" {
-  scaling_group_id    = opentelekomcloud_as_group_v1.autoscaling_group_with_lb.id
-  scaling_policy_name = "${var.prefix}_alarm_policy"
+resource "opentelekomcloud_as_policy_v1" "increase_policy" {
+  scaling_group_id    = opentelekomcloud_as_group_v1.as_group_with_lb.id
+  scaling_policy_name = "${var.scenario}_increase_policy"
   scaling_policy_type = "ALARM"
-  alarm_id            = opentelekomcloud_ces_alarmrule.alarm.id
+  alarm_id            = opentelekomcloud_ces_alarmrule.ces_increase_rule.id
   scaling_policy_action {
     operation       = "ADD"
     instance_number = 2
@@ -51,8 +51,8 @@ resource "opentelekomcloud_as_policy_v1" "alarm_scaling_policy" {
   cool_down_time = 60
 }
 
-resource "opentelekomcloud_ces_alarmrule" "alarm" {
-  alarm_name = "${var.prefix}_cpu_rule_scale"
+resource "opentelekomcloud_ces_alarmrule" "ces_increase_rule" {
+  alarm_name = "${var.scenario}_cpu_rule_scale"
   condition {
     comparison_operator = ">="
     count               = 1
@@ -65,7 +65,7 @@ resource "opentelekomcloud_ces_alarmrule" "alarm" {
     namespace   = "SYS.ECS"
     dimensions {
       name  = "instance_id"
-      value = opentelekomcloud_compute_instance_v2.http[0].id
+      value = opentelekomcloud_compute_instance_v2.as_instance[0].id
     }
   }
   alarm_action_enabled = true
@@ -76,15 +76,15 @@ resource "opentelekomcloud_ces_alarmrule" "alarm" {
   alarm_description = "autoScaling"
   alarm_enabled     = true
   depends_on = [
-    opentelekomcloud_as_group_v1.autoscaling_group_with_lb
+    opentelekomcloud_as_group_v1.as_group_with_lb
   ]
 }
 
 resource "opentelekomcloud_as_policy_v1" "reduce_policy" {
-  scaling_group_id    = opentelekomcloud_as_group_v1.autoscaling_group_with_lb.id
-  scaling_policy_name = "${var.prefix}_reduce_policy"
+  scaling_group_id    = opentelekomcloud_as_group_v1.as_group_with_lb.id
+  scaling_policy_name = "${var.scenario}_reduce_policy"
   scaling_policy_type = "ALARM"
-  alarm_id            = opentelekomcloud_ces_alarmrule.reduce.id
+  alarm_id            = opentelekomcloud_ces_alarmrule.ces_reduce_rule.id
   scaling_policy_action {
     operation       = "REMOVE"
     instance_number = 2
@@ -92,8 +92,8 @@ resource "opentelekomcloud_as_policy_v1" "reduce_policy" {
   cool_down_time = 60
 }
 
-resource "opentelekomcloud_ces_alarmrule" "reduce" {
-  alarm_name = "${var.prefix}_cpu_rule_reduce"
+resource "opentelekomcloud_ces_alarmrule" "ces_reduce_rule" {
+  alarm_name = "${var.scenario}_cpu_rule_reduce"
   condition {
     comparison_operator = "<="
     count               = 1
@@ -106,7 +106,7 @@ resource "opentelekomcloud_ces_alarmrule" "reduce" {
     namespace   = "SYS.ECS"
     dimensions {
       name  = "instance_id"
-      value = opentelekomcloud_compute_instance_v2.http[0].id
+      value = opentelekomcloud_compute_instance_v2.as_instance[0].id
     }
   }
   alarm_action_enabled = true
@@ -117,6 +117,6 @@ resource "opentelekomcloud_ces_alarmrule" "reduce" {
   alarm_description = "autoReducing"
   alarm_enabled     = true
   depends_on = [
-    opentelekomcloud_as_group_v1.autoscaling_group_with_lb
+    opentelekomcloud_as_group_v1.as_group_with_lb
   ]
 }

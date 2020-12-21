@@ -10,7 +10,7 @@
     TF_VAR_router_id: "{{ main_router_id }}"
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
   vars:
-    scenario_name: dns_monitoring
+    scenario_name: as_monitoring
     terraform_base_dir: terraform
     requirements: requirements.txt
     terraform_workspace: prod
