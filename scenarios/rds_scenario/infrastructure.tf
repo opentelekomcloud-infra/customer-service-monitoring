@@ -66,7 +66,7 @@ resource "opentelekomcloud_networking_port_v2" "network_port" {
 
   fixed_ip {
     subnet_id  = var.subnet_id
-    ip_address = "192.168.0.10"
+    ip_address = "${var.addr_3}.10"
   }
 }
 
