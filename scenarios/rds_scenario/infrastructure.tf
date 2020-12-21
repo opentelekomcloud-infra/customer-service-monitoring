@@ -21,7 +21,7 @@ resource "opentelekomcloud_compute_keypair_v2" "pair" {
 
 resource "opentelekomcloud_compute_secgroup_v2" "rds_public" {
   description = "Allow external connections to ssh, http, and https ports"
-  name        = "scn2_public"
+  name        = "${var.scenario}_grp"
 
   rule {
     cidr        = "0.0.0.0/0"
@@ -37,6 +37,24 @@ resource "opentelekomcloud_compute_secgroup_v2" "rds_public" {
   }
 }
 
+resource "opentelekomcloud_compute_instance_v2" "basic" {
+  name       = "${var.prefix}-instance"
+  image_name = var.ecs_image
+  flavor_id  = var.ecs_flavor
+
+  region            = var.region
+  availability_zone = var.availability_zone
+  key_pair          = opentelekomcloud_compute_keypair_v2.pair.name
+
+  network {
+    port = opentelekomcloud_networking_port_v2.network_port.id
+  }
+
+  tag = {
+    "scenario" : var.scenario
+  }
+}
+
 resource "opentelekomcloud_networking_port_v2" "network_port" {
   name           = "${var.scenario}_network_port"
   network_id     = var.network_id
@@ -48,32 +66,7 @@ resource "opentelekomcloud_networking_port_v2" "network_port" {
 
   fixed_ip {
     subnet_id  = var.subnet_id
-  }
-}
-
-resource "opentelekomcloud_compute_instance_v2" "basic" {
-  name       = "${var.prefix}-instance"
-  image_name = var.ecs_image
-  flavor_id  = var.ecs_flavor
-  security_groups = [
-    opentelekomcloud_compute_secgroup_v2.rds_public.id
-  ]
-
-  region            = var.region
-  availability_zone = var.availability_zone
-  key_pair          = opentelekomcloud_compute_keypair_v2.pair.name
-
-  depends_on = [
-    opentelekomcloud_compute_keypair_v2.pair,
-    opentelekomcloud_compute_secgroup_v2.rds_public
-  ]
-
-  network {
-    port = opentelekomcloud_networking_port_v2.network_port.id
-  }
-
-  tag = {
-    "scenario" : var.scenario
+    ip_address = "192.168.0.10"
   }
 }
 
