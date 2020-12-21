@@ -85,9 +85,9 @@
         src: "autoscaling/{{ item }}"
         dest: /tmp/
       with_items:
-       - "cpu_load.py"
-       - "load_levels.dat"
-       - "check_cpu_load_status.sh"
+        - "cpu_load.py"
+        - "load_levels.dat"
+        - "check_cpu_load_status.sh"
 
     - name: Run load generation script  # noqa 301 305
       shell: "start-stop-daemon -Sbmvp /tmp/cpu_load.pid -x /usr/bin/python3 /tmp/cpu_load.py -- --source /tmp/load_levels.dat --interval 60 --ncpus 2"
