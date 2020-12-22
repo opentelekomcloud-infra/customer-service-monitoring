@@ -22,12 +22,12 @@
   tasks:
     - name: Register build result
       set_fact:
-        lb_monitoring_instance_ip: "{{ tf_output.outputs['lb_instance_ip'].value }}"
+        lb_control_instance_ip: "{{ tf_output.outputs['lb_ctrl_ip'].value }}"
         loadbalancer_public_ip:  "{{ tf_output.outputs['lb_fip'].value }}"
         lb_node_ips: "{{ tf_output.outputs['lb_ecs_local_ips'].value }}"
       - name: Register nodes
         add_host:
-          name: "{{ lb_monitoring_instance_ip }}"
+          name: "{{ lb_control_instance_ip }}"
           groups: "telegrafed"
           ansible_ssh_user: "linux"
           ansible_ssh_private_key_file: "{{ local_private_key }}"
