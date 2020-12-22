@@ -123,5 +123,5 @@
 - name: Run reporting for scenario
   hosts: localhost
   tasks:
-  - name: Execute csm_test_utils  # noqa 301 305
-    shell: "nohup python3 -m csm_test_utils rds_monitor --target {{ ecs_instance_ip }} --telegraf 'http://{{ ecs_instance_ip }}' &"
+    - name: Execute csm_test_utils  # noqa 301 305
+      shell: "nohup python3 -m csm_test_utils rds_monitor --target {{ ecs_instance_ip }} --telegraf 'http://{{ ecs_instance_ip }}' &"
