@@ -1,4 +1,3 @@
-variable "availability_zone" {}
 variable "ecs_flavor" {}
 variable "ecs_image" {}
 variable "addr_3_octets" {}
