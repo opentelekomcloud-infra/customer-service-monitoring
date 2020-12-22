@@ -1,0 +1,171 @@
+---
+- name: Prepare controller variables
+  import_playbook: setup_scenarios_controller.yml
+
+- name: Prepare variables
+  hosts: localhost
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+    TF_VAR_addr_3: "192.168.10"
+    TF_VAR_network_id: "{{ main_network_id }}"
+    TF_VAR_router_id: "{{ main_router_id }}"
+    TF_VAR_subnet_id: "{{ main_subnet_id }}"
+  vars:
+    scenario_name: lb_down_monitoring
+    terraform_base_dir: terraform
+    requirements: requirements.txt
+    terraform_workspace: prod
+    key_name: key_csm_controller
+    infra_state: present
+  roles:
+    - build_infrastructure
+  tasks:
+    - name: Register build result
+      set_fact:
+        lb_down_instance_ip: "{{ tf_output.outputs['lb_down_instance_fip'].value }}"
+        lb_down_node_ips: "{{ tf_output.outputs['lb_down_ecs_ips'].value }}"
+
+    - name: Register nodes
+      add_host:
+        name: "{{ item }}"
+        groups: "gatewayed"
+        ansible_ssh_user: "linux"
+        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_common_args: >
+          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}' -o PasswordAuthentication=no
+      loop: "{{ lb_down_node_ips }}"
+
+- name: Wait for hosts
+  hosts: gatewayed
+  gather_facts: no
+  tasks:
+    - name: Wait for host to be up
+      wait_for_connection:
+        timeout: 120
+
+- name: Start Server
+  hosts: gatewayed
+  become: yes
+  roles:
+    - too_simple_server
+  vars:
+    debug: True
+    server_port: 80
+
+- name: Install telegraf client on controller
+  hosts: controller
+  become: yes
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
+    - "./vars/nginx_telegraf_local.yml"
+  tasks:
+    - name: Install PIP
+      apt:
+        name:
+          - python3-setuptools
+          - python3-pip
+    - name: Install test utils
+      pip:
+        executable: pip3
+        name: csm-test-utils
+  roles:
+    - role: telegraf-client
+      vars:
+        telegraf_influxdb_retention_policy: ""
+        telegraf_plugins_base:
+          - name: http_listener_v2
+            options:
+              service_address: "localhost:{{ telegraf_local_port }}"
+              data_format: "influx"
+    - role: geerlingguy.nginx
+      vars:
+        nginx_remove_default_vhost: yes
+        nginx_vhosts:
+          - listen: "80"
+            server_name: "localhost"
+            extra_parameters: "{{ extra_parameters }}"
+
+- name: Copy and configure test script files to controller
+  hosts: controller
+  vars:
+    test_path: /home/linux/test
+    project_path: /home/linux/customer-service-monitoring
+    keys_path: "{{ project_path }}/scenarios/lb_down_monitoring"
+    inventory_path: "{{ test_path }}/inventory/prod"
+    loadbalancer_public_ip: "{{ hostvars.localhost.lb_down_instance_ip }}"
+    remote_pk: "{{ test_path }}/{{ key_name }}"
+    version: "HEAD"
+  tasks:
+    - name: Checkout roles from git
+      git:
+        repo: 'https://github.com/opentelekomcloud-infra/csm-ansible-roles.git'
+        dest: "{{ test_path }}"
+        version: "{{ version }}"
+
+    - name: Create directory for inventory
+      file:
+        path: "{{ inventory_path }}"
+        state: directory
+        mode: "0755"
+
+    - name: Add ssh-configuration to ansible
+      ini_file:
+        path: "{{ test_path }}/ansible.cfg"
+        section: defaults
+        option: host_key_checking
+        value: False
+
+    - name: Copy inventory
+      vars:
+        hosts: "{{ groups.gatewayed }}"
+      template:
+        src: "lb_down_monitoring.yml"
+        dest: "{{ inventory_path }}"
+
+    - name: Ensure private key exists
+      copy:
+        src: "{{ local_private_key }}"
+        dest: "{{ test_path }}"
+        mode: 0600
+
+    - name: Generate .pub file for used private one
+      openssl_publickey:
+        privatekey_path: "{{ remote_pk }}"
+        path: "{{ remote_pk }}.pub"
+
+    - name: Copy playbooks and test script to controller
+      copy:
+        src: "{{ item }}"
+        dest: "{{ test_path }}"
+      with_items:
+        - "lb_down_monitoring_start_server.yml"
+        - "lb_down_monitoring_stop_server_on_random_node.yml"
+        - "lb_down_test.sh"
+
+    - name: Ensure that cron is installed
+      become: yes
+      apt:
+        name: cron
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Copy loadbalancer ip to controller
+      copy:
+        content: "{{ lb_down_instance_ip }}"
+        dest: "{{ test_path }}/load_balancer_ip"
+
+- name: Prepare test
+  hosts: controller
+  become: yes
+  tasks:
+    - name: Changing perm of "lb_down_test.sh", adding "+x"
+      file:
+        dest: '/home/linux/test/lb_down_test.sh'
+        mode: 'a+x'
+
+    - name: Schedule test
+      cron:
+        name: Run lb_down monitoring
+        minute: "*/5"
+        job: /home/linux/test/lb_down_test.sh

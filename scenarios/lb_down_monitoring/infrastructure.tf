@@ -31,10 +31,10 @@ module "loadbalancer" {
   workspace_prefix = local.workspace_prefix
 }
 
-output "lb_fail_fip" {
+output "lb_down_instance_fip" {
   value = module.loadbalancer.loadbalancer_fip
 }
 
-output "lb_fail_ecs_ips" {
+output "lb_down_ecs_ips" {
   value = [for instance in module.nodes.instances : instance.access_ip_v4]
 }

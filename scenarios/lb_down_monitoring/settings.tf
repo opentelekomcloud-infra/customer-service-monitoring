@@ -5,10 +5,8 @@ terraform {
       version = ">= 1.22.0"
     }
   }
-
-  # use OBS for remote state
   backend "s3" {
-    key                         = "terraform_state/lb_fail_monitoring"
+    key                         = "terraform_state/lb_down_monitoring"
     endpoint                    = "obs.eu-de.otc.t-systems.com"
     bucket                      = "obs-csm"
     region                      = "eu-de"
