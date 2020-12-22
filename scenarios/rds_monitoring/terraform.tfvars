@@ -1,6 +1,6 @@
 region            = "eu-de"
 availability_zone = "eu-de-03"
-ecs_flavor        = "c3.large.2"
+ecs_flavor        = "s2.large.2"
 ecs_image         = "Standard_Debian_10_latest"
 scenario          = "rds_monitoring"
 
