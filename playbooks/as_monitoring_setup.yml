@@ -1,81 +1,48 @@
 ---
-- name: Prepare clouds.yaml for test_host
-  import_playbook: prepare_config.yml
+- name: Prepare controller variables
+  import_playbook: setup_scenarios_controller.yml
 
 - name: Prepare variables
-  hosts: test_host
-  tasks:
-  - name: Register scenario 4 vars
-    set_fact:
-      terraform_base_dir: "terraform"
-      requirements: "requirements.txt"
-
-- name: Build infrastructure
-  hosts: test_host
-  roles:
-    - build_infrastructure
+  hosts: localhost
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+    TF_VAR_network_id: "{{ main_network_id }}"
+    TF_VAR_router_id: "{{ main_router_id }}"
+    TF_VAR_subnet_id: "{{ main_subnet_id }}"
+    TF_VAR_controller_ip: "{{ controller_public_ip }}"
   vars:
+    scenario_name: as_monitoring
+    terraform_base_dir: terraform
+    requirements: requirements.txt
+    terraform_workspace: prod
+    key_name: key_csm_controller
     infra_state: present
+  roles:
+    - build_infrastructure
   tasks:
-  - name: Register build result
-    set_fact:
-      bastion_public_ip: "{{ tf_output.outputs['scn4_bastion_fip'].value }}"
-      loadbalancer_public_ip:  "{{ tf_output.outputs['scn4_lb_fip'].value }}"
-      node_ips: "{{ tf_output.outputs['scn4_vms'].value }}"
-  - name: Download private key from test_host
-    fetch:
-      src: "{{ tmp_dir }}/{{ key_name }}"
-      dest:  "{{ local_private_key }}"
-      mode: 0600
-      flat: yes
+    - name: Register build result
+      set_fact:
+        as_monitoring_instance_ip: "{{ tf_output.outputs['as_instance_ip'].value }}"
+        as_monitoring_lb_ip: "{{ tf_output.outputs['lb_instance_ip'].value }}"
 
-- name: Register used hosts
-  hosts: local
-  tasks:
-  - name: Set local facts
-    set_fact:
-      loadbalancer_public_ip: "{{ hostvars.test_host.loadbalancer_public_ip }}"
-      bastion_public_ip: "{{ hostvars.test_host.bastion_public_ip }}"
-  - name: Register Bastion
-    add_host:
-      name: "bastion"
-      ansible_host: "{{ bastion_public_ip }}"
-      ansible_ssh_user: "linux"
-      ansible_ssh_private_key_file: "{{ local_private_key }}"
-  - name: Register nodes
-    add_host:
-      name: "{{ item }}"
-      groups: "gatewayed"
-      ansible_ssh_user: "linux"
-      ansible_ssh_private_key_file: "{{ local_private_key }}"
-      ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ bastion_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
-    loop: "{{ hostvars.test_host.node_ips }}"
-
-- name: Wait for bastion
-  hosts: bastion
-  gather_facts: no
-  tasks:
-  - name: Wait for host to be up
-    wait_for_connection:
-      timeout: 120
+    - name: Register as_monitoring
+      add_host:
+        name: "as_instance"
+        groups: "gatewayed"
+        ansible_host: "{{ as_monitoring_instance_ip }}"
+        ansible_ssh_user: "linux"
+        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_common_args: >
+          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}' -o PasswordAuthentication=no
 
 - name: Wait for hosts
   hosts: gatewayed
   gather_facts: no
   tasks:
-  - name: Wait for host to be up
-    wait_for_connection:
-      timeout: 120
-
-- name: Register existing settings
-  hosts: local
-  roles:
-    - register_host
-  vars:
-    dnsname_or_ip: "{{ hostvars.bastion.ansible_host }}"
-    group: "scn4_ecs"
+    - name: Wait for host to be up
+      wait_for_connection:
+        timeout: 120
 
 - name: Checking load processes
   hosts: localhost
@@ -110,17 +77,17 @@
           - build-essential
           - cron
 
-    - name: install lookbusy
+    - name: Install lookbusy
       script: "autoscaling/install_lookbusy.sh"
 
-    - name: copy test script to host
+    - name: Copy test script to host
       copy:
         src: "autoscaling/{{ item }}"
         dest: /tmp/
       with_items:
-       - "cpu_load.py"
-       - "load_levels.dat"
-       - "check_cpu_load_status.sh"
+        - "cpu_load.py"
+        - "load_levels.dat"
+        - "check_cpu_load_status.sh"
 
     - name: Run load generation script  # noqa 301 305
       shell: "start-stop-daemon -Sbmvp /tmp/cpu_load.pid -x /usr/bin/python3 /tmp/cpu_load.py -- --source /tmp/load_levels.dat --interval 60 --ncpus 2"
@@ -134,8 +101,8 @@
         minute: "*/59"
         job: /tmp/check_cpu_load_status.sh
 
-- name: Install telegraf client on Bastion
-  hosts: bastion
+- name: Install telegraf client on as_instance
+  hosts: as_instance
   become: yes
   vars:
     telegraf_local_port: 8080
@@ -173,12 +140,12 @@
               }
 
 - name: Install csm test utils, run as_monitoring and as_load
-  hosts: bastion
+  hosts: as_instance
   become: yes
   vars:
-    lb_ip: "{{ hostvars.test_host.loadbalancer_public_ip }}"
+    lb_ip: "{{ hostvars.localhost.as_monitoring_lb_ip }}"
     nohup_py3: "nohup /usr/bin/python3 -m csm_test_utils"
-    telegraf_host: "http://localhost"
+    telegraf_host: "http://localhost:8080"
   tasks:
     - name: Update and upgrade apt packages
       apt:
@@ -198,7 +165,7 @@
         name: csm-test-utils
         state: forcereinstall
 
-    - name: Start monitoring server and lb
+    - name: Start monitoring server and loadbalancer
       shell: "{{ nohup_py3 }} {{ item }} --telegraf {{ telegraf_host }} --target {{ lb_ip }} &" # noqa 301 305
       loop:
         - "as_monitor"

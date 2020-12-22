@@ -31,7 +31,7 @@ output "scn_public_ip" {
   value = module.resources.scn_eip
 }
 
-output "rds_id"{
+output "rds_id" {
   value = module.postgresql.rds_instance_id
 }
 

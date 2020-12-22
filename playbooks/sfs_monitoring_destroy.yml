@@ -14,7 +14,7 @@
     terraform_base_dir: terraform
     requirements: requirements.txt
     terraform_workspace: prod
-    key_name: "key_{{ scenario_name }}"
+    key_name: key_csm_controller
     infra_state: absent
   roles:
     - build_infrastructure

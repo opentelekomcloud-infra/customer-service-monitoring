@@ -1,4 +1,4 @@
-data opentelekomcloud_rds_flavors_v3 "flavours" {
+data "opentelekomcloud_rds_flavors_v3" "flavours" {
   db_type       = "PostgreSQL"
   db_version    = var.psql_version
   instance_mode = "single"
@@ -28,14 +28,14 @@ resource "opentelekomcloud_rds_instance_v3" "instance" {
   ][0]
   backup_strategy {
     start_time = "20:00-21:00"
-    keep_days = 1
+    keep_days  = 1
   }
   depends_on = [
     opentelekomcloud_compute_secgroup_v2.db_local
   ]
 }
 
-output "rds_instance_id"{
+output "rds_instance_id" {
   value = opentelekomcloud_rds_instance_v3.instance.id
 }
 

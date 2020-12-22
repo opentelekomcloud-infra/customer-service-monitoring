@@ -1,10 +1,14 @@
 terraform {
   required_providers {
-    opentelekomcloud = ">= 1.16.0"
+    opentelekomcloud = {
+      source  = "opentelekomcloud/opentelekomcloud"
+      version = ">= 1.22.0"
+    }
   }
 
-  backend "s3" { # use OBS for remote state
-    key                         = "terraform_state/scenario4"
+  # use OBS for remote state
+  backend "s3" {
+    key                         = "terraform_state/as_monitoring"
     endpoint                    = "obs.eu-de.otc.t-systems.com"
     bucket                      = "obs-csm"
     region                      = "eu-de"
@@ -15,5 +19,5 @@ terraform {
 
 # Configure the OpenTelekomCloud Provider
 provider "opentelekomcloud" {
-    cloud = "devstack"
+  cloud = "devstack"
 }

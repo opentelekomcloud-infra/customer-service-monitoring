@@ -10,3 +10,6 @@ variable "scenario" {}
 variable "target_availability_zone" {}
 variable "initiator_availability_zone" {}
 variable "net_address" {}
+locals {
+  workspace_prefix = terraform.workspace == "default" ? "" : terraform.workspace
+}

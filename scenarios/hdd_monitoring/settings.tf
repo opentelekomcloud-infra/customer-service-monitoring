@@ -1,9 +1,12 @@
 terraform {
   required_providers {
-    opentelekomcloud = ">= 1.16.0"
+    opentelekomcloud = {
+      source  = "opentelekomcloud/opentelekomcloud"
+      version = ">= 1.22.0"
+    }
   }
   backend "s3" {
-    key                         = "terraform_state/scenario1_5"
+    key                         = "terraform_state/hdd_monitoring"
     endpoint                    = "obs.eu-de.otc.t-systems.com"
     bucket                      = "obs-csm"
     region                      = "eu-de"
