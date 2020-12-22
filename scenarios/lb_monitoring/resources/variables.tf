@@ -5,7 +5,7 @@ variable "ecs_flavor" {
 }
 variable "disc_volume" {
   type    = number
-  default = 2
+  default = 4
 }
 variable "subnet_id" {
   default = ""
