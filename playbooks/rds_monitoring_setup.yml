@@ -62,7 +62,7 @@
         pg_database: "entities"
         pg_username: "{{ hostvars.localhost.db_username }}"
         pg_password: "{{ hostvars.localhost.db_password }}"
-        debug: False
+        debug: false
   tasks:
     - name: Register facts
       set_fact:
