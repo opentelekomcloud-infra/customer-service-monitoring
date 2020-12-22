@@ -2,7 +2,7 @@ module "postgresql" {
   source = "../modules/postgresql"
 
   availability_zone = var.availability_zone
-  instance_name     = "${var.prefix}_db"
+  instance_name     = "${var.scenario}_db"
 
   network_id  = var.network_id
   router_id = var.router_id
