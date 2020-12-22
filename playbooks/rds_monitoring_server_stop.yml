@@ -3,6 +3,8 @@
   hosts: localhost
   vars:
     ecs_instance_ip: "192.168.8.10"
+    key_name: key_csm_controller
+    controller_public_ip: ""
   tasks:
     - name: Register ecs
       add_host:
@@ -12,7 +14,7 @@
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
-          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
+          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_eip }}
           -i {{ local_private_key }}' -o PasswordAuthentication=no
 
 - name: Stop Server
