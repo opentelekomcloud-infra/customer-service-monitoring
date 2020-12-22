@@ -1,12 +1,20 @@
+locals {
+  workspace_prefix = terraform.workspace == "default" ? "" : terraform.workspace
+  key_pair = {
+    public_key = var.public_key
+    key_name   = "${local.workspace_prefix}_kp_${var.scenario}"
+  }
+}
+
 module "postgresql" {
   source = "../modules/postgresql"
 
   availability_zone = var.availability_zone
-  instance_name     = "${var.scenario}_db"
+  instance_name     = "${var.scenario}_db_${local.workspace_prefix}"
 
   network_id  = var.network_id
   router_id = var.router_id
-  subnet_id   = var.subnet_id
+  subnet_id   = var.network_id
   subnet_cidr = "${var.addr_3}.0/24"
 
   psql_version  = var.psql_version
@@ -18,7 +26,7 @@ module "resources" {
   source = "./resources"
 
   availability_zone = var.availability_zone
-  public_key     = var.public_key
+  key_pair       = local.key_pair
   ecs_image      = var.ecs_image
   ecs_flavor     = var.ecs_flavor
   scenario       = var.scenario

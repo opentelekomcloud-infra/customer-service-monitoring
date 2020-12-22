@@ -1,6 +1,6 @@
 resource "opentelekomcloud_compute_keypair_v2" "pair" {
-  name       = "${var.scenario}-kp"
-  public_key = var.public_key
+  name       = var.key_pair.key_name
+  public_key = var.key_pair.public_key
 }
 
 data "opentelekomcloud_images_image_v2" "current_image" {
@@ -32,8 +32,8 @@ resource "opentelekomcloud_compute_secgroup_v2" "rds_grp" {
   }
 }
 
-resource "opentelekomcloud_compute_instance_v2" "basic" {
-  name       = "${var.scenario}-instance"
+resource "opentelekomcloud_compute_instance_v2" "ecs" {
+  name       = "${var.scenario}_instance_${local.workspace_prefix}"
   flavor_id  = var.ecs_flavor
 
   region            = var.region
@@ -59,13 +59,14 @@ resource "opentelekomcloud_compute_instance_v2" "basic" {
   user_data   = file("${path.module}/first_boot.sh")
 
   tag = {
+    "group" : "gatewayed",
     "scenario" : var.scenario
   }
 }
 
 
 resource "opentelekomcloud_networking_port_v2" "network_port" {
-  name           = "${var.scenario}_network_port"
+  name           = "${var.scenario}_port_${local.workspace_prefix}"
   network_id     = var.network_id
   admin_state_up = true
 
@@ -80,5 +81,5 @@ resource "opentelekomcloud_networking_port_v2" "network_port" {
 }
 
 output "ip" {
-  value = opentelekomcloud_compute_instance_v2.basic.access_ip_v4
+  value = opentelekomcloud_compute_instance_v2.ecs.access_ip_v4
 }

@@ -11,7 +11,7 @@
     TF_VAR_router_id: "{{ main_router_id }}"
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
     TF_VAR_subnet_cidr: "{{ main_subnet_cidr }}"
-    TF_VAR_psql_password: "345y6~!UYT@hhjjfgj"
+    TF_VAR_psql_password: "Spasibo2020!"
   vars:
     scenario_name: rds_monitoring
     terraform_base_dir: terraform
