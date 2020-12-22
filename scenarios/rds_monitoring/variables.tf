@@ -1,4 +1,3 @@
-variable "prefix" {}
 variable "region" {}
 variable "availability_zone" {}
 variable "ecs_flavor" {}

@@ -35,7 +35,9 @@
         ansible_host: "{{ ecs_instance_ip }}"
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ local_private_key }}"
-        ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
+        ansible_ssh_common_args: >
+          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}' -o PasswordAuthentication=no
 
 - name: Wait for host
   hosts: rds_scn_ecs
@@ -83,7 +85,9 @@
               data_format: "influx"
           - name: postgresql
             options:
-              address: "postgres://{{ hostvars.localhost.db_username }}:{{ hostvars.localhost.db_password }}@{{ hostvars.localhost.db_address }}/entities"
+              address: >
+              "postgres://{{ hostvars.localhost.db_username }}:
+              {{ hostvars.localhost.db_password }}@{{ hostvars.localhost.db_address }}/entities"
     - role: geerlingguy.nginx
       vars:
         nginx_remove_default_vhost: yes

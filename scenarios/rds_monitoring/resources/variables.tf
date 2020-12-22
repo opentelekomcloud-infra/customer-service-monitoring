@@ -1,4 +1,4 @@
-variable "prefix" {}
+variable "scenario" {}
 variable "region" {}
 variable "availability_zone" {}
 variable "ecs_flavor" {}

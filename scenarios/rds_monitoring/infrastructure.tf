@@ -21,7 +21,7 @@ module "resources" {
   public_key     = var.public_key
   ecs_image      = var.ecs_image
   ecs_flavor     = var.ecs_flavor
-  prefix         = var.prefix
+  scenario       = var.scenario
   region         = var.region
 
   addr_3    = var.addr_3
