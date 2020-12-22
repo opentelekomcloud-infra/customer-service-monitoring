@@ -13,7 +13,7 @@
     TF_VAR_subnet_cidr: "{{ main_subnet_cidr }}"
     TF_VAR_psql_password: "345y6~!UYT@hhjjfgj"
   vars:
-    scenario_name: rds_scenario
+    scenario_name: rds_monitoring
     terraform_base_dir: terraform
     requirements: requirements.txt
     terraform_workspace: prod
