@@ -1,7 +1,6 @@
 variable "net_address" {}
 variable "ecs_flavor" {}
 variable "ecs_image" {}
-variable "bastion_sec_group_id" {}
 variable "network_id" {}
 variable "subnet_id" {}
 variable "scenario" {}
@@ -20,8 +19,4 @@ variable "availability_zones" {
 variable "disc_volume" {
   type    = number
   default = 5
-}
-
-locals {
-  workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
 }
