@@ -2,7 +2,7 @@ locals {
   workspace_prefix = terraform.workspace == "default" ? "" : terraform.workspace
   key_pair = {
     public_key = var.public_key
-    key_name   = "${local.workspace_prefix}_kp_${var.scenario}"
+    key_name   = "${local.workspace_prefix}kp_${var.scenario}"
   }
 }
 
@@ -12,7 +12,7 @@ module "nodes" {
 
   ecs_flavor    = var.ecs_flavor
   ecs_image     = var.ecs_image
-  key_pair_name = local.key_pair.key_name
+  key_pair      = local.key_pair
   nodes_count   = var.nodes_count
   scenario      = var.scenario
 
