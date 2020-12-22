@@ -86,8 +86,8 @@
           - name: postgresql
             options:
               address: >
-              "postgres://{{ hostvars.localhost.db_username }}:
-              {{ hostvars.localhost.db_password }}@{{ hostvars.localhost.db_address }}/entities"
+                postgres://{{ hostvars.localhost.db_username }}
+                :{{ hostvars.localhost.db_password }}@{{ hostvars.localhost.db_address }}/entities
     - role: geerlingguy.nginx
       vars:
         nginx_remove_default_vhost: yes
