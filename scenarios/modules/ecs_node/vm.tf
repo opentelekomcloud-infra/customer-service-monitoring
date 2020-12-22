@@ -40,7 +40,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "ecs_group" {
 # Create instance
 resource "opentelekomcloud_compute_instance_v2" "instance" {
   count       = length(opentelekomcloud_networking_port_v2.instance_port)
-  name        = "${local.workspace_prefix}_${var.scenario}_basic_${count.index}"
+  name        = "${var.scenario}_instance${count.index}_${local.workspace_prefix}"
   flavor_name = var.ecs_flavor
   key_pair    = var.key_pair_name
   user_data   = file("${path.module}/first_boot.sh")
@@ -72,7 +72,7 @@ resource "opentelekomcloud_compute_instance_v2" "instance" {
 # Create network port
 resource "opentelekomcloud_networking_port_v2" "instance_port" {
   count          = var.nodes_count
-  name           = "${local.workspace_prefix}_${var.scenario}_port_${count.index}"
+  name           = "${var.scenario}_port${count.index}_${local.workspace_prefix}"
   network_id     = var.network_id
   admin_state_up = true
   security_group_ids = [
