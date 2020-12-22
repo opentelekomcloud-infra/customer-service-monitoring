@@ -83,11 +83,6 @@
             options:
               service_address: "localhost:{{ telegraf_local_port }}"
               data_format: "influx"
-          - name: postgresql
-            options:
-              address: >
-                postgres://{{ hostvars.localhost.db_username }}
-                :{{ hostvars.localhost.db_password }}@{{ hostvars.localhost.db_address }}/entities
     - role: geerlingguy.nginx
       vars:
         nginx_remove_default_vhost: yes

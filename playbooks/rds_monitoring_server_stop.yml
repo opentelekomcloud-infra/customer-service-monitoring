@@ -1,0 +1,24 @@
+---
+- name: Register existing settings
+  hosts: localhost
+  vars:
+    ecs_instance_ip: "192.168.8.10"
+  tasks:
+    - name: Register ecs
+      add_host:
+        name: "rds_scn_ecs"
+        groups: "gatewayed"
+        ansible_host: "{{ ecs_instance_ip }}"
+        ansible_ssh_user: "linux"
+        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_common_args: >
+          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}' -o PasswordAuthentication=no
+
+- name: Stop Server
+  hosts: rds_scn_ecs
+  become: yes
+  roles:
+    - too_simple_server
+  vars:
+    server_state: absent
