@@ -6,7 +6,6 @@ locals {
   }
 }
 
-
 module "nodes" {
   source = "../modules/ecs_node"
 
