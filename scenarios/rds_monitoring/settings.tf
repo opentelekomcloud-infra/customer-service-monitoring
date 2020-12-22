@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "s3" {
-    key                         = "terraform_state/rds_scenario"
+    key                         = "terraform_state/rds_monitoring"
     endpoint                    = "obs.eu-de.otc.t-systems.com"
     bucket                      = "obs-csm"
     region                      = "eu-de"
