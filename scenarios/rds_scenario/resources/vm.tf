@@ -8,7 +8,7 @@ data "opentelekomcloud_images_image_v2" "current_image" {
   most_recent = true
 }
 
-resource "opentelekomcloud_compute_secgroup_v2" "rds_public" {
+resource "opentelekomcloud_compute_secgroup_v2" "rds_grp" {
   description = "Allow external connections to ssh, http, and https ports"
   name        =  "${var.prefix}_grp"
 
@@ -61,13 +61,14 @@ resource "opentelekomcloud_compute_instance_v2" "basic" {
   }
 }
 
+
 resource "opentelekomcloud_networking_port_v2" "network_port" {
   name           = "${var.prefix}_network_port"
   network_id     = var.network_id
   admin_state_up = true
 
   security_group_ids = [
-    opentelekomcloud_compute_secgroup_v2.rds_public.id
+    opentelekomcloud_compute_secgroup_v2.rds_grp.id
   ]
 
   fixed_ip {

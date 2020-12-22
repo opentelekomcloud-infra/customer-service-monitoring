@@ -4,11 +4,11 @@
   roles:
     - register_host
   vars:
-    dnsname_or_ip: "{{ lookup('env', 'SERVER_PUBLIC_IP') }}"
-    group: "scn2_ecs"
+    dnsname_or_ip: "{{ lookup('env', 'ECS_IP') }}"
+    group: "rds_scn_ecs"
 
 - name: Stop Server
-  hosts: scn2_ecs
+  hosts: rds_scn_ecs
   become: yes
   roles:
     - too_simple_server
