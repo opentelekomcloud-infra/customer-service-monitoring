@@ -34,7 +34,7 @@ resource "opentelekomcloud_compute_secgroup_v2" "lb_group" {
     ip_protocol = "tcp"
     to_port     = 8080
   }
-  }
+}
 
 # Create control instance for lb
 resource "opentelekomcloud_compute_instance_v2" "lb_control_instance_ip" {

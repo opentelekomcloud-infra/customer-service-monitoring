@@ -7,11 +7,6 @@ data "opentelekomcloud_images_image_v2" "current_image" {
   most_recent = true
 }
 
-resource "opentelekomcloud_compute_keypair_v2" "kp" {
-  name       = var.key_pair.key_name
-  public_key = var.key_pair.public_key
-}
-
 # Create security group for instances
 resource "opentelekomcloud_compute_secgroup_v2" "ecs_group" {
   description = "Allow external connections to ssh, http, https and icmp"
@@ -47,7 +42,7 @@ resource "opentelekomcloud_compute_instance_v2" "instance" {
   count       = length(opentelekomcloud_networking_port_v2.instance_port)
   name        = "${var.scenario}_instance${count.index}_${local.workspace_prefix}"
   flavor_name = var.ecs_flavor
-  key_pair    = opentelekomcloud_compute_keypair_v2.kp.name
+  key_pair    = var.key_pair_name
   user_data   = file("${path.module}/first_boot.sh")
 
   availability_zone = var.use_single_az ? var.availability_zone : var.availability_zones[count.index]

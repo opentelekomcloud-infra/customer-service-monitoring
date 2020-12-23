@@ -5,7 +5,7 @@ variable "network_id" {}
 variable "subnet_id" {}
 variable "scenario" {}
 variable "nodes_count" {}
-variable "key_pair" {}
+variable "key_pair_name" {}
 variable "use_single_az" {
   description = "if set to true, single availability_zone is used"
   type        = bool

@@ -12,7 +12,7 @@ module "nodes" {
 
   ecs_flavor    = var.ecs_flavor
   ecs_image     = var.ecs_image
-  key_pair      = local.key_pair
+  key_pair_name = local.key_pair.key_name
   nodes_count   = var.nodes_count
   scenario      = var.scenario
 
