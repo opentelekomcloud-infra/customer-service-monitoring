@@ -125,5 +125,5 @@
   hosts: localhost
   tasks:
     K- name: Execute csm_test_utils  # noqa 301 305
-    K  shell: "nohup python3 -m csm_test_utils rds_monitor --target {{ ecs_instance_ip }}
-              --telegraf 'http://{{ ecs_instance_ip }}' &"
+    K  shell: "nohup python3 -m csm_test_utils rds_monitor --target
+              {{ ecs_instance_ip }} --telegraf 'http://{{ ecs_instance_ip }}' &"
