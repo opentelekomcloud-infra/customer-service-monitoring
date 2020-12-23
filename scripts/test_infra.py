@@ -43,9 +43,6 @@ class TestInfrastructure(unittest.TestCase):
     runner = ""
     scenarios = None
 
-    def __init__(self, *args):
-        super().__init__(*args)
-
     @classmethod
     def setUpClass(cls) -> None:
         cls.runner = _get_runner()
@@ -81,7 +78,7 @@ class TestInfrastructure(unittest.TestCase):
                 self._test_scenario(playbooks)
 
     @classmethod
-    def tearDownClass(cls) -> None:
+    def tearDownClass(cls):
         cls.run_playbook(f"{PLAYBOOKS_PATH}/destroy_scenarios_controller.yml")
 
 
