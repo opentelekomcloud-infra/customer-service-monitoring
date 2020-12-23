@@ -20,7 +20,6 @@
         main_network_id: "{{ tf_output.outputs['network'].value }}"
         main_subnet_id: "{{ tf_output.outputs['subnet'].value }}"
         main_router_id: "{{ tf_output.outputs['router'].value }}"
-        main_subnet_cidr: "{{ tf_output.outputs['subnet_cidr'].value }}"
 
     - name: Download private key from test_host
       fetch:

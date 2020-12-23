@@ -43,10 +43,6 @@ output "subnet" {
   value = module.network.subnet.id
 }
 
-output "subnet_cidr" {
-  value = module.network.subnet.cidr
-}
-
 output "network" {
   value = module.network.network.id
 }

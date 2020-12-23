@@ -10,5 +10,4 @@ variable "psql_password" {}
 variable "public_key" {}
 variable "network_id" {}
 variable "subnet_id" {}
-variable "subnet_cidr" {}
 variable "router_id" {}
