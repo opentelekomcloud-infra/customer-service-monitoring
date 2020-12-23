@@ -85,7 +85,8 @@
               data_format: "influx"
           - name: postgresql
             options:
-              address: "postgres://{{ hostvars.localhost.db_username }}:{{ hostvars.localhost.db_password }}@{{ hostvars.localhost.db_address }}/entities"
+              address: "postgres://{{ hostvars.localhost.db_username }}:{{ hostvars.localhost.db_password }}
+                        @{{ hostvars.localhost.db_address }}/entities"
     - role: geerlingguy.nginx
       vars:
         nginx_remove_default_vhost: yes
@@ -123,5 +124,6 @@
 - name: Run reporting for scenario
   hosts: localhost
   tasks:
-    - name: Execute csm_test_utils  # noqa 301 305
-      shell: "nohup python3 -m csm_test_utils rds_monitor --target {{ ecs_instance_ip }} --telegraf 'http://{{ ecs_instance_ip }}' &"
+    K- name: Execute csm_test_utils  # noqa 301 305
+    K  shell: "nohup python3 -m csm_test_utils rds_monitor --target {{ ecs_instance_ip }}
+              --telegraf 'http://{{ ecs_instance_ip }}' &"
