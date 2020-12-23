@@ -44,21 +44,21 @@
         ansible_ssh_common_args: >
           -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
           -i {{ local_private_key }}' -o PasswordAuthentication=no
-        loop: "{{ lb_down_node_ips }}"
+      loop: "{{ lb_down_node_ips }}"
 
 - name: Wait for hosts
-  hosts: telegrafed
-  gather_facts: no
-  tasks:
-    - name: Wait for controller host to be up
-      wait_for_connection:
-        timeout: 120
-
-- name: Wait for controller host
   hosts: gatewayed
   gather_facts: no
   tasks:
     - name: Wait for host to be up
+      wait_for_connection:
+        timeout: 120
+
+- name: Wait for controller host
+  hosts: telegrafed
+  gather_facts: no
+  tasks:
+    - name: Wait for controller host to be up
       wait_for_connection:
         timeout: 120
 
