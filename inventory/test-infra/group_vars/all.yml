@@ -1,0 +1,6 @@
+terraform_version: "0.14.0"
+terraform_workspace: "test"
+local_private_key: "~/.ssh/{{ key_name }}-test"
+test_host_keyfile: "/tmp/test_host_rsa-test"
+clouds_yaml_file: ""
+controller_address: ""
