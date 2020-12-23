@@ -1,5 +1,11 @@
 ---
 - job:
+    name: test-infra
+    parent: otc-tox
+    vars:
+      tox_envlist: testinfra
+
+- job:
     name: terraform-lint
     parent: otc-tox
     vars:
@@ -22,12 +28,16 @@
         - tox-cover-docker
         - tox-molecule-29
         - tox-molecule-210
+    check-post:
+      jobs:
+        - test-infra
     gate:
       jobs:
         - terraform-lint
         - otc-tox-pep8
         - tox-linters-ansible-2.9
         - tox-linters-ansible-2.10
+        - test-infra
         - tox-cover-docker
         - tox-molecule-29
         - tox-molecule-210
