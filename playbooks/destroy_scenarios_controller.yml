@@ -1,0 +1,14 @@
+---
+- name: Build/Check controller infrastructure
+  hosts: localhost
+  roles:
+    - build_infrastructure
+  environment:
+    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
+  vars:
+    scenario_name: csm_controller
+    terraform_base_dir: terraform
+    requirements: requirements.txt
+    key_name: key_csm_controller
+    controller_eip: "{{ controller_address }}"
+    infra_state: absent
