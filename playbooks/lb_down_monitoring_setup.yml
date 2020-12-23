@@ -24,6 +24,16 @@
       set_fact:
         lb_down_instance_ip: "{{ tf_output.outputs['lb_down_instance_fip'].value }}"
         lb_down_node_ips: "{{ tf_output.outputs['lb_down_ecs_ips'].value }}"
+        lb_control_instance_ip: "{{ tf_output.outputs['lb_ctrl_ip'].value }}"
+    - name: Register nodes
+      add_host:
+        name: "{{ lb_control_instance_ip }}"
+        groups: "telegrafed"
+        ansible_ssh_user: "linux"
+        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_common_args: >
+          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}' -o PasswordAuthentication=no
 
     - name: Register nodes
       add_host:
@@ -34,9 +44,17 @@
         ansible_ssh_common_args: >
           -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
           -i {{ local_private_key }}' -o PasswordAuthentication=no
-      loop: "{{ lb_down_node_ips }}"
+        loop: "{{ lb_down_node_ips }}"
 
 - name: Wait for hosts
+  hosts: telegrafed
+  gather_facts: no
+  tasks:
+    - name: Wait for controller host to be up
+      wait_for_connection:
+        timeout: 120
+
+- name: Wait for controller host
   hosts: gatewayed
   gather_facts: no
   tasks:
@@ -53,41 +71,41 @@
     debug: True
     server_port: 80
 
-- name: Install telegraf client on controller
-  hosts: controller
-  become: yes
-  vars_files:
-    - "./vars/telegraf_dbconnection_vars.yml"
-    - "./vars/nginx_telegraf_local.yml"
-  tasks:
-    - name: Install PIP
-      apt:
-        name:
-          - python3-setuptools
-          - python3-pip
-    - name: Install test utils
-      pip:
-        executable: pip3
-        name: csm-test-utils
-  roles:
-    - role: telegraf-client
-      vars:
-        telegraf_influxdb_retention_policy: ""
-        telegraf_plugins_base:
-          - name: http_listener_v2
-            options:
-              service_address: "localhost:{{ telegraf_local_port }}"
-              data_format: "influx"
-    - role: geerlingguy.nginx
-      vars:
-        nginx_remove_default_vhost: yes
-        nginx_vhosts:
-          - listen: "80"
-            server_name: "localhost"
-            extra_parameters: "{{ extra_parameters }}"
+#- name: Install telegraf client on controller
+#  hosts: telegrafed
+#  become: yes
+#  vars_files:
+#    - "./vars/telegraf_dbconnection_vars.yml"
+#    - "./vars/nginx_telegraf_local.yml"
+#  tasks:
+#    - name: Install PIP
+#      apt:
+#        name:
+#          - python3-setuptools
+#          - python3-pip
+#    - name: Install test utils
+#      pip:
+#        executable: pip3
+#        name: csm-test-utils
+#  roles:
+#    - role: telegraf-client
+#      vars:
+#        telegraf_influxdb_retention_policy: ""
+#        telegraf_plugins_base:
+#          - name: http_listener_v2
+#            options:
+#              service_address: "localhost:{{ telegraf_local_port }}"
+#              data_format: "influx"
+#    - role: geerlingguy.nginx
+#      vars:
+#        nginx_remove_default_vhost: yes
+#        nginx_vhosts:
+#          - listen: "80"
+#            server_name: "localhost"
+#            extra_parameters: "{{ extra_parameters }}"
 
 - name: Copy and configure test script files to controller
-  hosts: controller
+  hosts: telegrafed
   vars:
     test_path: /home/linux/test
     project_path: /home/linux/customer-service-monitoring
@@ -156,7 +174,7 @@
         dest: "{{ test_path }}/load_balancer_ip"
 
 - name: Prepare test
-  hosts: controller
+  hosts: telegrafed
   become: yes
   tasks:
     - name: Changing perm of "lb_down_test.sh", adding "+x"

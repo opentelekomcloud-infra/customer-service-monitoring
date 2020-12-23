@@ -21,6 +21,19 @@ module "nodes" {
   subnet_id   = var.subnet_id
 }
 
+module "resources" {
+  source = "./resources"
+
+  ecs_image   = var.ecs_image
+  ecs_flavor  = var.ecs_flavor
+  key_pair    = local.key_pair
+  net_address = var.addr_3_octets
+  subnet_id   = var.subnet_id
+  network_id  = var.network_id
+  router_id   = var.router_id
+  scenario    = var.scenario
+}
+
 module "loadbalancer" {
   source = "../modules/loadbalancer"
 
@@ -37,4 +50,8 @@ output "lb_down_instance_fip" {
 
 output "lb_down_ecs_ips" {
   value = [for instance in module.nodes.instances : instance.access_ip_v4]
+}
+
+output "lb_ctrl_ip" {
+  value = module.resources.lb_fail_control_instance_ip
 }
