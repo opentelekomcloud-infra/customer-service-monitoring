@@ -70,7 +70,7 @@
   roles:
     - too_simple_server
   vars:
-    debug: True
+    debug: true
     server_port: 80
 
 - name: Install telegraf client on controller
