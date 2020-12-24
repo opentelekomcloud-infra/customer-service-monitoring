@@ -73,38 +73,38 @@
     debug: True
     server_port: 80
 
-#- name: Install telegraf client on controller
-#  hosts: telegrafed
-#  become: yes
-#  vars_files:
-#    - "./vars/telegraf_dbconnection_vars.yml"
-#    - "./vars/nginx_telegraf_local.yml"
-#  tasks:
-#    - name: Install PIP
-#      apt:
-#        name:
-#          - python3-setuptools
-#          - python3-pip
-#    - name: Install test utils
-#      pip:
-#        executable: pip3
-#        name: csm-test-utils
-#  roles:
-#    - role: telegraf-client
-#      vars:
-#        telegraf_influxdb_retention_policy: ""
-#        telegraf_plugins_base:
-#          - name: http_listener_v2
-#            options:
-#              service_address: "localhost:{{ telegraf_local_port }}"
-#              data_format: "influx"
-#    - role: geerlingguy.nginx
-#      vars:
-#        nginx_remove_default_vhost: yes
-#        nginx_vhosts:
-#          - listen: "80"
-#            server_name: "localhost"
-#            extra_parameters: "{{ extra_parameters }}"
+- name: Install telegraf client on controller
+  hosts: telegrafed
+  become: yes
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
+    - "./vars/nginx_telegraf_local.yml"
+  tasks:
+    - name: Install PIP
+      apt:
+        name:
+          - python3-setuptools
+          - python3-pip
+    - name: Install test utils
+      pip:
+        executable: pip3
+        name: csm-test-utils
+  roles:
+    - role: telegraf-client
+      vars:
+        telegraf_influxdb_retention_policy: ""
+        telegraf_plugins_base:
+          - name: http_listener_v2
+            options:
+              service_address: "localhost:{{ telegraf_local_port }}"
+              data_format: "influx"
+    - role: geerlingguy.nginx
+      vars:
+        nginx_remove_default_vhost: yes
+        nginx_vhosts:
+          - listen: "80"
+            server_name: "localhost"
+            extra_parameters: "{{ extra_parameters }}"
 
 - name: Copy and configure test script files to controller
   hosts: telegrafed
