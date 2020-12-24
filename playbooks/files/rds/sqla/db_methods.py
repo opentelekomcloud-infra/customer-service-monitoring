@@ -1,68 +1,62 @@
 import logging
-import string
 import random
-import yaml
-
+import string
 from contextlib import closing
+
+import yaml
 from psycopg2 import Error
-from sqlalchemy import engine
+from sqlalchemy import create_engine
+from sqlalchemy.engine import url
 
-from arg_parser import get_source
+from rds.base import BaseDB, logging_configuration
 from .db_model import TestRdsTable
-from .session import get_db_engine, get_session
+from .session import get_session
+
+__all__ = ['AlchemyDB']
 
 
-def _logging_configuration():
-    """Basic configuration for logging"""
-    return logging.basicConfig(
-        filename = 'tmp/rds/rds_logs.log',
-        filemode = 'w',
-        level = logging.DEBUG,
-        format='%(levelname)s:%(asctime)s:%(message)s')
+class AlchemyDB(BaseDB):
+    """Postgres database instance"""
 
+    def __init__(self, connection):
+        super().__init__(connection)
+        self.engine = create_engine(url.make_url(url.URL(**connection)), echo=False)
 
-def _random_str_generation(size) -> str:
-    """Generate random string which consist of letters and digits."""
-    return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(size))
+    def _execute_sql(self, sql_query):
+        """Execute sql command which depends on db dialect"""
+        try:
+            with closing(self.engine.connect()) as connection:
+                result = connection.execute(sql_query).fetchall()
+        except Error:
+            logging.exception('Error occurred')
+        return result
 
+    def create_table(self, schema_name: str, table_name: str, *columns) -> None:
+        pass
 
-def _execute_sql(sqla_engine: engine, sql_query: str):
-    """Execute sql command which depends on db dialect"""
-    try:
-        with closing(sqla_engine.connect()) as connection:
-            result = connection.execute(sql_query).fetchall()
-    except Error as e:
-        logging.error('Error occured', exc_info = True)
-    return result
+    def get_database_size(self, _) -> int:
+        return self._execute_sql("select pg_database_size(current_database());")[0][0]
 
+    def run_test(self, src_file):
+        logging_configuration()
+        logging.info('Scripts starts')
 
-def get_database_size(sqla_engine: engine) -> int:
-    """Get size of current database that returns in bytes"""
-    return _execute_sql(sqla_engine, "select pg_database_size(current_database());")[0][0]
+        session = get_session(self.engine)
 
-
-def is_database_fulfilled(sqla_engine: engine, db_max_size: int) -> bool:
-    """Check database size and return false if database size is not enough"""
-    return get_database_size(sqla_engine) >= db_max_size
-
-
-def main():
-    _logging_configuration()
-    sqla_engine = get_db_engine()
-    data_source = get_source()
-    session = get_session(sqla_engine)
-    logging.info('Scripts starts')
-    with open(data_source) as data_file:
-        data = yaml.safe_load(data_file)
-        content_str = _random_str_generation(data['symbol_count'])
-        while not is_database_fulfilled(sqla_engine, data['max_size_in_bytes']):
-            TestRdsTable.metadata.create_all(sqla_engine)
-            session.add_all([TestRdsTable(content_str + str(i)) for i in range(data['record_count'])])
+        with open(src_file) as data_file:
+            data = yaml.safe_load(data_file)
+        content_str = _random_str(data['symbol_count'])
+        while not self.is_database_fulfilled('entities', data['max_size_in_bytes']):
+            TestRdsTable.metadata.create_all(self.engine)
+            session.add_all([
+                TestRdsTable(content_str + str(i)) for i in range(data['record_count'])
+            ])
             session.commit()
             logging.info('Commit session')
         session.close_all()
-    logging.info('Script finished')
+        logging.info('Script finished')
 
 
-if __name__ == "__main__":
-    main()
+def _random_str(size) -> str:
+    """Generate random string which consist of letters and digits."""
+    return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(size))
