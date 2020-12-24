@@ -2,7 +2,7 @@
 
 import os
 import sys
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 
 from pg2.db_methods import Pg2DB
 from sqla.db_methods import AlchemyDB
@@ -10,7 +10,7 @@ from sqla.db_methods import AlchemyDB
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 
-def __parse_args():
+def parse_args(args: dict = None):
     """Parse common parameters"""
     parser = ArgumentParser(prog='customer-service-monitoring',
                             description='Get data for connection string')
@@ -18,14 +18,14 @@ def __parse_args():
     parser.add_argument('--source', required=True)
     parser.add_argument('--host', required=True)
     parser.add_argument('--port', required=True)
-    parser.add_argument('--database', '-db', required=True, default='entities')
+    parser.add_argument('--database', '-db', default='entities')
     parser.add_argument('--username', '-user', required=True)
     parser.add_argument('--password', '-pass', required=True)
     parser.add_argument('--drivername', default='postgresql+psycopg2')
-    return parser.parse_known_args()
+    return parser.parse_known_args(args)
 
 
-def __get_connection_dict(args) -> dict:
+def get_connection_dict(args: Namespace) -> dict:
     """Create connection dict"""
     db_connect = {
         'host': args.host,
@@ -48,8 +48,8 @@ DB_DICT = {
 
 
 def main():
-    args, _ = __parse_args()
-    connection = __get_connection_dict(args)
+    args, _ = parse_args()
+    connection = get_connection_dict(args)
     db = DB_DICT[args.run_option](connection)
     db.run_test(args.source)
 
