@@ -13,3 +13,7 @@ extra_parameters: |
         proxy_pass         http://192.168.10.1:{{ telegraf_port }};
         proxy_set_header   Host $host;
     }
+    location /as {
+        proxy_pass         http://192.168.5.10:{{ telegraf_port }};
+        proxy_set_header   Host $host;
+    }
