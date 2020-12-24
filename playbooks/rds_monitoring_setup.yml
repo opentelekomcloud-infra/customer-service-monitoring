@@ -1,50 +1,45 @@
 ---
-- name: Prepare clouds.yaml for test_host
-  import_playbook: prepare_config.yml
+- name: Prepare controller variables
+  import_playbook: setup_scenarios_controller.yml
 
 - name: Prepare variables
-  hosts: test_host
-  tasks:
-  - name: Register scenario 2 vars
-    set_fact:
-      terraform_base_dir: "terraform"
-      requirements: "requirements.txt"
-
-- name: Build infrastructure
-  hosts: test_host
-  roles:
-    - build_infrastructure
+  hosts: localhost
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
-    TF_VAR_psql_password: "{{ psql_password }}"
+    TF_VAR_addr_3: "192.168.8"
+    TF_VAR_network_id: "{{ main_network_id }}"
+    TF_VAR_router_id: "{{ main_router_id }}"
+    TF_VAR_subnet_id: "{{ main_subnet_id }}"
+    TF_VAR_psql_password: "Spasibo2020!"
   vars:
+    scenario_name: rds_monitoring
+    terraform_base_dir: terraform
+    requirements: requirements.txt
+    terraform_workspace: prod
+    key_name: key_csm_controller
     infra_state: present
+  roles:
+    - build_infrastructure
   tasks:
-  - name: Register build result
-    set_fact:
-      db_password: "{{ tf_output.outputs[\"db_password\"].value }}"
-      db_username: "{{ tf_output.outputs[\"db_username\"].value }}"
-      db_address: "{{ tf_output.outputs[\"db_address\"].value }}"
-      scn2_public_ip: "{{ tf_output.outputs[\"scn2_public_ip\"].value }}"
-  - name: Download private key from test_host
-    fetch:
-      src: "{{ tmp_dir }}/{{ key_name }}"
-      dest:  "{{ local_private_key }}"
-      mode: 0600
-      flat: yes
-
-- name: Register used hosts
-  hosts: local
-  tasks:
-    - name: Register host
+    - name: Register build result
+      set_fact:
+        db_password: "{{ tf_output.outputs['db_password'].value }}"
+        db_username: "{{ tf_output.outputs['db_username'].value }}"
+        db_address: "{{ tf_output.outputs['db_address'].value }}"
+        ecs_instance_ip: "{{ tf_output.outputs['ecs_ip'].value }}"
+    - name: Register ecs
       add_host:
-        hostname: "scn2_ecs"
-        ansible_ssh_host: "{{ hostvars.test_host.scn2_public_ip }}"
+        name: "rds_scn_ecs"
+        groups: "gatewayed"
+        ansible_host: "{{ ecs_instance_ip }}"
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_common_args: >
+          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}' -o PasswordAuthentication=no
 
 - name: Wait for host
-  hosts: scn2_ecs
+  hosts: rds_scn_ecs
   gather_facts: no
   tasks:
     - name: Wait for host to be up
@@ -53,7 +48,7 @@
         timeout: 120
 
 - name: Start Server
-  hosts: scn2_ecs
+  hosts: rds_scn_ecs
   become: yes
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
@@ -62,18 +57,18 @@
   roles:
     - role: too_simple_server
       vars:
-        pg_db_url: "{{ hostvars.test_host.db_address }}"
+        pg_db_url: "{{ hostvars.localhost.db_address }}"
         pg_database: "entities"
-        pg_username: "{{ hostvars.test_host.db_username }}"
-        pg_password: "{{ hostvars.test_host.db_password }}"
-        debug: False
+        pg_username: "{{ hostvars.localhost.db_username }}"
+        pg_password: "{{ hostvars.localhost.db_password }}"
+        debug: false
   tasks:
     - name: Register facts
       set_fact:
         server_local_port: "{{ server_port }}"
 
 - name: Install telegraf client on Server
-  hosts: scn2_ecs
+  hosts: rds_scn_ecs
   become: true
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
@@ -89,7 +84,8 @@
               data_format: "influx"
           - name: postgresql
             options:
-              address: "postgres://{{ hostvars.test_host.db_username }}:{{ hostvars.test_host.db_password }}@{{ hostvars.test_host.db_address }}/entities"
+              address: "postgres://{{ hostvars.localhost.db_username }}\
+              :{{ hostvars.localhost.db_password }}@{{ hostvars.localhost.db_address }}/entities"
     - role: geerlingguy.nginx
       vars:
         nginx_remove_default_vhost: yes
@@ -109,7 +105,7 @@
               }
 
 - name: Checking reporting processes
-  hosts: test_host
+  hosts: localhost
   tasks:
     - name: Get running reporting processes list from remote host  # noqa 301 305
       ignore_errors: yes
@@ -125,7 +121,9 @@
       ignore_errors: yes
 
 - name: Run reporting for scenario
-  hosts: test_host
+  hosts: localhost
   tasks:
-  - name: Execute csm_test_utils  # noqa 301 305
-    shell: "nohup python3 -m csm_test_utils rds_monitor --target {{ scn2_public_ip }} --telegraf 'http://{{ scn2_public_ip }}' &"
+    - name: Execute csm_test_utils  # noqa 301 305
+      shell: >
+        nohup python3 -m csm_test_utils rds_monitor --target {{ ecs_instance_ip }}
+        --telegraf 'http://{{ ecs_instance_ip }}' &
