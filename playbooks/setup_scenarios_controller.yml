@@ -1,6 +1,10 @@
 ---
+- name: Prepare clouds.yaml for test_host
+  import_playbook: prepare_config.yml
+  when: terraform_workspace != 'test'
+
 - name: Build/Check controller infrastructure
-  hosts: localhost
+  hosts: test_host
   roles:
     - build_infrastructure
   environment:
