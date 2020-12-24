@@ -10,7 +10,7 @@ data "opentelekomcloud_images_image_v2" "current_image" {
 # Create security group for instances
 resource "opentelekomcloud_compute_secgroup_v2" "ecs_group" {
   description = "Allow external connections to ssh, http, https and icmp"
-  name        = "${var.scenario}_grp"
+  name        = "${var.scenario}_grp_nodes"
   rule {
     cidr        = "0.0.0.0/0"
     from_port   = 22
