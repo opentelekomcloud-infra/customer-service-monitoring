@@ -25,6 +25,7 @@
 - job:
     name: tox-cover-docker
     parent: tox-cover
+    nodeset: ubuntu-focal
     pre-run: ./tests/postgres/pre.yaml
 
 - project:
