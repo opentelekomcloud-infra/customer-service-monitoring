@@ -41,9 +41,12 @@
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ local_pkey }}"
         ansible_ssh_common_args: >
-          -o ProxyCommand='ssh -W %h:%p -q
-          linux@{{ controller_public_ip }}
-          -i {{ local_pkey }}' -o PasswordAuthentication=no
+          -o UserKnownHostsFile=/dev/null
+          -o ProxyCommand='ssh -W %h:%p
+          -q linux@{{ controller_public_ip }}
+          -i {{ local_pkey }}
+          -o UserKnownHostsFile=/dev/null'
+          -o PasswordAuthentication=no
 
 - name: Checking load processes
   hosts: gatewayed
