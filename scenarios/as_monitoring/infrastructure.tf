@@ -13,6 +13,7 @@ module "resources" {
   ecs_flavor        = var.ecs_flavor
   availability_zone = var.availability_zone
   host_image        = var.host_image
+  ecs_image         = var.ecs_image
   disc_volume       = var.disc_volume
   key_pair          = local.key_pair
 
@@ -43,4 +44,8 @@ output "lb_instance_ip" {
 
 output "as_instance_ip" {
   value = module.resources.as_instance[0].access_ip_v4
+}
+
+output "as_control_instance_ip" {
+  value = module.resources.as_control_instance[0].access_ip_v4
 }
