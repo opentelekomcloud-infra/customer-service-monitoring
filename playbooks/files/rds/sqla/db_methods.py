@@ -41,7 +41,7 @@ class AlchemyDB(BaseDB):
         with open(src_file) as data_file:
             data = yaml.safe_load(data_file)
         content_str = _random_str(data['symbol_count'])
-        session = get_session(self.engine)()
+        session = get_session(self.engine)
         with closing(session):
             while not self.is_database_fulfilled(data['max_size_in_bytes']):
                 TestRdsTable.metadata.create_all(self.engine)
