@@ -54,11 +54,18 @@
 
     - name: Register as_monitoring_control_instance
       add_host:
-        name: "as_control_instance"
+        name: as_control_instance
         ansible_host: "{{ as_monitoring_control_ip }}"
         ansible_ssh_user: "linux"
-        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_private_key_file: "{{ local_pkey }}"
         ansible_ssh_common_args: >
+          -o UserKnownHostsFile=/dev/null
+          -o ProxyCommand='ssh -W %h:%p
+          -q linux@{{ controller_public_ip }}
+          -i {{ local_pkey }}
+          -o StrictHostKeyChecking=no
+          -o UserKnownHostsFile=/dev/null'
+          -o PasswordAuthentication=no
           -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
           -i {{ local_private_key }}' -o PasswordAuthentication=no
 
@@ -128,7 +135,7 @@
         job: /tmp/check_cpu_load_status.sh
 
 - name: Install telegraf client on as_instance
-  hosts: as_instance
+  hosts: as_control_instance
   become: yes
   vars:
     telegraf_local_port: 8080
@@ -166,10 +173,10 @@
               }
 
 - name: Install csm test utils, run as_monitoring and as_load
-  hosts: as_instance
+  hosts: as_control_instance
   become: yes
   vars:
-    lb_ip: "{{ hostvars.r.as_monitoring_lb_ip }}"
+    lb_ip: "{{ hostvars.test_host.as_monitoring_lb_ip }}"
     nohup_py3: "nohup /usr/bin/python3 -m csm_test_utils"
     telegraf_host: "http://localhost:8080"
   tasks:
