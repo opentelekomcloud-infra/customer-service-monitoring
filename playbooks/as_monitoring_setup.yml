@@ -25,6 +25,16 @@
         as_monitoring_instance_ip: "{{ tf_output.outputs['as_instance_ip'].value }}"
         as_monitoring_lb_ip: "{{ tf_output.outputs['lb_instance_ip'].value }}"
 
+    - name: Download private key from test_host
+      fetch:
+        src: "{{ tmp_dir }}/{{ key_name }}"
+        dest:  "{{ local_private_key }}"
+        mode: 0600
+        flat: yes
+
+- name: Register used hosts
+  hosts: local
+  tasks:
     - name: Register as_monitoring
       add_host:
         name: "as_instance"
@@ -35,13 +45,6 @@
         ansible_ssh_common_args: >
           -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
           -i {{ local_private_key }}' -o PasswordAuthentication=no
-
-    - name: Download private key from test_host
-      fetch:
-        src: "{{ tmp_dir }}/{{ key_name }}"
-        dest:  "{{ local_private_key }}"
-        mode: 0600
-        flat: yes
 
 - name: Wait for hosts
   hosts: gatewayed
