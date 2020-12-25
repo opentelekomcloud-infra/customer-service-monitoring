@@ -47,7 +47,7 @@
         ansible_ssh_common_args: >
           -o ProxyCommand='ssh -W %h:%p -q
            linux@{{ hostvars.test_host.controller_public_ip }}
-          -i {{ ansible_ssh_private_key_file }}' -o PasswordAuthentication=no
+          -i {{ hostvars.test_host.local_pkey }}' -o PasswordAuthentication=no
 
 - name: Wait for hosts
   hosts: gatewayed
@@ -156,7 +156,7 @@
   hosts: as_instance
   become: yes
   vars:
-    lb_ip: "{{ hostvars.test_host.as_monitoring_lb_ip }}"
+    lb_ip: "{{ hostvars.r.as_monitoring_lb_ip }}"
     nohup_py3: "nohup /usr/bin/python3 -m csm_test_utils"
     telegraf_host: "http://localhost:8080"
   tasks:
