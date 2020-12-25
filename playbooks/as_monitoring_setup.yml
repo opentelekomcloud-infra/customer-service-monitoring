@@ -45,9 +45,7 @@
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ hostvars.test_host.local_pkey }}"
         ansible_ssh_common_args: >
-          -o ProxyCommand='ssh -W %h:%p -q
-           linux@{{ hostvars.test_host.controller_public_ip }}
-          -i {{ hostvars.test_host.local_pkey }}' -o PasswordAuthentication=no
+          -o ProxyCommand='ssh -W %h:%p -q linux@{{ hostvars.test_host.controller_public_ip }} -i {{ hostvars.test_host.local_pkey }}' -o PasswordAuthentication=no
 
 - name: Wait for hosts
   hosts: gatewayed
