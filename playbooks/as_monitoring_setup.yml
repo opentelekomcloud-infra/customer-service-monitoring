@@ -24,11 +24,13 @@
       set_fact:
         as_monitoring_instance_ip: "{{ tf_output.outputs['as_instance_ip'].value }}"
         as_monitoring_lb_ip: "{{ tf_output.outputs['lb_instance_ip'].value }}"
+        key: "{{ key_name }}"
+        local_pkey: "{{ local_private_key }}"
 
     - name: Download private key from test_host
       fetch:
-        src: "{{ tmp_dir }}/{{ key_name }}"
-        dest:  "{{ local_private_key }}"
+        src: "{{ tmp_dir }}/{{ key }}"
+        dest:  "{{ local_pkey }}"
         mode: 0600
         flat: yes
 
@@ -41,10 +43,11 @@
         groups: "gatewayed"
         ansible_host: "{{ hostvars.test_host.as_monitoring_instance_ip }}"
         ansible_ssh_user: "linux"
-        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_private_key_file: "{{ hostvars.test_host.local_pkey }}"
         ansible_ssh_common_args: >
-          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
-          -i {{ local_private_key }}' -o PasswordAuthentication=no
+          -o ProxyCommand='ssh -W %h:%p -q
+           linux@{{ hostvars.test_host.controller_public_ip }}
+          -i {{ ansible_ssh_private_key_file }}' -o PasswordAuthentication=no
 
 - name: Wait for hosts
   hosts: gatewayed
