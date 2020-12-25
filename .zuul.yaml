@@ -1,10 +1,5 @@
 ---
 - job:
-    name: python-lint
-    parent: otc-tox-pep8
-    voting: false
-
-- job:
     name: ansible-lint
     parent: otc-tox
     voting: false
@@ -27,19 +22,18 @@
     parent: tox-cover
     nodeset: ubuntu-focal
     pre-run: ./tests/postgres/pre.yaml
-    voting: false
 
 - project:
     merge-mode: squash-merge
     check:
       jobs:
         - terraform-lint
-        - python-lint
+        - otc-tox-pep8
         - ansible-lint
         - tox-cover-docker
     gate:
       jobs:
         - terraform-lint
-        - python-lint
+        - otc-tox-pep8
         - ansible-lint
         - tox-cover-docker
