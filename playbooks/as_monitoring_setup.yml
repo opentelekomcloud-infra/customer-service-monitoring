@@ -49,6 +49,14 @@
           -o UserKnownHostsFile=/dev/null'
           -o PasswordAuthentication=no
 
+- name: Wait for hosts
+  hosts: gatewayed
+  gather_facts: no
+  tasks:
+    - name: Wait for host to be up
+      wait_for_connection:
+        timeout: 120
+
 - name: Checking load processes
   hosts: gatewayed
   become: yes
