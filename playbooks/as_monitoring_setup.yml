@@ -25,12 +25,11 @@
         as_monitoring_instance_ip: "{{ tf_output.outputs['as_instance_ip'].value }}"
         as_monitoring_lb_ip: "{{ tf_output.outputs['lb_instance_ip'].value }}"
         as_monitoring_control_ip: "{{ tf_output.outputs['as_control_instance_ip'].value }}"
-        local_pkey: "{{ local_private_key }}"
 
     - name: Download private key from test_host
       fetch:
         src: "{{ tmp_dir }}/{{ key_name }}"
-        dest: "{{ local_pkey }}"
+        dest: "{{ local_private_key }}"
         mode: 0600
         flat: yes
 
