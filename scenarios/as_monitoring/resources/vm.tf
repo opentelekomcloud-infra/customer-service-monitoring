@@ -94,7 +94,7 @@ resource "opentelekomcloud_compute_instance_v2" "as_instance" {
 
 # Create network port
 resource "opentelekomcloud_networking_port_v2" "as_control_port" {
-  name           = "${var.scenario}_${local.workspace_prefix}"
+  name           = "${var.scenario}_control_${local.workspace_prefix}"
   network_id     = var.network_id
   admin_state_up = true
   security_group_ids = [
