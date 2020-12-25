@@ -22,6 +22,11 @@
       simple_run:
         - sh ./scripts/terraform-lint.sh
 
+- job:
+    name: tox-cover-docker
+    parent: tox-cover
+    pre-run: ./tests/postgres/pre.yaml
+
 - project:
     merge-mode: squash-merge
     check:
@@ -29,8 +34,10 @@
         - terraform-lint
         - python-lint
         - ansible-lint
+        - tox-cover-docker
     gate:
       jobs:
         - terraform-lint
         - python-lint
         - ansible-lint
+        - tox-cover-docker
