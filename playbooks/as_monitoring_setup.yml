@@ -24,7 +24,7 @@
       set_fact:
         as_monitoring_instance_ip: "{{ tf_output.outputs['as_instance_ip'].value }}"
         as_monitoring_lb_ip: "{{ tf_output.outputs['lb_instance_ip'].value }}"
-        key: "{{ key_name }}"
+        key_name: "{{ key_name }}"
         local_pkey: "{{ local_private_key }}"
 
     - name: Download private key from test_host
@@ -46,14 +46,6 @@
         ansible_ssh_private_key_file: "{{ hostvars.test_host.local_pkey }}"
         ansible_ssh_common_args: >
           -o ProxyCommand='ssh -W %h:%p -q linux@{{ hostvars.test_host.controller_public_ip }} -i {{ hostvars.test_host.local_pkey }}' -o PasswordAuthentication=no
-
-- name: Wait for hosts
-  hosts: gatewayed
-  gather_facts: no
-  tasks:
-    - name: Wait for host to be up
-      wait_for_connection:
-        timeout: 120
 
 - name: Checking load processes
   hosts: gatewayed
