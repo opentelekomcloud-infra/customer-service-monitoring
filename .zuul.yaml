@@ -27,6 +27,7 @@
     parent: tox-cover
     nodeset: ubuntu-focal
     pre-run: ./tests/postgres/pre.yaml
+    voting: false
 
 - project:
     merge-mode: squash-merge
