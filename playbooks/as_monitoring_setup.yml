@@ -36,21 +36,14 @@
 - name: Register used hosts
   hosts: local
   tasks:
-    - name: apply 600 to key
-      file:
-        path: "{{ hostvars.test_host.local_pkey }}"
-        mode: 0600
-      register: file
-
     - name: Register as_monitoring
       add_host:
-        name: "as_instance"
-        groups: "gatewayed"
+        name: as_instance
+        groups: gatewayed
         ansible_host: "{{ hostvars.test_host.as_monitoring_instance_ip }}"
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ hostvars.test_host.local_pkey }}"
-        ansible_ssh_common_args: >
-          -o ProxyCommand='ssh -W %h:%p -q linux@{{ hostvars.test_host.controller_public_ip }} -i {{ hostvars.test_host.local_pkey }}' -o PasswordAuthentication=no
+        ansible_ssh_common_args: -o ProxyCommand='ssh -W %h:%p -q linux@{{ hostvars.test_host.controller_public_ip }} -i {{ hostvars.test_host.local_pkey }}' -o PasswordAuthentication=no
 
 - name: Checking load processes
   hosts: gatewayed
