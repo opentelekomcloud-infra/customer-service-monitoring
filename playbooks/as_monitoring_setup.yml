@@ -36,6 +36,13 @@
           -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
           -i {{ local_private_key }}' -o PasswordAuthentication=no
 
+    - name: Download private key from test_host
+      fetch:
+        src: "{{ tmp_dir }}/{{ key_name }}"
+        dest:  "{{ local_private_key }}"
+        mode: 0600
+        flat: yes
+
 - name: Wait for hosts
   hosts: gatewayed
   gather_facts: no
