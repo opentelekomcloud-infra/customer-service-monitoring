@@ -17,3 +17,7 @@ extra_parameters: |
         proxy_pass         http://192.168.5.1:{{ telegraf_port }};
         proxy_set_header   Host $host;
     }
+    location /smn {
+        proxy_pass         http://192.168.5.1/smn;
+        proxy_set_header   Host $host;
+    }
