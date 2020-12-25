@@ -31,29 +31,25 @@ class AlchemyDB(BaseDB):
             logging.exception('Error occurred')
         return result
 
-    def create_table(self, schema_name: str, table_name: str, *columns) -> None:
-        pass
-
-    def get_database_size(self, _) -> int:
-        return self._execute_sql("select pg_database_size(current_database());")[0][0]
+    def get_database_size(self) -> int:
+        return self._execute_sql(f"select pg_database_size('{self.database}');")[0][0]
 
     def run_test(self, src_file):
         logging_configuration()
         logging.info('Scripts starts')
 
-        session = get_session(self.engine)
-
         with open(src_file) as data_file:
             data = yaml.safe_load(data_file)
         content_str = _random_str(data['symbol_count'])
-        while not self.is_database_fulfilled('entities', data['max_size_in_bytes']):
-            TestRdsTable.metadata.create_all(self.engine)
-            session.add_all([
-                TestRdsTable(content_str + str(i)) for i in range(data['record_count'])
-            ])
-            session.commit()
-            logging.info('Commit session')
-        session.close_all()
+        session = get_session(self.engine)()
+        with closing(session):
+            while not self.is_database_fulfilled(data['max_size_in_bytes']):
+                TestRdsTable.metadata.create_all(self.engine)
+                session.add_all([
+                    TestRdsTable(content_str + str(i)) for i in range(data['record_count'])
+                ])
+                session.commit()
+                logging.info('Commit session')
         logging.info('Script finished')
 
 
