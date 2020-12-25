@@ -36,6 +36,12 @@
 - name: Register used hosts
   hosts: local
   tasks:
+    - name: apply 600 to key
+      file:
+        path: "{{ hostvars.test_host.local_pkey }}"
+        mode: 0600
+      register: file
+
     - name: Register as_monitoring
       add_host:
         name: "as_instance"
