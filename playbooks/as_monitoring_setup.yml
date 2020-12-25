@@ -24,6 +24,7 @@
       set_fact:
         as_monitoring_instance_ip: "{{ tf_output.outputs['as_instance_ip'].value }}"
         as_monitoring_lb_ip: "{{ tf_output.outputs['lb_instance_ip'].value }}"
+        as_monitoring_control_ip: "{{ tf_output.outputs['as_control_instance_ip'].value }}"
         local_pkey: "{{ local_private_key }}"
 
     - name: Download private key from test_host
@@ -48,6 +49,18 @@
           -o StrictHostKeyChecking=no
           -o UserKnownHostsFile=/dev/null'
           -o PasswordAuthentication=no
+          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}' -o PasswordAuthentication=no
+
+    - name: Register as_monitoring_control_instance
+      add_host:
+        name: "as_control_instance"
+        ansible_host: "{{ as_monitoring_control_ip }}"
+        ansible_ssh_user: "linux"
+        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_common_args: >
+          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}' -o PasswordAuthentication=no
 
 - name: Wait for hosts
   hosts: gatewayed

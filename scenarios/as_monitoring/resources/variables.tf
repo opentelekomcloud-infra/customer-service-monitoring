@@ -1,6 +1,7 @@
 variable "net_address" {}
 variable "ecs_flavor" {}
 variable "host_image" {}
+variable "ecs_image" {}
 variable "network_id" {}
 variable "subnet_id" {}
 variable "router_id" {}
