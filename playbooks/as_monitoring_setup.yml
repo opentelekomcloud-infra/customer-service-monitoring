@@ -176,9 +176,9 @@
   hosts: as_control_instance
   become: yes
   vars:
-    lb_ip: "{{ hostvars.test_host.as_monitoring_lb_ip }}"
-    nohup_py3: "nohup /usr/bin/python3 -m csm_test_utils"
-    telegraf_host: "http://localhost:8080"
+    lb: "{{ hostvars.test_host.as_monitoring_lb_ip }}"
+    nohup: "nohup /usr/bin/python3 -m csm_test_utils"
+    tlg: "http://localhost:8080"
   tasks:
     - name: Update and upgrade apt packages
       apt:
@@ -199,9 +199,7 @@
         state: forcereinstall
 
     - name: Start monitoring server and loadbalancer
-      shell: >
-        "{{ nohup_py3 }}" "{{ item }}" --telegraf "{{ telegraf_host }}"
-        --target "{{ lb_ip }}" &
+      shell: "{{ nohup }} {{ item }} --telegraf {{ tlg }} --target {{ lb_ }} &"
       loop:
         - "as_monitor"
         - "as_load"
