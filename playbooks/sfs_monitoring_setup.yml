@@ -53,7 +53,7 @@
   hosts: sfs_instance
   become: yes
   vars:
-    sfs_shared_path: "{{ hostvars.localhost.sfs_monitoring_sfs_path }}"
+    sfs_shared_path: "{{ hostvars.test_host.sfs_monitoring_sfs_path }}"
     mount_path: "/mnt/sfs_share"
     nohup: "nohup /usr/bin/python3 -m csm_test_utils"
     tlg: "http://localhost:8080"
