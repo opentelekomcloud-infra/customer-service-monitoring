@@ -32,8 +32,16 @@
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
+          -o UserKnownHostsFile=/dev/null
+          -o ProxyCommand='ssh -W %h:%p
+          -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}
+          -o StrictHostKeyChecking=no
+          -o UserKnownHostsFile=/dev/null'
+          -o PasswordAuthentication=no
           -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
           -i {{ local_private_key }}' -o PasswordAuthentication=no
+
     - name: Register nodes
       add_host:
         name: "{{ item }}"
@@ -41,6 +49,13 @@
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
+          -o UserKnownHostsFile=/dev/null
+          -o ProxyCommand='ssh -W %h:%p
+          -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}
+          -o StrictHostKeyChecking=no
+          -o UserKnownHostsFile=/dev/null'
+          -o PasswordAuthentication=no
           -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
           -i {{ local_private_key }}' -o PasswordAuthentication=no
       loop: "{{ hostvars.localhost.lb_node_ips }}"
@@ -59,7 +74,7 @@
   roles:
     - too_simple_server
   vars:
-    debug: True
+    debug: true
     server_port: 80
 
 - name: Install telegraf client on Bastion
@@ -113,10 +128,10 @@
   hosts: vcloud_csmrunner
   become: yes
   tasks:
-  - name: Install csm-test-utils
-    pip:
-      executable: pip3
-      name: csm-test-utils
+    - name: Install csm-test-utils
+      pip:
+        executable: pip3
+        name: csm-test-utils
 
 - name: Checking reporting processes
   hosts: vcloud_csmrunner
@@ -142,5 +157,5 @@
     elb_ip: "{{ hostvars.test_host.loadbalancer_public_ip }}"
     bastion_ip: "{{ hostvars.test_host.bastion_public_ip }}"
   tasks:
-  - name: Execute csm_test_utils  # noqa 301 305
-    shell: "nohup python3 -m csm_test_utils monitor --target {{ elb_ip }} --telegraf 'http://{{ bastion_ip }}' &"
+    - name: Execute csm_test_utils  # noqa 301 305
+      shell: "nohup python3 -m csm_test_utils monitor --target {{ elb_ip }} --telegraf 'http://{{ bastion_ip }}' &"
