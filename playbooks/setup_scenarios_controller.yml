@@ -1,7 +1,7 @@
 ---
 - name: Prepare clouds.yaml for test_host
   import_playbook: prepare_config.yml
-  when: terraform_workspace != 'test'
+  when: terraform_workspace != "test"
 
 - name: Build/Check controller infrastructure
   hosts: test_host
