@@ -199,7 +199,7 @@
         state: forcereinstall
 
     - name: Start monitoring server and loadbalancer
-      shell: "{{ nohup }} {{ item }} --telegraf {{ tlg }} --target {{ lb_ }} &"
+      shell: "{{ nohup }} {{ item }} --telegraf {{ tlg }} --target {{ lb }} &"
       loop:
         - "as_monitor"
         - "as_load"
