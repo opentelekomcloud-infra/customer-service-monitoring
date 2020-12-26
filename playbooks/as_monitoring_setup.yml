@@ -14,7 +14,6 @@
     scenario_name: as_monitoring
     terraform_base_dir: terraform
     requirements: requirements.txt
-    terraform_workspace: prod
     key_name: key_csm_controller
     infra_state: present
   roles:
