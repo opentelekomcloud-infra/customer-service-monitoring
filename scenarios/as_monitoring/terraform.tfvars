@@ -1,6 +1,6 @@
 scenario          = "as_monitoring"
 ecs_flavor        = "s2.large.2"
-host_image        = "KPI_Scn4_host_image"
+host_image        = "Debian_csm_as_host_image"
 ecs_image         = "Standard_Debian_10_latest"
 addr_3_octets     = "192.168.5"
 availability_zone = "eu-de-01"

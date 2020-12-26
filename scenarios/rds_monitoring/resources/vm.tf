@@ -10,7 +10,7 @@ data "opentelekomcloud_images_image_v2" "current_image" {
 
 resource "opentelekomcloud_compute_secgroup_v2" "rds_grp" {
   description = "Allow external connections to ssh, http, and https ports"
-  name        =  "${var.scenario}_grp"
+  name        = "${var.scenario}_grp"
 
   rule {
     cidr        = "0.0.0.0/0"
@@ -33,8 +33,8 @@ resource "opentelekomcloud_compute_secgroup_v2" "rds_grp" {
 }
 
 resource "opentelekomcloud_compute_instance_v2" "ecs" {
-  name       = "${var.scenario}_instance_${local.workspace_prefix}"
-  flavor_id  = var.ecs_flavor
+  name      = "${var.scenario}_instance_${local.workspace_prefix}"
+  flavor_id = var.ecs_flavor
 
   region            = var.region
   availability_zone = var.availability_zone
@@ -56,7 +56,7 @@ resource "opentelekomcloud_compute_instance_v2" "ecs" {
     port = opentelekomcloud_networking_port_v2.network_port.id
   }
 
-  user_data   = file("${path.module}/first_boot.sh")
+  user_data = file("${path.module}/first_boot.sh")
 
   tag = {
     "group" : "gatewayed",
