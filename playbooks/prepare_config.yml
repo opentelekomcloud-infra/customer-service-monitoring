@@ -3,16 +3,15 @@
   vars:
     clouds_yaml_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
   tasks:
-  - name: Register clouds location
-    set_fact:
-      clouds_yaml_file: "{{ clouds_yaml_file }}"
-      tmp_dir: "{{ clouds_yaml_file | dirname }}"
-  - name: Create tmp dir
-    file:
-      path: "{{ tmp_dir }}"
-      state: directory
-  - name: Copy clouds.yaml
-    copy:
-      src: "{{ clouds_yaml_file }}"
-      dest: "{{ clouds_yaml_file }}"
-
+    - name: Register clouds location
+      set_fact:
+        clouds_yaml_file: "{{ clouds_yaml_file }}"
+        tmp_dir: "{{ clouds_yaml_file | dirname }}"
+    - name: Create tmp dir
+      file:
+        path: "{{ tmp_dir }}"
+        state: directory
+    - name: Copy clouds.yaml
+      copy:
+        src: "{{ clouds_yaml_file }}"
+        dest: "{{ clouds_yaml_file }}"
