@@ -158,4 +158,7 @@
     bastion_ip: "{{ hostvars.test_host.bastion_public_ip }}"
   tasks:
     - name: Execute csm_test_utils  # noqa 301 305
-      shell: "nohup python3 -m csm_test_utils monitor --target {{ elb_ip }} --telegraf 'http://{{ bastion_ip }}' &"
+      shell: >
+        nohup python3 -m csm_test_utils monitor 
+        --target {{ elb_ip }} 
+        --telegraf 'http://{{ bastion_ip }}' &
