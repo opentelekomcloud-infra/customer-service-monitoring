@@ -47,8 +47,6 @@
           -o StrictHostKeyChecking=no
           -o UserKnownHostsFile=/dev/null'
           -o PasswordAuthentication=no
-          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
-          -i {{ local_private_key }}' -o PasswordAuthentication=no
 
     - name: Register as_monitoring_control_instance
       add_host:
