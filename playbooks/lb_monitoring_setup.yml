@@ -150,10 +150,9 @@
   become: yes
   vars:
     elb_ip: "{{ hostvars.test_host.loadbalancer_public_ip }}"
-    bastion_ip: "{{ hostvars.test_host.bastion_public_ip }}"
+    lb_ctrl_ip: "{{ hostvars.test_host.lb_control_instance_ip }}"
+    nohup: "nohup /usr/bin/python3 -m csm_test_utils"
   tasks:
     - name: Execute csm_test_utils  # noqa 301 305
       shell: >
-        nohup python3 -m csm_test_utils monitor 
-        --target {{ elb_ip }} 
-        --telegraf 'http://{{ bastion_ip }}' &
+        "{{ nohup }} monitor --target {{ elb_ip }} --telegraf 'http://{{ lb_ctrl_ip }}' &"
