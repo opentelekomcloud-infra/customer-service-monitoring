@@ -3,7 +3,7 @@
   import_playbook: setup_scenarios_controller.yml
 
 - name: Prepare variables
-  hosts: localhost
+  hosts: test_host
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
     TF_VAR_addr_3: "192.168.8"
@@ -63,8 +63,8 @@
       vars:
         pg_db_url: "{{ hostvars.localhost.db_address }}"
         pg_database: "entities"
-        pg_username: "{{ hostvars.localhost.db_username }}"
-        pg_password: "{{ hostvars.localhost.db_password }}"
+        pg_username: "{{ hostvars.test_host.db_username }}"
+        pg_password: "{{ hostvars.test_host.db_password }}"
         debug: false
   tasks:
     - name: Register facts
@@ -88,8 +88,8 @@
               data_format: "influx"
           - name: postgresql
             options:
-              address: "postgres://{{ hostvars.localhost.db_username }}\
-              :{{ hostvars.localhost.db_password }}@{{ hostvars.localhost.db_address }}/entities"
+              address: "postgres://{{ hostvars.test_host.db_username }}\
+              :{{ hostvars.test_host.db_password }}@{{ hostvars.test_host.db_address }}/entities"
     - role: geerlingguy.nginx
       vars:
         nginx_remove_default_vhost: yes
@@ -109,7 +109,7 @@
               }
 
 - name: Checking reporting processes
-  hosts: localhost
+  hosts: rds_scn_ecs
   tasks:
     - name: Get running reporting processes list from remote host  # noqa 301 305
       ignore_errors: yes
@@ -125,9 +125,12 @@
       ignore_errors: yes
 
 - name: Run reporting for scenario
-  hosts: localhost
+  hosts: rds_scn_ecs
+  vars:
+    nohup: "nohup /usr/bin/python3 -m csm_test_utils"
+    tlg: "http://localhost:8080"
+    server: "http://localhost:8081"
   tasks:
     - name: Execute csm_test_utils  # noqa 301 305
       shell: >
-        nohup python3 -m csm_test_utils rds_monitor --target {{ ecs_instance_ip }}
-        --telegraf 'http://{{ ecs_instance_ip }}' &
+        "{{ nohup }} rds_monitor --target {{ server }} --telegraf {{ tlg }} &"
