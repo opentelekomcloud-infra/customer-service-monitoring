@@ -17,5 +17,5 @@ terraform {
 
 # Configure the OpenTelekomCloud Provider
 provider "opentelekomcloud" {
-  cloud = "devstack"
+  cloud = get_env("OS_CLOUD")
 }

@@ -12,6 +12,7 @@
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
     TF_VAR_controller_ip: "{{ controller_public_ip }}"
     TF_VAR_psql_password: "Spasibo2020!"
+    OS_CLOUD: "devstack"
   vars:
     scenario_name: rds_backup_monitoring
     terraform_base_dir: terraform
@@ -78,7 +79,7 @@
         server_local_port: "{{ server_port }}"
         run_option: "{{ run_option }}"
         drivername: "{{ drivername }}"
-        source: "/tmp/rds/{{ run_option }}/data.yaml"
+        source: "{{ test_scripts_path }}/{{ run_option }}/data.yaml"
 
     - name: Update and upgrade apt packages
       apt:
@@ -97,45 +98,46 @@
 
     - name: Install pg2 and SQLAlchemy for Postgresql
       pip:
-        executable: pip3
-        name:
-          - psycopg2-binary
-          - pyyml
-          - SQLAlchemy
-        state: forcereinstall
+        requirements: "{{ test_scripts_path }}/rds-backup-requirements.txt"
+        executable: "pip3"
 
     - name: Copy scripts to host
       synchronize:
         src: rds/
-        dest: /tmp/rds/
+        dest: "{{ test_scripts_path }}/"
 
     - name: Changing permissions of "check_rds_filling_status.sh"
-      file: dest=/tmp/rds/check_rds_filling_status.sh mode=a+x
+      file:
+        dest: "{{ test_scripts_path }}/check_rds_filling_status.sh"
+        mode: a+x
 
     - name: Add records to rds in background  # noqa 301 305
-      shell: "start-stop-daemon -Sbmvp /tmp/rds/__main__.pid -x /usr/bin/python3 /tmp/rds/__main__.py -- `
-              `--run_option {{ run_option }} `
-              `--source {{ source }} `
-              `--drivername {{ drivername }} `
-              `--host {{ pg_host }} `
-              `--port {{ pg_port }} `
-              `--username {{ pg_username }} `
-              `--password {{ pg_password }} `
-              `--database {{ pg_database }}"
+      shell: >
+      start-stop-daemon -Sbmvp {{ test_scripts_path }}/__main__.pid
+      -x /usr/bin/python3 {{ test_scripts_path }}/__main__.py --
+              --run_option {{ run_option }}
+              --source {{ source }}
+              --drivername {{ drivername }}
+              --host {{ pg_host }}
+              --port {{ pg_port }}
+              --username {{ pg_username }}
+              --password {{ pg_password }}
+              --database {{ pg_database }}
 
     - name: Schedule load script status check
       cron:
         name: "Check status of RDS filling script"
         minute: "*/59"
-        job: "/tmp/rds/check_rds_filling_status.sh `
-              `{{ run_option }} `
-              `{{ source }} `
-              `{{ pg_host }} `
-              `{{ pg_port }} `
-              `{{ pg_username }} `
-              `{{ pg_password }} `
-              `{{ drivername }} `
-              `{{ pg_database }}"
+        job: >
+        {{ test_scripts_path }}/check_rds_filling_status.sh
+              {{ run_option }}
+              {{ source }}
+              {{ pg_host }}
+              {{ pg_port }}
+              {{ pg_username }}
+              {{ pg_password }}
+              {{ drivername }}
+              {{ pg_database }}
 
 - name: Install telegraf client on Server
   hosts: ecs
@@ -154,7 +156,7 @@
               data_format: "influx"
           - name: postgresql
             options:
-              address: "postgres://{{ hostvars.localhost.db_username }}:{{ hostvars.localhost.db_password }}@{{ hostvars.localhost.db_address }}/entities"
+              address: "postgres://{{ hostvars.localhost.db_username }}:{{ hostvars.localhost.db_password }@{{ hostvars.localhost.db_address }}/entities"
     - role: geerlingguy.nginx
       vars:
         nginx_remove_default_vhost: yes
