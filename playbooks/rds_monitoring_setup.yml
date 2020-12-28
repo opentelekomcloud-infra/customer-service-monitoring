@@ -15,7 +15,6 @@
     scenario_name: rds_monitoring
     terraform_base_dir: terraform
     requirements: requirements.txt
-    terraform_workspace: prod
     key_name: key_csm_controller
     infra_state: present
   roles:
@@ -35,8 +34,13 @@
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
-          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
-          -i {{ local_private_key }}' -o PasswordAuthentication=no
+          -o UserKnownHostsFile=/dev/null
+          -o ProxyCommand='ssh -W %h:%p
+          -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}
+          -o StrictHostKeyChecking=no
+          -o UserKnownHostsFile=/dev/null'
+          -o PasswordAuthentication=no
 
 - name: Wait for host
   hosts: rds_scn_ecs

@@ -14,7 +14,6 @@
     scenario_name: lb_monitoring
     terraform_base_dir: terraform
     requirements: requirements.txt
-    terraform_workspace: prod
     key_name: key_csm_controller
     infra_state: present
   roles:
@@ -39,7 +38,6 @@
           -o StrictHostKeyChecking=no
           -o UserKnownHostsFile=/dev/null'
           -o PasswordAuthentication=no
-          -i {{ local_private_key }}' -o PasswordAuthentication=no
 
     - name: Register nodes
       add_host:
@@ -55,8 +53,6 @@
           -o StrictHostKeyChecking=no
           -o UserKnownHostsFile=/dev/null'
           -o PasswordAuthentication=no
-          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
-          -i {{ local_private_key }}' -o PasswordAuthentication=no
       loop: "{{ hostvars.localhost.lb_node_ips }}"
 
 - name: Wait for hosts
