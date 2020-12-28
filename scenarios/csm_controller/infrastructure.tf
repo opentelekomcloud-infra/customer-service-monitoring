@@ -15,7 +15,7 @@ module "network" {
   source = "../modules/public_router"
 
   addr_3_octets = var.addr_3_octets
-  prefix        = "${local.workspace_prefix}${var.scenario}"
+  prefix        = "${local.workspace_prefix}_${var.scenario}"
 }
 
 module "bastion" {
