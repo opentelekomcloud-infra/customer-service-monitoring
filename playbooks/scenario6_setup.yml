@@ -146,7 +146,7 @@
 
 - name: Install telegraf client on Server
   hosts: scn6_ecs
-  become: true
+  become: yes
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
   roles:
