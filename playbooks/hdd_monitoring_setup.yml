@@ -37,7 +37,7 @@
           -o StrictHostKeyChecking=no
           -o UserKnownHostsFile=/dev/null'
           -o PasswordAuthentication=no
-      loop: "{{ hostvars.localhost.node_ips }}"
+      loop: "{{ node_ips }}"
 
 - name: Prepare attached devices on server
   hosts: gatewayed
