@@ -8,14 +8,10 @@
 
 - job:
     name: terraform-lint
-    parent: simpleton
+    parent: otc-tox
     voting: false
     vars:
-      simple_source_image: "ubuntu:latest"
-      simple_prerun:
-        - sh ./scripts/prepare-terraform.sh
-      simple_run:
-        - sh ./scripts/terraform-lint.sh
+      tox_envlist: tflint
 
 - job:
     name: tox-cover-docker
