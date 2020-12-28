@@ -1,15 +1,14 @@
 import uuid
 
-from sqlalchemy import Column, BigInteger, Text
+from sqlalchemy import BigInteger, Column, Text
 from sqlalchemy.ext.declarative import declarative_base
-
 
 Base = declarative_base()
 
 
 class TestRdsTable(Base):
     __tablename__ = str(uuid.uuid4())
-    id = Column(BigInteger, primary_key = True, autoincrement = True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
     content = Column(Text)
 
     def __init__(self, content):

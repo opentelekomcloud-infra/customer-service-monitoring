@@ -6,7 +6,7 @@ locals {
   workspace_prefix = terraform.workspace == "default" ? "" : terraform.workspace
   key_pair = {
     public_key = var.public_key
-    key_name   = "${local.workspace_prefix}kp_${var.scenario}"
+    key_name   = "${local.workspace_prefix}_kp_${var.scenario}"
   }
   c_eip = var.controller_eip == "" ? opentelekomcloud_networking_floatingip_v2.controller_eip[0].address : var.controller_eip
 }
@@ -15,7 +15,7 @@ module "network" {
   source = "../modules/public_router"
 
   addr_3_octets = var.addr_3_octets
-  prefix        = "${local.workspace_prefix}${var.scenario}"
+  prefix        = "${local.workspace_prefix}_${var.scenario}"
 }
 
 module "bastion" {

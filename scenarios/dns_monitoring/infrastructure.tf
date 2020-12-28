@@ -1,13 +1,13 @@
 locals {
-  workspace_prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
+  workspace_prefix = terraform.workspace == "default" ? "" : terraform.workspace
   key_pair = {
     public_key = var.public_key
     key_name   = "${local.workspace_prefix}_kp_${var.scenario}"
   }
 }
 
-module "dns-infrastructure" {
-  source = "./dns-infrastructure"
+module "resources" {
+  source = "./resources"
 
   ecs_image         = var.ecs_image
   availability_zone = var.availability_zone
@@ -24,9 +24,9 @@ module "dns-infrastructure" {
 }
 
 output "dns_instance_ip" {
-  value = module.dns-infrastructure.dns_instance
+  value = module.resources.dns_instance
 }
 
 output "dns_record_name" {
-  value = module.dns-infrastructure.dns_record
+  value = module.resources.dns_record
 }

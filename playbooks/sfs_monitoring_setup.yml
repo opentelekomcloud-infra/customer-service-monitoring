@@ -3,7 +3,7 @@
   import_playbook: setup_scenarios_controller.yml
 
 - name: Prepare variables
-  hosts: localhost
+  hosts: test_host
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
     TF_VAR_network_id: "{{ main_network_id }}"
@@ -13,7 +13,6 @@
     scenario_name: sfs_monitoring
     terraform_base_dir: terraform
     requirements: requirements.txt
-    terraform_workspace: prod
     key_name: key_csm_controller
     infra_state: present
   roles:
@@ -31,7 +30,14 @@
         ansible_host: "{{ sfs_monitoring_instance_ip }}"
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ local_private_key }}"
-        ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
+        ansible_ssh_common_args: >
+          -o UserKnownHostsFile=/dev/null
+          -o ProxyCommand='ssh -W %h:%p
+          -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}
+          -o StrictHostKeyChecking=no
+          -o UserKnownHostsFile=/dev/null'
+          -o PasswordAuthentication=no
 
 - name: Wait for hosts
   hosts: gatewayed
@@ -45,8 +51,10 @@
   hosts: sfs_instance
   become: yes
   vars:
-    - sfs_shared_path: "{{ hostvars.localhost.sfs_monitoring_sfs_path }}"
-    - mount_path: "/mnt/sfs_share"
+    sfs_shared_path: "{{ hostvars.test_host.sfs_monitoring_sfs_path }}"
+    mount_path: "/mnt/sfs_share"
+    nohup: "nohup /usr/bin/python3 -m csm_test_utils"
+    tlg: "http://localhost:8080"
   tasks:
     - name: Update and upgrade apt packages
       apt:
@@ -89,7 +97,9 @@
         dest: /tmp/
 
     - name: Changing perm of "nfsiostat.sh", adding "+x"
-      file: dest=/tmp/nfsiostat.sh mode=a+x
+      file:
+        dest: /tmp/nfsiostat.sh
+        mode: a+x
 
     - name: Get reporting processes list from remote host  # noqa 301 305
       ignore_errors: yes
@@ -107,7 +117,7 @@
       ignore_errors: yes
 
     - name: Execute csm_test_utils  # noqa 301 305
-      shell: "nohup python3 -m csm_test_utils sfs_compare --telegraf http://localhost:8080 &"
+      shell: "{{ nohup }} sfs_compare --telegraf {{ tlg }} &"
 
 - name: Install telegraf client on sfs_instance
   hosts: sfs_instance
@@ -124,7 +134,7 @@
         options:
           commands: ["/tmp/nfsiostat.sh"]
           timeout: "10s"
-          data_format : "influx"
+          data_format: "influx"
       - name: cpu
         options:
           percpu: "false"

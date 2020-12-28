@@ -3,7 +3,7 @@
   import_playbook: setup_scenarios_controller.yml
 
 - name: Prepare variables
-  hosts: localhost
+  hosts: test_host
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
     TF_VAR_network_id: "{{ main_network_id }}"
@@ -13,7 +13,6 @@
     scenario_name: as_monitoring
     terraform_base_dir: terraform
     requirements: requirements.txt
-    terraform_workspace: prod
     key_name: key_csm_controller
     infra_state: absent
   roles:

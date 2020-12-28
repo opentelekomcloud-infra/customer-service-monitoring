@@ -3,7 +3,7 @@
   import_playbook: setup_scenarios_controller.yml
 
 - name: Prepare variables
-  hosts: localhost
+  hosts: test_host
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
     TF_VAR_network_id: "{{ main_network_id }}"
@@ -13,7 +13,6 @@
     scenario_name: dns_monitoring
     terraform_base_dir: terraform
     requirements: requirements.txt
-    terraform_workspace: prod
     key_name: key_csm_controller
     infra_state: present
   roles:
@@ -31,7 +30,14 @@
         ansible_host: "{{ dns_monitoring_instance_ip }}"
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ local_private_key }}"
-        ansible_ssh_common_args: "-o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }} -i {{ local_private_key }}' -o PasswordAuthentication=no"
+        ansible_ssh_common_args: >
+          -o UserKnownHostsFile=/dev/null
+          -o ProxyCommand='ssh -W %h:%p
+          -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}
+          -o StrictHostKeyChecking=no
+          -o UserKnownHostsFile=/dev/null'
+          -o PasswordAuthentication=no
 
 - name: Wait for hosts
   hosts: gatewayed
@@ -40,15 +46,6 @@
     - name: Wait for host to be up
       wait_for_connection:
         timeout: 120
-
-- name: Start Server on DNS host
-  hosts: dns_instance
-  become: yes
-  roles:
-    - too_simple_server
-  vars:
-    debug: True
-    server_port: 80
 
 - name: Checking reporting processes
   hosts: dns_instance
@@ -65,36 +62,6 @@
         path: "/proc/{{ process_monitor.stdout_lines[0] }}/status"
         state: absent
       ignore_errors: yes
-
-- name: Install csm test utils
-  hosts: dns_instance
-  become: yes
-  vars:
-    dns: "{{ hostvars.localhost.dns_monitoring_record_name }}"
-    nohup_py3: "nohup /usr/bin/python3 -m csm_test_utils"
-    telegraf_host: "http://localhost:8080"
-  tasks:
-    - name: Update and upgrade apt packages
-      apt:
-        upgrade: yes
-        update_cache: yes
-
-    - name: Install PIP
-      apt:
-        name:
-          - python3-setuptools
-          - python3-pip
-
-    - name: Install test utils
-      pip:
-        executable: pip3
-        name: csm-test-utils
-        state: forcereinstall
-
-    - name: Start monitoring  # noqa 301 305
-      shell: "{{ nohup_py3 }} {{ item }} --telegraf {{ telegraf_host }} --dns_name  {{ dns }} &"
-      loop:
-        - "internal_dns_resolve"
 
 - name: Install telegraf client on dns_instance
   hosts: dns_instance
@@ -118,3 +85,34 @@
           - listen: "80"
             server_name: "localhost"
             extra_parameters: "{{ extra_parameters }}"
+
+- name: Install csm test utils
+  hosts: dns_instance
+  become: yes
+  vars:
+    dns: "{{ hostvars.test_host.dns_monitoring_record_name }}"
+    nohup: "nohup /usr/bin/python3 -m csm_test_utils"
+    tlg: "http://localhost:8080"
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+
+    - name: Install PIP
+      apt:
+        name:
+          - python3-setuptools
+          - python3-pip
+
+    - name: Install test utils
+      pip:
+        executable: pip3
+        name: csm-test-utils
+        state: forcereinstall
+
+    - name: Start monitoring  # noqa 301 305
+      shell: >
+        "{{ nohup }} {{ item }} --telegraf {{ tlg }} --dns_name {{ dns }} &"
+      loop:
+        - "internal_dns_resolve"

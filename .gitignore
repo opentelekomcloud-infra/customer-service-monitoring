@@ -27,3 +27,5 @@ secrets.*
 
 # vscode folder
 /.vscode/
+
+cover/

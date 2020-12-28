@@ -19,3 +19,4 @@ variable "disc_volume" {
 variable "subnet_id" {}
 variable "network_id" {}
 variable "router_id" {}
+variable "ecs_image" {}

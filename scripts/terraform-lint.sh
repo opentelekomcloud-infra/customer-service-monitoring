@@ -1,12 +1,11 @@
 #!/usr/bin/bash
-scenarios_path="$(pwd)/scenarios"
+scenarios_path="$PWD/scenarios"
 
 terraform fmt -check -recursive "$scenarios_path" || exit 1
 
-function check() {
-  cd "$1" || return 2
+function check {
   echo "Checking $1"
-  terraform init --backend=false --input=false > /dev/null || return 2
+  terraform init -backend=false -input=false -no-color "$1" >/dev/null || return 2
   echo "Successfully Initialized"
   terraform validate || return 2
 }

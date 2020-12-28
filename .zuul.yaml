@@ -1,36 +1,33 @@
 ---
 - job:
-    name: python-lint
-    parent: otc-tox-pep8
-    voting: false
-
-- job:
     name: ansible-lint
     parent: otc-tox
-    voting: false
     vars:
       tox_envlist: yamllint
 
 - job:
     name: terraform-lint
-    parent: simpleton
-    voting: false
+    parent: otc-tox
     vars:
-      simple_source_image: "ubuntu:latest"
-      simple_prerun:
-        - sh ./scripts/prepare-terraform.sh
-      simple_run:
-        - sh ./scripts/terraform-lint.sh
+      tox_envlist: tflint
+
+- job:
+    name: tox-cover-docker
+    parent: tox-cover
+    nodeset: ubuntu-focal
+    pre-run: ./tests/docker/pre.yaml
 
 - project:
     merge-mode: squash-merge
     check:
       jobs:
         - terraform-lint
-        - python-lint
+        - otc-tox-pep8
         - ansible-lint
+        - tox-cover-docker
     gate:
       jobs:
         - terraform-lint
-        - python-lint
+        - otc-tox-pep8
         - ansible-lint
+        - tox-cover-docker
