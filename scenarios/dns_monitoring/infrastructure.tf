@@ -6,8 +6,8 @@ locals {
   }
 }
 
-module "dns-infrastructure" {
-  source = "./dns-infrastructure"
+module "resources" {
+  source = "./resources"
 
   ecs_image         = var.ecs_image
   availability_zone = var.availability_zone
@@ -24,9 +24,9 @@ module "dns-infrastructure" {
 }
 
 output "dns_instance_ip" {
-  value = module.dns-infrastructure.dns_instance
+  value = module.resources.dns_instance
 }
 
 output "dns_record_name" {
-  value = module.dns-infrastructure.dns_record
+  value = module.resources.dns_record
 }
