@@ -97,7 +97,9 @@
         dest: /tmp/
 
     - name: Changing perm of "nfsiostat.sh", adding "+x"
-      file: dest=/tmp/nfsiostat.sh mode=a+x
+      file:
+        dest: /tmp/nfsiostat.sh
+        mode: a+x
 
     - name: Get reporting processes list from remote host
       ignore_errors: yes
