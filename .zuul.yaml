@@ -2,14 +2,12 @@
 - job:
     name: ansible-lint
     parent: otc-tox
-    voting: false
     vars:
       tox_envlist: yamllint
 
 - job:
     name: terraform-lint
     parent: otc-tox
-    voting: false
     vars:
       tox_envlist: tflint
 
