@@ -69,7 +69,7 @@
 
 - name: Install telegraf client on Server
   hosts: rds_scn_ecs
-  become: true
+  become: yes
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
   roles:

@@ -38,8 +38,6 @@
           -o StrictHostKeyChecking=no
           -o UserKnownHostsFile=/dev/null'
           -o PasswordAuthentication=no
-          -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
-          -i {{ local_private_key }}' -o PasswordAuthentication=no
 
 - name: Wait for hosts
   hosts: gatewayed
@@ -99,7 +97,9 @@
         dest: /tmp/
 
     - name: Changing perm of "nfsiostat.sh", adding "+x"
-      file: dest=/tmp/nfsiostat.sh mode=a+x
+      file:
+        dest: /tmp/nfsiostat.sh
+        mode: a+x
 
     - name: Get reporting processes list from remote host
       ignore_errors: yes

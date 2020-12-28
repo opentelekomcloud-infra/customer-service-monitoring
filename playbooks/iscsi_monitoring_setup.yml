@@ -39,8 +39,6 @@
             -o StrictHostKeyChecking=no
             -o UserKnownHostsFile=/dev/null'
             -o PasswordAuthentication=no
-            -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
-            -i {{ local_private_key }}' -o PasswordAuthentication=no
 
     - name: Register iscsi_target
       add_host:
@@ -57,8 +55,6 @@
             -o StrictHostKeyChecking=no
             -o UserKnownHostsFile=/dev/null'
             -o PasswordAuthentication=no
-            -o ProxyCommand='ssh -W %h:%p -q linux@{{ controller_public_ip }}
-            -i {{ local_private_key }}' -o PasswordAuthentication=no
 
 - name: Prepare attached device on target server
   hosts: iscsi_target
