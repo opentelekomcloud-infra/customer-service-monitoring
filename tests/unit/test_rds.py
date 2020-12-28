@@ -1,4 +1,3 @@
-import os
 import random
 import string
 import time
@@ -10,11 +9,11 @@ from docker import from_env
 from docker.models.containers import Container
 
 from rds.cli import DB_DICT, get_connection_dict, parse_args
+from tests.utils import resource_path
 
 POSTGRES_IMAGE = 'postgres:10'
 POSTGRES_ADDRESS = 'postgres:5432'
-DB_CONFIG_FILE = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), 'rds_test_config.yaml'))
+DB_CONFIG_FILE = resource_path('rds', 'test_config.yaml')
 
 
 def _rand_short_str():
