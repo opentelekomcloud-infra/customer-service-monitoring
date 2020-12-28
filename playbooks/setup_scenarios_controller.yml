@@ -9,7 +9,7 @@
     scenario_name: csm_controller
     terraform_base_dir: terraform
     requirements: requirements.txt
-    terraform_workspace: prod
+    terraform_workspace: "{{ terraform_workspace }}"
     key_name: key_csm_controller
     controller_eip: "{{ controller_address }}"
     infra_state: present
