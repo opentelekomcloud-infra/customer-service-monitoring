@@ -53,7 +53,7 @@
           -o StrictHostKeyChecking=no
           -o UserKnownHostsFile=/dev/null'
           -o PasswordAuthentication=no
-      loop: "{{ hostvars.localhost.lb_node_ips }}"
+      loop: "{{ lb_node_ips }}"
 
 - name: Wait for hosts
   hosts: gatewayed
