@@ -127,17 +127,16 @@
     - name: Schedule load script status check
       cron:
         name: "Check status of RDS filling script"
-        minute: "30"
-        job: >
-          "{{ test_scripts_path }}/check_rds_filling_status.sh"
-              "{{ run_option }}"
-              "{{ source }}"
-              "{{ pg_host }}"
-              "{{ pg_port }}"
-              "{{ pg_username }}"
-              "{{ pg_password }}"
-              "{{ drivername }}"
-              "{{ pg_database }}"
+        minute: "*/59"
+        job: "/tmp/rds/check_rds_filling_status.sh `
+              `{{ run_option }} `
+              `{{ source }} `
+              `{{ pg_host }} `
+              `{{ pg_port }} `
+              `{{ pg_username }} `
+              `{{ pg_password }} `
+              `{{ drivername }} `
+              `{{ pg_database }}"
 
 - name: Install telegraf client on Server
   hosts: ecs
