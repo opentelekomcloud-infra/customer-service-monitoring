@@ -114,7 +114,7 @@
 
     - name: Add records to rds in background  # noqa 301 305
       shell: "start-stop-daemon -Sbmvp {{ test_scripts_path }}/__main__.pid \
-              -x /usr/bin/python3 {{ test_scripts_path }}/__main__.py --`
+              -x /usr/bin/python3 {{ test_scripts_path }}/__main__.py -- `
               `--run_option {{ run_option }} `
               `--source {{ source }} `
               `--drivername {{ drivername }} `
