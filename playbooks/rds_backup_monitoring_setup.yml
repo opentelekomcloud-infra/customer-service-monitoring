@@ -96,10 +96,9 @@
           - libpq-dev
           - python-dev
           - cron
-          - rsync
 
     - name: Copy scripts to host
-      synchronize:
+      copy:
         src: rds/
         dest: "{{ test_scripts_path }}/"
 
