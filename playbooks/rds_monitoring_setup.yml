@@ -111,6 +111,24 @@
 - name: Checking reporting processes
   hosts: rds_scn_ecs
   tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+
+    - name: Install PIP
+      apt:
+        name:
+          - python3-setuptools
+          - python3-pip
+          - cron
+
+    - name: Install test utils
+      pip:
+        executable: pip3
+        name: csm-test-utils
+        state: forcereinstall
+
     - name: Get running reporting processes list from remote host  # noqa 301 305
       ignore_errors: yes
       shell: "ps aux | grep 'csm_test_utils rds_monitor' | awk '{print $2}'"

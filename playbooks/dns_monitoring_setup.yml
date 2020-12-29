@@ -91,7 +91,7 @@
   become: yes
   vars:
     dns: "{{ hostvars.test_host.dns_monitoring_record_name }}"
-    nohup: "nohup /usr/bin/python3 -m csm_test_utils"
+    nohup: "nohup /usr/bin/python3 -m csm_test_utils internal_dns_resolve"
     tlg: "http://localhost:8080"
   tasks:
     - name: Update and upgrade apt packages
@@ -112,7 +112,4 @@
         state: forcereinstall
 
     - name: Start monitoring  # noqa 301 305
-      shell: >
-        "{{ nohup }} {{ item }} --telegraf {{ tlg }} --dns_name {{ dns }} &"
-      loop:
-        - "internal_dns_resolve"
+      shell: "{{ nohup }} --telegraf {{ tlg }} --dns_name {{ dns }} &"
