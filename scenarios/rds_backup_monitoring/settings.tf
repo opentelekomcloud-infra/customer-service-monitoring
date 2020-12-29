@@ -17,5 +17,4 @@ terraform {
 
 # Configure the OpenTelekomCloud Provider
 provider "opentelekomcloud" {
-  cloud = get_env("OS_CLOUD")
 }
