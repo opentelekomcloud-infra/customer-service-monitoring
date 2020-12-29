@@ -113,23 +113,23 @@
 
     - name: Add records to rds in background  # noqa 301 305
       shell: >
-      start-stop-daemon -Sbmvp {{ test_scripts_path }}/__main__.pid
-      -x /usr/bin/python3 {{ test_scripts_path }}/__main__.py --
-              --run_option {{ run_option }}
-              --source {{ source }}
-              --drivername {{ drivername }}
-              --host {{ pg_host }}
-              --port {{ pg_port }}
-              --username {{ pg_username }}
-              --password {{ pg_password }}
-              --database {{ pg_database }}
+        start-stop-daemon -Sbmvp "{{ test_scripts_path }}/__main__.pid" -x /usr/bin/python3
+        "{{ test_scripts_path }}/__main__.py" --
+              --run_option "{{ run_option }}"
+              --source "{{ source }}"
+              --drivername "{{ drivername }}"
+              --host "{{ pg_host }}"
+              --port "{{ pg_port }}"
+              --username "{{ pg_username }}"
+              --password "{{ pg_password }}"
+              --database "{{ pg_database }}"
 
     - name: Schedule load script status check
       cron:
         name: "Check status of RDS filling script"
         minute: "*/59"
         job: >
-        {{ test_scripts_path }}/check_rds_filling_status.sh
+          {{ test_scripts_path }}/check_rds_filling_status.sh
               {{ run_option }}
               {{ source }}
               {{ pg_host }}
