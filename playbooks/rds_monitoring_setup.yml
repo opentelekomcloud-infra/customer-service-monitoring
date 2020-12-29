@@ -133,4 +133,4 @@
   tasks:
     - name: Execute csm_test_utils  # noqa 301 305
       shell: >
-        "{{ nohup }} rds_monitor --target {{ server }} --telegraf {{ tlg }} &"
+        {{ nohup }} rds_monitor --target {{ server }} --telegraf {{ tlg }} &
