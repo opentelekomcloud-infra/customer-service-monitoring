@@ -142,7 +142,7 @@
   become: yes
   vars:
     elb_ip: "{{ hostvars.test_host.loadbalancer_public_ip }}"
-    tlg: "http://{{ controller_public_ip }}/lb"
+    tlg: "http://{{ hostvars.test_host.controller_public_ip }}/lb"
     nohup: "nohup /usr/bin/python3 -m csm_test_utils monitor"
   tasks:
     - name: Execute csm_test_utils  # noqa 301 305
