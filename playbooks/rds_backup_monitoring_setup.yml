@@ -63,7 +63,8 @@
     server_port: 8081
     run_option: "sqla"
     drivername: "postgresql+psycopg2"
-    test_scripts_path: "/tmp/terraform/{{ hostvars.localhost.scenario_name }}/rds"
+    scenario_name: rds_backup_monitoring
+    test_scripts_path: "/tmp/terraform/{{ scenario_name }}/rds"
   roles:
     - role: too_simple_server
       vars:
