@@ -63,7 +63,7 @@
     server_port: 8081
     run_option: "sqla"
     drivername: "postgresql+psycopg2"
-    test_scripts_path: "/tmp/rds"
+    test_scripts_path: "/tmp/terraform/{{ hostvars.localhost.scenario_name }}/rds"
   roles:
     - role: too_simple_server
       vars:
@@ -97,15 +97,15 @@
           - cron
           - rsync
 
-    - name: Install pg2 and SQLAlchemy for Postgresql
-      pip:
-        requirements: "{{ test_scripts_path }}/rds-backup-requirements.txt"
-        executable: "pip3"
-
     - name: Copy scripts to host
       synchronize:
         src: rds/
         dest: "{{ test_scripts_path }}/"
+
+    - name: Install pg2 and SQLAlchemy for Postgresql
+      pip:
+        requirements: "{{ test_scripts_path }}/rds-backup-requirements.txt"
+        executable: "pip3"
 
     - name: Changing permissions of "check_rds_filling_status.sh"
       file:
