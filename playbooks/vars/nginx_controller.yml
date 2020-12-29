@@ -5,7 +5,7 @@ extra_parameters: |
         proxy_set_header Host $http_host;
         proxy_http_version 1.1;
     }
-    location /lb {
+    location /lb/telegraf {
         proxy_pass         http://192.168.1.1/telegraf;
         proxy_set_header   Host $host;
     }
