@@ -110,6 +110,7 @@
 
 - name: Checking reporting processes
   hosts: rds_scn_ecs
+  become: yes
   tasks:
     - name: Update and upgrade apt packages
       apt:
