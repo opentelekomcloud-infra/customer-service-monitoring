@@ -63,6 +63,7 @@
     server_port: 8081
     run_option: "sqla"
     drivername: "postgresql+psycopg2"
+    test_scripts_path: "/tmp/rds"
   roles:
     - role: too_simple_server
       vars:
