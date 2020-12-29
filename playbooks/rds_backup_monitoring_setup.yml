@@ -64,7 +64,7 @@
     run_option: "sqla"
     drivername: "postgresql+psycopg2"
     scenario_name: rds_backup_monitoring
-    test_scripts_path: "/tmp/terraform/{{ scenario_name }}/rds"
+    test_scripts_path: "/tmp/test-scripts"
   roles:
     - role: too_simple_server
       vars:
@@ -113,17 +113,15 @@
         mode: a+x
 
     - name: Add records to rds in background  # noqa 301 305
-      shell: >
-        start-stop-daemon -Sbmvp "{{ test_scripts_path }}/__main__.pid" -x /usr/bin/python3
-        "{{ test_scripts_path }}/__main__.py" --
-              --run_option "{{ run_option }}"
-              --source "{{ source }}"
-              --drivername "{{ drivername }}"
-              --host "{{ pg_host }}"
-              --port "{{ pg_port }}"
-              --username "{{ pg_username }}"
-              --password "{{ pg_password }}"
-              --database "{{ pg_database }}"
+      shell: "start-stop-daemon -Sbmvp /tmp/rds/__main__.pid -x /usr/bin/python3 /tmp/rds/__main__.py -- `
+              `--run_option {{ run_option }} `
+              `--source {{ source }} `
+              `--drivername {{ drivername }} `
+              `--host {{ pg_host }} `
+              `--port {{ pg_port }} `
+              `--username {{ pg_username }} `
+              `--password {{ pg_password }} `
+              `--database {{ pg_database }}"
 
     - name: Schedule load script status check
       cron:
