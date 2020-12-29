@@ -12,7 +12,7 @@
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
     TF_VAR_controller_ip: "{{ controller_public_ip }}"
     TF_VAR_psql_password: "Spasibo2020!"
-    OS_CLOUD: "devstack"
+    OS_CLOUD: "{{ lookup('env', 'OS_CLOUD') }}"
   vars:
     scenario_name: rds_backup_monitoring
     terraform_base_dir: terraform
@@ -122,13 +122,13 @@
               `--port {{ pg_port }} `
               `--username {{ pg_username }} `
               `--password {{ pg_password }} `
-              `--database {{ pg_database }}"
+              `--database {{ pg_database }} `"
 
     - name: Schedule load script status check
       cron:
         name: "Check status of RDS filling script"
         minute: "*/59"
-        job: "/tmp/rds/check_rds_filling_status.sh `
+        job: "{{ test_scripts_path }}/check_rds_filling_status.sh `
               `{{ run_option }} `
               `{{ source }} `
               `{{ pg_host }} `

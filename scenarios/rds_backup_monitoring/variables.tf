@@ -11,6 +11,3 @@ variable "public_key" {}
 variable "network_id" {}
 variable "subnet_id" {}
 variable "router_id" {}
-
-
-
