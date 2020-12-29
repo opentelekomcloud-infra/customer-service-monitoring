@@ -77,6 +77,10 @@
         pg_port: "{{ hostvars.localhost.db_port }}"
         debug: True
   tasks:
+    - name: Set facts
+      set_fact:
+        server_local_port: "{{ server_local_port }}"
+
     - name: Update and upgrade apt packages
       apt:
         upgrade: yes
@@ -142,6 +146,7 @@
       vars:
         telegraf_influxdb_retention_policy: ""
         telegraf_local_port: 8080
+        server_local_port: 8081
         telegraf_plugins_base:
           - name: http_listener_v2
             options:
