@@ -127,10 +127,9 @@
 - name: Run reporting for scenario
   hosts: rds_scn_ecs
   vars:
-    nohup: "nohup /usr/bin/python3 -m csm_test_utils"
+    nohup: "nohup /usr/bin/python3 -m csm_test_utils rds_monitor"
     tlg: "http://localhost:8080"
     server: "http://localhost:8081"
   tasks:
     - name: Execute csm_test_utils  # noqa 301 305
-      shell: >
-        {{ nohup }} rds_monitor --target {{ server }} --telegraf {{ tlg }} &
+      shell: "{{ nohup }} --target {{ server }} --telegraf {{ tlg }} &"
