@@ -127,7 +127,7 @@
     - name: Schedule load script status check
       cron:
         name: "Check status of RDS filling script"
-        minute: "*/59"
+        minute: "30"
         job: >
           "{{ test_scripts_path }}/check_rds_filling_status.sh"
               "{{ run_option }}"
