@@ -39,7 +39,7 @@ function telegraf_report() {
   echo Report result: "${result}"\("${reason}"\)
 
   public_ip="$(curl http://ipecho.net/plain -s)"
-  influx_row="lb_down_test,client=${public_ip},reason=${reason},state=${result}"
+  influx_row="lb_down_test,client=${public_ip},reason=${reason} state=${result}"
   status_code=$(curl -q -o /dev/null -X POST ${telegraf} -d "${influx_row}" -w "%{http_code}")
 
   if [[ "${status_code}" != "204" ]]; then
@@ -72,9 +72,6 @@ if [[ ${test_result} == 0 ]]; then
   exit ${test_result}
 elif [[ ${test_result} != 101 ]]; then
   telegraf_report fail one_node
-  exit ${test_result}
-elif [[ ${test_result} != 102 ]]; then
-  telegraf_report fail not_equally_balanced
   exit ${test_result}
 fi
 
