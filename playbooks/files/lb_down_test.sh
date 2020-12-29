@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-telegraf_host="http://localhost:8008"
+telegraf_host="http://localhost:8080"
 test_folder="/home/linux/test"
 telegraf="${telegraf_host}/telegraf"
 controller_ip=$(cat "${test_folder}/load_balancer_ip")
@@ -38,7 +38,7 @@ function telegraf_report() {
   echo Report result: "${result}"\("${reason}"\)
 
   public_ip="$(curl http://ipecho.net/plain -s)"
-  influx_row="lb_down_test,client=${public_ip},reason=${reason} state=\"${result}\""
+  influx_row="lb_down_test,client=${public_ip},reason=${reason},state=${result}"
   status_code=$(curl -q -o /dev/null -X POST ${telegraf} -d "${influx_row}" -w "%{http_code}")
 
   if [[ "${status_code}" != "204" ]]; then
