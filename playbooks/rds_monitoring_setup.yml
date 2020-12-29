@@ -33,14 +33,7 @@
         ansible_host: "{{ ecs_instance_ip }}"
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ local_private_key }}"
-        ansible_ssh_common_args: >
-          -o UserKnownHostsFile=/dev/null
-          -o ProxyCommand='ssh -W %h:%p
-          -q linux@{{ controller_public_ip }}
-          -i {{ local_private_key }}
-          -o StrictHostKeyChecking=no
-          -o UserKnownHostsFile=/dev/null'
-          -o PasswordAuthentication=no
+        ansible_ssh_common_args: {{ proxy_command }}
 
 - name: Wait for host
   hosts: rds_scn_ecs
