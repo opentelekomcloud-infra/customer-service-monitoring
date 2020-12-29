@@ -20,7 +20,7 @@
 - job:
     name: tox-functional-docker
     parent: tox-functional
-    nodeset: ubuntu-focal
+    nodeset: debian-buster
     pre-run: ./tests/docker/pre.yaml
 
 - project:
