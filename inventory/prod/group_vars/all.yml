@@ -1,4 +1,4 @@
 terraform_version: 0.14.0
 local_private_key: "~/.ssh/{{ key_name }}"
 test_host_keyfile: "/tmp/test_host_rsa"
-terraform_workspace: prod
+terraform_workspace: temp
