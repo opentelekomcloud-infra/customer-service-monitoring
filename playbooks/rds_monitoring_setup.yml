@@ -10,15 +10,13 @@
     TF_VAR_network_id: "{{ main_network_id }}"
     TF_VAR_router_id: "{{ main_router_id }}"
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
-    TF_VAR_psql_password: "Spasibo2020!"
+    TF_VAR_psql_password: "Spaciba2020!"
   vars:
     scenario_name: rds_monitoring
     terraform_base_dir: terraform
     requirements: requirements.txt
     key_name: key_csm_controller
     infra_state: present
-  vars_files:
-    - "./vars/proxy_command.yml"
   roles:
     - build_infrastructure
   tasks:
@@ -35,7 +33,14 @@
         ansible_host: "{{ ecs_instance_ip }}"
         ansible_ssh_user: "linux"
         ansible_ssh_private_key_file: "{{ local_private_key }}"
-        ansible_ssh_common_args: "{{ proxy_command }}"
+        ansible_ssh_common_args: >
+          -o UserKnownHostsFile=/dev/null
+          -o ProxyCommand='ssh -W %h:%p
+          -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}
+          -o StrictHostKeyChecking=no
+          -o UserKnownHostsFile=/dev/null'
+          -o PasswordAuthentication=no
 
 - name: Wait for host
   hosts: rds_scn_ecs

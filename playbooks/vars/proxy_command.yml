@@ -1,8 +1,0 @@
-proxy_command: >
-  -o UserKnownHostsFile=/dev/null
-  -o ProxyCommand='ssh -W %h:%p
-  -q linux@{{ controller_public_ip }}
-  -i {{ local_private_key }}
-  -o StrictHostKeyChecking=no
-  -o UserKnownHostsFile=/dev/null'
-  -o PasswordAuthentication=no
