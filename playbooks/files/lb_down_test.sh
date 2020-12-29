@@ -3,10 +3,10 @@
 telegraf_host="http://localhost:8080"
 test_folder="/home/linux/test"
 telegraf="${telegraf_host}/telegraf"
-controller_ip=$(cat "${test_folder}/load_balancer_ip")
+load_balancer_ip=$(cat "${test_folder}/load_balancer_ip")
 
 eval "$(ssh-agent)"
-ssh-add "${test_folder}/key_scenario1_5"
+ssh-add "${test_folder}/key_csm_controller"
 
 version=0.1
 archive=lb_test-${version}.tgz
@@ -15,9 +15,10 @@ if [[ ! -e ${archive} ]]; then
   tar xf ${archive}
 fi
 
-echo LB at "${controller_ip}"
 
-start_test="./load_balancer_test ${controller_ip} 300"
+echo LB at "${load_balancer_ip}"
+
+start_test="./load_balancer_test ${load_balancer_ip} 300"
 
 function start_stop_rand_node() {
   if [[ "$1" == "stop" ]]; then
@@ -77,12 +78,12 @@ elif [[ ${test_result} != 102 ]]; then
   exit ${test_result}
 fi
 
-/usr/bin/python3 -m csm_test_utils rebalance --target "${controller_ip}" --telegraf "${telegraf_host}" || telegraf_report fail $?
+/usr/bin/python3 -m csm_test_utils rebalance --target "${load_balancer_ip}" --telegraf "${telegraf_host}" || telegraf_report fail $?
 
 sleep 60 # make reports beautiful again
 
 start_stop_rand_node start
-/usr/bin/python3 -m csm_test_utils rebalance --target "${controller_ip}" --telegraf "${telegraf_host}" || telegraf_report fail $?
+/usr/bin/python3 -m csm_test_utils rebalance --target "${load_balancer_ip}" --telegraf "${telegraf_host}" || telegraf_report fail $?
 
 ${start_test}
 test_should_pass
