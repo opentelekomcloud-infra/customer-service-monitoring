@@ -17,6 +17,12 @@
     nodeset: debian-buster
     pre-run: ./tests/docker/pre.yaml
 
+- job:
+    name: tox-functional-docker
+    parent: tox-functional
+    nodeset: ubuntu-focal
+    pre-run: ./tests/docker/pre.yaml
+
 - project:
     merge-mode: squash-merge
     check:
@@ -30,14 +36,14 @@
         - tox-molecule-210
     check-post:
       jobs:
-        - test-infra
+        - tox-functional-docker
     gate:
       jobs:
         - terraform-lint
         - otc-tox-pep8
         - tox-linters-ansible-2.9
         - tox-linters-ansible-2.10
-        - test-infra
+        - tox-functional-docker
         - tox-cover-docker
         - tox-molecule-29
         - tox-molecule-210
