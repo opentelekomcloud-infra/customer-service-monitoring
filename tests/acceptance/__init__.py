@@ -1,9 +1,8 @@
 # Package for acceptance tests
 
-import os
 import unittest
 
-_IS_ACCEPTANCE = bool(os.getenv("CSM_ACC"))
+from tests.utils import IS_ACCEPTANCE
 
-if not _IS_ACCEPTANCE:
+if not IS_ACCEPTANCE:
     raise unittest.SkipTest("Skip acceptance tests when 'CSM_ACC' is not set")
