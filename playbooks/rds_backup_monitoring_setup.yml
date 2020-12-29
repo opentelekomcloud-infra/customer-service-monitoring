@@ -6,7 +6,7 @@
   hosts: localhost
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
-    TF_VAR_addr_3: "192.168.9"
+    TF_VAR_addr_3: "192.168.7"
     TF_VAR_network_id: "{{ main_network_id }}"
     TF_VAR_router_id: "{{ main_router_id }}"
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
@@ -60,11 +60,12 @@
   hosts: ecs
   become: yes
   vars:
-    server_port: 8081
+    server_local_port: 8081
     run_option: "sqla"
     drivername: "postgresql+psycopg2"
     scenario_name: rds_backup_monitoring
     test_scripts_path: "/tmp/test-scripts"
+    source: "{{ test_scripts_path }}/{{ run_option }}/data.yaml"
   roles:
     - role: too_simple_server
       vars:
@@ -76,13 +77,6 @@
         pg_port: "{{ hostvars.localhost.db_port }}"
         debug: True
   tasks:
-    - name: Register facts
-      set_fact:
-        server_local_port: "{{ server_port }}"
-        run_option: "{{ run_option }}"
-        drivername: "{{ drivername }}"
-        source: "{{ test_scripts_path }}/{{ run_option }}/data.yaml"
-
     - name: Update and upgrade apt packages
       apt:
         upgrade: yes
@@ -122,7 +116,7 @@
               `--port {{ pg_port }} `
               `--username {{ pg_username }} `
               `--password {{ pg_password }} `
-              `--database {{ pg_database }} `"
+              `--database {{ pg_database }} "
 
     - name: Schedule load script status check
       cron:
