@@ -1,0 +1,5 @@
+---
+- name: Stop server
+  command: "{{ server }} stop"
+  args:
+    removes: "{{ server_pid_file }}"

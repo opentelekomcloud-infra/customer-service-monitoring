@@ -1,0 +1,27 @@
+---
+- name: restart telegraf
+  service:
+    name: telegraf
+    state: restarted
+  become: yes
+  when: telegraf_start_service
+
+- name: pause
+  pause:
+    seconds: "{{ telegraf_start_delay }}"
+  when: telegraf_start_service
+
+- name: check status
+  command: service telegraf status
+  args:
+    warn: false
+  ignore_errors: yes
+  register: telegraf_service_status
+  become: yes
+  when: telegraf_start_service
+
+- name: assert running
+  assert:
+    that:
+      - "telegraf_service_status.rc == 0"
+  when: telegraf_start_service

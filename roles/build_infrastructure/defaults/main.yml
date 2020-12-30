@@ -1,0 +1,9 @@
+tmp_dir: "/tmp"
+key_name: null
+terraform_base_dir: infrastructure
+
+username: null
+password: null
+
+desired_state: present
+terraform_workspace: test

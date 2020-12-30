@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: instance
+  vars:
+    requirements: "requirements.txt"
+    scenario_name: "test"
+    key_name: "key_scenario1"
+    infra_state: present
+    terraform_version: "{{ lookup('env', 'TF_VERSION') }}"
+  roles:
+    - role: anton_sidelnikov.terraform
+    - role: build_infrastructure

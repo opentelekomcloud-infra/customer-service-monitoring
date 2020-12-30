@@ -1,0 +1,2 @@
+config_path: /etc/tgt/conf.d/
+config_filename: otc_iscsi.conf

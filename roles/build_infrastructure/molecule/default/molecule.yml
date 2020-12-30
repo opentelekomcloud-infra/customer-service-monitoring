@@ -1,0 +1,36 @@
+---
+driver:
+  name: docker
+  options:
+    managed: false
+platforms:
+  - name: instance
+    image: python:3.7
+provisioner:
+  name: ansible
+  connection_options:
+    ansible_python_interpreter: |
+      PYTHONPATH=$PYTHONPATH:/usr/lib/python3/dist-packages /usr/bin/env python
+  inventory:
+    group_vars:
+      all:
+        scenario_name: "test"
+        terraform_base_dir: "infrastructure"
+        tmp_dir: "/tmp"
+scenario:
+  test_sequence:
+    - lint
+    - dependency
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    - cleanup
+    - destroy
+lint: |
+  yamllint . -f parsable
+  ansible-lint
+  flake8
+verifier:
+  name: testinfra

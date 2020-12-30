@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  role_name: build_infrastructure
+  min_ansible_version: 2.8
+  description: "Build terraform infrastructure for OTC Customer Service Monitoring"
+  author: OTC CSM team
+  license: Apache-2.0
+  platforms:
+    - name: Debian
+      versions:
+        - all

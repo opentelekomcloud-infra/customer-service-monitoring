@@ -1,0 +1,10 @@
+server_state: present
+
+server_port: 5054
+
+pg_db_url: null
+pg_database: "entities"
+pg_username: "entities"
+pg_password: null
+pg_initial_record_size: 10240
+pg_initial_record_count: 0
