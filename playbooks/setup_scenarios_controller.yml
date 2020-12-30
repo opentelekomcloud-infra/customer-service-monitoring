@@ -1,10 +1,10 @@
 ---
-#- name: Prepare clouds.yaml for test_host
-#  import_playbook: prepare_config.yml
-#  when: terraform_workspace != "test"
+- name: Prepare clouds.yaml for test_host
+  import_playbook: prepare_config.yml
+  when: terraform_workspace != "test"
 
 - name: Build/Check controller infrastructure
-  hosts: localhost
+  hosts: test_host
   roles:
     - build_infrastructure
   environment:
@@ -15,7 +15,6 @@
     requirements: requirements.txt
     key_name: key_csm_controller
     controller_eip: "{{ controller_address }}"
-    terraform_workspace: "{{ terraform_workspace }}"
     infra_state: present
   tasks:
     - name: Register build result
