@@ -16,9 +16,9 @@ module "nodes" {
   nodes_count   = var.nodes_count
   scenario      = var.scenario
 
-  network_id    = var.network_id
-  subnet_id     = var.subnet_id
-  node_local_ip = cidrhost(var.subnet_cidr, 10)
+  network_id  = var.network_id
+  subnet_id   = var.subnet_id
+  subnet_cidr = local.scenario_subnet
 }
 
 module "resources" {
@@ -27,7 +27,7 @@ module "resources" {
   ecs_image   = var.ecs_image
   ecs_flavor  = var.ecs_flavor
   key_pair    = local.key_pair
-  subnet_cidr = var.subnet_cidr
+  subnet_cidr = local.scenario_subnet
   subnet_id   = var.subnet_id
   network_id  = var.network_id
   router_id   = var.router_id

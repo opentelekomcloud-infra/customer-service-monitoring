@@ -1,4 +1,4 @@
-variable "node_local_ip" {}
+variable "subnet_cidr" {}
 variable "ecs_flavor" {}
 variable "ecs_image" {}
 variable "network_id" {}

@@ -75,12 +75,14 @@ resource "opentelekomcloud_networking_port_v2" "instance_port" {
   name           = "${var.scenario}_port${count.index}_${local.workspace_prefix}"
   network_id     = var.network_id
   admin_state_up = true
+
   security_group_ids = [
     opentelekomcloud_compute_secgroup_v2.ecs_group.id
   ]
+
   fixed_ip {
     subnet_id  = var.subnet_id
-    ip_address = var.node_local_ip
+    ip_address = cidrhost(var.subnet_cidr, count.index + 10)
   }
 }
 
