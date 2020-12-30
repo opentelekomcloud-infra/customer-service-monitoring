@@ -75,7 +75,7 @@
         pg_password: "{{ hostvars.localhost.db_password }}"
         pg_host: "{{ hostvars.localhost.db_host }}"
         pg_port: "{{ hostvars.localhost.db_port }}"
-        debug: True
+        debug: true
   tasks:
     - name: Set facts
       set_fact:
