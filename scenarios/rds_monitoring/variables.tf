@@ -12,7 +12,7 @@ variable "subnet_id" {}
 variable "router_id" {}
 variable "network_cidr" {
   description = "CIDR of network used for all scenarios"
-  default = "192.168.0.0/16"
+  default     = "192.168.0.0/16"
 }
 
 locals {
