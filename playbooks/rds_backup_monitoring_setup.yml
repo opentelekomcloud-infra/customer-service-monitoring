@@ -172,4 +172,4 @@
               location /telegraf {
                   proxy_pass         http://localhost:{{ telegraf_local_port }};
                   proxy_set_header   Host $host;
-                  }
+              }
