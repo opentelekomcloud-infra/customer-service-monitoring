@@ -199,6 +199,11 @@
     cloud_name: "{{ lookup('env', 'OS_CLOUD') }}"
     endpoint: "https://rds.eu-de.otc.t-systems.com"
   tasks:
+    - name: Install test utils
+      pip:
+        executable: pip3
+        name: csm-test-utils
+        state: forcereinstall
     - name: Start monitoring RDS backups  # noqa 301 305
       shell: "nohup python3 -m csm_test_utils rds_backup_monitor
                --instance_id {{ rds_instance_id }}
