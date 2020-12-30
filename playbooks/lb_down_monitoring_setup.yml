@@ -3,7 +3,7 @@
   import_playbook: setup_scenarios_controller.yml
 
 - name: Prepare variables
-  hosts: localhost
+  hosts: test_host
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
     TF_VAR_addr_3: "192.168.10"
@@ -122,14 +122,14 @@
     project_path: /home/linux/customer-service-monitoring
     keys_path: "{{ project_path }}/scenarios/lb_down_monitoring"
     inventory_path: "{{ test_path }}/inventory/prod"
-    loadbalancer_public_ip: "{{ hostvars.localhost.lb_down_instance_ip }}"
-    remote_pk: "{{ test_path }}/{{ hostvars.localhost.key_name }}"
-    local_private_key: "{{ hostvars.localhost.local_private_key }}"
+    loadbalancer_public_ip: "{{ hostvars.test_host.lb_down_instance_ip }}"
+    remote_pk: "{{ test_path }}/{{ hostvars.test_host.key_name }}"
+    local_private_key: "{{ hostvars.test_host.local_private_key }}"
     version: "HEAD"
   tasks:
     - name: Checkout roles from git
       git:
-        repo: 'https://github.com/opentelekomcloud-infra/csm-ansible-roles.git'
+        repo: "https://github.com/opentelekomcloud-infra/csm-ansible-roles.git"
         dest: "{{ test_path }}"
         version: "{{ version }}"
 
