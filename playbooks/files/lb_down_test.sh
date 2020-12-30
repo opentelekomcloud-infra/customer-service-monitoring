@@ -27,19 +27,20 @@ function start_stop_rand_node() {
     playbook=lb_down_monitoring_start_server.yml
   fi
   cur_dir=$(pwd)
-  cd "${test_folder}" || exit
-  ansible-playbook -i inventory/prod ${playbook}
-  cd "${cur_dir}" || exit
+  cd "${test_folder}" || exit 2
+  ansible-playbook -i inventory/prod ${playbook} || exit 1
+  cd "${cur_dir}" || exit 2
   sleep 3s
 }
 
 function telegraf_report() {
   result=$1
   reason=$2
-  echo Report result: "${result}"\("${reason}"\)
+  echo "Report result: ${result} (${reason})"
 
   public_ip="$(curl http://ipecho.net/plain -s)"
   influx_row="lb_down_test,client=${public_ip},reason=${reason} state=${result}"
+
   status_code=$(curl -q -o /dev/null -X POST ${telegraf} -d "${influx_row}" -w "%{http_code}")
 
   if [[ "${status_code}" != "204" ]]; then
