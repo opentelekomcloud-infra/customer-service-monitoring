@@ -22,5 +22,5 @@ variable "network_cidr" {
 }
 
 locals {
-  scenario_subnet = cidrsubnet(network_cidr, 24, 5)
+  scenario_subnet = cidrsubnet(network_cidr, 8, 5)
 }
