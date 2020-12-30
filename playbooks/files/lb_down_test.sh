@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 telegraf_host="http://localhost:8080"
 test_folder="/home/linux/test"
 telegraf="${telegraf_host}/telegraf"
