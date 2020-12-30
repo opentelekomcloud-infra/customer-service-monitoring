@@ -22,4 +22,6 @@ variable "volume_bastion" {
 }
 variable "scenario" {}
 
-variable "bastion_local_ip" { default = "" }
+locals {
+  bastion_local_ip = cidrhost(var.subnet.cidr, 2)
+}

@@ -1,2 +1,2 @@
 variable "prefix" {}
-variable "addr_3_octets" {}
+variable "subnet_cidr" {}

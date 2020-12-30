@@ -1,4 +1,4 @@
-variable "net_address" {}
+variable "subnet_cidr" {}
 variable "ecs_flavor" {}
 variable "ecs_image" {
   default = "Standard_Debian_10_latest"

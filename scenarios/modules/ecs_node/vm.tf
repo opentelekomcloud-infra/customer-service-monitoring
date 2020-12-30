@@ -80,7 +80,7 @@ resource "opentelekomcloud_networking_port_v2" "instance_port" {
   ]
   fixed_ip {
     subnet_id  = var.subnet_id
-    ip_address = "${var.net_address}.${count.index + 10}"
+    ip_address = var.node_local_ip
   }
 }
 

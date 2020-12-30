@@ -5,7 +5,7 @@ variable "ecs_flavor" {}
 variable "ecs_image" {
   default = "Standard_Debian_10_latest"
 }
-variable "addr_3" {}
+variable "subnet_cidr" {}
 
 variable "key_pair" {}
 variable "network_id" {}

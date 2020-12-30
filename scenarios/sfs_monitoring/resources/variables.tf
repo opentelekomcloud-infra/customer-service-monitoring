@@ -19,6 +19,4 @@ variable "scenario" {
 variable "availability_zone" {
   default = ""
 }
-variable "net_address" {
-  default = ""
-}
+variable "subnet_cidr" {}

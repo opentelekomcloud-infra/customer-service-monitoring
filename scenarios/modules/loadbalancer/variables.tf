@@ -1,7 +1,7 @@
 variable "scenario" {}
 variable "subnet_id" {}
 variable "workspace_prefix" {}
-variable "net_address" {}
+variable "lb_local_ip" {}
 variable "monitor_delay" { default = 1 }
 variable "monitor_timeout" { default = 1 }
 variable "monitor_max_retries" { default = 2 }

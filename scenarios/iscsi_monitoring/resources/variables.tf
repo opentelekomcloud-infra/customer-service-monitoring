@@ -9,7 +9,7 @@ variable "router_id" {}
 variable "scenario" {}
 variable "target_availability_zone" {}
 variable "initiator_availability_zone" {}
-variable "net_address" {}
+variable "subnet_cidr" {}
 locals {
   workspace_prefix = terraform.workspace == "default" ? "" : terraform.workspace
 }

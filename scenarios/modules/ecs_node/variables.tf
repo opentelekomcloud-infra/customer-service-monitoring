@@ -1,4 +1,4 @@
-variable "net_address" {}
+variable "node_local_ip" {}
 variable "ecs_flavor" {}
 variable "ecs_image" {}
 variable "network_id" {}

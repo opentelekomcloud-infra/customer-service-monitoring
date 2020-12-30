@@ -63,7 +63,7 @@ resource "opentelekomcloud_networking_port_v2" "http" {
   ]
   fixed_ip {
     subnet_id  = var.subnet_id
-    ip_address = "${var.net_address}.${count.index + 10}"
+    ip_address = cidrhost(var.subnet_cidr, count.index + 10)
   }
 }
 
