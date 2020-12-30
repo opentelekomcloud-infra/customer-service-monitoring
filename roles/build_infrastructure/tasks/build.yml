@@ -1,0 +1,9 @@
+---
+- name: Build infrastructure
+  environment: "{{ default_variables }}"
+  terraform:
+    workspace: "{{ terraform_workspace }}"
+    force_init: true
+    project_path: "{{ terraform_remote_dir }}/{{ scenario_name }}"
+    backend_config: "{{ backend_config }}"
+  register: tf_output

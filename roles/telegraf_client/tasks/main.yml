@@ -1,0 +1,130 @@
+---
+- name: Install telegraf
+  become: yes
+  block:
+    - name: Install any necessary dependencies [Debian/Ubuntu]
+      apt:
+        name:
+          - python-httplib2
+          - python-apt
+          - curl
+          - apt-transport-https
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+      register: apt_result
+      until: apt_result is success
+      retries: 2
+      delay: 5
+
+    - name: Import InfluxData GPG signing key [Debian/Ubuntu]
+      apt_key:
+        url: "{{ telegraf_influxdata_base_url }}/influxdb.key"
+        state: present
+      when: telegraf_install_url is not defined or telegraf_install_url == None
+
+    - name: Add InfluxData repository [Debian/Ubuntu]
+      apt_repository:
+        repo: >
+          deb
+          {{ telegraf_influxdata_base_url }}/{{ ansible_distribution | lower }}
+          {{ ansible_distribution_release }} {{ telegraf_install_version }}
+        state: present
+      when: telegraf_install_url is not defined or telegraf_install_url == None
+
+    - name: Install Telegraf packages [Debian/Ubuntu]
+      apt:
+        name: telegraf
+        state: "{{ telegraf_state }}"
+        update_cache: yes
+        cache_valid_time: 3600
+      register: apt_result
+      until: apt_result is success
+      retries: 2
+      delay: 5
+      when: telegraf_install_url is not defined or telegraf_install_url == None
+
+    - name: Download Telegraf package via URL [Debian/Ubuntu]
+      get_url:
+        url: "{{ telegraf_install_url }}"
+        dest: /tmp/telegraf-ansible-download.deb
+      when: telegraf_install_url is defined and telegraf_install_url != None
+
+    - name: Install downloaded Telegraf package [Debian/Ubuntu]
+      apt:
+        deb: /tmp/telegraf-ansible-download.deb
+        state: present
+      register: apt_result
+      until: apt_result is success
+      retries: 2
+      delay: 5
+      when: telegraf_install_url is defined and telegraf_install_url != None
+
+- name: Configure telegraf
+  become: yes
+  block:
+    - name: Set templatized Telegraf configuration
+      template:
+        src: "{{ telegraf_configuration_template }}"
+        dest: "{{ telegraf_configuration_dir }}/telegraf.conf"
+        force: yes
+        backup: yes
+        owner: telegraf
+        group: telegraf
+        mode: 0744
+      when: telegraf_template_configuration
+      notify:
+        - "restart telegraf"
+        - "pause"
+        - "check status"
+        - "assert running"
+
+    - name: Test for sysvinit script
+      stat:
+        path: /etc/init.d/telegraf
+      register: telegraf_sysvinit_script
+
+    - name: Modify user Telegraf should run as [sysvinit]
+      replace:
+        path: /etc/init.d/telegraf
+        regexp: USER=.*
+        replace: USER={{ telegraf_runas_user }}
+      when: telegraf_runas_user != "telegraf" and telegraf_sysvinit_script.stat.exists
+
+    - name: Modify group Telegraf should run as [sysvinit]
+      replace:
+        path: /etc/init.d/telegraf
+        regexp: GROUP=.*
+        replace: GROUP={{ telegraf_runas_group }}
+      when: telegraf_runas_group != "telegraf" and telegraf_sysvinit_script.stat.exists
+
+    - name: Create systemd service directory [systemd]
+      file:
+        path: /etc/systemd/system/telegraf.service.d
+        state: directory
+      when: telegraf_runas_user != "telegraf" and not telegraf_sysvinit_script.stat.exists
+
+    - name: Modify user Telegraf should run as [systemd]
+      template:
+        src: systemd/system/telegraf.service.d/override.conf
+        dest: /etc/systemd/system/telegraf.service.d/override.conf
+      when: telegraf_runas_user != "telegraf" and not telegraf_sysvinit_script.stat.exists
+      register: telegraf_unit_file_updated
+
+    - name: Reload systemd configuration [systemd]
+      systemd:
+        daemon_reload: yes
+      when: telegraf_unit_file_updated is defined and telegraf_unit_file_updated.changed
+
+- name: Start telegraf service
+  become: yes
+  block:
+    - name: Start the Telegraf service
+      service:
+        name: telegraf
+        state: started
+        enabled: yes
+      notify:
+        - "pause"
+        - "check status"
+        - "assert running"

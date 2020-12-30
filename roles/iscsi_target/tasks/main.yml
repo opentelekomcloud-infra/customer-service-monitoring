@@ -1,0 +1,39 @@
+---
+- name: Configure and start iSCSI target
+  block:
+    - name: Install any necessary dependencies
+      apt:
+        name:
+          - tgt
+          - lvm2
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+      register: apt_result
+      until: apt_result is success
+      retries: 2
+      delay: 5
+
+    - name: Create LVM volume group
+      lvg:
+        pvs: "{{ device }}"
+        state: present
+        vg: "{{ volume_group }}"
+
+    - name: Create a logical volume the size of all remaining space in the volume group
+      lvol:
+        vg: "{{ volume_group }}"
+        lv: "{{ volume_name }}"
+        shrink: false
+        size: 100%FREE
+
+    - name: Write configuration
+      template:
+        src: config.yml.j2
+        dest: "{{ config_path }}/{{ config_filename }}"
+        force: yes
+
+    - name: Restart service tgt
+      service:
+        name: tgt
+        state: restarted

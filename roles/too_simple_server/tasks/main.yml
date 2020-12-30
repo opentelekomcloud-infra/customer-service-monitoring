@@ -1,0 +1,59 @@
+---
+- name: Get latest version
+  script: get_latest_release.sh
+  register: LATEST_VERSION
+
+- name: Check active version of too_simple_server
+  command: "{{ server }} --version"  # noqa 301 305
+  register: CURRENT_VERSION
+  ignore_errors: yes
+
+- become: yes
+  block:
+    - name: Stop server
+      include_tasks: stop_server.yml
+    - name: Start server
+      include_tasks: start_server.yml
+  when: current_version_rc == 0 and current_version == latest_version
+
+- name: Prepare server
+  become: yes
+  block:
+    - name: Check if server archive already downloaded
+      stat:
+        path: "{{ archive_dir }}"
+      register: existing_file
+
+    - name: Log sha1
+      debug:
+        var: sha1sum
+        verbosity: 1
+
+    - name: Compare checksum
+      set_fact:
+        force_new_download: "{{ existing_file.stat.checksum != sha1sum }}"
+      when: existing_file.stat.exists
+
+    - block:
+        - name: Download too-simple-server
+          get_url:
+            url: "{{ download_path }}"
+            dest: /tmp/
+            checksum: "sha1:{{ sha1sum }}"
+            force: yes
+
+        - name: Extract too-simple-server into /usr/bin/
+          unarchive:
+            src: "{{ archive_dir }}"
+            dest: /usr/bin/
+            remote_src: yes
+      when: force_new_download | default ('false')
+
+- name: Restart server
+  become: yes
+  block:
+    - name: Stop server
+      include_tasks: stop_server.yml
+    - name: Start server
+      include_tasks: start_server.yml
+      when: server_state != 'absent'

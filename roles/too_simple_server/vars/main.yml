@@ -1,0 +1,14 @@
+current_version: "{{ CURRENT_VERSION.stdout_lines[0] | default('') }}"
+current_version_rc: "{{ CURRENT_VERSION.rc }}"
+latest_version: "{{ LATEST_VERSION.stdout_lines[0] | default('0.4.3', true) }}"
+server: "too_simple_server"
+server_archive_name: "{{ server }}-{{ latest_version }}-linux.tar.gz"
+server_pid_file: "/tmp/too-simple.pid"
+server_config_dir: "/opt/too-simple"
+server_config: "{{ server_config_dir }}/config.yml"
+download_path: "https://github.com/opentelekomcloud-infra/simple-exquisite-webserver/\
+releases/download/v{{ latest_version }}/{{ server_archive_name }}"
+archive_dir: "/tmp/{{ server_archive_name }}"
+sha1sum_url: "{{ download_path }}.sha1"
+sha1sum: "{{ lookup('url', sha1sum_url).split(' ')[0] }}"
+force_new_download: true

@@ -1,0 +1,20 @@
+---
+- name: Create config dir
+  file:
+    mode: 0777
+    path: "{{ server_config_dir }}"
+    state: directory
+
+- name: Write configuration
+  template:
+    src: config.yml.j2
+    dest: "{{ server_config }}"
+    force: yes
+- name: Start server
+  command: "{{ server }} --config {{ server_config }}"
+  args:
+    creates: "{{ server_pid_file }}"
+- name: Wait for port starts
+  wait_for:
+    port: "{{ server_port }}"
+    timeout: 60

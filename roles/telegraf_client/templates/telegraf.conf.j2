@@ -1,0 +1,98 @@
+# Telegraf configuration
+[agent]
+  interval = "{{ telegraf_agent_interval }}"
+  round_interval = {{ telegraf_round_interval }}
+  metric_batch_size = {{ telegraf_metric_batch_size }}
+  metric_buffer_limit = {{ telegraf_metric_buffer_limit }}
+  collection_jitter = "{{ telegraf_collection_jitter }}"
+  flush_interval = "{{ telegraf_flush_interval }}"
+  flush_jitter = "{{ telegraf_flush_jitter }}"
+
+  ## Run telegraf in debug mode
+  debug = {{ telegraf_debug }}
+  ## Run telegraf in quiet mode
+  quiet = {{ telegraf_quiet }}
+
+  # Override default hostname, if empty use os.Hostname()
+{% if telegraf_hostname is defined and telegraf_hostname != None %}
+  hostname = "{{ telegraf_hostname }}"
+{% else %}
+  hostname = "{{ ansible_hostname }}"
+{% endif %}
+
+  omit_hostname = {{ telegraf_omit_hostname }}
+
+###############################################################################
+#                                  OUTPUTS                                    #
+###############################################################################
+
+[outputs]
+[[outputs.influxdb]]
+  urls = [ "{{ telegraf_influxdb_urls|join('","') }}" ] # required
+  database = "{{ telegraf_influxdb_database }}" # required
+  precision = "{{ telegraf_influxdb_precision }}"
+  retention_policy = "{{ telegraf_influxdb_retention_policy }}"
+  write_consistency = "{{ telegraf_influxdb_write_consistency }}"
+
+  timeout = "{{ telegraf_influxdb_timeout }}"
+{% if telegraf_influxdb_username is defined and telegraf_influxdb_username != None %}
+  username = "{{ telegraf_influxdb_username }}"
+{% endif %}
+{% if telegraf_influxdb_password is defined and telegraf_influxdb_password != None %}
+  password = "{{ telegraf_influxdb_password }}"
+{% endif %}
+  # Set the user agent for HTTP POSTs (can be useful for log differentiation)
+{% if telegraf_influxdb_user_agent is defined and telegraf_influxdb_user_agent != None %}
+  user_agent = "{{ telegraf_influxdb_user_agent }}"
+{% endif %}
+  # Set UDP payload size, defaults to InfluxDB UDP Client default (512 bytes)
+{% if telegraf_influxdb_udp_payload is defined and telegraf_influxdb_udp_payload != None %}
+  udp_payload = {{ telegraf_influxdb_udp_payload }}
+{% endif %}
+
+###############################################################################
+#                                  PLUGINS                                    #
+###############################################################################
+
+{% for plugin in telegraf_plugins %}
+[[inputs.{{ plugin.name }}]]
+{% if plugin.options is defined %}
+{% for key, value in plugin.options.items() %}
+{% if value is not mapping %}
+{% if value is sequence and value is not string %}
+{% if value[0] is number %}
+    {{ key }} = [ {{ value|join(', ') }} ]
+{% else %}
+    {{ key }} = [ "{{ value|join('", "') }}" ]
+{% endif %}
+{% else %}
+{% if value == "true" or value == "false" or value is number %}
+    {{ key }} = {{ value | lower }}
+{% else %}
+    {{ key }} = "{{ value }}"
+{% endif %}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% for key, value in plugin.options.items() %}
+{% if value is mapping %}
+    [inputs.{{ plugin.name }}.{{ key }}]
+{% for lv2_key, lv2_value in value.items() %}
+{% if lv2_value is sequence and lv2_value is not string %}
+{% if lv2_value[0] is number %}
+      {{ lv2_key }} = [ {{ lv2_value|join(', ') }} ]
+{% else %}
+      {{ lv2_key }} = [ "{{ lv2_value|join('", "') }}" ]
+{% endif %}
+{% else %}
+{% if lv2_value == "true" or lv2_value == "false" or lv2_value is number %}
+      {{ lv2_key }} = {{ lv2_value | lower }}
+{% else %}
+      {{ lv2_key }} = "{{ lv2_value }}"
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}

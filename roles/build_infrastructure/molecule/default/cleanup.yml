@@ -1,0 +1,10 @@
+---
+- name: Cleanup
+  hosts: instance
+  vars:
+    requirements: "requirements.txt"
+    scenario_name: "test"
+    key_name: "key_scenario1"
+    infra_state: absent
+  roles:
+    - role: build_infrastructure

@@ -17,6 +17,18 @@
     nodeset: ubuntu-focal
     pre-run: ./tests/docker/pre.yaml
 
+- job:
+    name: tox-molecule-29
+    parent: tox-molecule
+    vars:
+      tox_envlist: molecule-ansible29
+
+- job:
+    name: tox-molecule-210
+    parent: tox-molecule
+    vars:
+      tox_envlist: molecule-ansible210
+
 - project:
     merge-mode: squash-merge
     check:
@@ -25,9 +37,13 @@
         - otc-tox-pep8
         - ansible-lint
         - tox-cover-docker
+        - tox-molecule-29
+        - tox-molecule-210
     gate:
       jobs:
         - terraform-lint
         - otc-tox-pep8
         - ansible-lint
         - tox-cover-docker
+        - tox-molecule-29
+        - tox-molecule-210
