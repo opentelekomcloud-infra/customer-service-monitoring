@@ -24,6 +24,7 @@
   tasks:
     - name: Register build result
       set_fact:
+        cloud_name: "{{ lookup('env', 'OS_CLOUD') }}"
         ecs_instance_ip: "{{ tf_output.outputs['ecs_ip'].value }}"
         rds_instance_id: "{{ tf_output.outputs['rds_id'].value }}"
         db_password: "{{ tf_output.outputs['db_password'].value }}"
@@ -111,8 +112,7 @@
         mode: a+x
 
     - name: Add records to rds in background  # noqa 301 305
-      shell: >
-        start-stop-daemon -Sbmvp {{ test_scripts_path }}/__main__.pid
+      shell: "start-stop-daemon -Sbmvp {{ test_scripts_path }}/__main__.pid
               -x /usr/bin/python3 {{ test_scripts_path }}/__main__.py --
               --run_option {{ run_option }}
               --source {{ source }}
@@ -121,14 +121,13 @@
               --port {{ pg_port }}
               --username {{ pg_username }}
               --password {{ pg_password }}
-              --database {{ pg_database }}
+              --database {{ pg_database }}"
 
     - name: Schedule RDS script status check
       cron:
         name: "Check status of RDS filling script"
         minute: "*/59"
-        job: >
-          {{ test_scripts_path }}/check_rds_filling_status.sh
+        job: "{{ test_scripts_path }}/check_rds_filling_status.sh
                {{ run_option }}
                {{ source }}
                {{ pg_host }}
@@ -136,7 +135,7 @@
                {{ pg_username }}
                {{ pg_password }}
                {{ drivername }}
-               {{ pg_database }}
+               {{ pg_database }}"
 
 - name: Install telegraf client on Server
   hosts: ecs
@@ -177,7 +176,7 @@
               }
 
 - name: Checking reporting processes
-  hosts: localhost
+  hosts: ecs
   become: yes
   tasks:
     - name: Get running reporting processes list from remote host  # noqa 301 305
@@ -194,13 +193,18 @@
       ignore_errors: yes
 
 - name: Install csm test utils and run reporting proccess
-  hosts: localhost
+  hosts: ecs
   become: yes
   vars:
-    cloud_config: "/etc/openstack/clouds.yaml"
-    cloud_name: "{{ lookup('env', 'OS_CLOUD') }}"
+    cloud_config: "/etc/openstack"
     endpoint: "https://rds.eu-de.otc.t-systems.com"
+    target: "http://localhost:8081"
+    telegraf: "http://localhost:8080"
   tasks:
+    - name: Copy clouds.yaml to ecs
+      copy:
+        src: /etc/openstack/clouds.yaml
+        dest: "{{ cloud_config }}/"
     - name: Install test utils
       pip:
         executable: pip3
@@ -208,10 +212,9 @@
         state: forcereinstall
     - name: Start monitoring RDS backups  # noqa 301 305
       shell: "nohup python3 -m csm_test_utils rds_backup_monitor
-               --instance_id {{ rds_instance_id }}
+               --instance_id {{ hostvars.localhost.rds_instance_id }}
                --cloud_config {{ cloud_config }}
-               --cloud_name {{ cloud_name }}
+               --cloud_name {{ hostvars.localhost.cloud_name }}
                --endpoint {{ endpoint }}
-               --target {{ ecs_instance_ip }}
-               --telegraf 'http://{{ ecs_instance_ip }}' &"
-
+               --target {{ target }}
+               --telegraf '{{ telegraf }}' &"
