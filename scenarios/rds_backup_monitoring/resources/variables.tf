@@ -3,7 +3,7 @@ variable "region" { default = "eu-de" }
 variable "availability_zone" {}
 variable "ecs_flavor" {}
 variable "ecs_image" {
-    default = "Standard_Debian_10_latest"
+  default = "Standard_Debian_10_latest"
 }
 variable "addr_3" {}
 
