@@ -6,7 +6,7 @@
   hosts: test_host
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
-    TF_VAR_addr_3: "192.168.10"
+    TF_VAR_network_cidr: "{{ terraform_network_cidr }}"
     TF_VAR_network_id: "{{ main_network_id }}"
     TF_VAR_router_id: "{{ main_router_id }}"
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
