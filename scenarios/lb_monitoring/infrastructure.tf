@@ -39,7 +39,7 @@ module "loadbalancer" {
   scenario         = var.scenario
   subnet_id        = var.subnet_id
   workspace_prefix = local.workspace_prefix
-  lb_local_ip      = cidrhost(local.scenario_subnet, 1)
+  lb_local_ip      = cidrhost(local.scenario_subnet, 3)
 }
 
 output "lb_fip" {
