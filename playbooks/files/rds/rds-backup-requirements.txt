@@ -1,3 +1,4 @@
 psycopg2-binary
 pyyml
 SQLAlchemy
+csm-test-utils
