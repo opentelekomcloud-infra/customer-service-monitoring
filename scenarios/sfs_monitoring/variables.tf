@@ -17,5 +17,5 @@ variable "network_cidr" {
 }
 
 locals {
-  scenario_subnet = cidrsubnet(network_cidr, 24, 9)  # using same subnet, as csm_controller
+  scenario_subnet = cidrsubnet(network_cidr, 24, 9) # using same subnet, as csm_controller
 }
