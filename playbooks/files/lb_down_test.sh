@@ -54,10 +54,11 @@ echo Starting test...
 function test_should_pass() {
   res=$?
   if [[ ${res} != 0 ]]; then
-    telegraf_report fail ${res}
+    telegraf_report 1 ${res}
     echo Test failed with ${res}
     exit ${res}
   fi
+  telegraf_report 0 ok
   echo Test passed
 }
 start_stop_rand_node start # check that all nodes are running before test
@@ -69,19 +70,19 @@ ${start_test}
 test_result=$?
 
 if [[ ${test_result} == 0 ]]; then
-  telegraf_report fail multiple_nodes
+  telegraf_report 1 multiple_nodes
   exit ${test_result}
 elif [[ ${test_result} != 101 ]]; then
-  telegraf_report fail one_node
+  telegraf_report 1 one_node
   exit ${test_result}
 fi
 
-/usr/bin/python3 -m csm_test_utils rebalance --target "${load_balancer_ip}" --telegraf "${telegraf_host}" || telegraf_report fail $?
+/usr/bin/python3 -m csm_test_utils rebalance --target "${load_balancer_ip}" --telegraf "${telegraf_host}" || telegraf_report 1 $?
 
 sleep 60 # make reports beautiful again
 
 start_stop_rand_node start
-/usr/bin/python3 -m csm_test_utils rebalance --target "${load_balancer_ip}" --telegraf "${telegraf_host}" || telegraf_report fail $?
+/usr/bin/python3 -m csm_test_utils rebalance --target "${load_balancer_ip}" --telegraf "${telegraf_host}" || telegraf_report 1 $?
 
 ${start_test}
 test_should_pass
