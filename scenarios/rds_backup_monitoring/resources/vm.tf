@@ -76,7 +76,7 @@ resource "opentelekomcloud_networking_port_v2" "network_port" {
 
   fixed_ip {
     subnet_id  = var.subnet_id
-    ip_address = "${var.addr_3}.10"
+    ip_address = cidrhost(var.subnet_cidr, 10)
   }
 }
 

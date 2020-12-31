@@ -15,7 +15,7 @@ module "postgresql" {
   network_id  = var.network_id
   router_id   = var.router_id
   subnet_id   = var.network_id
-  subnet_cidr = "${var.addr_3}.0/24"
+  subnet_cidr = local.scenario_subnet
 
   psql_version  = var.psql_version
   psql_port     = var.psql_port
@@ -32,10 +32,10 @@ module "resources" {
   scenario          = var.scenario
   region            = var.region
 
-  addr_3     = var.addr_3
-  subnet_id  = var.subnet_id
-  network_id = var.network_id
-  router_id  = var.router_id
+  subnet_cidr = local.scenario_subnet
+  subnet_id   = var.subnet_id
+  network_id  = var.network_id
+  router_id   = var.router_id
 }
 
 output "ecs_ip" {

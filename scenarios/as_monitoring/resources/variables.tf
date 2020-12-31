@@ -1,4 +1,4 @@
-variable "net_address" {}
+variable "subnet_cidr" {}
 variable "ecs_flavor" {}
 variable "host_image" {}
 variable "ecs_image" {}
@@ -12,3 +12,6 @@ variable "disc_volume" {}
 variable "lb_monitor" {}
 variable "lb_pool" {}
 variable "key_pair" {}
+variable "group_tag" {
+  default = "gatewayed"
+}

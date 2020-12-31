@@ -6,10 +6,16 @@ variable "availability_zones" {
 }
 variable "ecs_flavor" {}
 variable "ecs_image" {}
-variable "addr_3" { default = "192.168.1" }
 variable "scenario" {}
 variable "nodes_count" {}
 variable "public_key" { default = "" }
 variable "subnet_id" {}
 variable "network_id" {}
 variable "router_id" {}
+variable "network_cidr" {
+  description = "CIDR of network used for all scenarios"
+}
+
+locals {
+  scenario_subnet = cidrsubnet(var.network_cidr, 8, 1)
+}

@@ -5,7 +5,7 @@ resource "opentelekomcloud_networking_router_route_v2" "router_route_1" {
   next_hop         = opentelekomcloud_compute_instance_v2.bastion.access_ip_v4
 }
 
-# Acces group, open input port 80, 443 and ssh port
+# Access group, open input port 80, 443 and ssh port
 resource "opentelekomcloud_compute_secgroup_v2" "bastion_group" {
   description = "Allow external connections to ssh, http, and https ports"
   name        = "${var.name}_grp"
@@ -41,7 +41,7 @@ resource "opentelekomcloud_networking_port_v2" "bastion_port" {
   security_group_ids = [opentelekomcloud_compute_secgroup_v2.bastion_group.id]
   fixed_ip {
     subnet_id  = var.subnet.id
-    ip_address = local.bastion_ip
+    ip_address = local.bastion_local_ip
   }
 }
 

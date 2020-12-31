@@ -57,7 +57,7 @@ resource "opentelekomcloud_networking_port_v2" "as_port" {
   ]
   fixed_ip {
     subnet_id  = var.subnet_id
-    ip_address = "${var.net_address}.10"
+    ip_address = cidrhost(var.subnet_cidr, 10)
   }
 }
 
@@ -102,7 +102,7 @@ resource "opentelekomcloud_networking_port_v2" "as_control_port" {
   ]
   fixed_ip {
     subnet_id  = var.subnet_id
-    ip_address = "${var.net_address}.1"
+    ip_address = cidrhost(var.subnet_cidr, 1)
   }
 }
 
@@ -132,7 +132,7 @@ resource "opentelekomcloud_compute_instance_v2" "as_control_instance" {
   }
 
   tag = {
-    "group" : "gatewayed",
+    "group" : var.group_tag,
     "scenario" : var.scenario
   }
 }

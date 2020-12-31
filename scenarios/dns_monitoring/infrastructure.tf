@@ -15,12 +15,12 @@ module "resources" {
   key_pair          = local.key_pair
   disc_volume       = var.disc_volume
 
-  net_address = var.addr_3_octets
   subnet_id   = var.subnet_id
   network_id  = var.network_id
   router_id   = var.router_id
   scenario    = var.scenario
   region      = var.region
+  subnet_cidr = local.scenario_subnet
 }
 
 output "dns_instance_ip" {

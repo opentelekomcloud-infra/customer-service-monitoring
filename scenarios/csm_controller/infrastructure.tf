@@ -8,14 +8,15 @@ locals {
     public_key = var.public_key
     key_name   = "${local.workspace_prefix}_kp_${var.scenario}"
   }
-  c_eip = var.controller_eip == "" ? opentelekomcloud_networking_floatingip_v2.controller_eip[0].address : var.controller_eip
+
+  controller_eip = var.controller_eip == "" ? opentelekomcloud_networking_floatingip_v2.controller_eip[0].address : var.controller_eip
 }
 
 module "network" {
   source = "../modules/public_router"
 
-  addr_3_octets = var.addr_3_octets
-  prefix        = "${local.workspace_prefix}_${var.scenario}"
+  prefix      = "${local.workspace_prefix}_${var.scenario}"
+  subnet_cidr = local.scenario_subnet
 }
 
 module "bastion" {
@@ -32,11 +33,11 @@ module "bastion" {
   scenario = var.scenario
 
   availability_zone = var.availability_zone
-  bastion_eip       = local.c_eip
+  bastion_eip       = local.controller_eip
 }
 
 output "csm_controller_fip" {
-  value = local.c_eip
+  value = local.controller_eip
 }
 
 output "subnet" {

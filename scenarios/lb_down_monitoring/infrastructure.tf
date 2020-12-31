@@ -16,9 +16,9 @@ module "nodes" {
   nodes_count   = var.nodes_count
   scenario      = var.scenario
 
-  net_address = var.addr_3_octets
   network_id  = var.network_id
   subnet_id   = var.subnet_id
+  subnet_cidr = local.scenario_subnet
 }
 
 module "resources" {
@@ -27,7 +27,7 @@ module "resources" {
   ecs_image   = var.ecs_image
   ecs_flavor  = var.ecs_flavor
   key_pair    = local.key_pair
-  net_address = var.addr_3_octets
+  subnet_cidr = local.scenario_subnet
   subnet_id   = var.subnet_id
   network_id  = var.network_id
   router_id   = var.router_id
@@ -38,10 +38,10 @@ module "loadbalancer" {
   source = "../modules/loadbalancer"
 
   instances        = module.nodes.instances
-  net_address      = var.addr_3_octets
   scenario         = var.scenario
   subnet_id        = var.subnet_id
   workspace_prefix = local.workspace_prefix
+  lb_local_ip      = cidrhost(local.scenario_subnet, 3)
 }
 
 output "lb_down_instance_fip" {

@@ -19,7 +19,7 @@ module "resources" {
 
   lb_monitor    = module.loadbalancer.monitor
   lb_pool       = module.loadbalancer.pool
-  net_address   = var.addr_3_octets
+  subnet_cidr   = local.scenario_subnet
   subnet_id     = var.subnet_id
   network_id    = var.network_id
   router_id     = var.router_id
@@ -32,10 +32,10 @@ module "loadbalancer" {
   source = "../modules/loadbalancer"
 
   instances        = module.resources.as_instance
-  net_address      = var.addr_3_octets
   subnet_id        = var.subnet_id
   scenario         = var.scenario
   workspace_prefix = local.workspace_prefix
+  lb_local_ip      = cidrhost(local.scenario_subnet, 3)
 }
 
 output "lb_instance_ip" {

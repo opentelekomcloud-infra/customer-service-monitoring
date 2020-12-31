@@ -1,4 +1,4 @@
-variable "net_address" {}
+variable "subnet_cidr" {}
 variable "ecs_flavor" {}
 variable "ecs_image" {}
 variable "network_id" {}

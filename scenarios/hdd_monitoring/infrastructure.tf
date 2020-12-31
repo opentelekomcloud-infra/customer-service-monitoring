@@ -11,7 +11,7 @@ module "nodes" {
   ecs_flavor  = var.ecs_flavor
   ecs_image   = var.ecs_image
   key_pair    = local.key_pair
-  net_address = var.addr_3
+  subnet_cidr = local.scenario_subnet
   network_id  = var.network_id
   subnet_id   = var.subnet_id
   vpc_id      = var.router_id
