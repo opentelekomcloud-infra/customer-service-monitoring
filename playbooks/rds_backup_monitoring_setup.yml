@@ -214,5 +214,5 @@
                --cloud_config {{ cloud_config }}
                --cloud_name {{ hostvars.test_host.cloud_name }}
                --endpoint {{ endpoint }}
-               --target {{ ecs_instance_ip }}
-               --telegraf 'http://{{ ecs_instance_ip }}' &"
+               --target {{ hostvars.test_host.ecs_instance_ip }}
+               --telegraf 'http://{{ hostvars.test_host.ecs_instance_ip }}' &"
