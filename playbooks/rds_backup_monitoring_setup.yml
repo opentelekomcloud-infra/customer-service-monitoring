@@ -3,7 +3,7 @@
   import_playbook: setup_scenarios_controller.yml
 
 - name: Prepare variables
-  hosts: localhost
+  hosts: test_host
   environment:
     OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
     TF_VAR_addr_3: "192.168.7"
@@ -11,7 +11,7 @@
     TF_VAR_router_id: "{{ main_router_id }}"
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
     TF_VAR_controller_ip: "{{ controller_public_ip }}"
-    TF_VAR_psql_password: "Spasibo2020!"
+    TF_VAR_psql_password: "Spaciba2020!"
     OS_CLOUD: "{{ lookup('env', 'OS_CLOUD') }}"
   vars:
     scenario_name: rds_backup_monitoring
@@ -70,12 +70,12 @@
   roles:
     - role: too_simple_server
       vars:
-        pg_db_url: "{{ hostvars.localhost.db_address }}"
+        pg_db_url: "{{ hostvars.test_host.db_address }}"
         pg_database: "entities"
-        pg_username: "{{ hostvars.localhost.db_username }}"
-        pg_password: "{{ hostvars.localhost.db_password }}"
-        pg_host: "{{ hostvars.localhost.db_host }}"
-        pg_port: "{{ hostvars.localhost.db_port }}"
+        pg_username: "{{ hostvars.test_host.db_username }}"
+        pg_password: "{{ hostvars.test_host.db_password }}"
+        pg_host: "{{ hostvars.test_host.db_host }}"
+        pg_port: "{{ hostvars.test_host.db_port }}"
         debug: true
   tasks:
     - name: Set facts
@@ -155,8 +155,8 @@
               data_format: "influx"
           - name: postgresql
             options:
-              address: "postgres://{{ hostvars.localhost.db_username }}\
-              :{{ hostvars.localhost.db_password }}@{{ hostvars.localhost.db_address }}/entities"
+              address: "postgres://{{ hostvars.test_host.db_username }}\
+              :{{ hostvars.test_host.db_password }}@{{ hostvars.test_host.db_address }}/entities"
     - role: geerlingguy.nginx
       vars:
         nginx_remove_default_vhost: yes
@@ -198,8 +198,6 @@
   vars:
     cloud_config: "/etc/openstack"
     endpoint: "https://rds.eu-de.otc.t-systems.com"
-    target: "http://localhost:8081"
-    telegraf: "http://localhost:8080"
   tasks:
     - name: Copy clouds.yaml to ecs
       copy:
@@ -212,9 +210,9 @@
         state: forcereinstall
     - name: Start monitoring RDS backups  # noqa 301 305
       shell: "nohup python3 -m csm_test_utils rds_backup_monitor
-               --instance_id {{ hostvars.localhost.rds_instance_id }}
+               --instance_id {{ hostvars.test_host.rds_instance_id }}
                --cloud_config {{ cloud_config }}
-               --cloud_name {{ hostvars.localhost.cloud_name }}
+               --cloud_name {{ hostvars.test_host.cloud_name }}
                --endpoint {{ endpoint }}
-               --target {{ target }}
-               --telegraf '{{ telegraf }}' &"
+               --target {{ ecs_instance_ip }}
+               --telegraf 'http://{{ ecs_instance_ip }}' &"
