@@ -198,6 +198,7 @@
   vars:
     cloud_config: "/etc/openstack"
     endpoint: "https://rds.eu-de.otc.t-systems.com"
+    ecs_instance_ip: "{{ hostvars.test_host.ecs_instance_ip }}"
   tasks:
     - name: Copy clouds.yaml to ecs
       copy:
