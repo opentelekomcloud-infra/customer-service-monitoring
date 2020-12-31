@@ -17,7 +17,7 @@ module "nodes" {
   use_single_az = var.use_single_az
   network_id    = var.network_id
   subnet_id     = var.subnet_id
-  node_local_ip = cidrhost(local.scenario_subnet, 3)
+  subnet_cidr   = local.scenario_subnet
 }
 module "resources" {
   source = "./resources"
