@@ -45,4 +45,4 @@
         pub_key_value: "{{ public_key_b64.content | b64decode }}"
         tf_pub_key: "{ 'TF_VAR_public_key': '{{ pub_key_value }}' }"
       set_fact:
-        default_variables: "{{ default_variables | combine(tf_pub_key) }}"
+        env_variables: "{{ env_variables | combine(tf_pub_key) }}"

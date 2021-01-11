@@ -9,10 +9,11 @@ backend_config:
   region: "eu-de"
 
 default_variables:
-  AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-  AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-  AWS_SESSION_TOKEN: "{{ lookup('env', 'AWS_SESSION_TOKEN') }}"
-  OS_CLOUD: "{{ lookup('env', 'OS_CLOUD') }}"
+  AWS_SECRET_ACCESS_KEY: "{{ aws_credential.secret }}"
+  AWS_ACCESS_KEY_ID: "{{ aws_credential.access }}"
+  AWS_SESSION_TOKEN: "{{ aws_credential.token }}"
+  OS_CLOUD: "{{ os_cloud_profile }}"
+  OS_CLIENT_CONFIG_FILE: "{{ os_cloud_config_file }}"
   TF_VAR_availability_zone: "eu-de-03"
   TF_VAR_ecs_flavor: "s2.medium.2"
   TF_VAR_ecs_image: "Debian_10_latest"

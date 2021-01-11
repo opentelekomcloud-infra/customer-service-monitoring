@@ -7,3 +7,11 @@ password: null
 
 desired_state: present
 terraform_workspace: test
+
+os_cloud_config_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
+os_cloud_profile: "{{ lookup('env', 'OS_CLOUD') }}"
+
+aws_credential:
+  secret: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+  access: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+  token: "{{ lookup('env', 'AWS_SESSION_TOKEN') }}"
