@@ -110,9 +110,7 @@ class TestInfrastructure(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.run_playbook('destroy_scenarios_controller.yml', ignore_rc=True)
-        cls.run_playbook('destroy_scenarios_controller.yml', ignore_rc=True)
-        cls.run_playbook('destroy_scenarios_controller.yml', ignore_rc=False)
+        cls.run_playbook('destroy_scenarios_controller.yml')
 
 
 if __name__ == '__main__':
