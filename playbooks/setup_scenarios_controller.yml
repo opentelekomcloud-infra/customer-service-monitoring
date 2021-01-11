@@ -8,7 +8,6 @@
   roles:
     - build_infrastructure
   environment:
-    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
   vars:
     scenario_name: csm_controller
     terraform_base_dir: terraform
