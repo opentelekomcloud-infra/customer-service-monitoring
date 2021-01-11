@@ -34,6 +34,10 @@ module "bastion" {
 
   availability_zone = var.availability_zone
   bastion_eip       = local.controller_eip
+
+  depends_on = [
+    module.network
+  ]
 }
 
 output "csm_controller_fip" {
