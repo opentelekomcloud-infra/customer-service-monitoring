@@ -8,7 +8,7 @@
 - job:
     name: tox-cover-docker
     parent: tox-cover
-    nodeset: ubuntu-focal
+    nodeset: debian-buster
     pre-run: ./tests/docker/pre.yaml
 
 - project:
