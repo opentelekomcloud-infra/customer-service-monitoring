@@ -1,11 +1,5 @@
 ---
 - job:
-    name: ansible-lint
-    parent: otc-tox
-    vars:
-      tox_envlist: yamllint
-
-- job:
     name: terraform-lint
     parent: otc-tox
     vars:
@@ -23,7 +17,8 @@
       jobs:
         - terraform-lint
         - otc-tox-pep8
-        - ansible-lint
+        - tox-linters-ansible-2.9
+        - tox-linters-ansible-2.10
         - tox-cover-docker
         - tox-molecule-29
         - tox-molecule-210
@@ -31,7 +26,8 @@
       jobs:
         - terraform-lint
         - otc-tox-pep8
-        - ansible-lint
+        - tox-linters-ansible-2.9
+        - tox-linters-ansible-2.10
         - tox-cover-docker
         - tox-molecule-29
         - tox-molecule-210
