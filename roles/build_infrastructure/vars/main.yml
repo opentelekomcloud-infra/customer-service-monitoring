@@ -11,7 +11,8 @@ backend_config:
 default_variables:
   AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
   AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+  AWS_SESSION_TOKEN: "{{ lookup('env', 'AWS_SESSION_TOKEN') }}"
+  OS_CLOUD: "{{ lookup('env', 'OS_CLOUD') }}"
   TF_VAR_availability_zone: "eu-de-03"
   TF_VAR_ecs_flavor: "s2.medium.2"
   TF_VAR_ecs_image: "Debian_10_latest"
-  TF_VAR_addr_3_octets: "192.168.0"
