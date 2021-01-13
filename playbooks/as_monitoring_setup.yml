@@ -139,7 +139,7 @@
   vars_files:
     - "./vars/telegraf_dbconnection_vars.yml"
   roles:
-    - role: telegraf-client
+    - role: telegraf_client
       vars:
         telegraf_influxdb_retention_policy: ""
         telegraf_plugins_base:
