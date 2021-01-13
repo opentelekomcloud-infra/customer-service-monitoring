@@ -10,7 +10,6 @@
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
   vars:
     scenario_name: dns_monitoring
-    requirements: requirements.txt
     infra_state: present
   roles:
     - build_infrastructure

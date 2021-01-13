@@ -12,9 +12,6 @@
     TF_VAR_psql_password: "Spaciba2020!"
   vars:
     scenario_name: rds_monitoring
-    terraform_base_dir: terraform
-    requirements: requirements.txt
-    key_name: key_csm_controller
     infra_state: present
   roles:
     - build_infrastructure

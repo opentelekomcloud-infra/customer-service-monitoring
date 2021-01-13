@@ -10,9 +10,6 @@
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
   vars:
     scenario_name: hdd_monitoring
-    terraform_base_dir: terraform
-    requirements: requirements.txt
-    key_name: key_csm_controller
     infra_state: absent
   roles:
     - build_infrastructure
