@@ -7,7 +7,9 @@
   archive:
     dest: "{{ terraform_base_dir }}.tgz"
     path: "{{ terraform_base_dir }}"
-    exclude_path: ".terraform"
+    exclude_path:
+      - .terraform
+      - .terraform.lock.hcl
   delegate_to: localhost
 - name: Unarchive terraform setup on remote
   unarchive:

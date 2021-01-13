@@ -87,6 +87,7 @@ class TestInfrastructure(unittest.TestCase):
         cls.credential = acquire_temporary_ak_sk()
         runner = cls.run_playbook('setup_scenarios_controller.yml')
         if runner.rc != 0:
+            cls.tearDownClass()
             raise RuntimeError('Failed to prepare scenario controller')
 
     @classmethod
@@ -101,7 +102,7 @@ class TestInfrastructure(unittest.TestCase):
 
         extra_vars = extra_vars.copy()
         extra_vars.update({
-            'clouds_yaml_file': '/tmp/csm-test/clouds.yaml',  # FIXME: temporary
+            'os_cloud_config_file': '/tmp/csm-test/clouds.yaml',  # FIXME: temporary
         })
 
         os.makedirs(LOG_PATH, exist_ok=True)
@@ -117,7 +118,6 @@ class TestInfrastructure(unittest.TestCase):
                 'AWS_ACCESS_KEY_ID': cls.credential.access,
                 'AWS_SECRET_ACCESS_KEY': cls.credential.secret,
                 'AWS_SESSION_TOKEN': cls.credential.security_token,
-                'OS_CLOUD': os.getenv('OS_CLOUD'),
             },
             process_isolation=True,
             private_data_dir=_random_tmp_path('/tmp'),
