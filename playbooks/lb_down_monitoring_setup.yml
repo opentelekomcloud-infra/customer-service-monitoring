@@ -95,7 +95,7 @@
         executable: pip3
         name: csm-test-utils
   roles:
-    - role: telegraf-client
+    - role: telegraf_client
       vars:
         telegraf_influxdb_retention_policy: ""
         telegraf_plugins_base:

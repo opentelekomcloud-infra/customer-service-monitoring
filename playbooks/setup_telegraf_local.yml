@@ -6,7 +6,7 @@
     - "./vars/telegraf_dbconnection_vars.yml"
     - "./vars/nginx_telegraf_local.yml"
   roles:
-    - role: telegraf-client
+    - role: telegraf_client
       vars:
         telegraf_plugins_base:
           - name: http_listener_v2

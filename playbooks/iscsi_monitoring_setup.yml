@@ -144,7 +144,7 @@
     - "./vars/telegraf_dbconnection_vars.yml"
     - "./vars/scenario_iscsi_vars.yml"
   roles:
-    - telegraf-client
+    - telegraf_client
   vars:
     telegraf_influxdb_retention_policy: ""
     telegraf_plugins_base:
