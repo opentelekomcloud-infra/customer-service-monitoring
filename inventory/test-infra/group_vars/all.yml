@@ -4,3 +4,6 @@ test_host_keyfile: "/tmp/test_host_rsa-test"
 terraform_workspace: test-infra
 terraform_network_cidr: "192.168.0.0/16"
 controller_address: ""
+terraform_base_dir: terraform
+key_name: key_csm_controller_test
+requirements: requirements.txt
