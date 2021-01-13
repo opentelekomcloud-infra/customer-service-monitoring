@@ -1,11 +1,5 @@
 ---
 - job:
-    name: test-infra
-    parent: otc-tox
-    vars:
-      tox_envlist: testinfra
-
-- job:
     name: terraform-lint
     parent: otc-tox
     vars:
