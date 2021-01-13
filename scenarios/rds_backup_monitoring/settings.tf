@@ -16,5 +16,4 @@ terraform {
 }
 
 # Configure the OpenTelekomCloud Provider
-provider "opentelekomcloud" {
-}
+provider "opentelekomcloud" {}

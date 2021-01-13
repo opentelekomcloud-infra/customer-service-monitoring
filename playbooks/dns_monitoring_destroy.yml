@@ -5,15 +5,11 @@
 - name: Prepare variables
   hosts: test_host
   environment:
-    OS_CLIENT_CONFIG_FILE: "{{ clouds_yaml_file }}"
     TF_VAR_network_id: "{{ main_network_id }}"
     TF_VAR_router_id: "{{ main_router_id }}"
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
   vars:
     scenario_name: dns_monitoring
-    terraform_base_dir: terraform
-    requirements: requirements.txt
-    key_name: key_csm_controller
     infra_state: absent
   roles:
     - build_infrastructure

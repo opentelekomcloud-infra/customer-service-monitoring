@@ -18,6 +18,4 @@ terraform {
 }
 
 # Configure the OpenTelekomCloud Provider
-provider "opentelekomcloud" {
-  cloud = "devstack"
-}
+provider "opentelekomcloud" {}
