@@ -23,8 +23,12 @@
       fetch:
         src: "{{ tmp_dir }}/{{ key_name }}"
         dest: "{{ local_private_key }}"
-        mode: 0600
         flat: yes
+
+    - name: Change mode of private key to 0o600
+      file:
+        path: "{{ local_private_key }}"
+        mode: 0600
 
     - name: Register csm_controller
       add_host:

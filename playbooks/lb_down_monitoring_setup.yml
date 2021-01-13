@@ -20,7 +20,6 @@
         lb_down_instance_ip: "{{ tf_output.outputs['lb_down_instance_fip'].value }}"
         lb_down_node_ips: "{{ tf_output.outputs['lb_down_ecs_ips'].value }}"
         lb_control_instance_ip: "{{ tf_output.outputs['lb_ctrl_ip'].value }}"
-        key_name: "{{ key_name }}"
         local_private_key: "{{ local_private_key }}"
     - name: Register controller node
       add_host:
