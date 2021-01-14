@@ -1,6 +1,6 @@
 ---
 - name: Prepare controller variables
-  import_playbook: bastion_setup.yml
+  import_playbook: bastion_setup.yaml
 
 - name: Prepare variables
   hosts: local

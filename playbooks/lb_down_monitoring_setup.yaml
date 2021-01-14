@@ -1,6 +1,6 @@
 ---
 - name: Prepare controller variables
-  import_playbook: bastion_setup.yml
+  import_playbook: bastion_setup.yaml
 
 - name: Prepare variables
   hosts: local
@@ -81,8 +81,8 @@
   hosts: telegrafed
   become: yes
   vars_files:
-    - "./vars/telegraf_dbconnection_vars.yml"
-    - "./vars/nginx_telegraf_local.yml"
+    - "./vars/telegraf_dbconnection_vars.yaml"
+    - "./vars/nginx_telegraf_local.yaml"
   tasks:
     - name: Install PIP
       apt:
@@ -145,7 +145,7 @@
       vars:
         hosts: "{{ groups.gatewayed }}"
       template:
-        src: "lb_down_monitoring.yml"
+        src: "lb_down_monitoring.yaml"
         dest: "{{ inventory_path }}"
 
     - name: Ensure private key exists
@@ -164,8 +164,8 @@
         src: "{{ item }}"
         dest: "{{ test_path }}"
       with_items:
-        - "lb_down_monitoring_start_server.yml"
-        - "lb_down_monitoring_stop_server_on_random_node.yml"
+        - "lb_down_monitoring_start_server.yaml"
+        - "lb_down_monitoring_stop_server_on_random_node.yaml"
         - "lb_down_test.sh"
 
     - name: Ensure that cron is installed

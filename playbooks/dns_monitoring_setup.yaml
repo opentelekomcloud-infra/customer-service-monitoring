@@ -1,6 +1,6 @@
 ---
 - name: Prepare controller variables
-  import_playbook: bastion_setup.yml
+  import_playbook: bastion_setup.yaml
 
 - name: Prepare variables
   hosts: local
@@ -63,8 +63,8 @@
   hosts: dns_instance
   become: yes
   vars_files:
-    - "./vars/telegraf_dbconnection_vars.yml"
-    - "./vars/nginx_telegraf_local.yml"
+    - "./vars/telegraf_dbconnection_vars.yaml"
+    - "./vars/nginx_telegraf_local.yaml"
   roles:
     - role: telegraf_client
       vars:

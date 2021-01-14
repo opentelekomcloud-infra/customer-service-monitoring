@@ -1,9 +1,9 @@
 ---
 - name: Setup host to be a test host
-  import_playbook: test_host_setup.yml
+  import_playbook: test_host_setup.yaml
 
 - name: Prepare clouds.yaml for test_host
-  import_playbook: prepare_config.yml
+  import_playbook: prepare_config.yaml
 
 - name: Build/Check controller infrastructure
   hosts: local
@@ -51,7 +51,7 @@
   hosts: controller
   become: yes
   vars_files:
-    - "./vars/nginx_controller.yml"
+    - "./vars/nginx_controller.yaml"
   roles:
     - role: geerlingguy.nginx
       vars:

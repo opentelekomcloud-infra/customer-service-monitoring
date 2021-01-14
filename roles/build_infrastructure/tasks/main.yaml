@@ -1,10 +1,10 @@
 - name: Terraform pre_build
-  include_tasks: pre_build.yml
+  include_tasks: pre_build.yaml
 
 - name: Terraform build
-  include_tasks: build.yml
+  include_tasks: build.yaml
   when: infra_state == "present"
 
 - name: Terraform destroy
-  include_tasks: destroy.yml
+  include_tasks: destroy.yaml
   when: infra_state == "absent"

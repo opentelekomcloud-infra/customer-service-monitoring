@@ -11,9 +11,9 @@
 - become: yes
   block:
     - name: Stop server
-      include_tasks: stop_server.yml
+      include_tasks: stop_server.yaml
     - name: Start server
-      include_tasks: start_server.yml
+      include_tasks: start_server.yaml
   when: current_version_rc == 0 and current_version == latest_version
 
 - name: Prepare server
@@ -53,7 +53,7 @@
   become: yes
   block:
     - name: Stop server
-      include_tasks: stop_server.yml
+      include_tasks: stop_server.yaml
     - name: Start server
-      include_tasks: start_server.yml
+      include_tasks: start_server.yaml
       when: server_state != "absent"

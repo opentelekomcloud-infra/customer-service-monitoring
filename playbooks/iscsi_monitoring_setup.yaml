@@ -1,6 +1,6 @@
 ---
 - name: Prepare controller variables
-  import_playbook: bastion_setup.yml
+  import_playbook: bastion_setup.yaml
 
 - name: Prepare variables
   hosts: local
@@ -56,7 +56,7 @@
   hosts: iscsi_target
   become: yes
   vars_files:
-    - "./vars/scenario_iscsi_vars.yml"
+    - "./vars/scenario_iscsi_vars.yaml"
   roles:
     - iscsi_target
 
@@ -64,7 +64,7 @@
   hosts: iscsi_initiator
   become: yes
   vars_files:
-    - "./vars/scenario_iscsi_vars.yml"
+    - "./vars/scenario_iscsi_vars.yaml"
   tasks:
     - name: Perform a discovery on target
       open_iscsi:
@@ -88,7 +88,7 @@
   hosts: iscsi_initiator
   become: yes
   vars_files:
-    - "./vars/scenario_iscsi_vars.yml"
+    - "./vars/scenario_iscsi_vars.yaml"
   tasks:
     - name: Add hdparm repository [Debian/Ubuntu]
       apt_repository:
@@ -141,8 +141,8 @@
   hosts: iscsi_initiator
   become: yes
   vars_files:
-    - "./vars/telegraf_dbconnection_vars.yml"
-    - "./vars/scenario_iscsi_vars.yml"
+    - "./vars/telegraf_dbconnection_vars.yaml"
+    - "./vars/scenario_iscsi_vars.yaml"
   roles:
     - telegraf_client
   vars:
