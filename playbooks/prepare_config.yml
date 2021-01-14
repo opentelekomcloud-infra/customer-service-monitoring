@@ -1,5 +1,5 @@
 - name: Prepare clouds.yaml
-  hosts: test_host
+  hosts: local
   vars:
     os_cloud_config_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
   tasks:
