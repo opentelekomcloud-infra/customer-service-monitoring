@@ -96,7 +96,7 @@
 - name: Install telegraf client on server
   hosts: gatewayed
   become: yes
-  vars_files: # TODO: update connection to API monitoring external metric server
+  vars_files:  # TODO: update connection to API monitoring external metric server
     - "./vars/telegraf_dbconnection_vars.yaml"
   roles:
     - telegraf_client
@@ -107,7 +107,7 @@
       - name: system
       - name: diskio
         options:
-          devices: [ "vdb", "vdc", "vdd" ]
+          devices: ["vdb", "vdc", "vdd"]
       - name: cpu
         options:
           percpu: "false"
