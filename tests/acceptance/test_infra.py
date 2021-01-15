@@ -85,7 +85,7 @@ class TestInfrastructure(unittest.TestCase):
         cls.scenario_queue = Queue(len(cls.scenarios))
 
         cls.credential = acquire_temporary_ak_sk()
-        runner = cls.run_playbook('setup_scenarios_controller.yml')
+        runner = cls.run_playbook('bastion_setup.yaml')
         if runner.rc != 0:
             cls.tearDownClass()
             raise RuntimeError('Failed to prepare scenario controller')
@@ -164,7 +164,7 @@ class TestInfrastructure(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.run_playbook('destroy_scenarios_controller.yml')
+        cls.run_playbook('bastion_destroy.yaml')
 
 
 if __name__ == '__main__':
