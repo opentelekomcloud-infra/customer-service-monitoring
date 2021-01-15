@@ -1,15 +1,15 @@
 ---
 - name: Prepare controller variables
-  import_playbook: setup_scenarios_controller.yml
+  import_playbook: bastion_setup.yaml
 
 - name: Prepare variables
-  hosts: test_host
+  hosts: local
   environment:
     TF_VAR_network_id: "{{ main_network_id }}"
     TF_VAR_router_id: "{{ main_router_id }}"
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
   vars:
-    scenario_name: dns_monitoring
+    scenario_name: lb_down_monitoring
     infra_state: absent
   roles:
     - build_infrastructure

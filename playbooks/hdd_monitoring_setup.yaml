@@ -1,9 +1,9 @@
 ---
 - name: Prepare controller variables
-  import_playbook: setup_scenarios_controller.yml
+  import_playbook: bastion_setup.yaml
 
 - name: Prepare variables
-  hosts: test_host
+  hosts: local
   environment:
     TF_VAR_network_cidr: "{{ terraform_network_cidr }}"
     TF_VAR_network_id: "{{ main_network_id }}"
@@ -96,8 +96,8 @@
 - name: Install telegraf client on server
   hosts: gatewayed
   become: yes
-  vars_files:
-    - "./vars/telegraf_dbconnection_vars.yml"
+  vars_files:  # TODO: update connection to API monitoring external metric server
+    - "./vars/telegraf_dbconnection_vars.yaml"
   roles:
     - telegraf_client
   vars:

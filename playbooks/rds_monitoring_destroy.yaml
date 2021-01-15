@@ -1,15 +1,17 @@
 ---
 - name: Prepare controller variables
-  import_playbook: setup_scenarios_controller.yml
+  import_playbook: bastion_setup.yaml
 
 - name: Prepare variables
-  hosts: test_host
+  hosts: local
   environment:
     TF_VAR_network_id: "{{ main_network_id }}"
     TF_VAR_router_id: "{{ main_router_id }}"
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
+    TF_VAR_subnet_cidr: "{{ main_subnet_cidr }}"
+    TF_VAR_psql_password: "Spaciba2020!"
   vars:
-    scenario_name: hdd_monitoring
+    scenario_name: rds_monitoring
     infra_state: absent
   roles:
     - build_infrastructure

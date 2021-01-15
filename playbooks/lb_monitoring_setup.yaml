@@ -1,0 +1,69 @@
+---
+- name: Prepare controller variables
+  import_playbook: bastion_setup.yaml
+
+- name: Prepare variables
+  hosts: local
+  environment:
+    TF_VAR_network_cidr: "{{ terraform_network_cidr }}"
+    TF_VAR_network_id: "{{ main_network_id }}"
+    TF_VAR_router_id: "{{ main_router_id }}"
+    TF_VAR_subnet_id: "{{ main_subnet_id }}"
+  vars:
+    scenario_name: lb_monitoring
+    infra_state: present
+  roles:
+    - build_infrastructure
+  tasks:
+    - name: Register build result
+      set_fact:
+        lb_control_instance_ip: "{{ tf_output.outputs['lb_ctrl_ip'].value }}"
+        loadbalancer_public_ip: "{{ tf_output.outputs['lb_fip'].value }}"
+        lb_node_ips: "{{ tf_output.outputs['lb_ecs_local_ips'].value }}"
+    - name: Register nodes
+      add_host:
+        name: "{{ lb_control_instance_ip }}"
+        groups: "telegrafed"
+        ansible_ssh_user: "linux"
+        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_common_args: >
+          -o UserKnownHostsFile=/dev/null
+          -o ProxyCommand='ssh -W %h:%p
+          -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}
+          -o StrictHostKeyChecking=no
+          -o UserKnownHostsFile=/dev/null'
+          -o PasswordAuthentication=no
+
+    - name: Register nodes
+      add_host:
+        name: "{{ item }}"
+        groups: "gatewayed"
+        ansible_ssh_user: "linux"
+        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_common_args: >
+          -o UserKnownHostsFile=/dev/null
+          -o ProxyCommand='ssh -W %h:%p
+          -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}
+          -o StrictHostKeyChecking=no
+          -o UserKnownHostsFile=/dev/null'
+          -o PasswordAuthentication=no
+      loop: "{{ lb_node_ips }}"
+
+- name: Wait for hosts
+  hosts: gatewayed
+  gather_facts: no
+  tasks:
+    - name: Wait for host to be up
+      wait_for_connection:
+        timeout: 120
+
+- name: Start Server
+  hosts: gatewayed
+  become: yes
+  roles:
+    - too_simple_server
+  vars:
+    debug: true
+    server_port: 80
