@@ -5,7 +5,3 @@ all:
       ansible_host: localhost
       ansible_connection: local
       ansible_python_interpreter: "/usr/bin/env python3"
-    test_host:
-      ansible_connection: local
-      os_cloud_config_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
-      tmp_dir: "{{ os_cloud_config_file | dirname }}"
