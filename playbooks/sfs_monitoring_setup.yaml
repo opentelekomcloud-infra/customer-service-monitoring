@@ -8,6 +8,7 @@
     TF_VAR_network_id: "{{ main_network_id }}"
     TF_VAR_router_id: "{{ main_router_id }}"
     TF_VAR_subnet_id: "{{ main_subnet_id }}"
+    TF_VAR_kms_key: "{{ kms_key }}"
   vars:
     scenario_name: sfs_monitoring
     infra_state: present

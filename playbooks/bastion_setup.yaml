@@ -55,6 +55,7 @@
         main_network_id: "{{ tf_output.outputs['network'].value }}"
         main_subnet_id: "{{ tf_output.outputs['subnet'].value }}"
         main_router_id: "{{ tf_output.outputs['router'].value }}"
+        kms_key: "{{ tf_output.outputs['kms_key'].value }}"
 
     - name: Download private key from test_host
       fetch:

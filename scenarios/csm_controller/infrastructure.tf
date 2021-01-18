@@ -40,6 +40,13 @@ module "bastion" {
   ]
 }
 
+resource "opentelekomcloud_kms_key_v1" "kms_key" {
+  key_alias       = var.kms_key
+  pending_days    = "7"
+  key_description = "sfs kms key"
+  is_enabled      = true
+}
+
 output "csm_controller_fip" {
   value = local.controller_eip
 }
@@ -54,4 +61,8 @@ output "network" {
 
 output "router" {
   value = module.network.router.id
+}
+
+output "kms_key" {
+  value = opentelekomcloud_kms_key_v1.kms_key.key_alias
 }
