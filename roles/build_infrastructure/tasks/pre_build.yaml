@@ -7,7 +7,9 @@
   archive:
     dest: "{{ terraform_base_dir }}.tgz"
     path: "{{ terraform_base_dir }}"
-    exclude_path: ".terraform"
+    exclude_path:
+      - .terraform
+      - .terraform.lock.hcl
   delegate_to: localhost
 - name: Unarchive terraform setup on remote
   unarchive:
@@ -21,10 +23,6 @@
 
 - name: Handle key pair
   block:
-    - name: Install requirements
-      pip:
-        requirements: requirements.txt
-        executable: "pip3"
     - name: Download/create key  # noqa 301 - get_key is more or less idempotent
       environment: "{{ default_variables }}"
       script: >

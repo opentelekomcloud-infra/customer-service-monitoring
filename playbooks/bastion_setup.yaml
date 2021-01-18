@@ -8,8 +8,6 @@
   roles:
     - role: anton_sidelnikov.terraform
       become: yes
-      vars:
-        terraform_version: "{{ terraform_version }}"
   tasks:
     - name: Copy Requirements
       copy:

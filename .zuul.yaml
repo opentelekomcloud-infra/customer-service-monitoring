@@ -11,6 +11,15 @@
     nodeset: debian-buster
     pre-run: ./tests/docker/pre.yaml
 
+- job:
+    name: tox-functional-wrapped
+    parent: tox-functional
+    nodeset: debian-buster
+    pre-run: ./tests/bwrap/pre.yaml
+    description: >
+      Run `functional` tox environment on debian machine
+      with `bubblewrap` installed
+
 - project:
     merge-mode: squash-merge
     check:
@@ -22,12 +31,16 @@
         - tox-cover-docker
         - tox-molecule-29
         - tox-molecule-210
+    check-post:
+      jobs:
+        - tox-functional-wrapped
     gate:
       jobs:
         - terraform-lint
         - otc-tox-pep8
         - tox-linters-ansible-2.9
         - tox-linters-ansible-2.10
+        - tox-functional-wrapped
         - tox-cover-docker
         - tox-molecule-29
         - tox-molecule-210
