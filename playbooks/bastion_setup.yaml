@@ -22,24 +22,6 @@
         requirements: "{{ req_dir }}{{ item }}.txt"
       with_items: "{{ requirements }}"
 
-- name: Prepare clouds.yaml
-  hosts: local
-  vars:
-    os_cloud_config_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
-  tasks:
-    - name: Register clouds location
-      set_fact:
-        os_cloud_config_file: "{{ os_cloud_config_file }}"
-        tmp_dir: "{{ os_cloud_config_file | dirname }}"
-    - name: Create tmp dir
-      file:
-        path: "{{ tmp_dir }}"
-        state: directory
-    - name: Copy clouds.yaml
-      copy:
-        src: "{{ os_cloud_config_file }}"
-        dest: "{{ os_cloud_config_file }}"
-
 - name: Build/Check controller infrastructure
   hosts: local
   roles:
@@ -48,6 +30,8 @@
     scenario_name: csm_controller
     controller_eip: "{{ controller_address }}"
     infra_state: present
+    os_cloud_config_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
+    tmp_dir: "{{ os_cloud_config_file }}"
     terraform_variables:
       kms_key: "{{ kms_key }}"
   tasks:
@@ -58,7 +42,7 @@
         main_subnet_id: "{{ tf_output.outputs['subnet'].value }}"
         main_router_id: "{{ tf_output.outputs['router'].value }}"
 
-    - name: Download private key from test_host
+    - name: Move private key to tmp_dir
       fetch:
         src: "{{ tmp_dir }}/{{ key_name }}"
         dest: "{{ local_private_key }}"
