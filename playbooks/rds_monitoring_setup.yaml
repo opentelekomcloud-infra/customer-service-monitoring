@@ -57,8 +57,8 @@
   roles:
     - role: too_simple_server
       vars:
-        pg_db_url: "{{ hostvars.local.db_address }}"
+        pg_db_url: "{{ hostvars.test_host.db_address }}"
         pg_database: "entities"
-        pg_username: "{{ hostvars.local.db_username }}"
-        pg_password: "{{ hostvars.local.db_password }}"
+        pg_username: "{{ hostvars.test_host.db_username }}"
+        pg_password: "{{ hostvars.test_host.db_password }}"
         debug: false

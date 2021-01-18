@@ -49,7 +49,7 @@
   hosts: sfs_instance
   become: yes
   vars:
-    sfs_shared_path: "{{ hostvars.local.sfs_monitoring_sfs_path }}"
+    sfs_shared_path: "{{ hostvars.test_host.sfs_monitoring_sfs_path }}"
     mount_path: "/mnt/sfs_share"
   tasks:
     - name: Update and upgrade apt packages
