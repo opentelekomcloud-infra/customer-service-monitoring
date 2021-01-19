@@ -1,6 +1,6 @@
 ---
 - name: Build/Check controller infrastructure
-  hosts: test_host
+  hosts: local
   roles:
     - build_infrastructure
   environment:
