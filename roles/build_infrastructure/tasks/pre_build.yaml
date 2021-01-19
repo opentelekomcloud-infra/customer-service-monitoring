@@ -1,21 +1,30 @@
 ---
+- name: Prepare Terraform plugin cache dir
+  file:
+    path: "{{ terraform_plugin_dir }}"
+    state: directory
+
+- name: Prepare tmp dir
+  file:
+    path: "{{ tmp_dir }}"
+    state: directory
+
 - name: Copy Requirements
   copy:
     src: "{{ requirements }}"
     dest: "{{ tmp_dir }}"
+
 - name: Archive terraform setup
   archive:
-    dest: "{{ terraform_base_dir }}.tgz"
+    dest: "{{ terraform_base_dir }}.tar"
     path: "{{ terraform_base_dir }}"
-    exclude_path:
-      - .terraform
-      - .terraform.lock.hcl
-  delegate_to: localhost
+    format: tar
 - name: Unarchive terraform setup on remote
   unarchive:
-    src: "{{ terraform_base_dir }}.tgz"
+    src: "{{ terraform_base_dir }}.tar"
     dest: "{{ tmp_dir }}"
     keep_newer: yes
+
 - name: Install master requirements
   pip:
     executable: "pip3"

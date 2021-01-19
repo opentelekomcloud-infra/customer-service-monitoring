@@ -4,14 +4,14 @@
 
 - name: Prepare variables
   hosts: local
-  environment:
-    TF_VAR_network_cidr: "{{ terraform_network_cidr }}"
-    TF_VAR_network_id: "{{ main_network_id }}"
-    TF_VAR_router_id: "{{ main_router_id }}"
-    TF_VAR_subnet_id: "{{ main_subnet_id }}"
   vars:
     scenario_name: iscsi_monitoring
     infra_state: present
+    terraform_variables:
+      network_cidr: "{{ terraform_network_cidr }}"
+      network_id: "{{ main_network_id }}"
+      router_id: "{{ main_router_id }}"
+      subnet_id: "{{ main_subnet_id }}"
   roles:
     - build_infrastructure
   tasks:

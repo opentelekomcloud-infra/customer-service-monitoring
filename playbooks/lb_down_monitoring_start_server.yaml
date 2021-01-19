@@ -1,9 +1,0 @@
----
-- name: Start server on nodes
-  hosts: gatewayed
-  become: yes
-  roles:
-    - too_simple_server
-  vars:
-    debug: true
-    server_port: 80
