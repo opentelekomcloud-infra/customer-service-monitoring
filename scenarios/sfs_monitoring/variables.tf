@@ -5,6 +5,7 @@ variable "scenario" {}
 variable "public_key" {
   default = ""
 }
+variable "kms_key" {}
 variable "network_id" {}
 variable "router_id" {}
 variable "subnet_id" {}

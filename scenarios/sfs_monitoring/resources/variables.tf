@@ -1,3 +1,4 @@
+variable "kms_key_name" {}
 variable "key_pair" {}
 variable "ecs_image" {}
 variable "ecs_flavor" {
