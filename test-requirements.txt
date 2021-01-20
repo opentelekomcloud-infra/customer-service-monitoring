@@ -5,4 +5,5 @@ psycopg2-binary
 sqlalchemy
 
 openstacksdk
+ansible>=2.9
 ansible-runner
