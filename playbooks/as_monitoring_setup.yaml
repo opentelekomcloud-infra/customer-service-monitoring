@@ -4,58 +4,13 @@
 
 - name: Prepare variables
   hosts: local
-  environment:
-    TF_VAR_network_id: "{{ main_network_id }}"
-    TF_VAR_router_id: "{{ main_router_id }}"
-    TF_VAR_subnet_id: "{{ main_subnet_id }}"
-    TF_VAR_controller_ip: "{{ controller_public_ip }}"
   vars:
     scenario_name: as_monitoring
     infra_state: present
+    terraform_variables:
+      network_id: "{{ main_network_id }}"
+      router_id: "{{ main_router_id }}"
+      subnet_id: "{{ main_subnet_id }}"
+      controller_ip: "{{ controller_public_ip }}"
   roles:
     - build_infrastructure
-  tasks:
-    - name: Register build result
-      set_fact:
-        as_monitoring_instance_ip: "{{ tf_output.outputs['as_instance_ip'].value }}"
-        as_monitoring_lb_ip: "{{ tf_output.outputs['lb_instance_ip'].value }}"
-        as_monitoring_control_ip: "{{ tf_output.outputs['as_control_instance_ip'].value }}"
-
-    - name: Register as_monitoring
-      add_host:
-        name: as_instance
-        groups: gatewayed
-        ansible_host: "{{ as_monitoring_instance_ip }}"
-        ansible_ssh_user: "linux"
-        ansible_ssh_private_key_file: "{{ local_private_key }}"
-        ansible_ssh_common_args: >
-          -o UserKnownHostsFile=/dev/null
-          -o ProxyCommand='ssh -W %h:%p
-          -q linux@{{ controller_public_ip }}
-          -i {{ local_private_key }}
-          -o StrictHostKeyChecking=no
-          -o UserKnownHostsFile=/dev/null'
-          -o PasswordAuthentication=no
-
-    - name: Register as_monitoring_control_instance
-      add_host:
-        name: as_control_instance
-        ansible_host: "{{ as_monitoring_control_ip }}"
-        ansible_ssh_user: "linux"
-        ansible_ssh_private_key_file: "{{ local_private_key }}"
-        ansible_ssh_common_args: >
-          -o UserKnownHostsFile=/dev/null
-          -o ProxyCommand='ssh -W %h:%p
-          -q linux@{{ controller_public_ip }}
-          -i {{ local_private_key }}
-          -o StrictHostKeyChecking=no
-          -o UserKnownHostsFile=/dev/null'
-          -o PasswordAuthentication=no
-
-- name: Wait for hosts
-  hosts: gatewayed
-  gather_facts: no
-  tasks:
-    - name: Wait for host to be up
-      wait_for_connection:
-        timeout: 120

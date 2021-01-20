@@ -100,9 +100,12 @@ class TestInfrastructure(unittest.TestCase):
         :return: None
         """
 
+        project_tmp = _random_tmp_path()
+
         extra_vars = extra_vars.copy()
         extra_vars.update({
             'os_cloud_config_file': '/tmp/csm-test/clouds.yaml',  # FIXME: temporary
+            'tmp_dir': os.path.join(project_tmp, "tmp"),
         })
 
         os.makedirs(LOG_PATH, exist_ok=True)
@@ -119,9 +122,7 @@ class TestInfrastructure(unittest.TestCase):
                 'AWS_SECRET_ACCESS_KEY': cls.credential.secret,
                 'AWS_SESSION_TOKEN': cls.credential.security_token,
             },
-            process_isolation=True,
-            private_data_dir=_random_tmp_path('/tmp'),
-            project_dir='.',
+            private_data_dir=project_tmp,
         )
         if runner.rc == 0:
             print("Playbook", name, "finished successfully")

@@ -15,3 +15,12 @@ aws_credential:
   secret: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
   access: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
   token: "{{ lookup('env', 'AWS_SESSION_TOKEN') }}"
+
+terraform_plugin_dir: "~/.terraform.d/plugin-cache"
+
+default_terraform_variables:
+  availability_zone: "eu-de-03"
+  ecs_flavor: "s2.medium.2"
+  ecs_image: "Standard_Debian_10_latest"
+
+terraform_variables: {}

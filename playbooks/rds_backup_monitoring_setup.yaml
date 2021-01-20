@@ -4,15 +4,15 @@
 
 - name: Prepare variables
   hosts: local
-  environment:
-    TF_VAR_network_id: "{{ main_network_id }}"
-    TF_VAR_router_id: "{{ main_router_id }}"
-    TF_VAR_subnet_id: "{{ main_subnet_id }}"
-    TF_VAR_controller_ip: "{{ controller_public_ip }}"
-    TF_VAR_psql_password: "Spaciba2020!"
   vars:
     scenario_name: rds_backup_monitoring
     infra_state: present
+    terraform_variables:
+      network_id: "{{ main_network_id }}"
+      router_id: "{{ main_router_id }}"
+      subnet_id: "{{ main_subnet_id }}"
+      controller_ip: "{{ controller_public_ip }}"
+      psql_password: "Spaciba2020!"
   roles:
     - build_infrastructure
   tasks:
