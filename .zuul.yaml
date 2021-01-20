@@ -6,10 +6,9 @@
       tox_envlist: tflint
 
 - job:
-    name: otc-tox-py38-functional
-    parent: otc-tox-py38
-    vars:
-      tox_envlist: functional
+    name: otc-tox-functional
+    parent: tox-functional
+    nodeset: fedora-pod
 
 - project:
     merge-mode: squash-merge
