@@ -18,9 +18,4 @@ aws_credential:
 
 terraform_plugin_dir: "~/.terraform.d/plugin-cache"
 
-default_terraform_variables:
-  availability_zone: "eu-de-03"
-  ecs_flavor: "s2.medium.2"
-  ecs_image: "Standard_Debian_10_latest"
-
 terraform_variables: {}
