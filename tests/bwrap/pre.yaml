@@ -1,8 +1,0 @@
----
-- hosts: all
-  become: yes
-  tasks:
-    - name: Ensure bubblewrap is installed
-      package:
-        name: bubblewrap
-        state: present
