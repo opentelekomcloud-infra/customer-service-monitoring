@@ -17,7 +17,9 @@ INVENTORY_PATH = project_path('inventory', 'test-infra')
 
 SCN_RE = re.compile(r'^([a-z-_\d]+)_monitoring_(setup|destroy)\.ya?ml$')
 TEST_TIMEOUT = 60 * 60 * 60  # 1hr
+
 LOG_PATH = os.path.join(PROJECT_ROOT, 'log')
+os.makedirs(LOG_PATH, exist_ok=True)
 
 
 def _playbook_path(*file_path) -> str:
@@ -64,6 +66,14 @@ EXCLUDE_SCENARIOS = {
     # 'iscsi',
 }
 
+_REQUIRED_VARS = ['OS_CLOUD']
+
+
+def _validate_env_vars():
+    for var in _REQUIRED_VARS:
+        if os.getenv(var, None) is None:
+            raise RuntimeError(f'Environment variable {var} is missing')
+
 
 def _random_tmp_path(base='/tmp'):
     rand_part = ''.join(random.choice(string.ascii_letters) for _ in range(10))
@@ -80,6 +90,8 @@ class TestInfrastructure(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        _validate_env_vars()
+
         cls.runner = _get_runner()
         cls.scenarios = _collect_scenarios()
         cls.scenario_queue = Queue(len(cls.scenarios))
@@ -100,16 +112,15 @@ class TestInfrastructure(unittest.TestCase):
         :return: None
         """
 
-        project_tmp = _random_tmp_path()
+        playbook_tmp = _random_tmp_path()
+
+        tmp_dir = os.path.join(playbook_tmp, "tmp")
+        os.makedirs(tmp_dir, exist_ok=True)
 
         extra_vars = extra_vars.copy()
         extra_vars.update({
-            'os_cloud_config_file': '/tmp/csm-test/clouds.yaml',  # FIXME: temporary
-            'tmp_dir': os.path.join(project_tmp, "tmp"),
+            'tmp_dir': tmp_dir,
         })
-
-        os.makedirs(extra_vars['tmp_dir'], exist_ok=True)
-        os.makedirs(LOG_PATH, exist_ok=True)
 
         print("Starting playbook", name)
         runner = run_playbook(
@@ -123,7 +134,7 @@ class TestInfrastructure(unittest.TestCase):
                 'AWS_SECRET_ACCESS_KEY': cls.credential.secret,
                 'AWS_SESSION_TOKEN': cls.credential.security_token,
             },
-            private_data_dir=project_tmp,
+            private_data_dir=playbook_tmp,
         )
         if runner.rc == 0:
             print("Playbook", name, "finished successfully")
