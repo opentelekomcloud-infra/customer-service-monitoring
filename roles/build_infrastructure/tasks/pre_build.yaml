@@ -19,6 +19,7 @@
     dest: "{{ terraform_base_dir }}.tar"
     path: "{{ terraform_base_dir }}"
     format: tar
+  delegate_to: localhost
 - name: Unarchive terraform setup on remote
   unarchive:
     src: "{{ terraform_base_dir }}.tar"

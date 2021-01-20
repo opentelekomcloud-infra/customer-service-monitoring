@@ -53,15 +53,15 @@ def _get_runner():
 DEBIAN_IMAGE = 'debian:buster'
 
 EXCLUDE_SCENARIOS = {
-    'dns',
-    'rds',
-    'rds_backup',
-    'as',
+    # 'dns',
+    # 'rds',
+    # 'rds_backup',
+    # 'as',
     'sfs',
-    'hdd',
-    'lb',
-    'lb_down',
-    'iscsi',
+    # 'hdd',
+    # 'lb',
+    # 'lb_down',
+    # 'iscsi',
 }
 
 
