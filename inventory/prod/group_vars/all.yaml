@@ -1,7 +1,6 @@
 terraform_version: 0.14.0
 tmp_dir: "/tmp"
 local_private_key: "{{ tmp_dir }}/{{ key_name }}"
-test_host_keyfile: "/tmp/test_host_rsa"
 terraform_workspace: temp
 terraform_network_cidr: "192.168.0.0/16"
 os_cloud_profile: devstack

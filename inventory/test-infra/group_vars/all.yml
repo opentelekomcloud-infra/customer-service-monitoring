@@ -1,9 +1,7 @@
 terraform_version: "0.14.3"
 local_private_key: "{{ tmp_dir }}/{{ key_name }}"
-test_host_keyfile: "/tmp/test_host_rsa"
-terraform_workspace: test-infra-akachuri
-terraform_network_cidr: "192.0.0.0/8"
-controller_address: ""
+terraform_workspace: test-infra
+terraform_network_cidr: "192.168.0.0/16"
 terraform_base_dir: terraform
 key_name: key_csm_controller
 requirements: requirements.txt
