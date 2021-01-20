@@ -9,11 +9,9 @@ backend_config:
   region: "eu-de"
 
 default_variables:
+  TF_PLUGIN_CACHE_DIR: "{{ terraform_plugin_dir }}"
   AWS_SECRET_ACCESS_KEY: "{{ aws_credential.secret }}"
   AWS_ACCESS_KEY_ID: "{{ aws_credential.access }}"
   AWS_SESSION_TOKEN: "{{ aws_credential.token }}"
   OS_CLOUD: "{{ os_cloud_profile }}"
   OS_CLIENT_CONFIG_FILE: "{{ os_cloud_config_file }}"
-  TF_VAR_availability_zone: "eu-de-03"
-  TF_VAR_ecs_flavor: "s2.medium.2"
-  TF_VAR_ecs_image: "Debian_10_latest"
