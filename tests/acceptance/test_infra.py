@@ -108,6 +108,7 @@ class TestInfrastructure(unittest.TestCase):
             'tmp_dir': os.path.join(project_tmp, "tmp"),
         })
 
+        os.makedirs(extra_vars['tmp_dir'], exist_ok=True)
         os.makedirs(LOG_PATH, exist_ok=True)
 
         print("Starting playbook", name)
