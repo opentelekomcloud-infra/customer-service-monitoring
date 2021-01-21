@@ -48,6 +48,8 @@
     scenario_name: csm_controller
     controller_eip: "{{ controller_address }}"
     infra_state: present
+    terraform_variables:
+      kms_key: "{{ kms_key }}"
   tasks:
     - name: Register build result
       set_fact:

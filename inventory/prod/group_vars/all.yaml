@@ -7,3 +7,4 @@ os_cloud_profile: devstack
 terraform_base_dir: terraform
 key_name: key_csm_controller
 requirements: requirements.txt
+kms_key: kms_key
