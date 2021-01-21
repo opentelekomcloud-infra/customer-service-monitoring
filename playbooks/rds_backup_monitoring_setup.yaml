@@ -11,7 +11,6 @@
       network_id: "{{ main_network_id }}"
       router_id: "{{ main_router_id }}"
       subnet_id: "{{ main_subnet_id }}"
-      controller_ip: "{{ controller_public_ip }}"
       psql_password: "Spaciba2020!"
   roles:
     - build_infrastructure
