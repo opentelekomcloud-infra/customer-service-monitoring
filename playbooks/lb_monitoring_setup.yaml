@@ -22,9 +22,23 @@
         lb_node_ips: "{{ tf_output.outputs['lb_ecs_local_ips'].value }}"
     - name: Register nodes
       add_host:
+        name: "{{ lb_control_instance_ip }}"
+        groups: telegrafed
+        ansible_ssh_user: linux
+        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        ansible_ssh_common_args: >
+          -o UserKnownHostsFile=/dev/null
+          -o ProxyCommand='ssh -W %h:%p
+          -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}
+          -o StrictHostKeyChecking=no
+          -o UserKnownHostsFile=/dev/null'
+          -o PasswordAuthentication=no
+    - name: Register nodes
+      add_host:
         name: "{{ item }}"
-        groups: "gatewayed"
-        ansible_ssh_user: "linux"
+        groups: gatewayed
+        ansible_ssh_user: linux
         ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
           -o UserKnownHostsFile=/dev/null
@@ -52,3 +66,50 @@
   vars:
     debug: true
     server_port: 80
+
+- name: Install telegraf client on Bastion
+  hosts: telegrafed
+  become: yes
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
+    - "./vars/nginx_telegraf_local.yml"
+  roles:
+    - role: telegraf-client
+      vars:
+        telegraf_influxdb_retention_policy: ""
+        telegraf_plugins_base:
+          - name: http_listener_v2
+            options:
+              service_address: "localhost:{{ telegraf_local_port }}"
+              data_format: "influx"
+    - role: geerlingguy.nginx
+      vars:
+        nginx_remove_default_vhost: yes
+        nginx_vhosts:
+          - listen: "80"
+            server_name: "localhost"
+            extra_parameters: "{{ extra_parameters }}"
+
+- name: Install telegraf client on nodes
+  hosts: gatewayed
+  become: yes
+  vars_files:
+    - "./vars/telegraf_dbconnection_vars.yml"
+  roles:
+    - telegraf-client
+  vars:
+    telegraf_influxdb_retention_policy: ""
+    telegraf_plugins_base:
+      - name: cpu
+        options:
+          percpu: "false"
+          totalcpu: "true"
+          fielddrop:
+            - "time_*"
+      - name: net
+        options:
+          interfaces:
+            - "eth*"
+            - "enp0s[0-1]"
+            - "lo"
+            - "ens3"
