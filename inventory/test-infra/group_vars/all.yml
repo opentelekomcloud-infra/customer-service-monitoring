@@ -3,5 +3,6 @@ local_private_key: "{{ tmp_dir }}/{{ key_name }}"
 terraform_workspace: test-infra
 terraform_network_cidr: "192.168.0.0/16"
 terraform_base_dir: terraform
+terraform_plugin_dir: "/tmp/.terraform.d/plugin-cache"
 key_name: key_csm_controller
 requirements: requirements.txt
