@@ -4,9 +4,10 @@ import random
 import re
 import string
 import subprocess
+import time
 import unittest
 from queue import Queue
-from threading import Thread
+from threading import Lock, Thread
 
 from ansible_runner import run as run_playbook
 
@@ -82,11 +83,24 @@ def _random_tmp_path(base='/tmp'):
     return path
 
 
+MAX_PARALLEL = 5
+
+
 class TestInfrastructure(unittest.TestCase):
     runner = ''
     scenarios: dict = None
     credential: Credential
     scenario_queue: Queue
+    _running_playbooks: int
+    _thread_lock: Lock = Lock()
+
+    @classmethod
+    def _wait_free_slot(cls):
+        while True:
+            with cls._thread_lock:
+                if cls._running_playbooks <= MAX_PARALLEL:
+                    break
+            time.sleep(10)
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -95,6 +109,8 @@ class TestInfrastructure(unittest.TestCase):
         cls.runner = _get_runner()
         cls.scenarios = _collect_scenarios()
         cls.scenario_queue = Queue(len(cls.scenarios))
+
+        cls._running_playbooks = 0
 
         cls.credential = acquire_temporary_ak_sk()
         runner = cls.run_playbook('bastion_setup.yaml')
@@ -146,8 +162,19 @@ class TestInfrastructure(unittest.TestCase):
         if name in EXCLUDE_SCENARIOS:
             self.skipTest(f'Scenario {name} is excluded')
 
+    @classmethod
+    def _started(cls):
+        cls._running_playbooks += 1
+
+    @classmethod
+    def _finished(cls):
+        cls._running_playbooks -= 1
+
     def __process_scenario(self):
         name, playbooks = self.scenario_queue.get()
+
+        self._wait_free_slot()
+        self._started()
 
         self.assertIn('setup', playbooks)
         self.assertIn('destroy', playbooks)
@@ -162,17 +189,13 @@ class TestInfrastructure(unittest.TestCase):
             prc_d = self.run_playbook(playbooks['destroy'])
             self.assertEqual(prc_d.rc, 0, f'Destroy failed with exit code {prc_d.rc}')
 
+        self._finished()
         self.scenario_queue.task_done()
-
-    def _test_scenarios(self):
-        while not self.scenario_queue.empty():
-            Thread(target=self.__process_scenario).start()
-        self.scenario_queue.join()
 
     def test_scenarios(self):
         for item in self.scenarios.items():
             self.scenario_queue.put(item)
-        self._test_scenarios()
+            Thread(target=self.__process_scenario).start()
         self.scenario_queue.join()
 
     @classmethod
