@@ -16,6 +16,6 @@ aws_credential:
   access: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
   token: "{{ lookup('env', 'AWS_SESSION_TOKEN') }}"
 
-terraform_plugin_dir: "~/.terraform.d/plugin-cache"
+terraform_plugin_dir: "{{ lookup('env','HOME') }}/.terraform.d/plugin-cache"
 
 terraform_variables: {}
