@@ -1,5 +1,5 @@
 
-data  "opentelekomcloud_kms_key_v1" "kms_key" {
+data "opentelekomcloud_kms_key_v1" "kms_key" {
   key_alias = var.kms_key_name
 }
 
