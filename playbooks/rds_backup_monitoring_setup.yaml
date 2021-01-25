@@ -178,7 +178,7 @@
     - name: Copy clouds.yaml to ecs
       copy:
         src: /etc/openstack/clouds.yaml
-        dest: "{{ os_cloud_config_file | dirname }}/"
+        dest: "{{ os_cloud_config_file }}/"
 
     - name: Install test utils
       pip:
