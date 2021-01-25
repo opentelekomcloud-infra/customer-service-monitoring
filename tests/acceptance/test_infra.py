@@ -4,10 +4,8 @@ import random
 import re
 import string
 import subprocess
-import time
 import unittest
-from queue import Queue
-from threading import Lock, Thread
+from concurrent.futures import ThreadPoolExecutor, wait
 
 from ansible_runner import run as run_playbook
 
@@ -83,32 +81,19 @@ def _random_tmp_path(base='/tmp'):
     return path
 
 
-MAX_PARALLEL = 5
+MAX_PARALLEL = 4
 
 
 class TestInfrastructure(unittest.TestCase):
-    runner = ''
     scenarios: dict = None
     credential: Credential
-    scenario_queue: Queue
-    _running_playbooks: int
-    _thread_lock: Lock = Lock()
-
-    @classmethod
-    def _wait_free_slot(cls):
-        while True:
-            with cls._thread_lock:
-                if cls._running_playbooks <= MAX_PARALLEL:
-                    break
-            time.sleep(10)
+    executor = ThreadPoolExecutor(MAX_PARALLEL)
 
     @classmethod
     def setUpClass(cls) -> None:
         _validate_env_vars()
 
-        cls.runner = _get_runner()
         cls.scenarios = _collect_scenarios()
-        cls.scenario_queue = Queue(len(cls.scenarios))
 
         cls._running_playbooks = 0
 
@@ -159,22 +144,11 @@ class TestInfrastructure(unittest.TestCase):
         return runner
 
     def __skip_excluded(self, name):
-        if name in EXCLUDE_SCENARIOS:
+        if name.lower() in EXCLUDE_SCENARIOS:
             self.skipTest(f'Scenario {name} is excluded')
 
-    @classmethod
-    def _started(cls):
-        cls._running_playbooks += 1
-
-    @classmethod
-    def _finished(cls):
-        cls._running_playbooks -= 1
-
-    def __process_scenario(self):
-        name, playbooks = self.scenario_queue.get()
-
-        self._wait_free_slot()
-        self._started()
+    def __process_scenario(self, name, playbooks):
+        name = name.upper()
 
         self.assertIn('setup', playbooks)
         self.assertIn('destroy', playbooks)
@@ -182,21 +156,25 @@ class TestInfrastructure(unittest.TestCase):
         with self.subTest(scenario=name, action='setup'):
             self.__skip_excluded(name)
             prc_s = self.run_playbook(playbooks['setup'])
-            self.assertEqual(prc_s.rc, 0, f'Setup failed with exit code {prc_s.rc}')
+            self.assertEqual(
+                prc_s.rc, 0,
+                f'Setup of {name} monitoring failed with exit code {prc_s.rc}')
 
         with self.subTest(scenario=name, action='destroy'):
             self.__skip_excluded(name)
             prc_d = self.run_playbook(playbooks['destroy'])
-            self.assertEqual(prc_d.rc, 0, f'Destroy failed with exit code {prc_d.rc}')
-
-        self._finished()
-        self.scenario_queue.task_done()
+            self.assertEqual(
+                prc_d.rc, 0,
+                f'Destroy of {name} monitoring failed with exit code {prc_d.rc}')
 
     def test_scenarios(self):
-        for item in self.scenarios.items():
-            self.scenario_queue.put(item)
-            Thread(target=self.__process_scenario).start()
-        self.scenario_queue.join()
+        tasks = []
+        with self.executor as executor:
+            for name, playbooks in self.scenarios.items():
+                task = executor.submit(self.__process_scenario, name, playbooks)
+                tasks.append(task)
+        _, running = wait(tasks)
+        assert not running  # check that all tasks finished
 
     @classmethod
     def tearDownClass(cls):
