@@ -146,7 +146,7 @@
       vars:
         hosts: "{{ groups.gatewayed }}"
       template:
-        src: lb_down_monitoring.yml
+        src: lb_down_monitoring.yaml
         dest: "{{ inventory_path }}"
 
     - name: Ensure private key exists
@@ -165,8 +165,8 @@
         src: "lb_down/{{ item }}"
         dest: "{{ test_path }}"
       with_items:
-        - "lb_down_monitoring_start_server.yml"
-        - "lb_down_monitoring_stop_server_on_random_node.yml"
+        - "lb_down_monitoring_start_server.yaml"
+        - "lb_down_monitoring_stop_server_on_random_node.yaml"
         - "lb_down_test.sh"
 
     - name: Ensure that cron is installed
