@@ -60,7 +60,7 @@
   become: yes
   hosts: gatewayed
   vars:
-     script_path: /tmp/check_cpu_load_status.sh
+    script_path: /tmp/check_cpu_load_status.sh
   tasks:
     - name: Install required packages
       apt:
