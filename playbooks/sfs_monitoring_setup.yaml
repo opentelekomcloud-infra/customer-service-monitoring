@@ -21,10 +21,10 @@
 
     - name: Register sfs_instance
       add_host:
-        name: "sfs_instance"
-        groups: "gatewayed"
+        name: sfs_instance
+        groups: gatewayed
         ansible_host: "{{ sfs_monitoring_instance_ip }}"
-        ansible_ssh_user: "linux"
+        ansible_ssh_user: linux
         ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
           -o UserKnownHostsFile=/dev/null
@@ -48,7 +48,7 @@
   become: yes
   vars:
     sfs_shared_path: "{{ hostvars.local.sfs_monitoring_sfs_path }}"
-    mount_path: "/mnt/sfs_share"
+    mount_path: /mnt/sfs_share
   tasks:
     - name: Update and upgrade apt packages
       apt:
@@ -75,7 +75,7 @@
 
     - name: Copy nfs stats script to sfs_instance
       copy:
-        src: "nfs/nfsiostat.sh"
+        src: nfs/nfsiostat.sh
         dest: /tmp/
 
     - name: Changing perm of "nfsiostat.sh", adding "+x"
@@ -87,7 +87,7 @@
   hosts: sfs_instance
   become: yes
   vars_files:
-    - "./vars/telegraf_dbconnection_vars.yaml"
+    - ./vars/telegraf_dbconnection_vars.yaml
   roles:
     - telegraf_client
   vars:

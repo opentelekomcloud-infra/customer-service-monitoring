@@ -25,7 +25,7 @@
         name: iscsi_initiator
         groups: gatewayed
         ansible_host: "{{ iscsi_initiator_instance_ip }}"
-        ansible_ssh_user: "linux"
+        ansible_ssh_user: linux
         ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
             -o UserKnownHostsFile=/dev/null
@@ -41,7 +41,7 @@
         name: iscsi_target
         groups: gatewayed
         ansible_host: "{{ iscsi_target_instance_ip }}"
-        ansible_ssh_user: "linux"
+        ansible_ssh_user: linux
         ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
             -o UserKnownHostsFile=/dev/null
@@ -56,7 +56,7 @@
   hosts: iscsi_target
   become: yes
   vars_files:
-    - "./vars/scenario_iscsi_vars.yaml"
+    - ./vars/scenario_iscsi_vars.yaml
   roles:
     - iscsi_target
 
@@ -64,7 +64,7 @@
   hosts: iscsi_initiator
   become: yes
   vars_files:
-    - "./vars/scenario_iscsi_vars.yaml"
+    - ./vars/scenario_iscsi_vars.yaml
   tasks:
     - name: Perform a discovery on target
       open_iscsi:
@@ -88,7 +88,7 @@
   hosts: iscsi_initiator
   become: yes
   vars_files:
-    - "./vars/scenario_iscsi_vars.yaml"
+    - ./vars/scenario_iscsi_vars.yaml
   tasks:
     - name: Add hdparm repository [Debian/Ubuntu]
       apt_repository:
@@ -123,26 +123,12 @@
         pkg:
           - cron
 
-    - name: Cron job for create big files on SCSI device every 5 minutes
-      cron:
-        name: "Creating big file on iSCSI device"
-        minute: "*/5"
-        job: >
-          /bin/dd if=/dev/urandom of="{{ mount_point }}/bigfile.txt"
-          bs=5000000 count=100 oflag=dsync
-
-    - name: Cron job for reading big files on all devices every 2 minutes
-      cron:
-        name: "Reading big files from iSCSI device"
-        minute: "*/2"
-        job: /sbin/hdparm -tT "{{ device }}"
-
 - name: Install telegraf client on initiator
   hosts: iscsi_initiator
   become: yes
   vars_files:
-    - "./vars/telegraf_dbconnection_vars.yaml"
-    - "./vars/scenario_iscsi_vars.yaml"
+    - ./vars/telegraf_dbconnection_vars.yaml
+    - ./vars/scenario_iscsi_vars.yaml
   roles:
     - telegraf_client
   vars:
@@ -166,19 +152,15 @@
 - name: Prepare test
   hosts: iscsi_initiator
   become: yes
+  vars:
+    script_name: iscsi_connection_status.sh
   tasks:
     - name: copy test script on initiator
       copy:
-        src: iscsi_connection_status.sh
+        src: "iscsi/{{ script_path }}"
         dest: /tmp/
 
     - name: Changing perm of "iscsi_connection_status.sh", adding "+x"
       file:
-        dest: /tmp/iscsi_connection_status.sh
+        dest: "/tmp/{{ script_path }}"
         mode: a+x
-
-    - name: Schedule connection test
-      cron:
-        name: "Check status of iSCSI connection"
-        minute: "*/1"
-        job: /tmp/iscsi_connection_status.sh

@@ -24,10 +24,10 @@
         ecs_instance_ip: "{{ tf_output.outputs['ecs_ip'].value }}"
     - name: Register ecs
       add_host:
-        name: "rds_scn_ecs"
-        groups: "gatewayed"
+        name: rds_scn_ecs
+        groups: gatewayed
         ansible_host: "{{ ecs_instance_ip }}"
-        ansible_ssh_user: "linux"
+        ansible_ssh_user: linux
         ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
           -o UserKnownHostsFile=/dev/null
@@ -51,7 +51,7 @@
   hosts: rds_scn_ecs
   become: yes
   vars_files:
-    - "./vars/telegraf_dbconnection_vars.yaml"
+    - ./vars/telegraf_dbconnection_vars.yaml
   vars:
     server_port: 8081
   roles:
@@ -62,3 +62,66 @@
         pg_username: "{{ hostvars.local.db_username }}"
         pg_password: "{{ hostvars.local.db_password }}"
         debug: false
+  tasks:
+    - name: Register facts
+      set_fact:
+        server_local_port: "{{ server_port }}"
+
+- name: Install telegraf client on Server
+  hosts: rds_scn_ecs
+  become: yes
+  vars_files:
+    - ./vars/telegraf_dbconnection_vars.yml
+  roles:
+    - role: telegraf_client
+      vars:
+        telegraf_influxdb_retention_policy: ""
+        telegraf_local_port: 8080
+        telegraf_plugins_base:
+          - name: http_listener_v2
+            options:
+              service_address: "localhost:{{ telegraf_local_port }}"
+              data_format: "influx"
+          - name: postgresql
+            options:
+              address: "postgres://{{ hostvars.test_host.db_username }}\
+              :{{ hostvars.test_host.db_password }}@{{ hostvars.test_host.db_address }}/entities"
+    - role: geerlingguy.nginx
+      vars:
+        nginx_remove_default_vhost: yes
+        nginx_vhosts:
+          - listen: "80"
+            server_name: "localhost"
+            extra_parameters: |
+              location / {
+                  proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;
+                  proxy_set_header Host $http_host;
+                  proxy_http_version 1.1;
+                  proxy_pass         http://localhost:{{ server_local_port }};
+              }
+              location /telegraf {
+                  proxy_pass         http://localhost:{{ telegraf_local_port }};
+                  proxy_set_header   Host $host;
+              }
+
+- name: Prepare reporting
+  hosts: rds_scn_ecs
+  become: yes
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+
+    - name: Install PIP
+      apt:
+        name:
+          - python3-setuptools
+          - python3-pip
+          - cron
+
+    - name: Install test utils
+      pip:
+        executable: pip3
+        name: csm-test-utils
+        state: forcereinstall

@@ -1,0 +1,17 @@
+{% macro host_t(host) %}
+    {{ host }}:
+      ansible_ssh_user: "linux"
+      ansible_ssh_private_key_file: "{{ remote_pk }}"
+{% endmacro %}
+
+all:
+  hosts:
+{% for host in hosts %}
+{{ host_t(host) -}}
+{% endfor %}
+  children:
+    gatewayed:
+      hosts:
+        {% for host in hosts -%}
+        {{ host }}: ''
+        {%  endfor -%}
