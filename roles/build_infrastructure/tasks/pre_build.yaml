@@ -32,10 +32,6 @@
 
 - name: Handle key pair
   block:
-    - name: Install requirements
-      pip:
-        requirements: requirements.txt
-        executable: "pip3"
     - name: Download/create key  # noqa 301 - get_key is more or less idempotent
       environment: "{{ default_variables }}"
       script: >

@@ -5,6 +5,11 @@
     vars:
       tox_envlist: tflint
 
+- job:
+    name: otc-tox-functional
+    parent: tox-functional
+    nodeset: fedora-pod
+
 - project:
     merge-mode: squash-merge
     check:
@@ -15,11 +20,15 @@
         - tox-linters-ansible-2.10
         - tox-molecule-29
         - tox-molecule-210
+    check-post:
+      jobs:
+        - otc-tox-functional
     gate:
       jobs:
         - terraform-lint
         - otc-tox-pep8
         - tox-linters-ansible-2.9
         - tox-linters-ansible-2.10
+        - otc-tox-functional
         - tox-molecule-29
         - tox-molecule-210
