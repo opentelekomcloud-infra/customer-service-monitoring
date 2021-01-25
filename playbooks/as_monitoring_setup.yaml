@@ -64,8 +64,7 @@
   tasks:
     - name: Install required packages
       apt:
-        name:
-          - build-essential
+        name: build-essential
 
     - name: Install lookbusy
       script: "autoscaling/install_lookbusy.sh"
