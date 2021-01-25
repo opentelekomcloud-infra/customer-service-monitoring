@@ -1,8 +1,6 @@
-resource "opentelekomcloud_kms_key_v1" "sfs_key" {
-  key_alias       = var.scenario
-  pending_days    = "7"
-  key_description = "sfs kms key"
-  is_enabled      = true
+
+data "opentelekomcloud_kms_key_v1" "kms_key" {
+  key_alias = var.kms_key_name
 }
 
 resource "opentelekomcloud_sfs_file_system_v2" "sharefile" {
@@ -13,9 +11,9 @@ resource "opentelekomcloud_sfs_file_system_v2" "sharefile" {
   description  = "sfs kms key"
   metadata = {
     "type" = "nfs"
-    "#sfs_crypt_key_id" : opentelekomcloud_kms_key_v1.sfs_key.id,
-    "#sfs_crypt_domain_id" : opentelekomcloud_kms_key_v1.sfs_key.domain_id,
-    "#sfs_crypt_alias" : opentelekomcloud_kms_key_v1.sfs_key.key_alias
+    "#sfs_crypt_key_id" : data.opentelekomcloud_kms_key_v1.kms_key.id,
+    "#sfs_crypt_domain_id" : data.opentelekomcloud_kms_key_v1.kms_key.domain_id,
+    "#sfs_crypt_alias" : data.opentelekomcloud_kms_key_v1.kms_key.key_alias
   }
 }
 
