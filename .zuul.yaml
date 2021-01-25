@@ -5,12 +5,6 @@
     vars:
       tox_envlist: tflint
 
-- job:
-    name: tox-cover-docker
-    parent: tox-cover
-    nodeset: debian-buster
-    pre-run: ./tests/docker/pre.yaml
-
 - project:
     merge-mode: squash-merge
     check:
@@ -19,7 +13,6 @@
         - otc-tox-pep8
         - tox-linters-ansible-2.9
         - tox-linters-ansible-2.10
-        - tox-cover-docker
         - tox-molecule-29
         - tox-molecule-210
     gate:
@@ -28,6 +21,5 @@
         - otc-tox-pep8
         - tox-linters-ansible-2.9
         - tox-linters-ansible-2.10
-        - tox-cover-docker
         - tox-molecule-29
         - tox-molecule-210
