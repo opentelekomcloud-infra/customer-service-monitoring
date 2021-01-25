@@ -26,8 +26,6 @@
         name: as_instance
         groups: gatewayed
         ansible_host: "{{ as_monitoring_instance_ip }}"
-        ansible_ssh_user: linux
-        ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
           -o UserKnownHostsFile=/dev/null
           -o ProxyCommand='ssh -W %h:%p
@@ -41,8 +39,6 @@
       add_host:
         name: as_control_instance
         ansible_host: "{{ as_monitoring_control_ip }}"
-        ansible_ssh_user: linux
-        ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
           -o UserKnownHostsFile=/dev/null
           -o ProxyCommand='ssh -W %h:%p
@@ -70,7 +66,6 @@
       apt:
         name:
           - build-essential
-          - cron
 
     - name: Install lookbusy
       script: "autoscaling/install_lookbusy.sh"
@@ -141,7 +136,6 @@
         name:
           - python3-setuptools
           - python3-pip
-          - cron
 
     - name: Install test utils
       pip:

@@ -25,8 +25,6 @@
         name: iscsi_initiator
         groups: gatewayed
         ansible_host: "{{ iscsi_initiator_instance_ip }}"
-        ansible_ssh_user: linux
-        ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
             -o UserKnownHostsFile=/dev/null
             -o ProxyCommand='ssh -W %h:%p
@@ -41,8 +39,6 @@
         name: iscsi_target
         groups: gatewayed
         ansible_host: "{{ iscsi_target_instance_ip }}"
-        ansible_ssh_user: linux
-        ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
             -o UserKnownHostsFile=/dev/null
             -o ProxyCommand='ssh -W %h:%p
@@ -118,11 +114,6 @@
         fstype: ext4
         state: mounted
 
-    - name: Install cron
-      apt:
-        pkg:
-          - cron
-
 - name: Install telegraf client on initiator
   hosts: iscsi_initiator
   become: yes
@@ -157,7 +148,7 @@
   tasks:
     - name: copy test script on initiator
       copy:
-        src: "iscsi/{{ script_path }}"
+        src: "iscsi/{{ script_name }}"
         dest: /tmp/
 
     - name: Changing perm of "iscsi_connection_status.sh", adding "+x"

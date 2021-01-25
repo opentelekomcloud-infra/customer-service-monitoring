@@ -25,8 +25,6 @@
       add_host:
         name: "{{ lb_control_instance_ip }}"
         groups: control
-        ansible_ssh_user: linux
-        ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
           -o UserKnownHostsFile=/dev/null
           -o ProxyCommand='ssh -W %h:%p
@@ -40,8 +38,6 @@
       add_host:
         name: "{{ item }}"
         groups: gatewayed
-        ansible_ssh_user: linux
-        ansible_ssh_private_key_file: "{{ local_private_key }}"
         ansible_ssh_common_args: >
           -o UserKnownHostsFile=/dev/null
           -o ProxyCommand='ssh -W %h:%p
