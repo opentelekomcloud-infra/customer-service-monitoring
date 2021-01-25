@@ -14,6 +14,7 @@ module "resources" {
   ecs_flavor        = var.ecs_flavor
   disc_volume       = var.disc_volume
   key_pair          = local.key_pair
+  kms_key_name      = var.kms_key
 
   subnet_cidr = local.scenario_subnet
   subnet_id   = var.subnet_id

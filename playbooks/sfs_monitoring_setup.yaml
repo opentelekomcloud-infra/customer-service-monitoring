@@ -8,6 +8,7 @@
     scenario_name: sfs_monitoring
     infra_state: present
     terraform_variables:
+      kms_key: "{{ kms_key }}"
       network_id: "{{ main_network_id }}"
       router_id: "{{ main_router_id }}"
       subnet_id: "{{ main_subnet_id }}"
