@@ -71,7 +71,7 @@
   hosts: rds_scn_ecs
   become: yes
   vars_files:
-    - ./vars/telegraf_dbconnection_vars.yml
+    - ./vars/telegraf_dbconnection_vars.yaml
   roles:
     - role: telegraf_client
       vars:

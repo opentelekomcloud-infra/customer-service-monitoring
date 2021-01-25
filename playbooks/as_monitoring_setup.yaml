@@ -96,7 +96,7 @@
     telegraf_local_port: 8080
     monitoring_local_port: 23456
   vars_files:
-    - "./vars/telegraf_dbconnection_vars.yml"
+    - ./vars/telegraf_dbconnection_vars.yaml
   roles:
     - role: telegraf_client
       vars:
