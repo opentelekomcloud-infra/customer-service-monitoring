@@ -23,9 +23,9 @@ start_test="./load_balancer_test ${load_balancer_ip} 300"
 
 function start_stop_rand_node() {
   if [[ "$1" == "stop" ]]; then
-    playbook=lb_down_monitoring_stop_server_on_random_node.yml
+    playbook=lb_down_monitoring_stop_server_on_random_node.yaml
   else
-    playbook=lb_down_monitoring_start_server.yml
+    playbook=lb_down_monitoring_start_server.yaml
   fi
   cur_dir=$(pwd)
   cd "${test_folder}" || exit 2
