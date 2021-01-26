@@ -8,7 +8,7 @@
 - job:
     name: otc-tox-functional
     parent: tox-functional
-    nodeset: fedora-pod
+    nodeset: debian-buster
 
 - project:
     merge-mode: squash-merge
