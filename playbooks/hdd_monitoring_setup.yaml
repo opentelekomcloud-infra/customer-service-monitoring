@@ -22,9 +22,7 @@
     - name: Register nodes
       add_host:
         name: "{{ item }}"
-        groups: "gatewayed"
-        ansible_ssh_user: "linux"
-        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        groups: gatewayed
         ansible_ssh_common_args: >
           -o UserKnownHostsFile=/dev/null
           -o ProxyCommand='ssh -W %h:%p
@@ -35,14 +33,22 @@
           -o PasswordAuthentication=no
       loop: "{{ node_ips }}"
 
+- name: Wait for hosts
+  hosts: gatewayed
+  gather_facts: no
+  tasks:
+    - name: Wait for host to be up
+      wait_for_connection:
+        timeout: 120
+
 - name: Prepare attached devices on server
   hosts: gatewayed
   become: yes
   vars:
     devices:
-      sata: "/dev/vdb"
-      sas: "/dev/vdc"
-      ssd: "/dev/vdd"
+      sata: /dev/vdb
+      sas: /dev/vdc
+      ssd: /dev/vdd
   tasks:
     - name: Add hdparm repository [Debian/Ubuntu]
       apt_repository:
@@ -53,7 +59,6 @@
       apt:
         name:
           - hdparm
-          - cron
         update_cache: yes
 
     - name: Create a ext4 filesystem on attached disks
@@ -77,27 +82,11 @@
         state: mounted
       with_items: "{{ lookup('dict', devices) }}"
 
-    - name: Cron job for create big files on all devices every 15 minutes
-      cron:
-        name: "Creating big file on {{ item.value }}"
-        minute: "*/5"
-        job: >
-          /bin/dd if=/dev/urandom of="/mnt/{{ item.key }}/bigfile.txt"
-          bs=1000000 count=1000 oflag=dsync
-      with_items: "{{ lookup('dict', devices) }}"
-
-    - name: Cron job for reading big files on all devices every 5 minutes
-      cron:
-        name: "Reading big files from {{ item.value }}"
-        minute: "*/2"
-        job: /sbin/hdparm -tT "{{ item.value }}"
-      with_items: "{{ lookup('dict', devices) }}"
-
 - name: Install telegraf client on server
   hosts: gatewayed
   become: yes
   vars_files:  # TODO: update connection to API monitoring external metric server
-    - "./vars/telegraf_dbconnection_vars.yaml"
+    - ./vars/telegraf_dbconnection_vars.yaml
   roles:
     - telegraf_client
   vars:
