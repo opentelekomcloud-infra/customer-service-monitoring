@@ -23,9 +23,7 @@
     - name: Register nodes
       add_host:
         name: "{{ lb_control_instance_ip }}"
-        groups: "telegrafed"
-        ansible_ssh_user: "linux"
-        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        groups: control
         ansible_ssh_common_args: >
           -o UserKnownHostsFile=/dev/null
           -o ProxyCommand='ssh -W %h:%p
@@ -38,9 +36,7 @@
     - name: Register nodes
       add_host:
         name: "{{ item }}"
-        groups: "gatewayed"
-        ansible_ssh_user: "linux"
-        ansible_ssh_private_key_file: "{{ local_private_key }}"
+        groups: gatewayed
         ansible_ssh_common_args: >
           -o UserKnownHostsFile=/dev/null
           -o ProxyCommand='ssh -W %h:%p
@@ -67,3 +63,70 @@
   vars:
     debug: true
     server_port: 80
+
+- name: Install telegraf client on Bastion
+  hosts: control
+  become: yes
+  vars_files:
+    - ./vars/telegraf_dbconnection_vars.yaml
+    - ./vars/nginx_telegraf_local.yaml
+  roles:
+    - role: telegraf_client
+      vars:
+        telegraf_influxdb_retention_policy: ""
+        telegraf_plugins_base:
+          - name: http_listener_v2
+            options:
+              service_address: "localhost:{{ telegraf_local_port }}"
+              data_format: "influx"
+    - role: geerlingguy.nginx
+      vars:
+        nginx_remove_default_vhost: yes
+        nginx_vhosts:
+          - listen: "80"
+            server_name: "localhost"
+            extra_parameters: "{{ extra_parameters }}"
+
+- name: Install telegraf client on nodes
+  hosts: gatewayed
+  become: yes
+  vars_files:
+    - ./vars/telegraf_dbconnection_vars.yaml
+  roles:
+    - telegraf_client
+  vars:
+    telegraf_influxdb_retention_policy: ""
+    telegraf_plugins_base:
+      - name: cpu
+        options:
+          percpu: "false"
+          totalcpu: "true"
+          fielddrop:
+            - "time_*"
+      - name: net
+        options:
+          interfaces:
+            - "eth*"
+            - "enp0s[0-1]"
+            - "lo"
+            - "ens3"
+
+- name: Prepare runner
+  hosts: control
+  become: yes
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+
+    - name: Install PIP
+      apt:
+        name:
+          - python3-setuptools
+          - python3-pip
+
+    - name: Install csm-test-utils
+      pip:
+        executable: pip3
+        name: csm-test-utils
