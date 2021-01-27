@@ -147,8 +147,8 @@
               data_format: influx
           - name: postgresql
             options:
-              address: "postgres://{{ hostvars.localhost.db_username }}\
-              :{{ hostvars.localhost.db_password }}@{{ hostvars.localhost.db_address }}/entities"
+              address: "postgres://{{ hostvars.local.db_username }}\
+              :{{ hostvars.local.db_password }}@{{ hostvars.local.db_address }}/entities"
     - role: geerlingguy.nginx
       vars:
         nginx_remove_default_vhost: yes
@@ -177,8 +177,19 @@
   tasks:
     - name: Copy clouds.yaml to ecs
       copy:
-        src: /etc/openstack/clouds.yaml
-        dest: "{{ os_cloud_config_file }}/"
+        src: "{{ os_cloud_config_file }}"
+        dest: /tmp/
+
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+
+    - name: Install PIP
+      apt:
+        name:
+          - python3-setuptools
+          - python3-pip
 
     - name: Install test utils
       pip:

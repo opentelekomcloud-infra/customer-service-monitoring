@@ -113,9 +113,9 @@
     project_path: /home/linux/customer-service-monitoring
     keys_path: "{{ project_path }}/scenarios/lb_down_monitoring"
     inventory_path: "{{ test_path }}/inventory/prod"
-    loadbalancer_public_ip: "{{ hostvars.localhost.lb_down_instance_ip }}"
-    remote_pk: "{{ test_path }}/{{ hostvars.localhost.key_name }}"
-    local_private_key: "{{ hostvars.localhost.local_private_key }}"
+    loadbalancer_public_ip: "{{ hostvars.local.lb_down_instance_ip }}"
+    remote_pk: "{{ test_path }}/{{ hostvars.local.key_name }}"
+    local_private_key: "{{ hostvars.local.local_private_key }}"
     version: "HEAD"
   tasks:
     - name: Checkout roles from git
