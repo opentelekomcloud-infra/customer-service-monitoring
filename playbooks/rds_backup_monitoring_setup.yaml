@@ -90,7 +90,7 @@
 
     - name: Copy scripts to host
       copy:
-        src: rds/
+        src: rds_backup/
         dest: "{{ test_scripts_path }}/"
 
     - name: Install pg2 and SQLAlchemy for Postgresql
@@ -102,18 +102,6 @@
       file:
         dest: "{{ test_scripts_path }}/check_rds_filling_status.sh"
         mode: a+x
-
-    - name: Add records to rds in background  # noqa 301 305
-      shell: "start-stop-daemon -Sbmvp {{ test_scripts_path }}/__main__.pid
-              -x /usr/bin/python3 {{ test_scripts_path }}/__main__.py --
-              --run_option {{ run_option }}
-              --source {{ source }}
-              --drivername {{ drivername }}
-              --host {{ pg_host }}
-              --port {{ pg_port }}
-              --username {{ pg_username }}
-              --password {{ pg_password }}
-              --database {{ pg_database }}"
 
     - name: Schedule RDS script status check
       cron:
@@ -167,19 +155,10 @@
                   proxy_set_header   Host $host;
               }
 
-- name: Install csm test utils
+- name: Prepare runner
   hosts: ecs
   become: yes
-  vars:
-    endpoint: https://rds.eu-de.otc.t-systems.com
-    target: http://localhost:8081
-    telegraf: http://localhost:8080
   tasks:
-    - name: Copy clouds.yaml to ecs
-      copy:
-        src: "{{ os_cloud_config_file }}"
-        dest: /tmp/
-
     - name: Update and upgrade apt packages
       apt:
         upgrade: yes
@@ -191,8 +170,7 @@
           - python3-setuptools
           - python3-pip
 
-    - name: Install test utils
+    - name: Install csm-test-utils
       pip:
         executable: pip3
         name: csm-test-utils
-        state: forcereinstall
