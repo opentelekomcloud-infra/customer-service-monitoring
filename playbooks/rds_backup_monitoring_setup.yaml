@@ -28,7 +28,7 @@
 
     - name: Register ecs
       add_host:
-        name: ecs
+        name: rds_instance
         groups: gatewayed
         ansible_host: "{{ ecs_instance_ip }}"
         ansible_ssh_common_args: >
@@ -41,7 +41,7 @@
           -o PasswordAuthentication=no
 
 - name: Wait for host
-  hosts: ecs
+  hosts: rds_instance
   gather_facts: no
   tasks:
     - name: Wait for host to be up
@@ -50,7 +50,7 @@
         timeout: 120
 
 - name: Start Server
-  hosts: ecs
+  hosts: rds_instance
   become: yes
   vars:
     server_local_port: 8081
@@ -118,7 +118,7 @@
                {{ pg_database }}"
 
 - name: Install telegraf client on Server
-  hosts: ecs
+  hosts: rds_instance
   become: true
   vars_files:
     - ./vars/telegraf_dbconnection_vars.yaml
@@ -156,7 +156,7 @@
               }
 
 - name: Prepare runner
-  hosts: ecs
+  hosts: rds_instance
   become: yes
   tasks:
     - name: Update and upgrade apt packages
@@ -174,3 +174,4 @@
       pip:
         executable: pip3
         name: csm-test-utils
+        state: forcereinstall
