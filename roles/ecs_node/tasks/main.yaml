@@ -1,0 +1,61 @@
+
+- name: Gather information about a current image
+  openstack.cloud.image_info:
+    image: "{{ ecs_image }}"
+  register: image
+
+- name: Create security group
+  openstack.cloud.security_group:
+    state: present
+    name: ecs_group
+    description: Allow external connections to ssh, http, https and icmp
+  register: secur_group
+
+- name: Add rules for tcp connection to the security group
+  openstack.cloud.security_group_rule:
+    security_group: secur_group.security_group.name
+    protocol: tcp
+    port_range_min: "{{ item }}"
+    port_range_max: "{{ item }}"
+    remote_ip_prefix: 0.0.0.0/0
+  loop:
+    - 22
+    - 80
+    - 443
+
+- name: Add a rule for icmp connection to the security group
+  openstack.cloud.security_group_rule:
+    security_group: secur_group.security_group.name
+    protocol: icmp
+    port_range_min: -1
+    port_range_max: -1
+    remote_ip_prefix: 0.0.0.0/0
+
+- name: Create network port
+  openstack.cloud.port:
+    state: present
+    name: "port_{{ item }}"
+    admin_state_up: yes
+    network: "{{ network_id }}"
+    fixed_ips:
+      - ip_address: "{{ subnet_cidr }}.{{ item|int + 5|int }}"
+      - subnet_id: "{{ subnet_id }}"
+    security_groups: secur_group.security_group.id
+  with_sequence: start=0 end="{{ count }}"
+
+- name: Create a new instance
+  os_server:
+    state: present
+    name: "{{ scenario }}_instance{{ item }}"
+    flavor: "{{ ecs_flavor }}"
+    key_name: "{{ key_pair_name }}"
+    userdata: "{% include 'first_boot.sh' %}"
+    availability_zone: "{{ availability_zone }}"
+    timeout: 200
+    nics:
+      - port-name: "port_{{ item }}"
+      - net-id: "{{ network_id }}"
+    volume_size: "{{ disk_volume }}"
+    image: image.image.id
+    terminate_volume: true
+  with_sequence: start=0 end="{{ count }}"
