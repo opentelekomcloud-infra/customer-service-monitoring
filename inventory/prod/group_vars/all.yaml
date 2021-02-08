@@ -1,7 +1,7 @@
 terraform_version: 0.14.5
 tmp_dir: "/tmp"
 local_private_key: "{{ tmp_dir }}/{{ key_name }}"
-terraform_workspace: testpolina
+terraform_workspace: temp
 terraform_network_cidr: "192.168.0.0/16"
 os_cloud_profile: devstack
 os_cloud_config_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
