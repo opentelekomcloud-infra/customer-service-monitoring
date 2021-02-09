@@ -1,11 +1,11 @@
 ---
-- name: Create a new instance
+- name: Delete instances
   openstack.cloud.server:
     state: absent
     name: "{{ scenario_name }}_instance{{ item }}"
   with_sequence: start=1 end="{{ count|int }}"
 
-- name: Create security group
+- name: Delete security group
   openstack.cloud.security_group:
     state: absent
     name: ecs_group
