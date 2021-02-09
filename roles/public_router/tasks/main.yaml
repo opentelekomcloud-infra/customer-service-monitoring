@@ -1,0 +1,3 @@
+- name: Build infra
+  include_tasks: build.yaml
+  when: infra_state == "present"
