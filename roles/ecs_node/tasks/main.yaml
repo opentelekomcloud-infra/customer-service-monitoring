@@ -1,5 +1,5 @@
 ---
-- name: Gather information about a current image
+- name: Getting information about a current image
   openstack.cloud.image_info:
     image: "{{ image }}"
   register: image
@@ -31,8 +31,20 @@
     port_range_max: -1
     remote_ip_prefix: 0.0.0.0/0
 
+- name: Create network port
+  openstack.cloud.port:
+    state: present
+    name: "port_{{ item }}"
+    admin_state_up: yes
+    network: "{{ network_id }}"
+    fixed_ips:
+      - ip_address: "{{ subnet_cidr }}.{{ item|int + 10|int }}"
+      - subnet_id: "{{ subnet_id }}"
+    security_groups: "{{ secur_group.secgroup.id }}"
+  with_sequence: start=1 end="{{ count|int }}"
+
 - name: Create a new instance
-  os_server:
+  openstack.cloud.server:
     state: present
     name: "{{ scenario_name }}_instance{{ item }}"
     flavor: "{{ flavor }}"
@@ -40,9 +52,9 @@
     availability_zone: "{{ availability_zone }}"
     timeout: 200
     nics:
-      - net-name: "test-polina_csm_controller_router"
-      - net-id: "209dc3cb-753f-42c2-afe0-b3f8fc91da94"
+      - port-name: "port_{{ item }}"
+      - net-id: "{{ network_id }}"
     volume_size: "{{ volume_size }}"
     image: "{{ image.openstack_image.id }}"
     terminate_volume: true
-  with_sequence: start=0 end="{{ count }}"
+  with_sequence: start=1 end="{{ count|int }}"
