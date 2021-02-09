@@ -1,4 +1,4 @@
-
+---
 - name: Gather information about a current image
   openstack.cloud.image_info:
     image: "{{ ecs_image }}"
@@ -13,7 +13,7 @@
 
 - name: Add rules for tcp connection to the security group
   openstack.cloud.security_group_rule:
-    security_group: secur_group.security_group.name
+    security_group: "{{ secur_group.secgroup.name }}"
     protocol: tcp
     port_range_min: "{{ item }}"
     port_range_max: "{{ item }}"
@@ -25,7 +25,7 @@
 
 - name: Add a rule for icmp connection to the security group
   openstack.cloud.security_group_rule:
-    security_group: secur_group.security_group.name
+    security_group: "{{ secur_group.secgroup.name }}"
     protocol: icmp
     port_range_min: -1
     port_range_max: -1
@@ -40,7 +40,7 @@
     fixed_ips:
       - ip_address: "{{ subnet_cidr }}.{{ item|int + 5|int }}"
       - subnet_id: "{{ subnet_id }}"
-    security_groups: secur_group.security_group.id
+    security_groups: "{{ secur_group.secgroup.id }}"
   with_sequence: start=0 end="{{ count }}"
 
 - name: Create a new instance
