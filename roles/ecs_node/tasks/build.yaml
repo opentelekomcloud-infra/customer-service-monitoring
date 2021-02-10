@@ -17,10 +17,7 @@
     port_range_min: "{{ item }}"
     port_range_max: "{{ item }}"
     remote_ip_prefix: 0.0.0.0/0
-  loop:
-    - 22
-    - 80
-    - 443
+  loop: "{{ ecs_secgroup_ports }}"
 
 - name: Add a rule for icmp connection to the security group
   openstack.cloud.security_group_rule:
@@ -62,4 +59,4 @@
     terminate_volume: true
     delete_fip: true
     auto_ip: false
-  with_sequence: start=1 end="{{ count|int }}"
+  with_sequence: start=1 end="{{ ecs_count|int }}"
