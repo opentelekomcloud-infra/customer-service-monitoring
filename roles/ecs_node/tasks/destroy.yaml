@@ -2,7 +2,7 @@
 - name: Delete instances
   openstack.cloud.server:
     state: absent
-    name: "{{ ecs_scenario_name }}_instance{{ item }}"
+    name: "{{ ecs_scenario_name }}_instance{{ item }}_{{ availability_zone }}"
   with_sequence: start=1 end="{{ ecs_count|int }}"
 
 - name: Delete security group

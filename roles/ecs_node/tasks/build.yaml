@@ -30,7 +30,7 @@
 - name: Create a new instance
   openstack.cloud.server:
     state: present
-    name: "{{ ecs_scenario_name }}_instance{{ item }}"
+    name: "{{ ecs_scenario_name }}_instance{{ item }}_{{ availability_zone }}"
     flavor: "{{ ecs_flavor }}"
     key_name: "{{ ecs_key_pair_name }}"
     availability_zone: "{{ ecs_availability_zone }}"
