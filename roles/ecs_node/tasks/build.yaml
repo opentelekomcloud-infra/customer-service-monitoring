@@ -1,0 +1,62 @@
+---
+- name: Getting information about a current image
+  openstack.cloud.image_info:
+    image: "{{ ecs_image }}"
+  register: image
+
+- name: Create security group
+  openstack.cloud.security_group:
+    name: ecs_group
+    description: Allow external connections to ssh, http, https and icmp
+  register: secur_group
+
+- name: Add rules for tcp connection to the security group
+  openstack.cloud.security_group_rule:
+    security_group: "{{ secur_group.secgroup.name }}"
+    protocol: tcp
+    port_range_min: "{{ item }}"
+    port_range_max: "{{ item }}"
+    remote_ip_prefix: 0.0.0.0/0
+  loop: "{{ ecs_secgroup_ports }}"
+
+- name: Add a rule for icmp connection to the security group
+  openstack.cloud.security_group_rule:
+    security_group: "{{ secur_group.secgroup.name }}"
+    protocol: icmp
+    port_range_min: -1
+    port_range_max: -1
+    remote_ip_prefix: 0.0.0.0/0
+
+- name: Create a new instance
+  openstack.cloud.server:
+    state: present
+    name: "{{ ecs_scenario_name }}_instance{{ item }}_{{ availability_zone }}"
+    flavor: "{{ ecs_flavor }}"
+    key_name: "{{ ecs_key_pair_name }}"
+    availability_zone: "{{ ecs_availability_zone }}"
+    security_groups: "{{ secur_group.secgroup.name }}"
+    timeout: 200
+    userdata: |
+      {%- raw -%}#!/usr/bin/env bash
+      file=/etc/ssh/sshd_config
+      cp -p $file $file.old &&
+         while read key other; do
+             case $key in
+             GatewayPorts) other=yes ;;
+             AllowTcpForwarding) other=yes ;;
+             PubkeyAuthentication) other=yes ;;
+             PermitTunnel) other=yes ;;
+             esac
+             echo "$key $other"
+         done <$file.old >$file
+      echo 'UseDNS no' >>$file
+      sudo service sshd restart
+      {% endraw %}
+    nics:
+      - net-id: "{{ ecs_network_id }}"
+    volume_size: "{{ ecs_volume_size }}"
+    image: "{{ image.openstack_image.id }}"
+    terminate_volume: true
+    delete_fip: true
+    auto_ip: false
+  with_sequence: start=1 end="{{ ecs_count|int }}"
