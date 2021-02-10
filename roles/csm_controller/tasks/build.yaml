@@ -1,18 +1,13 @@
 ---
 - name: Build a main network with a router
-  hosts: local
-  vars:
-    infra_state: present
-  roles:
-    - role: public_router
-
-- name: Build bastion
-  hosts: local
+  include_role:
+    name: "{{ item }}"
+  loop:
+    - public_router
+    - opentelekomcloud.bastion
   vars:
     state: present
-    security_group: my_bastion_sg
+    security_group: "{{ scenario_name }}_securgr"
     server_net: "{{ net.network.name }}"
-    server_keypair_name: test-polina_kp_csm_controller
-    server_name: 'bastion'
-  roles:
-    - role: opentelekomcloud.bastion
+    server_keypair_name: "{{ key_pair_name }}"
+    server_name: "{{ scenario_name }}_bastion"
