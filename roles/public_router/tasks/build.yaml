@@ -1,7 +1,7 @@
 ---
 - name: Create main network
   openstack.cloud.network:
-    name: "{{ prefix }}_network"
+    name: "{{ scenario_name }}_network"
   register: net
 
 - name: Getting info about external network
@@ -11,7 +11,7 @@
 
 - name: Create subnet
   openstack.cloud.subnet:
-    name: "{{ prefix }}_subnet"
+    name: "{{ scenario_name }}_subnet"
     network_name: "{{ net.network.name }}"
     cidr: "{{ subnet_cidr }}"
     dns_nameservers:
@@ -21,7 +21,7 @@
 
 - name: Create router
   openstack.cloud.router:
-    name: "{{ prefix }}_router"
+    name: "{{ scenario_name }}_router"
     enable_snat: true
     network: "{{ ext_net.openstack_networks[0].id }}"
     interfaces:

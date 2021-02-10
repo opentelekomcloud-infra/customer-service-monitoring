@@ -1,1 +1,2 @@
 subnet_cidr: "192.168.0.0/24"
+scenario_name: "public_router"

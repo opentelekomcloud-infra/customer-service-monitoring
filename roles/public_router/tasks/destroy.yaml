@@ -1,15 +1,15 @@
 ---
 - name: Delete router
   openstack.cloud.router:
-    name: "{{ prefix }}_router"
+    name: "{{ scenario_name }}_router"
     state: absent
 
 - name: Delete subnet
   openstack.cloud.subnet:
-    name: "{{ prefix }}_subnet"
+    name: "{{ scenario_name }}_subnet"
     state: absent
 
 - name: Delete main network
   openstack.cloud.network:
-    name: "{{ prefix }}_network"
+    name: "{{ scenario_name }}_network"
     state: absent
