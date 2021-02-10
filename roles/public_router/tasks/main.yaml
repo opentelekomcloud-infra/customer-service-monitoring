@@ -3,6 +3,6 @@
   include_tasks: build.yaml
   when: infra_state == "present"
 
-- name: Build infra
+- name: Destroy infra
   include_tasks: destroy.yaml
   when: infra_state == "absent"
