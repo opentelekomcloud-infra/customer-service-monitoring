@@ -1,7 +1,7 @@
 ---
 - name: Getting information about a current image
   openstack.cloud.image_info:
-    image: "{{ image }}"
+    image: "{{ ecs_image }}"
   register: image
 
 - name: Create security group
@@ -33,10 +33,10 @@
 - name: Create a new instance
   openstack.cloud.server:
     state: present
-    name: "{{ scenario_name }}_instance{{ item }}"
-    flavor: "{{ flavor }}"
-    key_name: "{{ key_pair }}"
-    availability_zone: "{{ availability_zone }}"
+    name: "{{ ecs_scenario_name }}_instance{{ item }}"
+    flavor: "{{ ecs_flavor }}"
+    key_name: "{{ ecs_key_pair_name }}"
+    availability_zone: "{{ ecs_availability_zone }}"
     security_groups: "{{ secur_group.secgroup.name }}"
     timeout: 200
     userdata: |
@@ -56,8 +56,8 @@
       sudo service sshd restart
       {% endraw %}
     nics:
-      - net-id: "{{ network_id }}"
-    volume_size: "{{ volume_size }}"
+      - net-id: "{{ ecs_network_id }}"
+    volume_size: "{{ ecs_volume_size }}"
     image: "{{ image.openstack_image.id }}"
     terminate_volume: true
     delete_fip: true
