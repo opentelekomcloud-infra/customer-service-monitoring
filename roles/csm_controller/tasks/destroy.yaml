@@ -1,5 +1,5 @@
 ---
-- name: Build a main network with a router
+- name: Destroy a main network with a router
   include_role:
     name: "{{ item }}"
   loop:
@@ -11,3 +11,4 @@
     server_net: "{{ net.network.name }}"
     server_keypair_name: "{{ keypair_name }}"
     server_name: "{{ scenario_name }}_bastion"
+    domain_name: "{{ domain }}"
