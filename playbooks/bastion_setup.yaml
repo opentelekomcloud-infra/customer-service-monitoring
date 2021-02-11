@@ -2,7 +2,7 @@
 - name: Build/Check controller infrastructure
   hosts: local
   roles:
-    - prepare_local
+    - prepare_build
     - csm_controller
   vars:
     scenario_name: csm_controller
