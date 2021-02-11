@@ -27,6 +27,11 @@
       register: get_key_output
       changed_when: get_key_output.stdout != 'Private key is up to date\n'
 
+    - name: Change mode of private key to 0o600
+      file:
+        path: "{{ key_path }}"
+        mode: 0600
+
 - name: Create key pair
   openstack.cloud.keypair:
     name: "{{ keypair_name }}"

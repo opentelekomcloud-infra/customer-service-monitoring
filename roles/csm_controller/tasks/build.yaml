@@ -11,3 +11,4 @@
     server_net: "{{ net.network.name }}"
     server_keypair_name: "{{ keypair_name }}"
     server_name: "{{ scenario_name }}_bastion"
+    domain_name: "{{ domain_name }}"

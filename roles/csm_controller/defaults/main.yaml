@@ -4,6 +4,7 @@ key_name: "{{ scenario_name }}_key"
 key_path: "{{ tmp_dir }}/{{ key_name }}"
 keypair_name: "{{ key_name }}_keypair"
 requirements: requirements.txt
+domain_name: ""
 
 os_cloud_config_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
 os_cloud_profile: "{{ lookup('env', 'OS_CLOUD') }}"

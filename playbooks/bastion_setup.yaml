@@ -1,53 +1,18 @@
 ---
-- name: Setup software
-  hosts: local
-  vars:
-    requirements:
-      - "requirements"
-    req_dir: "/tmp/requirements/"
-  roles:
-    - role: anton_sidelnikov.terraform
-      become: yes
-  tasks:
-    - name: Copy Requirements
-      copy:
-        src: "{{ item }}.txt"
-        dest: "{{ req_dir }}"
-      with_items: "{{ requirements }}"
-    - name: Install requirements
-      pip:
-        executable: pip3
-        requirements: "{{ req_dir }}{{ item }}.txt"
-      with_items: "{{ requirements }}"
-
 - name: Build/Check controller infrastructure
   hosts: local
   roles:
-    - build_infrastructure
+    - csm_controller
   vars:
     scenario_name: csm_controller
-    controller_eip: "{{ controller_address }}"
-    infra_state: present
-    terraform_variables:
-      kms_key: "{{ kms_key }}"
+    state: present
   tasks:
     - name: Register build result
       set_fact:
-        controller_public_ip: "{{ tf_output.outputs['csm_controller_fip'].value }}"
-        main_network_id: "{{ tf_output.outputs['network'].value }}"
-        main_subnet_id: "{{ tf_output.outputs['subnet'].value }}"
-        main_router_id: "{{ tf_output.outputs['router'].value }}"
-
-    - name: Move private key to tmp_dir
-      fetch:
-        src: "{{ tmp_dir }}/{{ key_name }}"
-        dest: "{{ local_private_key }}"
-        flat: yes
-
-    - name: Change mode of private key to 0o600
-      file:
-        path: "{{ local_private_key }}"
-        mode: 0600
+        controller_public_ip: "{{ bastion_interface_ip }}"
+        main_network_id: "{{ net.network.id }}"
+        main_subnet_id: "{{ subnet.subnet.id }}"
+        main_router_id: "{{ router.router.id }}"
 
     - name: Register csm_controller
       add_host:
