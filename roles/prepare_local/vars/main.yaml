@@ -1,6 +1,0 @@
-default_variables:
-  AWS_SECRET_ACCESS_KEY: "{{ aws_credential.secret }}"
-  AWS_ACCESS_KEY_ID: "{{ aws_credential.access }}"
-  AWS_SESSION_TOKEN: "{{ aws_credential.token }}"
-  OS_CLOUD: "{{ os_cloud_profile }}"
-  OS_CLIENT_CONFIG_FILE: "{{ os_cloud_config_file }}"

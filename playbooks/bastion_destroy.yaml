@@ -2,7 +2,7 @@
 - name: Build/Check controller infrastructure
   hosts: local
   roles:
-    - csm_controller
+    - build_infrastructure
   vars:
     scenario_name: csm_controller
-    state: absent
+    infra_state: absent
