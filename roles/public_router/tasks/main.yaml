@@ -1,8 +1,8 @@
 ---
 - name: Build router
   include_tasks: build.yaml
-  when: state == "present"
+  when: infra_state == "present"
 
 - name: Destroy router
   include_tasks: destroy.yaml
-  when: state == "absent"
+  when: infra_state == "absent"
