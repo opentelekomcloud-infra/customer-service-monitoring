@@ -1,8 +1,11 @@
 ---
-- name: Build  csm controller
+- name: Preparations for cms controller building
+  include_tasks: pre_build.yaml
+
+- name: Build csm controller
   include_tasks: build.yaml
-  when: infra_state == "present"
+  when: state == "present"
 
 - name: Destroy csm controller
   include_tasks: destroy.yaml
-  when: infra_state == "absent"
+  when: state == "absent"

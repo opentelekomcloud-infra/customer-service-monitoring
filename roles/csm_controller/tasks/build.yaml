@@ -9,5 +9,5 @@
     state: present
     security_group: "{{ scenario_name }}_securgr"
     server_net: "{{ net.network.name }}"
-    server_keypair_name: "{{ key_pair_name }}"
+    server_keypair_name: "{{ keypair_name }}"
     server_name: "{{ scenario_name }}_bastion"
