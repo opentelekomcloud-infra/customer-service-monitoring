@@ -2,10 +2,12 @@
 - name: Build/Check controller infrastructure
   hosts: local
   roles:
+    - prepare_local
     - csm_controller
   vars:
     scenario_name: csm_controller
     state: present
+    keypair_name: "{{ keypair.key.name }}"
   tasks:
     - name: Register build result
       set_fact:
