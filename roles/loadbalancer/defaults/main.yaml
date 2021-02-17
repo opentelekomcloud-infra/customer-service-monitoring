@@ -1,0 +1,11 @@
+scenario_name: ""
+loadbl_subnet_id: ""
+loadblcr_lb_local_ip: ""
+loadblcr_pool_lb_method: "round_robin"
+loadblcr_instances: ""
+loadblcr_protocol: "tcp"
+loadblcr_protocol_port: 80
+loadblcr_monitor_delay: 1
+loadblcr_monitor_timeout: 1
+loadblcr_monitor_max_retries: 2
+loadblcr_members_count: ""
