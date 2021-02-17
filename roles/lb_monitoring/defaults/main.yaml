@@ -7,7 +7,7 @@ lb_subnet_cidr: "192.168.1"
 lb_nodes_image: "Standard_Debian_10_latest"
 lb_nodes_flavor: "s2.medium.2"
 lb_nodes_availability_zones: ["eu-de-01", "eu-de-02", "eu-de-03"]
-lb_nodes_count: "3"
+lb_nodes_count: 3
 
 lb_local_ip:  "{{ lb_subnet_cidr }}.3"
 lb_protocol: "tcp"
