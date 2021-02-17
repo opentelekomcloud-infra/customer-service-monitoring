@@ -1,7 +1,7 @@
 - name: Build  ECS nodes
   include_tasks: build.yaml
-  when: infra_state == "present"
+  when: state == "present"
 
 - name: Destroy ECS nodes
   include_tasks: destroy.yaml
-  when: infra_state == "absent"
+  when: state == "absent"

@@ -1,9 +1,9 @@
-ecs_availability_zone: eu-de-03
+ecs_availability_zones: ["eu-de-03"]
 ecs_volume_size: 5
 ecs_image: ""
-ecs_count: ""
 ecs_network_id: ""
 ecs_flavor: ""
 ecs_key_pair_name: ""
 ecs_scenario_name: "ecs_node"
-ecs_secgroup_ports: "[ 22, 80, 443 ]"
+ecs_secgroup_ports: [ "22", "80", "443" ]
+ecs_count: "1"
