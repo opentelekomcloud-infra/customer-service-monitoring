@@ -10,7 +10,7 @@
     scenario_name: "{{ scenario }}"
     ecs_availability_zones: "{{ lb_nodes_availability_zones }}"
     ecs_count: "{{ lb_nodes_count }}"
-    loadblcr_members_count: "{{ lb_nodes_count }}"
+    loadbalancer_members_count: "{{ lb_nodes_count }}"
 
 - name: Destroy key pair for lb monitoring
   openstack.cloud.keypair:
