@@ -1,0 +1,8 @@
+---
+- name: Build  infra for lb monitoring
+  include_tasks: build.yaml
+  when: state == "present"
+
+- name: Destroy  infra for lb monitoring
+  include_tasks: destroy.yaml
+  when: state == "absent"

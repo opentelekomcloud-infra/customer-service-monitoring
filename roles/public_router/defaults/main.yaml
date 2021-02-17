@@ -1,2 +1,2 @@
-subnet_cidr: "192.168.0.0/24"
+subnet_cidr: "192.168.0.0/8"
 scenario_name: "public_router"
