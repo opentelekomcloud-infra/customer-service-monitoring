@@ -4,7 +4,7 @@
     state: absent
     name: "{{ scenario_name }}_member_{{ item }}"
     pool: "{{ scenario_name }}_pool_http"
-  with_sequence: start=1 end="{{ loadblcr_members_count|int  }}"
+  with_sequence: start=1 end="{{ loadbalancer_members_count|int  }}"
 
 - name: Destroy lb pool
   opentelekomcloud.cloud.lb_pool:
