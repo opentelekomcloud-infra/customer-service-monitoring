@@ -6,4 +6,4 @@ ecs_flavor: ""
 ecs_key_pair_name: ""
 ecs_scenario_name: "ecs_node"
 ecs_secgroup_ports: [ "22", "80", "443" ]
-ecs_count: ""
+ecs_count: "1"
