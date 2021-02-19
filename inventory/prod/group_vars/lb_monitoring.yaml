@@ -1,0 +1,13 @@
+lb_monitoring:
+  scenario: "lb_monitoring"
+  ecs_image: "Standard_Debian_10_latest"
+  ecs_flavor: "s2.medium.2"
+  ecs_key_pair_name: "{{ scenario }}_keypair"
+  ecs_availability_zones:  ["eu-de-01", "eu-de-02", "eu-de-03"]
+  ecs_count: "3"
+  loadbalancer_protocol: "tcp"
+  loadbalancer_protocol_port: 80
+  loadbalancer_monitor_delay: 1
+  loadbalancer_monitor_timeout: 1
+  loadbalancer_monitor_max_retries: 2
+  loadbalancer_pool_lb_method: "round_robin"
