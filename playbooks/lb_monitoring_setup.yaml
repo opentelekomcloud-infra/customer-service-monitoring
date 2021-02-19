@@ -5,11 +5,11 @@
 - name: Create key pair for lb monitoring
   hosts: local
   tasks:
+    - include_vars: ./vars/lb_monitoring.yaml
     - name: Create key pair for lb monitoring scenario
       openstack.cloud.keypair:
-        name: "{{ keypair }}"
+        name: "{{ lb_keypair }}"
         public_key_file: "{{ key_path }}.pub"
-      register: keypair
 
 - name: Build infrastructure
   hosts: local
@@ -18,7 +18,7 @@
     -  loadbalancer
   vars:
     state: present
-    ecs_network_id: "{{ network.network.id }}"
-    loadbalancer_subnet_id: "{{ subnet.subnet.id }}"
+    ecs_network_id: "{{ main_network_id }}"
+    loadbalancer_subnet_id: "{{ main_subnet_id }}"
     loadbalancer_instances: "{{ instances }}"
     loadbalancer_members_count: "{{ instances.results|length }}"
