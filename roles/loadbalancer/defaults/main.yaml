@@ -1,0 +1,11 @@
+loadbalancer_scenario_name: ""
+loadbalancer_subnet_id: ""
+loadbalancer_lb_local_ip: ""
+loadbalancer_pool_lb_method: "round_robin"
+loadbalancer_instances: ""
+loadbalancer_protocol: "tcp"
+loadbalancer_protocol_port: 80
+loadbalancer_monitor_delay: 1
+loadbalancer_monitor_timeout: 1
+loadbalancer_monitor_max_retries: 2
+loadbalancer_members_count: 1

@@ -1,0 +1,8 @@
+---
+- name: Build loadbalancer
+  include_tasks: build.yaml
+  when: state == "present"
+
+- name: Destroy loadbalancer
+  include_tasks: destroy.yaml
+  when: state == "absent"
