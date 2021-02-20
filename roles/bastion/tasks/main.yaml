@@ -1,0 +1,8 @@
+- name: Build  Bastion
+  include_tasks: build.yaml
+  when: state == "present"
+
+- name: Destroy Bastion
+  include_tasks: destroy.yaml
+  when: state == "absent"
+

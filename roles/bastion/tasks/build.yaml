@@ -1,0 +1,70 @@
+---
+- name: Getting information about a current image
+  openstack.cloud.image_info:
+    image: "{{ bastion_image }}"
+  register: image
+
+- name: Create security group
+  openstack.cloud.security_group:
+    name: bastion_group
+    description: Allow external connections to ssh, http, https and icmp
+  register: secur_group
+
+- name: Add rules for tcp connection to the security group
+  openstack.cloud.security_group_rule:
+    security_group: "{{ secur_group.secgroup.name }}"
+    protocol: tcp
+    port_range_min: "{{ item }}"
+    port_range_max: "{{ item }}"
+    remote_ip_prefix: 0.0.0.0/0
+  loop: "{{ bastion_secgroup_ports }}"
+
+- name: Add a rule for icmp connection to the security group
+  openstack.cloud.security_group_rule:
+    security_group: "{{ secur_group.secgroup.name }}"
+    protocol: icmp
+    port_range_min: -1
+    port_range_max: -1
+    remote_ip_prefix: 0.0.0.0/0
+
+- name: Create a new instance
+  openstack.cloud.server:
+    state: present
+    name: "{{ bastion_scenario_name }}_instance"
+    flavor: "{{ bastion_flavor }}"
+    key_name: "{{ bastion_key_pair_name }}"
+    availability_zone: "{{ bastion_availability_zone }}"
+    security_groups: "{{ secur_group.secgroup.name }}"
+    timeout: 200
+    userdata: |
+      {%- raw -%}#!/usr/bin/env bash
+                 #setup ssh service config
+                 file=/etc/ssh/sshd_config
+                 cp -p $file $file.old &&
+                     while read key other; do
+                         case $key in
+                         GatewayPorts) other=yes ;;
+                         AllowTcpForwarding) other=yes ;;
+                         PubkeyAuthentication) other=yes ;;
+                         PermitTunnel) other=yes ;;
+                         esac
+                         echo "$key $other"
+                     done <$file.old > $file
+                 sudo service sshd restart
+
+                 mkdir -p /etc/sslcerts/live
+                 #generate Diffie-Hellman for TLS
+                 sudo openssl dhparam -out /etc/sslcerts/live/dhparams.pem 2048
+
+                 #enable port forwarding
+                 echo 'net.ipv4.ip_forward=1' | sudo tee -a /etc/sysctl.conf
+                 sudo sysctl -p /etc/sysctl.conf
+      {% endraw %}
+    nics:
+      - net-id: "{{ bastion_network_id }}"
+    volume_size: "{{ bastion_volume_size }}"
+    image: "{{ image.openstack_image.id }}"
+    terminate_volume: true
+    delete_fip: true
+    auto_ip: true
+  register: bastion

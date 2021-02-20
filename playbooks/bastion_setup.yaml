@@ -11,7 +11,7 @@
   tasks:
     - name: Register build result
       set_fact:
-        controller_public_ip: "{{ bastion_interface_ip }}"
+        controller_public_ip: "{{ bastion.openstack.accessIPv4 }}"
         main_network_id: "{{ net.network.id }}"
         main_subnet_id: "{{ subnet.subnet.id }}"
         main_router_id: "{{ router.router.id }}"

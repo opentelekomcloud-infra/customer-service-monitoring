@@ -4,11 +4,10 @@
     name: "{{ item }}"
   loop:
     - public_router
-    - opentelekomcloud.bastion
+    - bastion
   vars:
     state: present
-    security_group: "{{ scenario_name }}_securgr"
-    server_net: "{{ net.network.name }}"
-    server_keypair_name: "{{ keypair_name }}"
-    server_name: "{{ scenario_name }}_bastion"
-    domain_name: "{{ domain }}"
+    bastion_image: "{{ image }}"
+    bastion_network_id: "{{ net.network.id }}"
+    bastion_flavor: "{{ flavor }}"
+    bastion_key_pair_name: "{{ keypair_name }}"
