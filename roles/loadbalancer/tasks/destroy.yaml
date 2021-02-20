@@ -2,22 +2,22 @@
 - name: Destroy members for a pool in the load balancer
   opentelekomcloud.cloud.lb_member:
     state: absent
-    name: "{{ loadbalancer_scenario_name }}_member_{{ item }}"
-    pool: "{{ loadbalancer_scenario_name }}_pool_http"
+    name: "{{ scenario_name }}_member_{{ item }}"
+    pool: "{{ scenario_name }}_pool_http"
   with_sequence: start=1 end="{{ loadbalancer_members_count|int  }}"
 
 - name: Destroy lb pool
   opentelekomcloud.cloud.lb_pool:
     state: absent
-    name: "{{ loadbalancer_scenario_name }}_pool_http"
+    name: "{{ scenario_name }}_pool_http"
 
 - name: Destroy listener
   opentelekomcloud.cloud.lb_listener:
     state: absent
-    name: "{{ loadbalancer_scenario_name }}_listener_http"
+    name: "{{ scenario_name }}_listener_http"
 
 - name: Destroy loadbalancer
   opentelekomcloud.cloud.loadbalancer:
-    name: "{{ loadbalancer_scenario_name }}_elastic_loadbalancer_http"
+    name: "{{ scenario_name }}_elastic_loadbalancer_http"
     state: absent
 
