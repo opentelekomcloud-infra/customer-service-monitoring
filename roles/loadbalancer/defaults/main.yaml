@@ -1,4 +1,4 @@
-loadbalancer_scenario_name: "loadbalancer_prefix"
+loadbalancer_prefix: "loadbalancer"
 loadbalancer_subnet_id: ""
 loadbalancer_lb_local_ip: ""
 loadbalancer_pool_lb_method: "round_robin"

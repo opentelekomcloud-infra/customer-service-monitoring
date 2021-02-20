@@ -7,6 +7,8 @@
     - opentelekomcloud.bastion
   vars:
     state: present
+    public_router_subnet_cidr: "{{ network_cidr }}"
+    public_router_scenario: "public_router"
     security_group: "{{ scenario_name }}_securgr"
     server_net: "{{ net.network.name }}"
     server_keypair_name: "{{ keypair_name }}"
