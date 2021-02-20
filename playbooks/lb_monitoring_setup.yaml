@@ -2,7 +2,7 @@
 - name: Prepare main network with the controller host
   import_playbook: bastion_setup.yaml
 
-- name: Create key pair for lb monitoring
+- name: Create key pair for lb monitoring and including required variables
   hosts: local
   tasks:
     - include_vars: ./vars/lb_monitoring.yaml
@@ -22,3 +22,33 @@
     loadbalancer_subnet_id: "{{ main_subnet_id }}"
     loadbalancer_instances: "{{ instances }}"
     loadbalancer_members_count: "{{ instances.results|length }}"
+
+- name: Register nodes
+  hosts: local
+  tasks:
+    - name: Register nodes
+      add_host:
+        name: "{{ item.openstack.private_v4 }}"
+        groups: gatewayed
+        ansible_ssh_common_args: >
+          -o UserKnownHostsFile=/dev/null
+          -o StrictHostKeyChecking=no
+          -o IdentityFile="{{ local_private_key }}"
+          -o KbdInteractiveAuthentication=no
+          -o PreferredAuthentications=gssapi-with-mic,gssapi-keyex,hostbased,publickey
+          -o User=linux
+          -o PasswordAuthentication=no
+          -o ProxyCommand='ssh -W %h:%p
+          -q linux@{{ controller_public_ip }}
+          -i {{ local_private_key }}'
+      loop: "{{ instances.results }}"
+
+
+- name: Start Server
+  hosts: gatewayed
+  become: yes
+  roles:
+    - too_simple_server
+  vars:
+    debug: true
+    server_port: 8

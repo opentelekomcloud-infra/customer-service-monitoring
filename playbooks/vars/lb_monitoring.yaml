@@ -6,7 +6,7 @@ ecs_key_pair_name: "{{ lb_keypair }}"
 ecs_availability_zones:  ["eu-de-01", "eu-de-02", "eu-de-03"]
 ecs_count: 3
 ecs_scenario_name: "{{ scenario }}"
-loadbalancer_scenario_name: "{{ scenario }}"
+loadbalancer_scenario_name: "loadbalancer_prefix"
 loadbalancer_protocol: "tcp"
 loadbalancer_protocol_port: 80
 loadbalancer_monitor_delay: 1
