@@ -20,7 +20,7 @@
       environment: "{{ default_variables }}"
       script: >
         get_key.py
-        --output {{ key_path }}
+        --output {{ local_private_key }}
         --key key/{{ key_name }}
       args:
         executable: python3
@@ -29,11 +29,11 @@
 
     - name: Change mode of private key to 0o600
       file:
-        path: "{{ key_path }}"
+        path: "{{ local_private_key }}"
         mode: 0600
 
 - name: Create key pair
   openstack.cloud.keypair:
     name: "{{ keypair }}"
-    public_key_file: "{{ key_path }}.pub"
+    public_key_file: "{{ local_private_key }}.pub"
   register: keypair

@@ -1,7 +1,7 @@
 scenario_name: ""
 tmp_dir: "/tmp"
 key_name: "{{ scenario_name }}_key"
-key_path: "{{ tmp_dir }}/{{ key_name }}"
+local_private_key: "{{ tmp_dir }}/{{ key_name }}"
 keypair: "{{ key_name }}_keypair"
 requirements: requirements.txt
 

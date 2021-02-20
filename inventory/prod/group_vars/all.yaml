@@ -7,7 +7,6 @@ os_cloud_profile: devstack
 os_cloud_config_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
 terraform_base_dir: terraform
 key_name: key_csm_controller
-key_path: "{{ tmp_dir }}/{{ key_name }}"
 local_private_key: "{{ tmp_dir }}/{{ key_name }}"
 requirements: requirements.txt
 kms_key: csm_kms_key

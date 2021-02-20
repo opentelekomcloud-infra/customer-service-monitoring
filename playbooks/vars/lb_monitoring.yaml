@@ -3,7 +3,7 @@ lb_keypair: "{{ scenario }}_keypair"
 ecs_image: "Standard_Debian_10_latest"
 ecs_flavor: "s2.medium.2"
 ecs_key_pair_name: "{{ lb_keypair }}"
-ecs_availability_zones:  ["eu-de-01", "eu-de-02", "eu-de-03"]
+ecs_availability_zones: ["eu-de-01", "eu-de-02", "eu-de-03"]
 ecs_count: 3
 ecs_scenario_name: "{{ scenario }}"
 loadbalancer_prefix: "loadbalancer"

@@ -9,13 +9,13 @@
     - name: Create key pair for lb monitoring scenario
       openstack.cloud.keypair:
         name: "{{ lb_keypair }}"
-        public_key_file: "{{ key_path }}.pub"
+        public_key_file: "{{ local_private_key }}.pub"
 
 - name: Build infrastructure
   hosts: local
   roles:
-    -  ecs_node
-    -  loadbalancer
+    - ecs_node
+    - loadbalancer
   vars:
     state: present
     ecs_network_id: "{{ main_network_id }}"
