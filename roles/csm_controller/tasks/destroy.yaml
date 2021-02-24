@@ -3,12 +3,8 @@
   include_role:
     name: "{{ item }}"
   loop:
-    - opentelekomcloud.bastion
+    - bastion
     - public_router
   vars:
     state: absent
-    security_group: "{{ scenario_name }}_securgr"
-    server_net: "{{ net.network.name }}"
-    server_keypair_name: "{{ keypair_name }}"
-    server_name: "{{ scenario_name }}_bastion"
-    domain_name: "{{ domain }}"
+
