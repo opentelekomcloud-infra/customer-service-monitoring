@@ -1,4 +1,9 @@
 ---
+- name: Disable health check
+  opentelekomcloud.cloud.lb_healthmonitor:
+    state: absent
+    name: "{{ loadbalancer_prefix }}_healthcheck"
+
 - name: Destroy members for a pool in the load balancer
   opentelekomcloud.cloud.lb_member:
     state: absent

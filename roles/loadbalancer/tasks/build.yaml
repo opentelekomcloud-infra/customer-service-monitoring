@@ -38,3 +38,13 @@
   loop: "{{ loadbalancer_instances.results }}"
   loop_control:
     index_var: my_idx
+
+- name: Enable health check
+  opentelekomcloud.cloud.lb_healthmonitor:
+    state: present
+    name: "{{ loadbalancer_prefix }}_healthcheck"
+    pool: "{{ lb_pool.server_group.id }}"
+    delay: "{{ loadbalancer_monitor_delay }}"
+    max_retries: "{{ loadbalancer_monitor_max_retries }}"
+    monitor_timeout: "{{ loadbalancer_monitor_timeout }}"
+    type: "{{ loadbalancer_protocol }}"
