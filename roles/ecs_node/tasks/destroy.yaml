@@ -5,6 +5,12 @@
     name: "{{ ecs_scenario_name }}_instance{{ item }}_{{ ecs_availability_zones[item|int % az_count|int] }}"
   with_sequence: start=1 end="{{ ecs_count|int }}"
 
+- name: Delete ports
+  openstack.cloud.port:
+    name: "{{ ecs_scenario_name }}_port{{ item }}"
+    state: absent
+  with_sequence: start=1 end="{{ ecs_count|int }}"
+
 - name: Delete security group
   openstack.cloud.security_group:
     state: absent
