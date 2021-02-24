@@ -27,6 +27,14 @@
     port_range_max: -1
     remote_ip_prefix: 0.0.0.0/0
 
+- name: Create a port for a bastion
+  openstack.cloud.port:
+    name: "{{ bastion_scenario_name }}_port"
+    network: "{{ bastion_network_id }}"
+    fixed_ips:
+      - ip_address: "{{ bastion_private_ip | default(omit) }}"
+  register: port
+
 - name: Create a new instance
   openstack.cloud.server:
     state: present
@@ -61,7 +69,7 @@
                  sudo sysctl -p /etc/sysctl.conf
       {% endraw %}
     nics:
-      - net-id: "{{ bastion_network_id }}"
+      - port-name: "{{ port.port.name }}"
     volume_size: "{{ bastion_volume_size }}"
     image: "{{ image.openstack_image.id }}"
     terminate_volume: true

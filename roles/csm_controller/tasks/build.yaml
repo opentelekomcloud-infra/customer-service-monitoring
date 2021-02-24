@@ -7,7 +7,8 @@
     - bastion
   vars:
     state: present
-    bastion_image: "{{ image }}"
+    bastion_image: "{{ csm_controller_image }}"
     bastion_network_id: "{{ net.network.id }}"
-    bastion_flavor: "{{ flavor }}"
-    bastion_key_pair_name: "{{ keypair_name }}"
+    bastion_private_ip: "{{ csm_controller_subnet | ansible.netcommon.ipmath(2) }}"
+    bastion_flavor: "{{ csm_controller_flavor }}"
+    bastion_key_pair_name: "{{ csm_controller_keypair_name }}"
