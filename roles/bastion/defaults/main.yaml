@@ -1,8 +1,8 @@
+bastion_scenario_name: "bastion"
 bastion_availability_zone: "eu-de-03"
 bastion_volume_size: 5
 bastion_image: ""
 bastion_network_id: ""
 bastion_flavor: ""
 bastion_key_pair_name: ""
-bastion_scenario_name: "bastion"
 bastion_secgroup_ports: [ "22", "80", "443" ]
