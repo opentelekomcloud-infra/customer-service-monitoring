@@ -25,4 +25,3 @@
   opentelekomcloud.cloud.loadbalancer:
     name: "{{ loadbalancer_prefix }}_elastic_loadbalancer_http"
     state: absent
-

@@ -7,6 +7,7 @@
     - bastion
   vars:
     state: present
+    public_router_scenario: "{{ scenario_name }}"
     bastion_image: "{{ csm_controller_image }}"
     bastion_network_id: "{{ net.network.id }}"
     bastion_private_ip: "{{ csm_controller_subnet | ansible.netcommon.ipmath(2) }}"

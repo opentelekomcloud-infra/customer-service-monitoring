@@ -6,6 +6,7 @@
     - csm_controller
   vars:
     state: present
+    scenario_name: csm_controller
     csm_controller_keypair_name: "{{ keypair.key.name }}"
     csm_controller_subnet: "{{ network_cidr | ansible.netcommon.ipsubnet('24', 0) }}"
   tasks:

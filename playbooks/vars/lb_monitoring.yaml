@@ -15,3 +15,4 @@ loadbalancer_monitor_max_retries: 2
 loadbalancer_pool_lb_method: "round_robin"
 loadbalancer_subnet_cidr: "{{ network_cidr | ansible.netcommon.ipsubnet('24', 1) }}"
 loadbalancer_lb_local_ip: "{{ loadbalancer_subnet_cidr | ansible.netcommon.ipmath(3) }}"
+loadbalancer_members_count: "{{ ecs_count }}"

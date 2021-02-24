@@ -22,7 +22,6 @@
     ecs_subnet_cidr: "{{ network_cidr | ansible.netcommon.ipsubnet('24', 1) }}"
     loadbalancer_subnet_id: "{{ main_subnet_id }}"
     loadbalancer_instances: "{{ instances }}"
-    loadbalancer_members_count: "{{ instances.results|length }}"
 
 - name: Register nodes
   hosts: local
