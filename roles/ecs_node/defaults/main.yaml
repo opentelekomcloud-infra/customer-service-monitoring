@@ -2,6 +2,7 @@ ecs_availability_zones: ["eu-de-03"]
 ecs_volume_size: 5
 ecs_image: ""
 ecs_network_id: ""
+ecs_subnet_cidr: ""
 ecs_flavor: ""
 ecs_key_pair_name: ""
 ecs_scenario_name: "ecs_node"
