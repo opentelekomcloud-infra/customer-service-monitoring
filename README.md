@@ -7,11 +7,30 @@ This repository contains customer service monitoring test scenarios for
 **Open Telekom Cloud**
 
 ## Infrastructure
-Infrastructure for test scenarios is built using Ansible. It uses openstack.cloud and opentelekomcloud.cloud ansible modules.
+Infrastructure for test scenarios is built using Ansible. 
 
 ### Requirements
 Existing scripts were checked to be working with:
  - Ansible 2.9 (Python 3.7)
+ - otcextensions 0.13.0
+ - openstacksdk 0.53.0 (installed via otcextensions)
+ 
+Ansible can be installed via the following command:
+ ```
+pip install ansible
+```
+
+It is used openstack.cloud and opentelekomcloud.cloud ansible modules collections for building infrastructure. 
+To use these collections firstly you need to install  wheel, otcextensions and openstacksdk (installed via otcextensions) using the following command:
+```
+pip install wheel otcextensions
+```
+
+Collections will be installed automatically once any playbook is executed, but it is possible to install it manually via following commands from Ansible Galaxy:
+```
+ansible-galaxy collection install openstack.cloud
+ansible-galaxy collection install opentelekomcloud.cloud
+```
 
 ### Build
 
@@ -27,7 +46,7 @@ export OS_CLOUD=mycloud
 ansible-playbook "playbooks/dns_monitoring_setup.yml"
 ```
 This script performs the following actions:
- 1. Build required infrastructure using different roles from roles/
+ 1. Build required infrastructure using different ansible roles from roles/
  2. Configure created infrastructure using respective playbook from playbooks/ for infrastructure monitoring
 
 Credentials should be stored in the file called "clouds.yaml".
