@@ -5,9 +5,10 @@
 - name: Create key pair for lb monitoring and including required variables
   hosts: local
   tasks:
-    - include_vars: ./vars/lb_monitoring.yaml
+    - name: Include variables required for lm monitoring infra
+      include_vars: ./vars/lb_monitoring.yaml
     - name: Create key pair for lb monitoring scenario
-      openstack.cloud.keypair:
+      os_keypair:
         name: "{{ lb_keypair }}"
         public_key_file: "{{ local_private_key }}.pub"
 
@@ -43,6 +44,13 @@
           -i {{ local_private_key }}'
       loop: "{{ instances.results }}"
 
+- name: Wait for nodes to be up
+  hosts: gatewayed
+  gather_facts: no
+  tasks:
+    - name: Wait for nodes to be up
+      wait_for_connection:
+        timeout: 200
 
 - name: Start Server
   hosts: gatewayed
@@ -51,4 +59,4 @@
     - too_simple_server
   vars:
     debug: true
-    server_port: 8
+    server_port: 80

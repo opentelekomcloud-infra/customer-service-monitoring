@@ -3,8 +3,8 @@
   hosts: local
   vars:
     state: absent
-  tasks:
-    - include_vars: ./vars/lb_monitoring.yaml
+  vars_files:
+    - ./vars/lb_monitoring.yaml
   roles:
     - loadbalancer
     - ecs_node
