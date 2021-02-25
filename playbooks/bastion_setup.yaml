@@ -30,7 +30,7 @@
   tasks:
     - name: Wait for host to be up
       wait_for_connection:
-        timeout: 120
+        timeout: 200
 
 - name: Install and setup nginx on Controller
   hosts: controller

@@ -35,8 +35,6 @@
           -o UserKnownHostsFile=/dev/null
           -o StrictHostKeyChecking=no
           -o IdentityFile="{{ local_private_key }}"
-          -o KbdInteractiveAuthentication=no
-          -o PreferredAuthentications=gssapi-with-mic,gssapi-keyex,hostbased,publickey
           -o User=linux
           -o PasswordAuthentication=no
           -o ProxyCommand='ssh -W %h:%p
@@ -50,7 +48,7 @@
   tasks:
     - name: Wait for nodes to be up
       wait_for_connection:
-        timeout: 200
+        timeout: 250
 
 - name: Start Server
   hosts: gatewayed
