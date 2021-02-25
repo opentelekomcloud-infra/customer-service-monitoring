@@ -1,23 +1,27 @@
 ---
+- name: Disable health check
+  opentelekomcloud.cloud.lb_healthmonitor:
+    state: absent
+    name: "{{ loadbalancer_prefix }}_healthcheck"
+
 - name: Destroy members for a pool in the load balancer
   opentelekomcloud.cloud.lb_member:
     state: absent
-    name: "{{ scenario_name }}_member_{{ item }}"
-    pool: "{{ scenario_name }}_pool_http"
+    name: "{{ loadbalancer_prefix }}_member_{{ item }}"
+    pool: "{{ loadbalancer_prefix }}_pool_http"
   with_sequence: start=1 end="{{ loadbalancer_members_count|int  }}"
 
 - name: Destroy lb pool
   opentelekomcloud.cloud.lb_pool:
     state: absent
-    name: "{{ scenario_name }}_pool_http"
+    name: "{{ loadbalancer_prefix }}_pool_http"
 
 - name: Destroy listener
   opentelekomcloud.cloud.lb_listener:
     state: absent
-    name: "{{ scenario_name }}_listener_http"
+    name: "{{ loadbalancer_prefix }}_listener_http"
 
 - name: Destroy loadbalancer
   opentelekomcloud.cloud.loadbalancer:
-    name: "{{ scenario_name }}_elastic_loadbalancer_http"
+    name: "{{ loadbalancer_prefix }}_elastic_loadbalancer_http"
     state: absent
-

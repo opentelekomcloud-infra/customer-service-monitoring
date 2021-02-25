@@ -1,7 +1,7 @@
 ---
 - name: Create loadbalancer
   opentelekomcloud.cloud.loadbalancer:
-    name: "{{ scenario_name }}_elastic_loadbalancer_http"
+    name: "{{ loadbalancer_prefix }}_elastic_loadbalancer_http"
     state: present
     vip_subnet: "{{ loadbalancer_subnet_id }}"
     vip_address: "{{ loadbalancer_lb_local_ip }}"
@@ -11,7 +11,7 @@
 - name: Create listener
   opentelekomcloud.cloud.lb_listener:
     state: present
-    name: "{{ scenario_name }}_listener_http"
+    name: "{{ loadbalancer_prefix }}_listener_http"
     protocol: "{{ loadbalancer_protocol }}"
     protocol_port: "{{ loadbalancer_protocol_port }}"
     loadbalancer: "{{ loadbalancer.loadbalancer.id }}"
@@ -20,7 +20,7 @@
 - name: Create lb pool
   opentelekomcloud.cloud.lb_pool:
     state: present
-    name: "{{ scenario_name }}_pool_http"
+    name: "{{ loadbalancer_prefix }}_pool_http"
     protocol: "{{ loadbalancer_protocol }}"
     lb_algorithm: "{{ loadbalancer_pool_lb_method }}"
     listener: "{{ listener.listener.id }}"
@@ -29,7 +29,7 @@
 - name: Create members for a pool in the load balancer
   opentelekomcloud.cloud.lb_member:
     state: present
-    name: "{{ scenario_name }}_member_{{ my_idx|int +1 }}"
+    name: "{{ loadbalancer_prefix }}_member_{{ my_idx|int +1 }}"
     pool: "{{ lb_pool.server_group.id }}"
     address: "{{ item.openstack.private_v4 }}"
     protocol_port: "{{ loadbalancer_protocol_port }}"
@@ -38,3 +38,13 @@
   loop: "{{ loadbalancer_instances.results }}"
   loop_control:
     index_var: my_idx
+
+- name: Enable health check
+  opentelekomcloud.cloud.lb_healthmonitor:
+    state: present
+    name: "{{ loadbalancer_prefix }}_healthcheck"
+    pool: "{{ lb_pool.server_group.id }}"
+    delay: "{{ loadbalancer_monitor_delay }}"
+    max_retries: "{{ loadbalancer_monitor_max_retries }}"
+    monitor_timeout: "{{ loadbalancer_monitor_timeout }}"
+    type: "{{ loadbalancer_protocol }}"

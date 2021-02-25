@@ -1,0 +1,18 @@
+scenario: "lb_monitoring"
+lb_keypair: "{{ scenario }}_keypair"
+ecs_image: "Standard_Debian_10_latest"
+ecs_flavor: "s2.medium.2"
+ecs_key_pair_name: "{{ lb_keypair }}"
+ecs_availability_zones: ["eu-de-01", "eu-de-02", "eu-de-03"]
+ecs_count: 3
+ecs_scenario_name: "{{ scenario }}"
+loadbalancer_prefix: "loadbalancer"
+loadbalancer_protocol: "tcp"
+loadbalancer_protocol_port: 80
+loadbalancer_monitor_delay: 1
+loadbalancer_monitor_timeout: 1
+loadbalancer_monitor_max_retries: 2
+loadbalancer_pool_lb_method: "round_robin"
+loadbalancer_subnet_cidr: "{{ network_cidr | ansible.netcommon.ipsubnet('24', 1) }}"
+loadbalancer_lb_local_ip: "{{ loadbalancer_subnet_cidr | ansible.netcommon.ipmath(3) }}"
+loadbalancer_members_count: "{{ ecs_count }}"
