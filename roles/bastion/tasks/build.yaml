@@ -42,7 +42,8 @@
     flavor: "{{ bastion_flavor }}"
     key_name: "{{ bastion_key_pair_name }}"
     availability_zone: "{{ bastion_availability_zone }}"
-    security_groups: "{{ secur_group.secgroup.name }}"
+    security_groups:
+     - "{{ secur_group.secgroup.name }}"
     timeout: 200
     userdata: |
       {%- raw -%}#!/usr/bin/env bash
