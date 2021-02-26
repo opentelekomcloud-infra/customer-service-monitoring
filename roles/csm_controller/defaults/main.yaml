@@ -1,3 +1,5 @@
-scenario_name: csm_controller
-keypair_name: ""
-domain: ""
+scenario_name: "csm_controller"
+csm_controller_keypair_name: ""
+csm_controller_image: "Standard_Debian_10_latest"
+csm_controller_flavor: "s2.medium.2"
+csm_controller_subnet: ""

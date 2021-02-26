@@ -27,13 +27,22 @@
     port_range_max: -1
     remote_ip_prefix: 0.0.0.0/0
 
+- name: Create ports for nodes
+  openstack.cloud.port:
+    name: "{{ ecs_scenario_name }}_port{{ item }}"
+    network: "{{ ecs_network_id }}"
+    fixed_ips:
+      - ip_address:  "{{ ecs_subnet_cidr | ansible.netcommon.ipmath(item|int + 9|int) }}"
+  with_sequence: start=1 end="{{ ecs_count|int }}"
+  register: ports
+
 - name: Create a new instance
   openstack.cloud.server:
     state: present
-    name: "{{ ecs_scenario_name }}_instance{{ item }}_{{ availability_zone }}"
+    name: "{{ ecs_scenario_name }}_instance{{ item }}_{{ ecs_availability_zones[item|int % az_count|int] }}"
     flavor: "{{ ecs_flavor }}"
     key_name: "{{ ecs_key_pair_name }}"
-    availability_zone: "{{ ecs_availability_zone }}"
+    availability_zone: "{{ ecs_availability_zones[item|int % az_count|int] }}"
     security_groups: "{{ secur_group.secgroup.name }}"
     timeout: 200
     userdata: |
@@ -53,10 +62,11 @@
       sudo service sshd restart
       {% endraw %}
     nics:
-      - net-id: "{{ ecs_network_id }}"
+      - port-name: "{{ ecs_scenario_name }}_port{{ item }}"
     volume_size: "{{ ecs_volume_size }}"
     image: "{{ image.openstack_image.id }}"
     terminate_volume: true
     delete_fip: true
     auto_ip: false
   with_sequence: start=1 end="{{ ecs_count|int }}"
+  register: instances

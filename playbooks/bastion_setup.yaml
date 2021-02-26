@@ -5,13 +5,14 @@
     - prepare_build
     - csm_controller
   vars:
-    scenario_name: csm_controller
     state: present
-    keypair_name: "{{ keypair.key.name }}"
+    scenario_name: csm_controller
+    csm_controller_keypair_name: "{{ keypair.key.name }}"
+    csm_controller_subnet: "{{ network_cidr | ansible.netcommon.ipsubnet('24', 0) }}"
   tasks:
     - name: Register build result
       set_fact:
-        controller_public_ip: "{{ bastion_interface_ip }}"
+        controller_public_ip: "{{ bastion.openstack.accessIPv4 }}"
         main_network_id: "{{ net.network.id }}"
         main_subnet_id: "{{ subnet.subnet.id }}"
         main_router_id: "{{ router.router.id }}"
@@ -29,7 +30,7 @@
   tasks:
     - name: Wait for host to be up
       wait_for_connection:
-        timeout: 120
+        timeout: 200
 
 - name: Install and setup nginx on Controller
   hosts: controller

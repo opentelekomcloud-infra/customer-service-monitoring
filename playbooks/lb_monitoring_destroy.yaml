@@ -1,8 +1,10 @@
 ---
-- name: Prepare variables
+- name: Destroy infrastructure for loadbalancer monitoring
   hosts: local
   vars:
-    scenario_name: lb_monitoring
-    infra_state: absent
+    state: absent
+  vars_files:
+    - ./vars/lb_monitoring.yaml
   roles:
-    - build_infrastructure
+    - loadbalancer
+    - ecs_node

@@ -1,0 +1,39 @@
+---
+- name: Prepare tmp dir
+  file:
+    path: "{{ tmp_dir }}"
+    state: directory
+
+- name: Copy Requirements
+  copy:
+    src: "{{ requirements }}"
+    dest: "{{ tmp_dir }}"
+
+- name: Install master requirements
+  pip:
+    executable: "pip3"
+    requirements: "{{ tmp_dir }}/{{ requirements }}"
+
+- name: Handle key pair
+  block:
+    - name: Download/create key  # noqa 301 - get_key is more or less idempotent
+      environment: "{{ default_variables }}"
+      script: >
+        get_key.py
+        --output {{ local_private_key }}
+        --key key/{{ key_name }}
+      args:
+        executable: python3
+      register: get_key_output
+      changed_when: get_key_output.stdout != 'Private key is up to date\n'
+
+    - name: Change mode of private key to 0o600
+      file:
+        path: "{{ local_private_key }}"
+        mode: 0600
+
+- name: Create key pair
+  openstack.cloud.keypair:
+    name: "{{ keypair }}"
+    public_key_file: "{{ local_private_key }}.pub"
+  register: keypair
