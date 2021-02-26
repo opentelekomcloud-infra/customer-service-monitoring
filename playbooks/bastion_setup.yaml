@@ -9,6 +9,7 @@
     scenario_name: csm_controller
     csm_controller_keypair_name: "{{ keypair.key.name }}"
     csm_controller_subnet: "{{ network_cidr | ansible.netcommon.ipsubnet('24', 0) }}"
+    csm_controller_volume_size: 40
   tasks:
     - name: Register build result
       set_fact:
