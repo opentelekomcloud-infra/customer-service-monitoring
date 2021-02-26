@@ -70,6 +70,7 @@
       {% endraw %}
     nics:
       - port-name: "{{ port.port.name }}"
+    boot_from_volume: true
     volume_size: "{{ bastion_volume_size }}"
     image: "{{ image.openstack_image.id }}"
     terminate_volume: true

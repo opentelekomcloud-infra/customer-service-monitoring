@@ -13,3 +13,4 @@
     bastion_private_ip: "{{ csm_controller_subnet | ansible.netcommon.ipmath(2) }}"
     bastion_flavor: "{{ csm_controller_flavor }}"
     bastion_key_pair_name: "{{ csm_controller_keypair_name }}"
+    bastion_volume_size: "{{ csm_controller_volume_size }}"
