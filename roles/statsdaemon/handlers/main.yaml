@@ -1,3 +1,5 @@
 ---
 - name: statsd daemon restart
-  service: name=statsdaemon state=restarted
+  service:
+    name: statsdaemon
+    state: restarted
