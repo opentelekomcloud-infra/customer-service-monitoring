@@ -1,0 +1,4 @@
+release_base_url: https://github.com/bitly/statsdaemon/releases/download/
+statsdaemon_url: "{{ release_base_url }}v{{ statsdaemon_version }}/statsdaemon-{{ statsdaemon_version }}.linux-amd64.go1.4.2.tar.gz"
+statsdaemon_destination: "{{ statsdaemon_home }}/statsdaemon-{{ statsdaemon_version }}.linux-amd64.go1.4.2.tar.gz"
+statsdaemon_unarchieved: "{{ statsdaemon_home }}/statsdaemon-{{ statsdaemon_version }}.linux-amd64.go1.4.2"
