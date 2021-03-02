@@ -1,6 +1,7 @@
 ---
 statsdaemon_enabled: yes
-statsdaemon_version: 0.7.2
+statsdaemon_version: 0.7.3
+statsdaemon_go_version: 1.14.2
 statsdaemon_home: /opt/statsdaemon      # where to install
 statsdaemon_service: systemd            # systemd|upstart
 statsdaemon_address: ":8125"            # UDP port

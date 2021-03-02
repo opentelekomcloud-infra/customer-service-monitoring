@@ -36,6 +36,17 @@
 - name: Install and setup nginx on Controller
   hosts: controller
   become: yes
+  vars:
+    statsdaemon_version: 0.7.3
+    statsdaemon_go_version: 1.14.2
+    statsdaemon_graphite: "-"
+    statsdaemon_address: ":8125"
+  roles:
+    - statsdaemon
+
+- name: Install and setup nginx on Controller
+  hosts: controller
+  become: yes
   vars_files:
     - "./vars/nginx_controller.yaml"
   roles:
