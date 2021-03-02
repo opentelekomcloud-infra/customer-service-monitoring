@@ -12,7 +12,7 @@
 - name: Unarchive statsdaemon
   unarchive:
     src: "{{ statsdaemon_destination }}"
-    dest: "{{statsdaemon_home}}"
+    dest: "{{ statsdaemon_home }}"
     copy: no
     creates: "{{ statsdaemon_unarchieved }}"
 
