@@ -6,7 +6,7 @@ Requires=local-fs.target network.target
 [Service]
 User={{ graphite_api_user }}
 Group={{ graphite_api_group }}
-ExecStart={{ statsdaemon_home }}/statsdaemon-{{ statsdaemon_version }}.linux-amd64.go1.4.2/statsdaemon \
+ExecStart={{ statsdaemon_home }}/statsdaemon-{{ statsdaemon_version }}.linux-amd64.go{{ statsdaemon_go_version }}/statsdaemon \
     -address="{{ statsdaemon_address }}" \
     -debug={{ statsdaemon_debug | to_nice_json }} \
     -delete-gauges={{ statsdaemon_delete_gauges | to_nice_json }} \
