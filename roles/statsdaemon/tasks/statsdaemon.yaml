@@ -13,8 +13,7 @@
   unarchive:
     src: "{{ statsdaemon_destination }}"
     dest: "{{ statsdaemon_home }}"
-    copy: no
-    creates: "{{ statsdaemon_unarchieved }}"
+    remote_src: yes
 
 - name: Setup statsdaemon upstart.conf
   template:
