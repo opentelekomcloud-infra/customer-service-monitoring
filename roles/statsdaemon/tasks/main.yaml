@@ -1,4 +1,5 @@
 ---
-- name: Install statsdaemon
-  include_tasks: statsdaemon.yaml
-  when: statsdaemon_enabled
+- name: statsdaemon restart
+  service:
+    name: statsdaemon
+    state: restarted
