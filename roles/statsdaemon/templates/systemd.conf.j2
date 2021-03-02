@@ -4,19 +4,19 @@ After=local-fs.target network.target
 Requires=local-fs.target network.target
 
 [Service]
-User={{graphite_api_user}}
-Group={{graphite_api_group}}
-ExecStart={{statsdaemon_home}}/statsdaemon-{{statsdaemon_version}}.linux-amd64.go1.4.2/statsdaemon \
-    -address="{{statsdaemon_address}}" \
-    -debug={{statsdaemon_debug|to_nice_json}} \
-    -delete-gauges={{statsdaemon_delete_gauges|to_nice_json}} \
-    -flush-interval={{statsdaemon_flush_interval}} \
-    -graphite="{{statsdaemon_graphite}}" \
-    -max-udp-packet-size={{statsdaemon_max_udp_packet_size}} \
-    -persist-count-keys={{statsdaemon_persist_count_keys}} \
-    -postfix="{{statsdaemon_postfix}}" -prefix="{{statsdaemon_prefix}}" -receive-counter="{{statsdaemon_receive_counter}}"  -tcpaddr="{{statsdaemon_tcpaddr}}"
+User={{ graphite_api_user }}
+Group={{ graphite_api_group }}
+ExecStart={{ statsdaemon_home }}/statsdaemon-{{ statsdaemon_version }}.linux-amd64.go1.4.2/statsdaemon \
+    -address="{{ statsdaemon_address }}" \
+    -debug={{ statsdaemon_debug | to_nice_json }} \
+    -delete-gauges={{ statsdaemon_delete_gauges | to_nice_json }} \
+    -flush-interval={{ statsdaemon_flush_interval }} \
+    -graphite="{{ statsdaemon_graphite }}" \
+    -max-udp-packet-size={{ statsdaemon_max_udp_packet_size }} \
+    -persist-count-keys={{ statsdaemon_persist_count_keys }} \
+    -postfix="{{ statsdaemon_postfix }}" -prefix="{{ statsdaemon_prefix }}" -receive-counter="{{ statsdaemon_receive_counter }}"  -tcpaddr="{{ statsdaemon_tcpaddr }}"
     {% for percent in statsdaemon_percent_threshold %}
-    -percent-threshold={{percent}} \
+    -percent-threshold={{ percent }} \
     {% endfor %}
 
 Restart=always

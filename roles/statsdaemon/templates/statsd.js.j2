@@ -99,27 +99,27 @@ Optional Variables:
 
 */
 {
-  port: {{statsd_port}}
+  port: {{ statsd_port }}
 , graphitePort: {{ statsd_graphitePort }}
-, graphiteHost: {{ statsd_graphiteHost|to_nice_json }}
-, backends: {{ statsd_backends|to_nice_json }}
-, debug: {{ statsd_debug|to_nice_json }}
-, address: {{ statsd_address|to_nice_json }}
-, address_ipv6: {{ statsd_address_ipv6|to_nice_json }}
-, mgmt_address: {{ statsd_mgmt_address|to_nice_json }}
+, graphiteHost: {{ statsd_graphiteHost | to_nice_json }}
+, backends: {{ statsd_backends | to_nice_json }}
+, debug: {{ statsd_debug | to_nice_json }}
+, address: {{ statsd_address | to_nice_json }}
+, address_ipv6: {{ statsd_address_ipv6 | to_nice_json }}
+, mgmt_address: {{ statsd_mgmt_address | to_nice_json }}
 , mgmt_port: {{ statsd_mgmt_port }}
-, title: {{ statsd_title|to_nice_json }}
-, healthStatus: {{ statsd_healthStatus|to_nice_json }}
-, flushInterval: {{ statsd_flushInterval|to_nice_json }}
-, percentThreshold: {{ statsd_percentThreshold|to_nice_json }}
-, flush_counts: {{ statsd_flush_counts|to_nice_json }}
+, title: {{ statsd_title | to_nice_json }}
+, healthStatus: {{ statsd_healthStatus | to_nice_json }}
+, flushInterval: {{ statsd_flushInterval | to_nice_json }}
+, percentThreshold: {{ statsd_percentThreshold | to_nice_json }}
+, flush_counts: {{ statsd_flush_counts | to_nice_json }}
 
 {% if statsd_graphite_raw is defined %}
 , graphite: {{ statsd_graphite_raw }}
 {% else %}
-, graphite: {{ statsd_graphite|to_nice_json }}
+, graphite: {{ statsd_graphite | to_nice_json }}
 {% endif %}
 {% for name, value in statsd_additional_options.items() %}
-, {{name}}: {{value|to_nice_json}}
+, {{ name }}: {{ value | to_nice_json }}
 {% endfor %}
 }

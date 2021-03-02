@@ -16,3 +16,5 @@ statsdaemon_persist_count_keys: 60      # number of flush-intervals to persist c
 statsdaemon_postfix: ""                 # postfix for all stats
 statsdaemon_prefix: ""                  # prefix for all stats
 statsdaemon_receive_counter: ""         # metric name for total metrics received per interval
+graphite_api_user: graphite
+graphite_api_group: "{{ graphite_api_user }}"

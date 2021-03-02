@@ -16,14 +16,14 @@
     copy: no
     creates: "{{ statsdaemon_unarchieved }}"
 
-- name: Setup statsdaemon service
+- name: Setup statsdaemon upstart.conf
   template:
     src: upstart.conf.j2
     dest: /etc/init/statsdaemon.conf
   when: statsdaemon_service == 'upstart'
   notify: statsdaemon restart
 
-- name: Setup statsdaemon service
+- name: Setup statsdaemon systemd.conf
   template:
     src: systemd.conf.j2
     dest: /etc/systemd/system/statsdaemon.service

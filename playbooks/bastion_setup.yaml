@@ -33,7 +33,7 @@
       wait_for_connection:
         timeout: 200
 
-- name: Install and setup nginx on Controller
+- name: Install and setup statsdaemon on Controller
   hosts: controller
   become: yes
   vars:
