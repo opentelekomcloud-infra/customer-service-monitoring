@@ -58,3 +58,16 @@
   vars:
     debug: true
     server_port: 80
+
+- name: Create object with data about lb infra
+  hosts: controller
+  gather_facts: no
+  tasks:
+    - name: Create object or overwrite existing object
+      opentelekomcloud.cloud.object:
+        container: "{{ container_name }}"
+        object: "{{ scenario }}"
+        content:
+          loadbalancer_public_ip: ""
+        overwrite: true
+        mode: create

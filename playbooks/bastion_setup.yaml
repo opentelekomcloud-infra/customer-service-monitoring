@@ -46,3 +46,13 @@
           - listen: "80"
             server_name: "localhost"
             extra_parameters: "{{ extra_parameters }}"
+
+- name: Create swift container
+  hosts: local
+  vars:
+    state: present
+  tasks:
+    - name: Create container
+      opentelekomcloud.cloud.object:
+        container: "{{ container_name }}"
+        mode: create
