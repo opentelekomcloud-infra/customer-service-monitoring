@@ -49,12 +49,8 @@
   become: yes
   roles:
     - role: geerlingguy.docker
-
-- name: Run graphite on Controller
-  hosts: controller
-  become: yes
   tasks:
-    - name: launch graphite
+    - name: launch graphite  # noqa 301 305
       command: "docker run -d --name graphite \
         --restart=always \
         -p 80:80 \

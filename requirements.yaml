@@ -4,5 +4,4 @@ collections:
   - opentelekomcloud.cloud
   - ansible.netcommon
 roles:
-  - name: geerlingguy.nginx
   - name: geerlingguy.docker
