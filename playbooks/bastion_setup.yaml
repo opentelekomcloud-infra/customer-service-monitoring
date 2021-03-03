@@ -19,7 +19,8 @@
       - 2023
       - 2024
       - 8126
-    csm_controller_secgroup_udp_ports: [8125]
+    csm_controller_secgroup_udp_ports:
+      - 8125
   tasks:
     - name: Register build result
       set_fact:

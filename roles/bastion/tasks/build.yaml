@@ -19,7 +19,7 @@
     remote_ip_prefix: 0.0.0.0/0
   loop: "{{ bastion_secgroup_tcp_ports }}"
 
-- name: Add rules for tcp connection to the security group
+- name: Add rules for udp connection to the security group
   openstack.cloud.security_group_rule:
     security_group: "{{ secur_group.secgroup.name }}"
     protocol: upd
@@ -27,7 +27,7 @@
     port_range_max: "{{ item }}"
     remote_ip_prefix: 0.0.0.0/0
   loop: "{{ bastion_secgroup_upd_ports }}"
-  when: bastion_secgroup_upd_ports
+  when: bastion_secgroup_upd_ports is defined
 
 - name: Add a rule for icmp connection to the security group
   openstack.cloud.security_group_rule:
