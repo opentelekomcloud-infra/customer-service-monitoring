@@ -14,3 +14,5 @@
     bastion_flavor: "{{ csm_controller_flavor }}"
     bastion_key_pair_name: "{{ csm_controller_keypair_name }}"
     bastion_volume_size: "{{ csm_controller_volume_size }}"
+    bastion_secgroup_tcp_ports: "{{ csm_controller_secgroup_tcp_ports }}"
+    bastion_secgroup_udp_ports: "{{ csm_controller_secgroup_udp_ports }}"
