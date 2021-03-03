@@ -5,4 +5,5 @@ bastion_image: ""
 bastion_network_id: ""
 bastion_flavor: ""
 bastion_key_pair_name: ""
-bastion_secgroup_ports: [ "22", "80", "443" ]
+bastion_secgroup_tcp_ports: [ "22", "80", "443" ]
+bastion_secgroup_udp_ports: []
