@@ -6,3 +6,9 @@
   vars:
     scenario_name: csm_controller
     state: absent
+  tasks:
+    - name: Delete container
+      opentelekomcloud.cloud.object:
+        container: "{{ container_name }}"
+        delete_with_all_objects: true
+        mode: delete

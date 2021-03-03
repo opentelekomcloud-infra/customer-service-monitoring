@@ -63,11 +63,18 @@
   hosts: controller
   gather_facts: no
   tasks:
+    - name: Getting data for swift object
+      set_fact:
+        nodes_ips: "{{ nodes_ips|default({}) | combine( {item.openstack.name: item.openstack.private_v4} ) }}"
+      with_items: "{{ instances.results }}"
+
     - name: Create object or overwrite existing object
       opentelekomcloud.cloud.object:
         container: "{{ container_name }}"
         object: "{{ scenario }}"
         content:
-          loadbalancer_public_ip: ""
+          loadbalancer_public_ip: "{{ loadbalancer.loadbalacer.public_vip_address }}"
+          nodes_ips: "{{ nodes_ips }}"
+          loadbalancer_keypair: "{{ lb_keypair }}"
         overwrite: true
         mode: create
