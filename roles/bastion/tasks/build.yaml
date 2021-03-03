@@ -22,12 +22,12 @@
 - name: Add rules for udp connection to the security group
   openstack.cloud.security_group_rule:
     security_group: "{{ secur_group.secgroup.name }}"
-    protocol: upd
+    protocol: udp
     port_range_min: "{{ item }}"
     port_range_max: "{{ item }}"
     remote_ip_prefix: 0.0.0.0/0
-  loop: "{{ bastion_secgroup_upd_ports }}"
-  when: bastion_secgroup_upd_ports is defined
+  loop: "{{ bastion_secgroup_udp_ports }}"
+  when: bastion_secgroup_udp_ports is defined
 
 - name: Add a rule for icmp connection to the security group
   openstack.cloud.security_group_rule:
