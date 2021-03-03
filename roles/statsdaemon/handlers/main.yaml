@@ -1,5 +1,0 @@
----
-- name: statsdaemon restart
-  service:
-    name: statsdaemon
-    state: restarted
