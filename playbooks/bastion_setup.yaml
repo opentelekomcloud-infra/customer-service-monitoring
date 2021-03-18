@@ -63,8 +63,6 @@
 
 - name: Create a common swift container
   hosts: local
-  vars:
-    state: present
   tasks:
     - name: Create container
       swift_client:

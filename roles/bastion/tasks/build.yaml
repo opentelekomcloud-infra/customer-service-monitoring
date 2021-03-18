@@ -41,6 +41,8 @@
   openstack.cloud.port:
     name: "{{ bastion_scenario_name }}_port"
     network: "{{ bastion_network_id }}"
+    security_groups:
+      - "{{ secur_group.secgroup.name }}"
     fixed_ips:
       - ip_address: "{{ bastion_private_ip | default(omit) }}"
   register: port
