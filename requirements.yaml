@@ -1,2 +1,7 @@
-- src: anton_sidelnikov.terraform
-- src: geerlingguy.nginx
+---
+collections:
+  - openstack.cloud
+  - opentelekomcloud.cloud
+  - ansible.netcommon
+roles:
+  - name: geerlingguy.docker

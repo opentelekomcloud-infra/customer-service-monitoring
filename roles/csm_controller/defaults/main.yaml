@@ -3,3 +3,6 @@ csm_controller_keypair_name: ""
 csm_controller_image: "Standard_Debian_10_latest"
 csm_controller_flavor: "s2.medium.2"
 csm_controller_subnet: ""
+csm_controller_volume_size: 10
+csm_controller_secgroup_tcp_ports: [ "22", "80", "443" ]
+csm_controller_secgroup_udp_ports: []

@@ -43,7 +43,8 @@
     flavor: "{{ ecs_flavor }}"
     key_name: "{{ ecs_key_pair_name }}"
     availability_zone: "{{ ecs_availability_zones[item|int % az_count|int] }}"
-    security_groups: "{{ secur_group.secgroup.name }}"
+    security_groups:
+      - "{{ secur_group.secgroup.name }}"
     timeout: 200
     userdata: |
       {%- raw -%}#!/usr/bin/env bash
@@ -63,6 +64,7 @@
       {% endraw %}
     nics:
       - port-name: "{{ ecs_scenario_name }}_port{{ item }}"
+    boot_from_volume: true
     volume_size: "{{ ecs_volume_size }}"
     image: "{{ image.openstack_image.id }}"
     terminate_volume: true

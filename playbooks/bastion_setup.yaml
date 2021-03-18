@@ -9,6 +9,18 @@
     scenario_name: csm_controller
     csm_controller_keypair_name: "{{ keypair.key.name }}"
     csm_controller_subnet: "{{ network_cidr | ansible.netcommon.ipsubnet('24', 0) }}"
+    csm_controller_volume_size: 40
+    csm_controller_secgroup_tcp_ports:
+      - 22
+      - 80
+      - 443
+      - 2003
+      - 2004
+      - 2023
+      - 2024
+      - 8126
+    csm_controller_secgroup_udp_ports:
+      - 8125
   tasks:
     - name: Register build result
       set_fact:
@@ -32,16 +44,19 @@
       wait_for_connection:
         timeout: 200
 
-- name: Install and setup nginx on Controller
+- name: Install docker on Controller
   hosts: controller
   become: yes
-  vars_files:
-    - "./vars/nginx_controller.yaml"
   roles:
-    - role: geerlingguy.nginx
-      vars:
-        nginx_remove_default_vhost: yes
-        nginx_vhosts:
-          - listen: "80"
-            server_name: "localhost"
-            extra_parameters: "{{ extra_parameters }}"
+    - role: geerlingguy.docker
+  tasks:
+    - name: launch graphite  # noqa 301 305
+      command: "docker run -d --name graphite \
+        --restart=always \
+        -p 80:80 \
+        -p 2003-2004:2003-2004 \
+        -p 2023-2024:2023-2024 \
+        -p 8125:8125/udp \
+        -p 8126:8126 \
+        graphiteapp/graphite-statsd"
+      ignore_errors: true

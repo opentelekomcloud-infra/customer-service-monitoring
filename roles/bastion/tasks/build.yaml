@@ -17,7 +17,17 @@
     port_range_min: "{{ item }}"
     port_range_max: "{{ item }}"
     remote_ip_prefix: 0.0.0.0/0
-  loop: "{{ bastion_secgroup_ports }}"
+  loop: "{{ bastion_secgroup_tcp_ports }}"
+
+- name: Add rules for udp connection to the security group
+  openstack.cloud.security_group_rule:
+    security_group: "{{ secur_group.secgroup.name }}"
+    protocol: udp
+    port_range_min: "{{ item }}"
+    port_range_max: "{{ item }}"
+    remote_ip_prefix: 0.0.0.0/0
+  loop: "{{ bastion_secgroup_udp_ports }}"
+  when: bastion_secgroup_udp_ports is defined
 
 - name: Add a rule for icmp connection to the security group
   openstack.cloud.security_group_rule:
@@ -42,7 +52,8 @@
     flavor: "{{ bastion_flavor }}"
     key_name: "{{ bastion_key_pair_name }}"
     availability_zone: "{{ bastion_availability_zone }}"
-    security_groups: "{{ secur_group.secgroup.name }}"
+    security_groups:
+     - "{{ secur_group.secgroup.name }}"
     timeout: 200
     userdata: |
       {%- raw -%}#!/usr/bin/env bash
@@ -70,6 +81,7 @@
       {% endraw %}
     nics:
       - port-name: "{{ port.port.name }}"
+    boot_from_volume: true
     volume_size: "{{ bastion_volume_size }}"
     image: "{{ image.openstack_image.id }}"
     terminate_volume: true
