@@ -65,7 +65,8 @@
   tasks:
     - name: Getting data for swift object
       set_fact:
-        nodes_ips: "{{ nodes_ips | default({}) | combine( {item.openstack.name: item.openstack.private_v4} ) }}"
+        nodes_ips: "{{ nodes_ips | default({}) |\
+         combine( {item.openstack.name: item.openstack.private_v4} ) }}"
       with_items: "{{ instances.results }}"
 
     - name: Create object or overwrite existing object
