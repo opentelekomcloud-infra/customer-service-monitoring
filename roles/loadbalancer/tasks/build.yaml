@@ -70,25 +70,42 @@
     listener: "{{ listener_tcp.listener.id }}"
   register: lb_pool_tcp
 
-- name: Create members for a pool in the load balancer
+- name: Create members for a http pool in the load balancer
   opentelekomcloud.cloud.lb_member:
     state: present
     name: "{{ loadbalancer_prefix }}_member_{{ my_idx|int +1 }}"
-    pool: "{{ lb_pool.server_group.id }}"
+    pool: "{{ lb_pool_http.server_group.id }}"
     address: "{{ item.openstack.private_v4 }}"
-    protocol_port: "{{ loadbalancer_protocol_port }}"
+    protocol_port: "{{ loadbalancer_http_protocol_port }}"
     subnet: "{{ loadbalancer_subnet_id }}"
-  register: members
+  register: members_http
   loop: "{{ loadbalancer_instances.results }}"
   loop_control:
     index_var: my_idx
 
-- name: Enable health check
-  opentelekomcloud.cloud.lb_healthmonitor:
+- name: Create members for a https pool in the load balancer
+  opentelekomcloud.cloud.lb_member:
     state: present
-    name: "{{ loadbalancer_prefix }}_healthcheck"
-    pool: "{{ lb_pool.server_group.id }}"
-    delay: "{{ loadbalancer_monitor_delay }}"
-    max_retries: "{{ loadbalancer_monitor_max_retries }}"
-    monitor_timeout: "{{ loadbalancer_monitor_timeout }}"
-    type: "{{ loadbalancer_protocol }}"
+    name: "{{ loadbalancer_prefix }}_member_{{ my_idx|int +1 }}"
+    pool: "{{ lb_pool_https.server_group.id }}"
+    address: "{{ item.openstack.private_v4 }}"
+    protocol_port: "{{ loadbalancer_http_protocol_port }}"
+    subnet: "{{ loadbalancer_subnet_id }}"
+  register: members_https
+  loop: "{{ loadbalancer_instances.results }}"
+  loop_control:
+    index_var: my_idx
+
+- name: Create members for a tcp pool in the load balancer
+  opentelekomcloud.cloud.lb_member:
+    state: present
+    name: "{{ loadbalancer_prefix }}_member_{{ my_idx|int +1 }}"
+    pool: "{{ lb_pool_tcp.server_group.id }}"
+    address: "{{ item.openstack.private_v4 }}"
+    protocol_port: "{{ loadbalancer_tcp_protocol_port }}"
+    subnet: "{{ loadbalancer_subnet_id }}"
+  register: members_tcp
+  loop: "{{ loadbalancer_instances.results }}"
+  loop_control:
+    index_var: my_idx
+
