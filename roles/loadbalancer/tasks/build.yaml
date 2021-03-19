@@ -56,7 +56,7 @@
   opentelekomcloud.cloud.lb_pool:
     state: present
     name: "{{ loadbalancer_prefix }}_pool_https"
-    protocol: "{{ loadbalancer_https_protocol }}"
+    protocol: "{{ loadbalancer_http_protocol }}"
     lb_algorithm: "{{ loadbalancer_pool_lb_method }}"
     listener: "{{ listener_https.listener.id }}"
   register: lb_pool_https
