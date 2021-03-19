@@ -17,6 +17,13 @@
     loadbalancer: "{{ loadbalancer.loadbalancer.id }}"
   register: listener_http
 
+- name: Create Server certificate
+  opentelekomcloud.cloud.lb_certificate:
+    name: "{{ loadbalancer_prefix }}_https_cetificate"
+    content: "{{ loadbalancer_https_certificate }}"
+    private_key: "{{ loadbalancer_https_key }}"
+  register: certificate
+
 - name: Create listener https
   opentelekomcloud.cloud.lb_listener:
     state: present
@@ -24,6 +31,7 @@
     protocol: "{{ loadbalancer_https_protocol }}"
     protocol_port: "{{ loadbalancer_https_protocol_port }}"
     loadbalancer: "{{ loadbalancer.loadbalancer.id }}"
+    default_tls_container_ref: "{{ certificate.elb_certificate.id }}"
   register: listener_https
 
 - name: Create listener tcp
