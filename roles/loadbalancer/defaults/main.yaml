@@ -5,7 +5,7 @@ loadbalancer_pool_lb_method: "round_robin"
 loadbalancer_instances: ""
 loadbalancer_tcp_protocol: "tcp"
 loadbalancer_http_protocol: "http"
-loadbalancer_https_protocol: "https"
+loadbalancer_https_protocol: "terminated_https"
 loadbalancer_http_protocol_port: 80
 loadbalancer_tcp_protocol_port: 3333
 loadbalancer_https_protocol_port: 443
