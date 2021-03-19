@@ -14,4 +14,4 @@
 - name: Delete security group
   openstack.cloud.security_group:
     state: absent
-    name: ecs_group
+    name: "{{ ecs_scenario_name }}_ecs_group"

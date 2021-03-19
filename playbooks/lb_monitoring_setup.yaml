@@ -58,3 +58,24 @@
   vars:
     debug: true
     server_port: 80
+
+- name: Create object with data about lb infra
+  hosts: local
+  gather_facts: no
+  tasks:
+    - name: Getting data for swift object
+      set_fact:
+        nodes_ips: "{{ nodes_ips | default({}) |\
+         combine( {item.openstack.name: item.openstack.private_v4} ) }}"
+      with_items: "{{ instances.results }}"
+
+    - name: Create object or overwrite existing object
+      swift_client:
+        container: "{{ container_name }}"
+        object_name: "{{ scenario }}"
+        content:
+          loadbalancer_public_ip: "{{ loadbalancer.loadbalancer.public_vip_address }}"
+          lb_instances_ips: "{{ nodes_ips | to_json }}"
+          loadbalancer_private_ip: "{{ loadbalancer.loadbalancer.vip_address }}"
+          loadbalancer_keypair: "{{ lb_keypair }}"
+        state: present
