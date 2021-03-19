@@ -16,10 +16,20 @@
     state: absent
     name: "{{ loadbalancer_prefix }}_pool_http"
 
-- name: Destroy listener
+- name: Destroy listener http
   opentelekomcloud.cloud.lb_listener:
     state: absent
     name: "{{ loadbalancer_prefix }}_listener_http"
+
+- name: Destroy listener https
+  opentelekomcloud.cloud.lb_listener:
+    state: absent
+    name: "{{ loadbalancer_prefix }}_listener_https"
+
+- name: Destroy listener tcp
+  opentelekomcloud.cloud.lb_listener:
+    state: absent
+    name: "{{ loadbalancer_prefix }}_listener_tcp"
 
 - name: Destroy loadbalancer
   opentelekomcloud.cloud.loadbalancer:
