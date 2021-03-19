@@ -54,7 +54,9 @@
   hosts: gatewayed
   become: yes
   vars_files:
-    - "./vars/nginx_graphite_controller.yaml"
+    - "./vars/nginx_http.yaml"
+    - "./vars/nginx_https.yaml"
+    - "./vars/nginx_tcp.yaml"
   roles:
     - role: geerlingguy.nginx
       vars:
