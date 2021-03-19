@@ -6,7 +6,7 @@
 
 - name: Create security group
   openstack.cloud.security_group:
-    name: ecs_group
+    name: "{{ ecs_scenario_name }}_ecs_group"
     description: Allow external connections to ssh, http, https and icmp
   register: secur_group
 
@@ -31,6 +31,8 @@
   openstack.cloud.port:
     name: "{{ ecs_scenario_name }}_port{{ item }}"
     network: "{{ ecs_network_id }}"
+    security_groups:
+      - "{{ secur_group.secgroup.name }}"
     fixed_ips:
       - ip_address:  "{{ ecs_subnet_cidr | ansible.netcommon.ipmath(item|int + 9|int) }}"
   with_sequence: start=1 end="{{ ecs_count|int }}"

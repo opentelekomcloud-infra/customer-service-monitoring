@@ -60,3 +60,11 @@
         -p 8126:8126 \
         graphiteapp/graphite-statsd"
       ignore_errors: true
+
+- name: Create a common swift container
+  hosts: local
+  tasks:
+    - name: Create container
+      swift_client:
+        container: "{{ container_name }}"
+        state: present
