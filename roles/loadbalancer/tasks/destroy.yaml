@@ -11,10 +11,20 @@
     pool: "{{ loadbalancer_prefix }}_pool_http"
   with_sequence: start=1 end="{{ loadbalancer_members_count|int  }}"
 
-- name: Destroy lb pool
+- name: Destroy lb pool http
   opentelekomcloud.cloud.lb_pool:
     state: absent
     name: "{{ loadbalancer_prefix }}_pool_http"
+
+- name: Destroy lb pool https
+  opentelekomcloud.cloud.lb_pool:
+    state: absent
+    name: "{{ loadbalancer_prefix }}_pool_https"
+
+- name: Destroy lb pool tcp
+  opentelekomcloud.cloud.lb_pool:
+    state: absent
+    name: "{{ loadbalancer_prefix }}_pool_tcp"
 
 - name: Destroy listener http
   opentelekomcloud.cloud.lb_listener:
