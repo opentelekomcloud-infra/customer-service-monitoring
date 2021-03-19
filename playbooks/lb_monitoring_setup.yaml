@@ -50,14 +50,25 @@
       wait_for_connection:
         timeout: 250
 
-- name: Start Server
+- name: Setup nginx for TCP, HTTP, HTTPS connections
   hosts: gatewayed
   become: yes
+  vars_files:
+    - "./vars/nginx_graphite_controller.yaml"
   roles:
-    - too_simple_server
-  vars:
-    debug: true
-    server_port: 80
+    - role: geerlingguy.nginx
+      vars:
+        nginx_remove_default_vhost: yes
+        nginx_vhosts:
+          - listen: "3333"
+            server_name: "localhost"
+            extra_parameters: "{{ extra_parameters_tcp }}"
+          - listen: "80"
+            server_name: "localhost"
+            extra_parameters: "{{ extra_parameters_http }}"
+          - listen: "443 ssl"
+            server_name: "localhost"
+            extra_parameters: "{{ extra_parameters_https }}"
 
 - name: Create object with data about lb infra
   hosts: local

@@ -8,14 +8,32 @@
     auto_public_ip: true
   register: loadbalancer
 
-- name: Create listener
+- name: Create listener http
   opentelekomcloud.cloud.lb_listener:
     state: present
     name: "{{ loadbalancer_prefix }}_listener_http"
-    protocol: "{{ loadbalancer_protocol }}"
-    protocol_port: "{{ loadbalancer_protocol_port }}"
+    protocol: "{{ loadbalancer_http_protocol }}"
+    protocol_port: "{{ loadbalancer_http_protocol_port }}"
     loadbalancer: "{{ loadbalancer.loadbalancer.id }}"
-  register: listener
+  register: listener_http
+
+- name: Create listener https
+  opentelekomcloud.cloud.lb_listener:
+    state: present
+    name: "{{ loadbalancer_prefix }}_listener_https"
+    protocol: "{{ loadbalancer_https_protocol }}"
+    protocol_port: "{{ loadbalancer_https_protocol_port }}"
+    loadbalancer: "{{ loadbalancer.loadbalancer.id }}"
+  register: listener_https
+
+- name: Create listener tcp
+  opentelekomcloud.cloud.lb_listener:
+    state: present
+    name: "{{ loadbalancer_prefix }}_listener_tcp"
+    protocol: "{{ loadbalancer_tcp_protocol }}"
+    protocol_port: "{{ loadbalancer_tcp_protocol_port }}"
+    loadbalancer: "{{ loadbalancer.loadbalancer.id }}"
+  register: listener_tcp
 
 - name: Create lb pool
   opentelekomcloud.cloud.lb_pool:
