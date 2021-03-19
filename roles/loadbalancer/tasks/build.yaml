@@ -43,14 +43,32 @@
     loadbalancer: "{{ loadbalancer.loadbalancer.id }}"
   register: listener_tcp
 
-- name: Create lb pool
+- name: Create lb pool http
   opentelekomcloud.cloud.lb_pool:
     state: present
     name: "{{ loadbalancer_prefix }}_pool_http"
     protocol: "{{ loadbalancer_protocol }}"
     lb_algorithm: "{{ loadbalancer_pool_lb_method }}"
-    listener: "{{ listener.listener.id }}"
-  register: lb_pool
+    listener: "{{ listener_http.listener.id }}"
+  register: lb_pool_http
+
+- name: Create lb pool https
+  opentelekomcloud.cloud.lb_pool:
+    state: present
+    name: "{{ loadbalancer_prefix }}_pool_https"
+    protocol: "{{ loadbalancer_protocol }}"
+    lb_algorithm: "{{ loadbalancer_pool_lb_method }}"
+    listener: "{{ listener_https.listener.id }}"
+  register: lb_pool_https
+
+- name: Create lb pool tcp
+  opentelekomcloud.cloud.lb_pool:
+    state: present
+    name: "{{ loadbalancer_prefix }}_pool_tcp"
+    protocol: "{{ loadbalancer_protocol }}"
+    lb_algorithm: "{{ loadbalancer_pool_lb_method }}"
+    listener: "{{ listener_tcp.listener.id }}"
+  register: lb_pool_tcp
 
 - name: Create members for a pool in the load balancer
   opentelekomcloud.cloud.lb_member:
