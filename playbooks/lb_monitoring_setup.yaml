@@ -65,15 +65,15 @@
           - listen: "3333"
             server_name: "tcp"
             extra_parameters: "{{ extra_parameters_tcp }}"
-            return: "200 OK TCP"
+            return: "200 OK_TCP"
           - listen: "80"
             server_name: "http"
             extra_parameters: "{{ extra_parameters_http }}"
-            return: "200 OK HTTP"
+            return: "200 OK_HTTP"
           - listen: "443 ssl"
             server_name: "https"
             extra_parameters: "{{ extra_parameters_https }}"
-            return: "200 OK HTTPS"
+            return: "200 OK_HTTPS"
 
 - name: Create object with data about lb infra
   hosts: local
