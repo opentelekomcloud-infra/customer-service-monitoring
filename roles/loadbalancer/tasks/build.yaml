@@ -89,7 +89,7 @@
     name: "{{ loadbalancer_prefix }}_member_{{ my_idx|int +1 }}"
     pool: "{{ lb_pool_https.server_group.id }}"
     address: "{{ item.openstack.private_v4 }}"
-    protocol_port: "{{ loadbalancer_http_protocol_port }}"
+    protocol_port: "{{ loadbalancer_tcp_protocol_port }}"
     subnet: "{{ loadbalancer_subnet_id }}"
   register: members_https
   loop: "{{ loadbalancer_instances.results }}"
@@ -109,3 +109,32 @@
   loop_control:
     index_var: my_idx
 
+- name: Enable health check for http members
+  opentelekomcloud.cloud.lb_healthmonitor:
+    state: present
+    name: "{{ loadbalancer_prefix }}_http_healthcheck"
+    pool: "{{ lb_pool_http.server_group.id }}"
+    delay: "{{ loadbalancer_monitor_delay }}"
+    max_retries: "{{ loadbalancer_monitor_max_retries }}"
+    monitor_timeout: "{{ loadbalancer_monitor_timeout }}"
+    type: "{{ loadbalancer_http_protocol }}"
+
+- name: Enable health check for https members
+  opentelekomcloud.cloud.lb_healthmonitor:
+    state: present
+    name: "{{ loadbalancer_prefix }}_https_healthcheck"
+    pool: "{{ lb_pool_https.server_group.id }}"
+    delay: "{{ loadbalancer_monitor_delay }}"
+    max_retries: "{{ loadbalancer_monitor_max_retries }}"
+    monitor_timeout: "{{ loadbalancer_monitor_timeout }}"
+    type: "{{ loadbalancer_tcp_protocol }}"
+
+- name: Enable health check for tcp members
+  opentelekomcloud.cloud.lb_healthmonitor:
+    state: present
+    name: "{{ loadbalancer_prefix }}_tcp_healthcheck"
+    pool: "{{ lb_pool_tcp.server_group.id }}"
+    delay: "{{ loadbalancer_monitor_delay }}"
+    max_retries: "{{ loadbalancer_monitor_max_retries }}"
+    monitor_timeout: "{{ loadbalancer_monitor_timeout }}"
+    type: "{{ loadbalancer_tcp_protocol }}"
