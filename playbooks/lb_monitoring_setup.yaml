@@ -58,7 +58,7 @@
     - "./vars/nginx_https.yaml"
     - "./vars/nginx_tcp.yaml"
   roles:
-    - role: geerlingguy.nginx  # noqa 301 305
+    - role: geerlingguy.nginx
       vars:
         nginx_remove_default_vhost: yes
         nginx_vhosts:
