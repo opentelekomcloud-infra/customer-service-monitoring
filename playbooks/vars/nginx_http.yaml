@@ -4,5 +4,5 @@ extra_parameters_http: |
         proxy_set_header Host $host;
         proxy_http_version 1.1;
         add_header Backend-Server $hostname always;
-        return 200 HTTP;
+        return 200 OK;
     }
