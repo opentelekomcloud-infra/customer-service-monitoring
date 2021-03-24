@@ -2,6 +2,7 @@
 - job:
     name: terraform-lint
     parent: otc-tox
+    nodeset: fedora-pod
     vars:
       tox_envlist: tflint
 
