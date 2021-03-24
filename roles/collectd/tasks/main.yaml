@@ -1,0 +1,72 @@
+---
+- name: Install dependencies
+  apt:
+    name: "{{ item }}"
+    force: yes
+  with_items:
+    - build-essential
+    - libcurl4-openssl-dev
+    - libpcap-dev
+    - libyajl-dev
+
+- name: Download Collectd
+  get_url:
+    url: "{{ collectd_download_url }}"
+    dest: /usr/src
+  register: collectd_source
+
+- name: Extract Collectd
+  unarchive:
+    src: /usr/src/collectd-{{ collectd_version }}.tar.gz
+    dest: /usr/src
+    copy: no
+  when: collectd_source.changed
+
+- name: Install Collectd
+  shell: "./configure --prefix={{ collectd_prefix }} && make all install"
+  args:
+    chdir: "/usr/src/collectd-{{ collectd_version }}"
+    creates: "{{ collectd_prefix }}"
+  when: collectd_source.changed
+
+- name: Configure Collectd
+  template:
+    src: collectd.conf.j2
+    dest: "{{ collectd_config_file }}"
+    validate: "{{ collectd_sbin_path }}/collectd -t -C %s"
+  notify: Restart collectd
+
+- name: Ensure conf.d directory
+  file:
+    path: "{{ collectd_config_dir }}"
+    state: directory
+
+- name: Configure additional types
+  template:
+    src: types.db.j2
+    dest: "{{ collectd_additional_types_db_path }}"
+  notify: Restart collectd
+
+- name: Setup Collectd service upstart.conf
+  template:
+    src: upstart.conf.j2
+    dest: /etc/init/collectd.conf
+  when: collectd_service == 'upstart'
+
+- name: Setup Collectd service systemd.service
+  template:
+    src: systemd.service.j2
+    dest: /etc/systemd/system/collectd.service
+  when: collectd_service == 'systemd'
+
+- name: Ensure the Collectd is enabled and started
+  service:
+    name: collectd
+    state: started
+    enabled: yes
+
+- name: Setup logs rotation
+  template:
+    src: logrotate.conf.j2
+    dest: /etc/logrotate.d/collectd.conf
+  when: collectd_logpath and collectd_logrotate

@@ -1,0 +1,2 @@
+---
+collectd_download_url: "http://collectd.org/files/collectd-{{ collectd_version }}.tar.gz"

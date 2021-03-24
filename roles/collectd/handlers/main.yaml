@@ -1,0 +1,6 @@
+---
+- name: Restart collectd
+  become: True
+  service:
+    name: collectd
+    state: restarted
