@@ -1,15 +1,26 @@
 ---
+- job:
+    name: terraform-lint
+    parent: otc-tox
+    nodeset: fedora-pod
+    vars:
+      tox_envlist: tflint
+
 - project:
     merge-mode: squash-merge
     check:
       jobs:
+        - terraform-lint
         - otc-tox-pep8
-        - otc-tox-linters
+        - tox-linters-ansible-2.9
+        - tox-linters-ansible-2.10
         - tox-molecule-29
         - tox-molecule-210
     gate:
       jobs:
+        - terraform-lint
         - otc-tox-pep8
-        - otc-tox-linters
+        - tox-linters-ansible-2.9
+        - tox-linters-ansible-2.10
         - tox-molecule-29
         - tox-molecule-210
