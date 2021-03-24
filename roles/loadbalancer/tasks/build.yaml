@@ -8,43 +8,133 @@
     auto_public_ip: true
   register: loadbalancer
 
-- name: Create listener
+- name: Create listener http
   opentelekomcloud.cloud.lb_listener:
     state: present
     name: "{{ loadbalancer_prefix }}_listener_http"
-    protocol: "{{ loadbalancer_protocol }}"
-    protocol_port: "{{ loadbalancer_protocol_port }}"
+    protocol: "{{ loadbalancer_http_protocol }}"
+    protocol_port: "{{ loadbalancer_http_protocol_port }}"
     loadbalancer: "{{ loadbalancer.loadbalancer.id }}"
-  register: listener
+  register: listener_http
 
-- name: Create lb pool
+- name: Create Server certificate
+  opentelekomcloud.cloud.lb_certificate:
+    name: "{{ loadbalancer_prefix }}_https_cetificate"
+    content: "{{ loadbalancer_https_certificate }}"
+    private_key: "{{ loadbalancer_https_key }}"
+  register: certificate
+
+- name: Create listener https
+  opentelekomcloud.cloud.lb_listener:
+    state: present
+    name: "{{ loadbalancer_prefix }}_listener_https"
+    protocol: "{{ loadbalancer_https_protocol }}"
+    protocol_port: "{{ loadbalancer_https_protocol_port }}"
+    loadbalancer: "{{ loadbalancer.loadbalancer.id }}"
+    default_tls_container_ref: "{{ certificate.elb_certificate.id }}"
+  register: listener_https
+
+- name: Create listener tcp
+  opentelekomcloud.cloud.lb_listener:
+    state: present
+    name: "{{ loadbalancer_prefix }}_listener_tcp"
+    protocol: "{{ loadbalancer_tcp_protocol }}"
+    protocol_port: "{{ loadbalancer_tcp_protocol_port }}"
+    loadbalancer: "{{ loadbalancer.loadbalancer.id }}"
+  register: listener_tcp
+
+- name: Create lb pool http
   opentelekomcloud.cloud.lb_pool:
     state: present
     name: "{{ loadbalancer_prefix }}_pool_http"
-    protocol: "{{ loadbalancer_protocol }}"
+    protocol: "{{ loadbalancer_http_protocol }}"
     lb_algorithm: "{{ loadbalancer_pool_lb_method }}"
-    listener: "{{ listener.listener.id }}"
-  register: lb_pool
+    listener: "{{ listener_http.listener.id }}"
+  register: lb_pool_http
 
-- name: Create members for a pool in the load balancer
+- name: Create lb pool https
+  opentelekomcloud.cloud.lb_pool:
+    state: present
+    name: "{{ loadbalancer_prefix }}_pool_https"
+    protocol: "{{ loadbalancer_http_protocol }}"
+    lb_algorithm: "{{ loadbalancer_pool_lb_method }}"
+    listener: "{{ listener_https.listener.id }}"
+  register: lb_pool_https
+
+- name: Create lb pool tcp
+  opentelekomcloud.cloud.lb_pool:
+    state: present
+    name: "{{ loadbalancer_prefix }}_pool_tcp"
+    protocol: "{{ loadbalancer_tcp_protocol }}"
+    lb_algorithm: "{{ loadbalancer_pool_lb_method }}"
+    listener: "{{ listener_tcp.listener.id }}"
+  register: lb_pool_tcp
+
+- name: Create members for a http pool in the load balancer
   opentelekomcloud.cloud.lb_member:
     state: present
     name: "{{ loadbalancer_prefix }}_member_{{ my_idx|int +1 }}"
-    pool: "{{ lb_pool.server_group.id }}"
+    pool: "{{ lb_pool_http.server_group.id }}"
     address: "{{ item.openstack.private_v4 }}"
-    protocol_port: "{{ loadbalancer_protocol_port }}"
+    protocol_port: "{{ loadbalancer_http_protocol_port }}"
     subnet: "{{ loadbalancer_subnet_id }}"
-  register: members
+  register: members_http
   loop: "{{ loadbalancer_instances.results }}"
   loop_control:
     index_var: my_idx
 
-- name: Enable health check
+- name: Create members for a https pool in the load balancer
+  opentelekomcloud.cloud.lb_member:
+    state: present
+    name: "{{ loadbalancer_prefix }}_member_{{ my_idx|int +1 }}"
+    pool: "{{ lb_pool_https.server_group.id }}"
+    address: "{{ item.openstack.private_v4 }}"
+    protocol_port: "{{ loadbalancer_tcp_protocol_port }}"
+    subnet: "{{ loadbalancer_subnet_id }}"
+  register: members_https
+  loop: "{{ loadbalancer_instances.results }}"
+  loop_control:
+    index_var: my_idx
+
+- name: Create members for a tcp pool in the load balancer
+  opentelekomcloud.cloud.lb_member:
+    state: present
+    name: "{{ loadbalancer_prefix }}_member_{{ my_idx|int +1 }}"
+    pool: "{{ lb_pool_tcp.server_group.id }}"
+    address: "{{ item.openstack.private_v4 }}"
+    protocol_port: "{{ loadbalancer_tcp_protocol_port }}"
+    subnet: "{{ loadbalancer_subnet_id }}"
+  register: members_tcp
+  loop: "{{ loadbalancer_instances.results }}"
+  loop_control:
+    index_var: my_idx
+
+- name: Enable health check for http members
   opentelekomcloud.cloud.lb_healthmonitor:
     state: present
-    name: "{{ loadbalancer_prefix }}_healthcheck"
-    pool: "{{ lb_pool.server_group.id }}"
+    name: "{{ loadbalancer_prefix }}_http_healthcheck"
+    pool: "{{ lb_pool_http.server_group.id }}"
     delay: "{{ loadbalancer_monitor_delay }}"
     max_retries: "{{ loadbalancer_monitor_max_retries }}"
     monitor_timeout: "{{ loadbalancer_monitor_timeout }}"
-    type: "{{ loadbalancer_protocol }}"
+    type: "{{ loadbalancer_http_protocol }}"
+
+- name: Enable health check for https members
+  opentelekomcloud.cloud.lb_healthmonitor:
+    state: present
+    name: "{{ loadbalancer_prefix }}_https_healthcheck"
+    pool: "{{ lb_pool_https.server_group.id }}"
+    delay: "{{ loadbalancer_monitor_delay }}"
+    max_retries: "{{ loadbalancer_monitor_max_retries }}"
+    monitor_timeout: "{{ loadbalancer_monitor_timeout }}"
+    type: "{{ loadbalancer_tcp_protocol }}"
+
+- name: Enable health check for tcp members
+  opentelekomcloud.cloud.lb_healthmonitor:
+    state: present
+    name: "{{ loadbalancer_prefix }}_tcp_healthcheck"
+    pool: "{{ lb_pool_tcp.server_group.id }}"
+    delay: "{{ loadbalancer_monitor_delay }}"
+    max_retries: "{{ loadbalancer_monitor_max_retries }}"
+    monitor_timeout: "{{ loadbalancer_monitor_timeout }}"
+    type: "{{ loadbalancer_tcp_protocol }}"
