@@ -1,25 +1,74 @@
 ---
-- name: Disable health check
+- name: Disable health check for http pool
   opentelekomcloud.cloud.lb_healthmonitor:
     state: absent
-    name: "{{ loadbalancer_prefix }}_healthcheck"
+    name: "{{ loadbalancer_prefix }}_http_healthcheck"
 
-- name: Destroy members for a pool in the load balancer
+- name: Disable health check for https pool
+  opentelekomcloud.cloud.lb_healthmonitor:
+    state: absent
+    name: "{{ loadbalancer_prefix }}_https_healthcheck"
+
+- name: Disable health check for tcp pool
+  opentelekomcloud.cloud.lb_healthmonitor:
+    state: absent
+    name: "{{ loadbalancer_prefix }}_tcp_healthcheck"
+
+- name: Destroy members for a http pool in the load balancer
   opentelekomcloud.cloud.lb_member:
     state: absent
     name: "{{ loadbalancer_prefix }}_member_{{ item }}"
     pool: "{{ loadbalancer_prefix }}_pool_http"
   with_sequence: start=1 end="{{ loadbalancer_members_count|int  }}"
 
-- name: Destroy lb pool
+- name: Destroy members for a https pool in the load balancer
+  opentelekomcloud.cloud.lb_member:
+    state: absent
+    name: "{{ loadbalancer_prefix }}_member_{{ item }}"
+    pool: "{{ loadbalancer_prefix }}_pool_https"
+  with_sequence: start=1 end="{{ loadbalancer_members_count|int  }}"
+
+- name: Destroy members for a tcp pool in the load balancer
+  opentelekomcloud.cloud.lb_member:
+    state: absent
+    name: "{{ loadbalancer_prefix }}_member_{{ item }}"
+    pool: "{{ loadbalancer_prefix }}_pool_tcp"
+  with_sequence: start=1 end="{{ loadbalancer_members_count|int  }}"
+
+- name: Destroy lb pool http
   opentelekomcloud.cloud.lb_pool:
     state: absent
     name: "{{ loadbalancer_prefix }}_pool_http"
 
-- name: Destroy listener
+- name: Destroy lb pool https
+  opentelekomcloud.cloud.lb_pool:
+    state: absent
+    name: "{{ loadbalancer_prefix }}_pool_https"
+
+- name: Destroy lb pool tcp
+  opentelekomcloud.cloud.lb_pool:
+    state: absent
+    name: "{{ loadbalancer_prefix }}_pool_tcp"
+
+- name: Destroy listener http
   opentelekomcloud.cloud.lb_listener:
     state: absent
     name: "{{ loadbalancer_prefix }}_listener_http"
+
+- name: Destroy listener https
+  opentelekomcloud.cloud.lb_listener:
+    state: absent
+    name: "{{ loadbalancer_prefix }}_listener_https"
+
+- name: Destroy listener tcp
+  opentelekomcloud.cloud.lb_listener:
+    state: absent
+    name: "{{ loadbalancer_prefix }}_listener_tcp"
+
+- name: Destroy Server certificate
+  opentelekomcloud.cloud.lb_certificate:
+    name: "{{ loadbalancer_prefix }}_https_cetificate"
+    state: absent
 
 - name: Destroy loadbalancer
   opentelekomcloud.cloud.loadbalancer:

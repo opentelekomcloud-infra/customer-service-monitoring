@@ -6,5 +6,5 @@ ecs_flavor: "s2.medium.2"
 ecs_network_id: ""
 ecs_subnet_cidr: ""
 ecs_key_pair_name: ""
-ecs_secgroup_ports: [ "22", "80", "443" ]
+ecs_secgroup_ports: [ "22", "80", "443", "3333" ]
 ecs_count: 1
