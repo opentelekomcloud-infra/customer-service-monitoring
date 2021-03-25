@@ -56,10 +56,11 @@
   roles:
     - role: telegraf_client
       vars:
-        telegraf_graphite_env: production_eu-de
+        telegraf_graphite: true
         telegraf_graphite_urls:
-          - http://80.158.34.215:8125
-        telegraf_graphite_template: "{{ telegraf_graphite_env }}.csm.host.tags.measurement.field"
+          - {{ telegraf_graphite_url }}
+        telegraf_graphite_prefix: "stats.system.csm.{{ telegraf_graphite_env }}"
+        telegraf_graphite_template: host.tags.measurement.field
         telegraf_plugins_base:
           - name: cpu
             options:
@@ -67,6 +68,13 @@
               totalcpu: "true"
               fielddrop:
                 - "time_*"
+          - name: net
+            options:
+              interfaces:
+                - "eth*"
+                - "enp0s[0-1]"
+                - "lo"
+                - "ens3"
 
 - name: Setup nginx for TCP, HTTP, HTTPS connections
   hosts: gatewayed

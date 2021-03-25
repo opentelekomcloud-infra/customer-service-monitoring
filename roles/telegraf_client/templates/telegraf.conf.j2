@@ -27,6 +27,7 @@
 ###############################################################################
 
 [outputs]
+{% if telegraf_influxdb == true %}
 [[outputs.influxdb]]
   urls = [ "{{ telegraf_influxdb_urls|join('","') }}" ] # required
   database = "{{ telegraf_influxdb_database }}" # required
@@ -49,7 +50,9 @@
 {% if telegraf_influxdb_udp_payload is defined and telegraf_influxdb_udp_payload != None %}
   udp_payload = {{ telegraf_influxdb_udp_payload }}
 {% endif %}
+{% endif %}
 
+{% if telegraf_graphite == true %}
 [[outputs.graphite]]
   # TCP endpoint for your graphite instance.
   # If multiple endpoints are configured, the output will be load balanced.
@@ -92,19 +95,23 @@
   graphite_separator = "{{ telegraf_graphite_separator }}"
 
   # timeout in seconds for the write connection to graphite
-  timeout = "{{ telegraf_graphite_timeout }}"
+  timeout = 2
 
   # Optional TLS Config
 {% if telegraf_graphite_tls_ca is defined and telegraf_graphite_tls_ca != None %}
   tls_ca = "{{ telegraf_graphite_tls_ca }}"
+{% endif %}
 {% if telegraf_graphite_tls_cert is defined and telegraf_graphite_tls_cert != None %}
   tls_cert = "{{ telegraf_graphite_tls_cert }}"
+{% endif %}
 {% if telegraf_graphite_tls_key is defined and telegraf_graphite_tls_key != None %}
   tls_key = "{{ telegraf_graphite_tls_key }}"
+{% endif %}
   # Use TLS but skip chain & host verification
 {% if telegraf_graphite_insecure_skip_verify is defined and telegraf_graphite_insecure_skip_verify != None %}
   insecure_skip_verify = "{{ telegraf_graphite_insecure_skip_verify }}"
-
+{% endif %}
+{% endif %}
 ###############################################################################
 #                                  PLUGINS                                    #
 ###############################################################################
