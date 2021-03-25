@@ -77,12 +77,19 @@
   # Graphite templates patterns
   # 1. Template for cpu
   # 2. Template for disk*
-  # 3. Default template
-  # templates = [
-  #  "cpu tags.measurement.host.field",
-  #  "disk* measurement.field",
-  #  "host.measurement.tags.field"
-  #]
+  # 3. Template for net
+  # 4. Default template
+{% if telegraf_graphite_templates is defined and telegraf_graphite_templates != None %}
+  templates = "{{ telegraf_graphite_templates }}"
+{% else %}
+  templates = [
+   "cpu host.measurement.field",
+   "disk* host.measurement.tags.field",
+   "net host.measurement.tags.field",
+   "mem host.tags.measurement.field",
+   "host.tags.measurement.field"
+  ]
+{% endif %}
 
   # Enable Graphite tags support
 {% if telegraf_graphite_tag_support is defined and telegraf_graphite_tag_support != None %}
@@ -95,7 +102,7 @@
   graphite_separator = "{{ telegraf_graphite_separator }}"
 
   # timeout in seconds for the write connection to graphite
-  timeout = 2
+  timeout = 5
 
   # Optional TLS Config
 {% if telegraf_graphite_tls_ca is defined and telegraf_graphite_tls_ca != None %}

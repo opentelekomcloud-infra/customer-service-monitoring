@@ -71,8 +71,6 @@
           - name: net
             options:
               interfaces:
-                - "eth*"
-                - "enp0s[0-1]"
                 - "lo"
                 - "ens3"
 

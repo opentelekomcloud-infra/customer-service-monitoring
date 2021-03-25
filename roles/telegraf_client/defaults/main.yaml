@@ -33,6 +33,7 @@ telegraf_graphite: false
 telegraf_graphite_urls: []
 telegraf_graphite_prefix:
 telegraf_graphite_template:
+telegraf_graphite_templates:
 telegraf_graphite_tag_support:
 telegraf_graphite_separator: "."
 telegraf_graphite_tls_ca:
