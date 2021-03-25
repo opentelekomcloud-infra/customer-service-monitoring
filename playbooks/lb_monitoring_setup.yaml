@@ -50,6 +50,24 @@
       wait_for_connection:
         timeout: 250
 
+- name: Install telegraf client on nodes
+  hosts: gatewayed
+  become: yes
+  roles:
+    - role: telegraf_client
+      vars:
+        telegraf_graphite_env: production_eu-de
+        telegraf_graphite_urls:
+          - http://80.158.34.215:8125
+        telegraf_graphite_template: "{{ telegraf_graphite_env }}.csm.host.tags.measurement.field"
+        telegraf_plugins_base:
+          - name: cpu
+            options:
+              percpu: "false"
+              totalcpu: "true"
+              fielddrop:
+                - "time_*"
+
 - name: Setup nginx for TCP, HTTP, HTTPS connections
   hosts: gatewayed
   become: yes

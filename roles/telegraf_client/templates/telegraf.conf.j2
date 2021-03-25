@@ -50,6 +50,61 @@
   udp_payload = {{ telegraf_influxdb_udp_payload }}
 {% endif %}
 
+[[outputs.graphite]]
+  # TCP endpoint for your graphite instance.
+  # If multiple endpoints are configured, the output will be load balanced.
+  # Only one of the endpoints will be written to with each iteration.
+  servers = [ "{{ telegraf_graphite_urls|join('","') }}" ]
+
+  # Prefix metrics name
+{% if telegraf_graphite_prefix is defined and telegraf_graphite_prefix != None %}
+  prefix = "{{ telegraf_graphite_prefix }}"
+{% else %}
+  prefix = ""
+{% endif %}
+
+  # Graphite output template
+  # see https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_OUTPUT.md
+{% if telegraf_graphite_template is defined and telegraf_graphite_template != None %}
+  template = "{{ telegraf_graphite_template }}"
+{% else %}
+  template = "host.tags.measurement.field"
+{% endif %}
+
+  # Graphite templates patterns
+  # 1. Template for cpu
+  # 2. Template for disk*
+  # 3. Default template
+  # templates = [
+  #  "cpu tags.measurement.host.field",
+  #  "disk* measurement.field",
+  #  "host.measurement.tags.field"
+  #]
+
+  # Enable Graphite tags support
+{% if telegraf_graphite_tag_support is defined and telegraf_graphite_tag_support != None %}
+  template = "{{ telegraf_graphite_tag_support }}"
+{% else %}
+  graphite_tag_support = false
+{% endif %}
+
+  # Character for separating metric name and field for Graphite tags
+  graphite_separator = "{{ telegraf_graphite_separator }}"
+
+  # timeout in seconds for the write connection to graphite
+  timeout = "{{ telegraf_graphite_timeout }}"
+
+  # Optional TLS Config
+{% if telegraf_graphite_tls_ca is defined and telegraf_graphite_tls_ca != None %}
+  tls_ca = "{{ telegraf_graphite_tls_ca }}"
+{% if telegraf_graphite_tls_cert is defined and telegraf_graphite_tls_cert != None %}
+  tls_cert = "{{ telegraf_graphite_tls_cert }}"
+{% if telegraf_graphite_tls_key is defined and telegraf_graphite_tls_key != None %}
+  tls_key = "{{ telegraf_graphite_tls_key }}"
+  # Use TLS but skip chain & host verification
+{% if telegraf_graphite_insecure_skip_verify is defined and telegraf_graphite_insecure_skip_verify != None %}
+  insecure_skip_verify = "{{ telegraf_graphite_insecure_skip_verify }}"
+
 ###############################################################################
 #                                  PLUGINS                                    #
 ###############################################################################
