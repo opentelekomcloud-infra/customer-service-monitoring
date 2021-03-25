@@ -1,0 +1,31 @@
+---
+- name: Register nodes
+  hosts: local
+  tasks:
+    - name: Register nodes
+      add_host:
+        name: "{{ item }}"
+        groups: gatewayed
+        ansible_ssh_common_args: >
+          -o UserKnownHostsFile=/dev/null
+          -o StrictHostKeyChecking=no
+          -o IdentityFile="{{ local_private_key }}"
+          -o User=linux
+          -o PasswordAuthentication=no
+          -o ProxyCommand='ssh -W %h:%p
+          -q linux@80.158.34.215
+          -i {{ local_private_key }}'
+      loop:
+        - 192.168.1.10
+        - 192.168.1.11
+        - 192.168.1.12
+
+- name: Install collectd for system metrics
+  hosts: gatewayed
+  become: yes
+  roles:
+    - role: collectd
+      vars:
+        collectd_logpath: /tmp/collectd.log
+        collectd_service: systemd
+        collectd_default_plugins: [cpu]

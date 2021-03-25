@@ -72,19 +72,20 @@
             server_name: "https"
             extra_parameters: "{{ extra_parameters_https }}"
 
-- name: Install collectd for system metrics
-  hosts: gatewayed
-  become: yes
-  roles:
-    - role: collectd
-      vars:
-        collectd_plugins: [statsd]
-          collectd_plugins_options:
-            statsd:
-            - Host "{{ controller_public_ip }}"
-            - Port "8125"
-            - DeleteSets true
-            - TimerPercentile 90.0
+#- name: Install collectd for system metrics
+#  hosts: gatewayed
+#  become: yes
+#  roles:
+#    - role: collectd
+#      vars:
+#        collectd_plugins: [statsd]
+#        collectd_plugins_options:
+#          statsd:
+#          - Host "{{ controller_public_ip }}"
+#          - Port "8125"
+#          - DeleteSets true
+#          - TimerPercentile 90.0
+#        collectd_default_plugins: [cpu]
 
 - name: Create object with data about lb infra
   hosts: local

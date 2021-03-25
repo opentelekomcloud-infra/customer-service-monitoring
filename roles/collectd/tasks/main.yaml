@@ -17,7 +17,7 @@
 
 - name: Extract Collectd
   unarchive:
-    src: /usr/src/collectd-{{ collectd_version }}.tar.gz
+    src: /usr/src/collectd-{{ collectd_version }}.tar.bz2
     dest: /usr/src
     copy: no
   when: collectd_source.changed
@@ -33,7 +33,6 @@
   template:
     src: collectd.conf.j2
     dest: "{{ collectd_config_file }}"
-    validate: "{{ collectd_sbin_path }}/collectd -t -C %s"
   notify: Restart collectd
 
 - name: Ensure conf.d directory

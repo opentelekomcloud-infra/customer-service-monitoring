@@ -1,2 +1,2 @@
 ---
-collectd_download_url: "http://collectd.org/files/collectd-{{ collectd_version }}.tar.gz"
+collectd_download_url: "https://github.com/collectd/collectd/releases/download/collectd-{{ collectd_version }}/collectd-{{ collectd_version }}.tar.bz2"
