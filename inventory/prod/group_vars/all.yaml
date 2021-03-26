@@ -7,3 +7,5 @@ kms_key: csm_kms_key
 ansible_ssh_user: linux
 ansible_ssh_private_key_file: "{{ local_private_key }}"
 container_name: "csm"
+telegraf_graphite_url: localhost:2003
+telegraf_graphite_env: production_eu-de

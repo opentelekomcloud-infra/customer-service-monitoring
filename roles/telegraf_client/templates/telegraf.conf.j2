@@ -27,6 +27,7 @@
 ###############################################################################
 
 [outputs]
+{% if telegraf_influxdb == true %}
 [[outputs.influxdb]]
   urls = [ "{{ telegraf_influxdb_urls|join('","') }}" ] # required
   database = "{{ telegraf_influxdb_database }}" # required
@@ -49,7 +50,75 @@
 {% if telegraf_influxdb_udp_payload is defined and telegraf_influxdb_udp_payload != None %}
   udp_payload = {{ telegraf_influxdb_udp_payload }}
 {% endif %}
+{% endif %}
 
+{% if telegraf_graphite == true %}
+[[outputs.graphite]]
+  # TCP endpoint for your graphite instance.
+  # If multiple endpoints are configured, the output will be load balanced.
+  # Only one of the endpoints will be written to with each iteration.
+  servers = [ "{{ telegraf_graphite_urls|join('","') }}" ]
+
+  # Prefix metrics name
+{% if telegraf_graphite_prefix is defined and telegraf_graphite_prefix != None %}
+  prefix = "{{ telegraf_graphite_prefix }}"
+{% else %}
+  prefix = ""
+{% endif %}
+
+  # Graphite output template
+  # see https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_OUTPUT.md
+{% if telegraf_graphite_template is defined and telegraf_graphite_template != None %}
+  template = "{{ telegraf_graphite_template }}"
+{% else %}
+  template = "host.tags.measurement.field"
+{% endif %}
+
+  # Graphite templates patterns
+  # 1. Template for cpu
+  # 2. Template for disk*
+  # 3. Template for net
+  # 4. Default template
+{% if telegraf_graphite_templates is defined and telegraf_graphite_templates != None %}
+  templates = "{{ telegraf_graphite_templates }}"
+{% else %}
+  templates = [
+   "cpu host.measurement.field",
+   "disk* host.measurement.tags.field",
+   "net host.measurement.tags.field",
+   "mem host.tags.measurement.field",
+   "host.tags.measurement.field"
+  ]
+{% endif %}
+
+  # Enable Graphite tags support
+{% if telegraf_graphite_tag_support is defined and telegraf_graphite_tag_support != None %}
+  template = "{{ telegraf_graphite_tag_support }}"
+{% else %}
+  graphite_tag_support = false
+{% endif %}
+
+  # Character for separating metric name and field for Graphite tags
+  graphite_separator = "{{ telegraf_graphite_separator }}"
+
+  # timeout in seconds for the write connection to graphite
+  timeout = 5
+
+  # Optional TLS Config
+{% if telegraf_graphite_tls_ca is defined and telegraf_graphite_tls_ca != None %}
+  tls_ca = "{{ telegraf_graphite_tls_ca }}"
+{% endif %}
+{% if telegraf_graphite_tls_cert is defined and telegraf_graphite_tls_cert != None %}
+  tls_cert = "{{ telegraf_graphite_tls_cert }}"
+{% endif %}
+{% if telegraf_graphite_tls_key is defined and telegraf_graphite_tls_key != None %}
+  tls_key = "{{ telegraf_graphite_tls_key }}"
+{% endif %}
+  # Use TLS but skip chain & host verification
+{% if telegraf_graphite_insecure_skip_verify is defined and telegraf_graphite_insecure_skip_verify != None %}
+  insecure_skip_verify = "{{ telegraf_graphite_insecure_skip_verify }}"
+{% endif %}
+{% endif %}
 ###############################################################################
 #                                  PLUGINS                                    #
 ###############################################################################

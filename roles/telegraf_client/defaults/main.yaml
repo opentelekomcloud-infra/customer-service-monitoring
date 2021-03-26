@@ -17,17 +17,29 @@ telegraf_hostname:
 telegraf_omit_hostname: "false"
 telegraf_install_url:
 
+telegraf_influxdb: false
 telegraf_influxdb_urls: []
 telegraf_influxdb_database: telegraf
 telegraf_influxdb_precision: s
 telegraf_influxdb_retention_policy: autogen
 telegraf_influxdb_write_consistency: any
-
 telegraf_influxdb_timeout: 5s
 telegraf_influxdb_username:
 telegraf_influxdb_password:
 telegraf_influxdb_user_agent:
 telegraf_influxdb_udp_payload:
+
+telegraf_graphite: false
+telegraf_graphite_urls: []
+telegraf_graphite_prefix:
+telegraf_graphite_template:
+telegraf_graphite_templates:
+telegraf_graphite_tag_support:
+telegraf_graphite_separator: "."
+telegraf_graphite_tls_ca:
+telegraf_graphite_tls_cert:
+telegraf_graphite_tls_key:
+telegraf_graphite_insecure_skip_verify:
 
 telegraf_plugins_base:
   - name: mem
