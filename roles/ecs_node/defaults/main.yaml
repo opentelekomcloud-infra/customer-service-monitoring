@@ -1,6 +1,5 @@
-ecs_name: "ecs_node"
-ecs_availability_zone: "eu-de-03"
-ecs_ip_address: ""
+ecs_scenario: "ecs"
+ecs_availability_zones: ["eu-de-03"]
 ecs_volume_size: 5
 ecs_image: "Standard_Debian_10_latest"
 ecs_flavor: "s2.medium.2"
@@ -8,4 +7,4 @@ ecs_network_id: ""
 ecs_subnet_cidr: ""
 ecs_key_pair_name: ""
 ecs_secgroup_ports: [ "22", "80", "443", "3333" ]
-
+ecs_count: 1

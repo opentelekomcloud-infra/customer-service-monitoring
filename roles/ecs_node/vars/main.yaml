@@ -1,1 +1,2 @@
 az_count: "{{ ecs_availability_zones | length }}"
+ecs_name: "{{ instance_name }}"
