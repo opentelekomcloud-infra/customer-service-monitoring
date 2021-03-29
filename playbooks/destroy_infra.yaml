@@ -1,0 +1,35 @@
+---
+- name: Build/Check the main infrastructure
+  hosts: local
+  tasks:
+    - include_role:
+        name: ecs_node
+      vars:
+        state: absent
+        ecs_name: "{{ hostvars[host_name].name }}"
+      loop: "{{ groups['nodes'] }}"
+      loop_control:
+        loop_var: host_name
+
+    - include_role:
+        name: bastion
+      vars:
+        state: absent
+        bastion_name: "{{ hostvars[item].name }}"
+      with_items:
+        - "{{ groups['watchers'] }}"
+      register: watchers
+
+    - include_role:
+        name: public_router
+      vars:
+        state: absent
+        public_router_scenario: "VPC_A"
+
+- name: Delete common container
+  hosts: local
+  tasks:
+  - name: Delete container
+    swift_client:
+      container: "{{ container_name }}"
+      state: absent
