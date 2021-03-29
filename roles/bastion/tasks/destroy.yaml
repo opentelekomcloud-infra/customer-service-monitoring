@@ -2,12 +2,12 @@
 - name: Delete bastion
   openstack.cloud.server:
     state: absent
-    name:  "{{ bastion_scenario_name }}_instance"
+    name:  "{{ bastion_name }}"
 
 - name: Delete a port of a bastion
   openstack.cloud.port:
     state: absent
-    name: "{{ bastion_scenario_name }}_port"
+    name: "{{ bastion_name }}_port"
 
 - name: Delete bastion security group
   openstack.cloud.security_group:

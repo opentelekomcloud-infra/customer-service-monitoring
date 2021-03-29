@@ -39,7 +39,7 @@
 
 - name: Create a port for a bastion
   openstack.cloud.port:
-    name: "{{ bastion_scenario_name }}_port"
+    name: "{{ bastion_name }}_port"
     network: "{{ bastion_network_id }}"
     security_groups:
       - "{{ secur_group.secgroup.name }}"
@@ -50,7 +50,7 @@
 - name: Create a new instance
   openstack.cloud.server:
     state: present
-    name: "{{ bastion_scenario_name }}_instance"
+    name: "{{ bastion_name }}"
     flavor: "{{ bastion_flavor }}"
     key_name: "{{ bastion_key_pair_name }}"
     availability_zone: "{{ bastion_availability_zone }}"
@@ -90,3 +90,10 @@
     delete_fip: true
     auto_ip: true
   register: bastion
+
+- name: Add created host to ansible inventory
+  add_host:
+    name: "{{ bastion.openstack.name }}"
+    ansible_host: "{{ bastion.openstack.interface_ip }}"
+    ansible_ssh_user: linux
+    ansible_ssh_private_key_file: "{{ bastion_local_private_key }}"
