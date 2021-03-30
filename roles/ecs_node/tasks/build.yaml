@@ -6,7 +6,7 @@
 
 - name: Create security group
   openstack.cloud.security_group:
-    name: "{{ ecs_scenario }}_ecs_group"
+    name: "{{ ecs_name | default(ecs_scenario_name) }}_ecs_group"
     description: Allow external connections to ssh, http, https and icmp
   register: secur_group
 
@@ -29,19 +29,21 @@
 
 - name: Create ports for nodes
   openstack.cloud.port:
-    name: "{{ ecs_name }}_port | default({{ ecs_name }}_port{{ item }})"
+    name: "{{ ecs_name | default(ecs_scenario_name + '_' + item) }}_port"
     network: "{{ ecs_network_id }}"
     security_groups:
       - "{{ secur_group.secgroup.name }}"
     fixed_ips:
-      - ip_address:  "{{ ecs_ip_address }} | default({{ ecs_subnet_cidr | ansible.netcommon.ipmath(item|int + 9|int) }})"
+      - ip_address: "{{ ecs_ip_address | \
+                      default(ecs_subnet_cidr | ansible.netcommon.ipmath(item|int + 9|int)) }}"
   with_sequence: start=1 end="{{ ecs_count|int }}"
   register: ports
 
 - name: Create a new instance
   openstack.cloud.server:
     state: present
-    name: "{{ ecs_name }} | default({{ ecs_scenario_name }}_instance{{ item }}_{{ ecs_availability_zones[item|int % az_count|int]) }}"
+    name: "{{ ecs_name | default(ecs_scenario_name + '_instance' + item + \
+                '_' + ecs_availability_zones[item|int % az_count|int]) }}"
     flavor: "{{ ecs_flavor }}"
     key_name: "{{ ecs_key_pair_name }}"
     availability_zone: "{{ ecs_availability_zones[item|int % az_count|int] }}"
@@ -65,7 +67,7 @@
       sudo service sshd restart
       {% endraw %}
     nics:
-      - port-name: "{{ ecs_name }}_port | default({{ ecs_scenario_name }}_port{{ item }})"
+      - port-name:  "{{ ecs_name | default(ecs_scenario_name + '_' + item) }}_port"
     boot_from_volume: true
     volume_size: "{{ ecs_volume_size }}"
     image: "{{ image.openstack_image.id }}"

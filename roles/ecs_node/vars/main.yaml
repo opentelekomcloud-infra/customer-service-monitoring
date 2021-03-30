@@ -1,2 +1,3 @@
 az_count: "{{ ecs_availability_zones | length }}"
-ecs_name: "{{ instance_name }}"
+# ecs_name:  if set - one single node will be created, if not set - nodes amount = ecs_count
+# ecs_ip_address: if set ecs_name - this address will be assigned to node

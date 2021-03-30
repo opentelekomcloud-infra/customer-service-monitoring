@@ -1,10 +1,10 @@
-ecs_scenario: "ecs"
+ecs_scenario_name: "ecs"
 ecs_availability_zones: ["eu-de-03"]
 ecs_volume_size: 5
 ecs_image: "Standard_Debian_10_latest"
 ecs_flavor: "s2.medium.2"
 ecs_network_id: ""
-ecs_subnet_cidr: ""
+ecs_subnet_cidr: "192.168.0.0/24"
 ecs_key_pair_name: ""
 ecs_secgroup_ports: [ "22", "80", "443", "3333" ]
 ecs_count: 1
