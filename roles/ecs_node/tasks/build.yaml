@@ -76,5 +76,3 @@
     auto_ip: false
   with_sequence: start=1 end="{{ ecs_count|int }}"
   register: instances
-
-
