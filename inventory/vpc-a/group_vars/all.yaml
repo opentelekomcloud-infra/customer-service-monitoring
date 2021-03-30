@@ -16,5 +16,5 @@ telegraf_graphite_env: production_eu-de
 watcher_image: "Standard_Debian_10_latest"
 watcher_flavor: "s2.medium.2"
 watcher_volume_size: 10
-watcher_secgroup_tcp_ports: [ "22", "80", "443" ]
+watcher_secgroup_tcp_ports: ["22", "80", "443"]
 watcher_secgroup_udp_ports: []

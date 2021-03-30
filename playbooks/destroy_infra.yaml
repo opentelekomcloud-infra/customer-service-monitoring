@@ -29,7 +29,7 @@
 - name: Delete common container
   hosts: local
   tasks:
-  - name: Delete container
-    swift_client:
-      container: "{{ container_name }}"
-      state: absent
+    - name: Delete container
+      swift_client:
+        container: "{{ container_name }}"
+        state: absent
