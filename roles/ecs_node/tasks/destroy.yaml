@@ -8,7 +8,7 @@
 
 - name: Delete ports
   openstack.cloud.port:
-    name: "{{ ecs_name | default( ecs_scenario_name + '_' + item) }}_port }}"
+    name: "{{ ecs_name | default( ecs_scenario_name + '_' + item) }}_port"
     state: absent
   with_sequence: start=1 end="{{ ecs_count|int }}"
 
