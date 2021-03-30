@@ -5,52 +5,52 @@ all:
       ansible_host: localhost
       ansible_connection: local
       ansible_python_interpreter: "/usr/bin/env python3"
-    watcher_az_1:
+    watcher_eu-de-1:
       ansible_host: "{{ az_1_subnet_cidr | ansible.netcommon.ipmath(2) }}"
       ansible_ssh_user: linux
       ansible_ssh_private_key_file: "{{ local_private_key }}"
-    watcher_az_2:
+    watcher_eu-de-2:
       ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(2) }}"
       ansible_ssh_user: linux
       ansible_ssh_private_key_file: "{{ local_private_key }}"
-    watcher_az_3:
+    watcher_eu-de-3:
       ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(2) }}"
       ansible_ssh_user: linux
       ansible_ssh_private_key_file: "{{ local_private_key }}"
-    instance_1_az_1:
+    instance_1_eu-de-1:
       ansible_host: "{{ az_1_subnet_cidr | ansible.netcommon.ipmath(10) }}"
-    instance_2_az_1:
+    instance_2_eu-de-1:
       ansible_host: "{{ az_1_subnet_cidr | ansible.netcommon.ipmath(11) }}"
-    instance_3_az_1:
+    instance_3_eu-de-1:
       ansible_host: "{{ az_1_subnet_cidr | ansible.netcommon.ipmath(12) }}"
-    instance_1_az_2:
+    instance_1_eu-de-2:
       ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(10) }}"
-    instance_2_az_2:
+    instance_2_eu-de-2:
       ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(11) }}"
-    instance_3_az_2:
+    instance_3_eu-de-2:
       ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(12) }}"
-    instance_1_az_3:
+    instance_1_eu-de-3:
       ansible_host: "{{ az_3_subnet_cidr | ansible.netcommon.ipmath(10) }}"
-    instance_2_az_3:
+    instance_2_eu-de-3:
       ansible_host: "{{ az_3_subnet_cidr | ansible.netcommon.ipmath(11) }}"
-    instance_3_az_3:
+    instance_3_eu-de-3:
       ansible_host: "{{ az_3_subnet_cidr | ansible.netcommon.ipmath(12) }}"
 
 nodes:
   hosts:
-    instance_1_az_1:
-    instance_1_az_2:
-    instance_1_az_3:
+    instance_1_eu-de-1:
+    instance_1_eu-de-2:
+    instance_1_eu-de-3:
 
 watchers:
   hosts:
-    watcher_az_1:
+    watcher_eu-de-1:
 
 loadbalancer:
   hosts:
-    instance_1_az_1:
-    instance_1_az_2:
-    instance_1_az_3:
+    instance_1_eu-de-1:
+    instance_1_eu-de-2:
+    instance_1_eu-de-3:
 
 disabled:
   hosts:
