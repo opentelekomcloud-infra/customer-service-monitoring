@@ -15,6 +15,7 @@
           -o IdentityFile="{{ local_private_key }}"
           -o User=linux
           -o PasswordAuthentication=no
+          -o StrictHostKeyChecking=no
           -o ProxyCommand='ssh -W %h:%p
           -q linux@{{ hostvars[groups['watchers'][0]].ansible_host }}
           -i {{ local_private_key }}'
