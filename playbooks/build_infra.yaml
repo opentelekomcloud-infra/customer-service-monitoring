@@ -54,6 +54,23 @@
       loop_control:
         loop_var: host_name
 
+- name: Install docker on Controller
+  hosts: bastions
+  become: yes
+  roles:
+    - role: geerlingguy.docker
+  tasks:
+    - name: launch graphite  # noqa 301 305
+      command: "docker run -d --name graphite \
+        --restart=always \
+        -p 80:80 \
+        -p 2003-2004:2003-2004 \
+        -p 2023-2024:2023-2024 \
+        -p 8125:8125/udp \
+        -p 8126:8126 \
+        graphiteapp/graphite-statsd"
+      ignore_errors: true
+
 - name: Create a common swift container
   hosts: local
   tasks:
