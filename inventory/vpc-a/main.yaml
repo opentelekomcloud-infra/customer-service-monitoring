@@ -5,76 +5,76 @@ all:
       ansible_host: localhost
       ansible_connection: local
       ansible_python_interpreter: "/usr/bin/env python3"
-    watcher_eu-de-1:
+    watcher_eu-de-01:
       ansible_host: "{{ az_1_subnet_cidr | ansible.netcommon.ipmath(2) }}"
       ansible_ssh_user: linux
       ansible_ssh_private_key_file: "{{ local_private_key }}"
       az: eu-de-01
-      name: watcher_eu-de-1
-    watcher_eu-de-2:
+      name: watcher_eu-de-01
+    watcher_eu-de-02:
       ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(2) }}"
       ansible_ssh_user: linux
       ansible_ssh_private_key_file: "{{ local_private_key }}"
       az: eu-de-02
-      name: watcher_eu-de-2
-    watcher_eu-de-3:
+      name: watcher_eu-de-02
+    watcher_eu-de-03:
       ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(2) }}"
       ansible_ssh_user: linux
       ansible_ssh_private_key_file: "{{ local_private_key }}"
       az: eu-de-03
-      name: watcher_eu-de-3
-    instance_1_eu-de-1:
+      name: watcher_eu-de-03
+    instance_1_eu-de-01:
       ansible_host: "{{ az_1_subnet_cidr | ansible.netcommon.ipmath(10) }}"
       az: eu-de-01
-      name: instance_1_eu-de-1
-    instance_2_eu-de-1:
+      name: instance_1_eu-de-01
+    instance_2_eu-de-01:
       ansible_host: "{{ az_1_subnet_cidr | ansible.netcommon.ipmath(11) }}"
       az: eu-de-01
-      name: instance_2_eu-de-1
-    instance_3_eu-de-1:
+      name: instance_2_eu-de-01
+    instance_3_eu-de-01:
       ansible_host: "{{ az_1_subnet_cidr | ansible.netcommon.ipmath(12) }}"
       az: eu-de-01
-      name: instance_3_eu-de-1
-    instance_1_eu-de-2:
+      name: instance_3_eu-de-01
+    instance_1_eu-de-02:
       ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(10) }}"
       az: eu-de-02
-      name: instance_1_eu-de-2
-    instance_2_eu-de-2:
+      name: instance_1_eu-de-02
+    instance_2_eu-de-02:
       ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(11) }}"
       az: eu-de-02
-      name: instance_2_eu-de-2
-    instance_3_eu-de-2:
+      name: instance_2_eu-de-02
+    instance_3_eu-de-02:
       ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(12) }}"
       az: eu-de-02
-      name: instance_3_eu-de-2
-    instance_1_eu-de-3:
+      name: instance_3_eu-de-02
+    instance_1_eu-de-03:
       ansible_host: "{{ az_3_subnet_cidr | ansible.netcommon.ipmath(10) }}"
       az: eu-de-03
-      name: instance_1_eu-de-3
-    instance_2_eu-de-3:
+      name: instance_1_eu-de-03
+    instance_2_eu-de-03:
       ansible_host: "{{ az_3_subnet_cidr | ansible.netcommon.ipmath(11) }}"
       az: eu-de-03
-      name: instance_2_eu-de-3
-    instance_3_eu-de-3:
+      name: instance_2_eu-de-03
+    instance_3_eu-de-03:
       ansible_host: "{{ az_3_subnet_cidr | ansible.netcommon.ipmath(12) }}"
       az: eu-de-03
-      name: instance_3_eu-de-3
+      name: instance_3_eu-de-03
 
 nodes:
   hosts:
-    instance_1_eu-de-1:
-    instance_1_eu-de-2:
-    instance_1_eu-de-3:
+    instance_1_eu-de-01:
+    instance_1_eu-de-02:
+    instance_1_eu-de-03:
 
 watchers:
   hosts:
-    watcher_eu-de-1:
+    watcher_eu-de-01:
 
 loadbalancer:
   hosts:
-    instance_1_eu-de-1:
-    instance_1_eu-de-2:
-    instance_1_eu-de-3:
+    instance_1_eu-de-01:
+    instance_1_eu-de-02:
+    instance_1_eu-de-03:
 
 disabled:
   hosts:
