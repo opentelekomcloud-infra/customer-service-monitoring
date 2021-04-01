@@ -1,0 +1,127 @@
+---
+- name: Prepare the main network
+  import_playbook: build_infra.yaml
+
+- name: Register instances in order to set proxy command throught watchers
+  hosts: local
+  tasks:
+    - name: Register nodes
+      add_host:
+        name: "{{ hostvars[item].name }}"
+        groups: loadbalancer
+        ansible_ssh_common_args: >
+          -o UserKnownHostsFile=/dev/null
+          -o StrictHostKeyChecking=no
+          -o IdentityFile="{{ local_private_key }}"
+          -o User=linux
+          -o PasswordAuthentication=no
+          -o StrictHostKeyChecking=no
+          -o ProxyCommand='ssh -W %h:%p
+          -q linux@{{ hostvars[groups['watchers'][0]].ansible_host }}
+          -i {{ local_private_key }}'
+      loop: "{{ groups['loadbalancer'] }}"
+
+- name: Wait for nodes to be up
+  hosts: loadbalancer
+  gather_facts: no
+  tasks:
+    - name: Wait for nodes to be up
+      wait_for_connection:
+        timeout: 250
+
+- name: Install telegraf client on nodes
+  hosts: loadbalancer
+  become: yes
+  roles:
+    - role: telegraf_client
+      vars:
+        telegraf_graphite: true
+        telegraf_graphite_urls:
+          - "{{ telegraf_graphite_url }}"
+        telegraf_graphite_prefix: "stats.system.csm.{{ telegraf_graphite_env }}"
+        telegraf_graphite_template: host.tags.measurement.field
+        telegraf_plugins_base:
+          - name: cpu
+            options:
+              percpu: "false"
+              totalcpu: "true"
+              fielddrop:
+                - "time_*"
+          - name: net
+            options:
+              interfaces:
+                - "lo"
+                - "ens3"
+
+- name: Setup nginx for TCP, HTTP, HTTPS connections
+  hosts: loadbalancer
+  become: yes
+  vars_files:
+    - "./vars/nginx_http.yaml"
+    - "./vars/nginx_https.yaml"
+    - "./vars/nginx_tcp.yaml"
+  roles:
+    - role: geerlingguy.nginx
+      vars:
+        nginx_remove_default_vhost: yes
+        nginx_vhosts:
+          - listen: "80"
+            server_name: "http"
+            extra_parameters: "{{ extra_parameters_http }}"
+            return: "200 OK_HTTP"
+          - listen: "3333"
+            server_name: "tcp"
+            extra_parameters: "{{ extra_parameters_tcp }}"
+            return: "200 OK_TCP"
+          - listen: "443 ssl"
+            server_name: "https"
+            extra_parameters: "{{ extra_parameters_https }}"
+            return: "200 OK_HTTPS"
+
+- name: Create key pair for lb monitoring and including required variables
+  hosts: local
+  tasks:
+    - name: Include variables required for lm monitoring infra
+      include_vars: ./vars/lb_monitoring.yaml
+    - name: Create key pair for lb monitoring scenario
+      os_keypair:
+        name: "{{ lb_keypair }}"
+        public_key_file: "{{ local_private_key }}.pub"
+
+    - name: Getting list of instances ips from inventory
+      set_fact:
+        list_ips: "{{ list_ips | default([]) + [hostvars[host_name].ansible_host] }}"
+      loop: "{{ groups['loadbalancer'] }}"
+      loop_control:
+        loop_var: host_name
+
+- name: Build loadbalancer
+  hosts: local
+  roles:
+    - loadbalancer
+  vars:
+    state: present
+    loadbalancer_subnet_id: "{{ main_subnet_id }}"
+    loadbalancer_instances_ips: "{{ list_ips }}"
+    loadbalancer_lb_local_ip: "{{ loadbalancer_local_ip }}"
+
+- name: Create object with data about lb infra
+  hosts: local
+  gather_facts: no
+  tasks:
+    - name: Getting data for swift object
+      set_fact:
+        nodes_ips: "{{ nodes_ips | default({}) |\
+         combine( {hostvars[item].name: hostvars[item].ansible_host} ) }}"
+      with_items: "{{ groups['loadbalancer'] }}"
+
+    - name: Create object or overwrite existing object
+      swift_client:
+        container: "{{ container_name }}"
+        object_name: "{{ scenario }}"
+        content:
+          loadbalancer_public_ip: "{{ loadbalancer.loadbalancer.public_vip_address }}"
+          loadbalancer_private_ip: "{{ loadbalancer.loadbalancer.vip_address }}"
+          loadbalancer_keypair: "{{ lb_keypair }}"
+          lb_instances_ips: "{{ nodes_ips | to_json }}"
+        state: present

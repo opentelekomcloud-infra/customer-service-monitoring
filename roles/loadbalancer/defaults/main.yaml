@@ -2,7 +2,7 @@ loadbalancer_prefix: "loadbalancer"
 loadbalancer_subnet_id: ""
 loadbalancer_lb_local_ip: ""
 loadbalancer_pool_lb_method: "round_robin"
-loadbalancer_instances: ""
+loadbalancer_instances_ips: []
 loadbalancer_tcp_protocol: "tcp"
 loadbalancer_http_protocol: "http"
 loadbalancer_https_protocol: "terminated_https"

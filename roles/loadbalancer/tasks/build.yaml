@@ -75,11 +75,11 @@
     state: present
     name: "{{ loadbalancer_prefix }}_member_{{ my_idx|int +1 }}"
     pool: "{{ lb_pool_http.server_group.id }}"
-    address: "{{ item.openstack.private_v4 }}"
+    address: "{{ item }}"
     protocol_port: "{{ loadbalancer_http_protocol_port }}"
     subnet: "{{ loadbalancer_subnet_id }}"
   register: members_http
-  loop: "{{ loadbalancer_instances.results }}"
+  loop: "{{ loadbalancer_instances_ips }}"
   loop_control:
     index_var: my_idx
 
@@ -88,11 +88,11 @@
     state: present
     name: "{{ loadbalancer_prefix }}_member_{{ my_idx|int +1 }}"
     pool: "{{ lb_pool_https.server_group.id }}"
-    address: "{{ item.openstack.private_v4 }}"
+    address: "{{ item }}"
     protocol_port: "{{ loadbalancer_tcp_protocol_port }}"
     subnet: "{{ loadbalancer_subnet_id }}"
   register: members_https
-  loop: "{{ loadbalancer_instances.results }}"
+  loop: "{{ loadbalancer_instances_ips }}"
   loop_control:
     index_var: my_idx
 
@@ -101,11 +101,11 @@
     state: present
     name: "{{ loadbalancer_prefix }}_member_{{ my_idx|int +1 }}"
     pool: "{{ lb_pool_tcp.server_group.id }}"
-    address: "{{ item.openstack.private_v4 }}"
+    address: "{{ item }}"
     protocol_port: "{{ loadbalancer_tcp_protocol_port }}"
     subnet: "{{ loadbalancer_subnet_id }}"
   register: members_tcp
-  loop: "{{ loadbalancer_instances.results }}"
+  loop: "{{ loadbalancer_instances_ips }}"
   loop_control:
     index_var: my_idx
 
