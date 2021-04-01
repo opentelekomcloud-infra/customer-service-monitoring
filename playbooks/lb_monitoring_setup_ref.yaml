@@ -65,18 +65,15 @@
       vars:
         nginx_remove_default_vhost: yes
         nginx_vhosts:
-          - listen: "80"
-            server_name: "http"
-            extra_parameters: "{{ extra_parameters_http }}"
-            return: "200 OK_HTTP"
           - listen: "3333"
             server_name: "tcp"
             extra_parameters: "{{ extra_parameters_tcp }}"
-            return: "200 OK_TCP"
+          - listen: "80"
+            server_name: "http"
+            extra_parameters: "{{ extra_parameters_http }}"
           - listen: "443 ssl"
             server_name: "https"
             extra_parameters: "{{ extra_parameters_https }}"
-            return: "200 OK_HTTPS"
 
 - name: Create key pair for lb monitoring and including required variables
   hosts: local
