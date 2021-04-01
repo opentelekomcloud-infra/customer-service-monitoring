@@ -1,0 +1,80 @@
+---
+- name: Build/Check the main infrastructure
+  hosts: local
+  roles:
+    - prepare_build
+    - public_router
+  vars:
+    public_router_scenario: "VPC_A"
+    state: present
+  tasks:
+    - name: Register build result
+      set_fact:
+        main_network_id: "{{ net.network.id }}"
+        main_subnet_id: "{{ subnet.subnet.id }}"
+        main_router_id: "{{ router.router.id }}"
+
+    - include_role:
+        name: bastion
+      vars:
+        state: present
+        bastion_availability_zone: "{{ hostvars[item].az }}"
+        bastion_image: "{{ watcher_image }}"
+        bastion_network_id: "{{ net.network.id }}"
+        bastion_flavor: "{{ watcher_flavor }}"
+        bastion_key_pair_name: "{{ keypair.key.name }}"
+        bastion_volume_size: "{{ watcher_volume_size }}"
+        bastion_secgroup_tcp_ports: "{{ watcher_secgroup_tcp_ports }}"
+        bastion_secgroup_udp_ports: "{{ watcher_secgroup_udp_ports }}"
+        bastion_private_ip: "{{ hostvars[item].ansible_host }}"
+        bastion_name: "{{ hostvars[item].name }}"
+        bastion_local_private_key: "{{ local_private_key }}"
+      with_items:
+        - "{{ groups['watchers'] }}"
+
+    - include_role:
+        name: ecs_node
+      vars:
+        ecs_key_pair_name: "{{ keypair.key.name }}"
+        state: present
+        ecs_name: "{{ hostvars[host_name].name }}"
+        ecs_network_id: "{{ main_network_id }}"
+        ecs_ip_address: "{{ hostvars[host_name].ansible_host }}"
+        ecs_availability_zone: "{{ hostvars[host_name].az }}"
+      loop: "{{ groups['nodes'] }}"
+      loop_control:
+        loop_var: host_name
+
+    - include_role:
+        name: ecs_node
+      vars:
+        state: absent
+        ecs_name: "{{ hostvars[host_name].name }}"
+      loop: "{{ groups['disabled'] }}"
+      loop_control:
+        loop_var: host_name
+
+- name: Install docker on Controller
+  hosts: bastions
+  become: yes
+  roles:
+    - role: geerlingguy.docker
+  tasks:
+    - name: launch graphite  # noqa 301 305
+      command: "docker run -d --name graphite \
+        --restart=always \
+        -p 80:80 \
+        -p 2003-2004:2003-2004 \
+        -p 2023-2024:2023-2024 \
+        -p 8125:8125/udp \
+        -p 8126:8126 \
+        graphiteapp/graphite-statsd"
+      ignore_errors: true
+
+- name: Create a common swift container
+  hosts: local
+  tasks:
+    - name: Create container
+      swift_client:
+        container: "{{ container_name }}"
+        state: present
