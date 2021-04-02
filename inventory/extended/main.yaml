@@ -1,0 +1,119 @@
+---
+all:
+  hosts:
+    local:
+      ansible_host: localhost
+      ansible_connection: local
+      ansible_python_interpreter: "/usr/bin/env python3"
+      role: local
+      scenario: ""
+    watcher_eu-de-01-vpc-a:
+      ansible_host: "{{ az_1_subnet_cidr | ansible.netcommon.ipmath(2) }}"
+      ansible_ssh_user: linux
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+      az: eu-de-01
+      name: "watcher_eu-de-01-vpc-a"
+      role: watcher
+      vpc: vpc_a
+      scenario: ""
+    watcher_eu-de-02-vpc-a:
+      ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(2) }}"
+      ansible_ssh_user: linux
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+      az: eu-de-02
+      name: "watcher_eu-de-02-vpc-a"
+      role: watcher
+      vpc: vpc_a
+      scenario: ""
+    watcher_eu-de-03-vpc-a:
+      ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(2) }}"
+      ansible_ssh_user: linux
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+      az: eu-de-03
+      name: "watcher_eu-de-03-vpc-a"
+      role: watcher
+      vpc: vpc_a
+      scenario: ""
+    watcher_eu-de-01-vpc-b:
+      ansible_host: "{{ az_1_subnet_cidr | ansible.netcommon.ipmath(2) }}"
+      ansible_ssh_user: linux
+      ansible_ssh_private_key_file: "{{ local_private_key }}"
+      az: eu-de-01
+      name: "watcher_eu-de-01-vpc-b"
+      role: watcher
+      vpc: vpc_b
+      scenario: ""
+    instance_1_eu-de-01:
+      ansible_host: "{{ az_1_subnet_cidr | ansible.netcommon.ipmath(10) }}"
+      az: eu-de-01
+      name: "instance_1_eu-de-01"
+      role: instance
+      vpc: vpc_a
+      scenario: "loadbalancer"
+    instance_2_eu-de-01:
+      ansible_host: "{{ az_1_subnet_cidr | ansible.netcommon.ipmath(11) }}"
+      az: eu-de-01
+      name: "instance_2_eu-de-01"
+      role: instance
+      vpc: vpc_a
+      scenario: ""
+    instance_3_eu-de-01:
+      ansible_host: "{{ az_1_subnet_cidr | ansible.netcommon.ipmath(12) }}"
+      az: eu-de-01
+      name: "instance_3_eu-de-01"
+      role: instance
+      vpc: vpc_a
+      scenario: ""
+    instance_1_eu-de-02:
+      ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(10) }}"
+      az: eu-de-02
+      name: "instance_1_eu-de-02"
+      role: instance
+      vpc: vpc_a
+      scenario: "loadbalancer"
+    instance_2_eu-de-02:
+      ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(11) }}"
+      az: eu-de-02
+      name: "instance_2_eu-de-02"
+      role: instance
+      vpc: vpc_a
+      scenario: ""
+    instance_3_eu-de-02:
+      ansible_host: "{{ az_2_subnet_cidr | ansible.netcommon.ipmath(12) }}"
+      az: eu-de-02
+      name: "instance_3_eu-de-02"
+      role: instance
+      vpc: vpc_a
+      scenario: ""
+    instance_1_eu-de-03:
+      ansible_host: "{{ az_3_subnet_cidr | ansible.netcommon.ipmath(10) }}"
+      az: eu-de-03
+      name: "instance_1_eu-de-03"
+      role: instance
+      vpc: vpc_a
+      scenario: "loadbalancer"
+    instance_2_eu-de-03:
+      ansible_host: "{{ az_3_subnet_cidr | ansible.netcommon.ipmath(11) }}"
+      az: eu-de-03
+      name: "instance_2_eu-de-03"
+      role: instance
+      vpc: vpc_a
+      scenario: ""
+    instance_3_eu-de-03:
+      ansible_host: "{{ az_3_subnet_cidr | ansible.netcommon.ipmath(12) }}"
+      az: eu-de-03
+      name: "instance_3_eu-de-03"
+      role: instance
+      vpc: vpc_a
+      scenario: ""
+
+disabled:
+  hosts:
+    watcher_eu-de-02-vpc-a:
+    watcher_eu-de-03-vpc-a:
+    instance_2_eu-de-01:
+    instance_3_eu-de-01:
+    instance_2_eu-de-02:
+    instance_3_eu-de-02:
+    instance_2_eu-de-03:
+    instance_3_eu-de-03:

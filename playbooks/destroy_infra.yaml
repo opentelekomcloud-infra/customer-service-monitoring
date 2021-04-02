@@ -7,24 +7,26 @@
       vars:
         state: absent
         ecs_name: "{{ hostvars[host_name].name }}"
-      loop: "{{ groups['nodes'] }}"
+      loop: "{{ groups['all'] }}"
       loop_control:
         loop_var: host_name
+      when: hostvars[host_name].role=="instance" and host_name not in groups['disabled']
 
     - include_role:
         name: bastion
       vars:
         state: absent
         bastion_name: "{{ hostvars[item].name }}"
-      with_items:
-        - "{{ groups['watchers'] }}"
-      register: watchers
+
+      loop: "{{ groups['all'] }}"
+      when: hostvars[item].role=="watcher" and item not in groups['disabled']
 
     - include_role:
         name: public_router
       vars:
         state: absent
-        public_router_scenario: "VPC_A"
+        vpc_name: "{{ item }}"
+      loop: "{{ vpcs }}"
 
 - name: Delete common container
   hosts: local

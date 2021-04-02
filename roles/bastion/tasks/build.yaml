@@ -6,7 +6,7 @@
 
 - name: Create security group
   openstack.cloud.security_group:
-    name: bastion_group
+    name: "{{ bastion_name }}_secgroup"
     description: Allow external connections to ssh, http, https and icmp
   register: secur_group
 
