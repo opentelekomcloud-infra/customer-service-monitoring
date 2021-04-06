@@ -1,5 +1,5 @@
 ---
-- name: Create a peering
+- name: Create or delete vpc peering
   opentelekomcloud.cloud.vpc_peering:
     state: "{{ peering_state }}"
     name: "{{ vpc_peering_name }}"
@@ -10,7 +10,7 @@
   register: vpc_peering
   ignore_errors: true
 
-- name: Create a vpc route
+- name: Create or delete vpc route
   opentelekomcloud.cloud.vpc_route:
     state: "{{ peering_state }}"
     destination: "{{ peering_destination_local }}"
@@ -19,7 +19,7 @@
   register: vpc_route
   ignore_errors: true
 
-- name: Create a vpc route
+- name: Create or delete vpc route
   opentelekomcloud.cloud.vpc_route:
     state: "{{ peering_state }}"
     destination: "{{ peering_destination_peer }}"

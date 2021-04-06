@@ -5,8 +5,7 @@
 
     - include: vpc_peering.yaml
       vars:
-        state: absent
-        peering_state: present
+        peering_state: absent
         vpc_peering_name: "{{ item.key }}_to_{{ item.value }}"
         peering_local_router: "{{ item.key }}_router"
         peering_project_id: "{{ project_name }}"
@@ -39,9 +38,10 @@
     - include_role:
         name: public_router
       vars:
-        state: absent
-        vpc_name: "{{ item }}"
-      loop: "{{ vpcs }}"
+        state: present
+        vpc_name: "{{ item.key }}"
+        subnet_cidr: "{{ item.value }}"
+      with_dict: "{{ vpcs }}"
 
 - name: Delete common container
   hosts: local
