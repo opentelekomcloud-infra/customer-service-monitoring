@@ -7,8 +7,9 @@
     - include: public_router.yaml
       vars:
         state: present
-        vpc_name: "{{ item }}"
-      loop: "{{ vpcs }}"
+        vpc_name: "{{ item.key }}"
+        subnet_cidr: "{{ item.value }}"
+      with_dict: "{{ vpcs }}"
 
     - include: bastion.yaml
       vars:
@@ -39,8 +40,8 @@
         loop_var: host_name
       when: hostvars[host_name].role=="instance" and host_name not in groups['disabled']
 
-- name: Install docker on Controller
-  hosts: bastions
+- name: Install docker and launch graphite on watcher in az eu-de-01
+  hosts: watcher_eu-de-01-vpc-a:!disabled
   become: yes
   roles:
     - role: geerlingguy.docker
@@ -54,6 +55,23 @@
         -p 8125:8125/udp \
         -p 8126:8126 \
         graphiteapp/graphite-statsd"
+      ignore_errors: true
+
+- name: Create peerings
+  hosts: local
+  tasks:
+    - include: vpc_peering.yaml
+      vars:
+        state: present
+        peering_state: present
+        vpc_peering_name: "{{ item.key }}_to_{{ item.value }}"
+        peering_local_router: "{{ item.key }}_router"
+        peering_project_id: "{{ project_name }}"
+        peering_peer_router: "{{ item.value }}_router"
+        peering_peer_id: "{{ project_name }}"
+        peering_destination_local: "{{ vpcs[item.key] }}"
+        peering_destination_peer: "{{ vpcs[item.value] }}"
+      with_dict: "{{ vpc_peerings }}"
       ignore_errors: true
 
 - name: Create a common swift container

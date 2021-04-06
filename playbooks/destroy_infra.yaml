@@ -2,6 +2,21 @@
 - name: Build/Check the main infrastructure
   hosts: local
   tasks:
+
+    - include: vpc_peering.yaml
+      vars:
+        state: absent
+        peering_state: present
+        vpc_peering_name: "{{ item.key }}_to_{{ item.value }}"
+        peering_local_router: "{{ item.key }}_router"
+        peering_project_id: "{{ project_name }}"
+        peering_peer_router: "{{ item.value }}_router"
+        peering_peer_id: "{{ project_name }}"
+        peering_destination_local: "{{ vpcs[item.key] }}"
+        peering_destination_peer: "{{ vpcs[item.value] }}"
+      with_dict: "{{ vpc_peerings }}"
+      ignore_errors: true
+
     - include_role:
         name: ecs_node
       vars:

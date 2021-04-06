@@ -3,6 +3,7 @@
     name: public_router
   vars:
     public_router_scenario: "{{ vpc_name }}"
+    public_router_subnet_cidr: "{{ subnet_cidr }}"
 
 - name: Setting facts about created infra
   set_fact:
