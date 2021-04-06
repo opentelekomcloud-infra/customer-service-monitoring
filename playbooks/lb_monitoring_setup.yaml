@@ -23,8 +23,9 @@
       loop_control:
         loop_var: hostname
       when: >
-      hostvars[hostname].role=="instance" and "loadbalancer" in
-      hostvars[hostname].scenarios and hostname not in groups['disabled']
+        hostvars[hostname].role=="instance"
+        and "loadbalancer" in hostvars[hostname].scenarios
+        and hostname not in groups['disabled']
 
 - name: Wait for nodes to be up
   hosts: loadbalancer
@@ -79,7 +80,7 @@
 - name: Including required variables and getting ips of instances
   hosts: local
   tasks:
-    - name: Include variables required for lm monitoring infra
+    - name: Include variables required for lb monitoring infra
       include_vars: ./vars/lb_monitoring.yaml
 
     - name: Getting list of instances ips from inventory

@@ -8,7 +8,7 @@
   roles:
     - loadbalancer
   tasks:
-    - name: Include variables required for lm monitoring infra
+    - name: Include variables required for lb monitoring infra
       include_vars: ./vars/lb_monitoring.yaml
 
 - name: Delete object with data about lb infra

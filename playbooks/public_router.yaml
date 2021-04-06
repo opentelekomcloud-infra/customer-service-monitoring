@@ -13,6 +13,6 @@
 
 - name: Setting facts about created infra
   set_fact:
-    vpcs_info: "{{ vpcs_info | default({}) | \combine( {vpc_name: \
+    vpcs_info: "{{ vpcs_info | default({}) | combine( {vpc_name: \
                 {'network_id': main_network_id, 'subnet_id': main_subnet_id, \
                                             'router_id': main_router_id}} ) }}"
