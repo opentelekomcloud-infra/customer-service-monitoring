@@ -1,7 +1,7 @@
 project_name: eu-de_test_dmd
 vpcs: {vpc_a: "192.168.0.0/16", vpc_b: "10.10.0.0/16"}
 vpns: []
-vpc_peerings: {vpc_a: "vpc_b", vpc_b: "vpc_a"}
+vpc_peerings: {vpc_a: "vpc_b"}
 
 tmp_dir: /tmp
 local_private_key: "{{ tmp_dir }}/{{ key_name }}"
@@ -12,9 +12,9 @@ ansible_ssh_private_key_file: "{{ local_private_key }}"
 container_name: csm
 telegraf_graphite_url: localhost:2003
 telegraf_graphite_env: production_eu-de
+loadbalancer_private_ip: 192.168.1.3
 
 watcher_image: Standard_Debian_10_latest
 watcher_flavor: s2.medium.2
 watcher_volume_size: 10
-watcher_secgroup_tcp_ports: ["22", "80", "443", "2003", "2004", "2023", "2024", "8126"]
-watcher_secgroup_udp_ports: ["8126"]
+

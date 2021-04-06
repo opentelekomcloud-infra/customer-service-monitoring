@@ -7,7 +7,7 @@
   tasks:
     - name: Register nodes
       add_host:
-        name: "{{ hostvars[item].name }}"
+        name: "{{ hostvars[hostname].name }}"
         groups: loadbalancer
         ansible_ssh_common_args: >
           -o UserKnownHostsFile=/dev/null
@@ -19,7 +19,10 @@
           -o ProxyCommand='ssh -W %h:%p
           -q linux@{{ hostvars[groups['watchers'][0]].ansible_host }}
           -i {{ local_private_key }}'
-      loop: "{{ groups['loadbalancer'] }}"
+      loop: "{{ groups['all'] }}"
+      loop_control:
+        loop_var: hostname
+      when: hostvars[hostname].role=="instance" and "loadbalancer" in hostvars[hostname].scenarios and hostname not in groups['disabled']
 
 - name: Wait for nodes to be up
   hosts: loadbalancer
@@ -55,11 +58,10 @@
 
 - name: Setup nginx for TCP, HTTP, HTTPS connections
   hosts: loadbalancer
-  become: yes
   vars_files:
     - "./vars/nginx_http.yaml"
-    - "./vars/nginx_https.yaml"
     - "./vars/nginx_tcp.yaml"
+  become: yes
   roles:
     - role: geerlingguy.nginx
       vars:
@@ -71,9 +73,6 @@
           - listen: "80"
             server_name: "http"
             extra_parameters: "{{ extra_parameters_http }}"
-          - listen: "443 ssl"
-            server_name: "https"
-            extra_parameters: "{{ extra_parameters_https }}"
 
 - name: Create key pair for lb monitoring and including required variables
   hosts: local
@@ -98,7 +97,7 @@
     - loadbalancer
   vars:
     state: present
-    loadbalancer_subnet_id: "{{ main_subnet_id }}"
+    loadbalancer_subnet_id: "{{ vpcs_info[hostvars[groups['loadbalancer'][0]].vpc]['subnet_id'] }}"
     loadbalancer_instances_ips: "{{ list_ips }}"
     loadbalancer_lb_local_ip: "{{ loadbalancer_local_ip }}"
 
@@ -110,7 +109,7 @@
       set_fact:
         nodes_ips: "{{ nodes_ips | default({}) |\
          combine( {hostvars[item].name: hostvars[item].ansible_host} ) }}"
-      with_items: "{{ groups['loadbalancer'] }}"
+      loop: "{{ groups['loadbalancer'] }}"
 
     - name: Create object or overwrite existing object
       swift_client:

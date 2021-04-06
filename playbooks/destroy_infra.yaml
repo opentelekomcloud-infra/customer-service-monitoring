@@ -38,9 +38,8 @@
     - include_role:
         name: public_router
       vars:
-        state: present
-        vpc_name: "{{ item.key }}"
-        subnet_cidr: "{{ item.value }}"
+        state: absent
+        public_router_scenario: "{{ item.key }}"
       with_dict: "{{ vpcs }}"
 
 - name: Delete common container

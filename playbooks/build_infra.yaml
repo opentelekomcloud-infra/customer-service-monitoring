@@ -14,18 +14,20 @@
     - include: bastion.yaml
       vars:
         state: present
-        bastion_network_id: "{{ vpcs_info[hostvars[item].vpc]['network_id'] }}"
-        bastion_availability_zone: "{{ hostvars[item].az }}"
+        bastion_network_id: "{{ vpcs_info[hostvars[hostname].vpc]['network_id'] }}"
+        bastion_availability_zone: "{{ hostvars[hostname].az }}"
         bastion_key_pair_name: "{{ keypair.key.name }}"
-        bastion_private_ip: "{{ hostvars[item].ansible_host }}"
-        bastion_name: "{{ hostvars[item].name }}"
+        bastion_private_ip: "{{ hostvars[hostname].ansible_host }}"
+        bastion_name: "{{ hostvars[hostname].name }}"
         bastion_image: "{{ watcher_image }}"
         bastion_flavor: "{{ watcher_flavor }}"
         bastion_volume_size: "{{ watcher_volume_size }}"
-        bastion_secgroup_tcp_ports: "{{ watcher_secgroup_tcp_ports }}"
-        bastion_secgroup_udp_ports: "{{ watcher_secgroup_udp_ports }}"
+        bastion_secgroup_tcp_ports: "{{ hostvars[hostname].secgroup_tcp_ports }}"
+        bastion_secgroup_udp_ports: "{{ hostvars[hostname].secgroup_udp_ports }}"
       loop: "{{ groups['all'] }}"
-      when: hostvars[item].role=="watcher" and item not in groups['disabled']
+      loop_control:
+        loop_var: hostname
+      when: hostvars[hostname].role=="watcher" and hostname not in groups['disabled']
 
     - include: ecs_node.yaml
       vars:
