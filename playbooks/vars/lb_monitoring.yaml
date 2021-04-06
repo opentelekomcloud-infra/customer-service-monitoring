@@ -1,5 +1,4 @@
 scenario: "lb_monitoring"
-lb_keypair: "{{ scenario }}_keypair"
 loadbalancer_prefix: "loadbalancer"
 loadbalancer_protocol: "tcp"
 loadbalancer_protocol_port: 80

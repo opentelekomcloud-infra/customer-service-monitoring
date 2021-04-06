@@ -76,15 +76,11 @@
             server_name: "http"
             extra_parameters: "{{ extra_parameters_http }}"
 
-- name: Create key pair for lb monitoring and including required variables
+- name: Including required variables and getting ips of instances
   hosts: local
   tasks:
     - name: Include variables required for lm monitoring infra
       include_vars: ./vars/lb_monitoring.yaml
-    - name: Create key pair for lb monitoring scenario
-      os_keypair:
-        name: "{{ lb_keypair }}"
-        public_key_file: "{{ local_private_key }}.pub"
 
     - name: Getting list of instances ips from inventory
       set_fact:
@@ -120,6 +116,5 @@
         content:
           loadbalancer_public_ip: "{{ loadbalancer.loadbalancer.public_vip_address }}"
           loadbalancer_private_ip: "{{ loadbalancer.loadbalancer.vip_address }}"
-          loadbalancer_keypair: "{{ lb_keypair }}"
           lb_instances_ips: "{{ nodes_ips | to_json }}"
         state: present
