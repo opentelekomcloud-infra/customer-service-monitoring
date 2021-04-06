@@ -27,8 +27,8 @@ all:
       role: watcher
       vpc: vpc_a
       scenarios: []
-      secgroup_tcp_ports: ["22", "80", "443", "2003", "2004", "2023", "2024", "8126"]
-      secgroup_udp_ports: ["8126"]
+      secgroup_tcp_ports: ["22", "80", "443"]
+      secgroup_udp_ports: []
     watcher_eu-de-03-vpc-a:
       ansible_host: 192.168.3.2
       ansible_ssh_user: linux
@@ -38,8 +38,8 @@ all:
       role: watcher
       vpc: vpc_a
       scenarios: []
-      secgroup_tcp_ports: ["22", "80", "443", "2003", "2004", "2023", "2024", "8126"]
-      secgroup_udp_ports: ["8126"]
+      secgroup_tcp_ports: ["22", "80", "443"]
+      secgroup_udp_ports: []
     watcher_eu-de-01-vpc-b:
       ansible_host: 10.10.0.2
       ansible_ssh_user: linux
@@ -49,8 +49,8 @@ all:
       role: watcher
       vpc: vpc_b
       scenarios: []
-      secgroup_tcp_ports: ["22", "80", "443", "2003", "2004", "2023", "2024", "8126"]
-      secgroup_udp_ports: ["8126"]
+      secgroup_tcp_ports: ["22", "80", "443"]
+      secgroup_udp_ports: []
     instance_1_eu-de-01:
       ansible_host: 192.168.1.10
       az: eu-de-01
