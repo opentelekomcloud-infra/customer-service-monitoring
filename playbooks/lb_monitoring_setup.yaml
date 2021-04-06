@@ -22,7 +22,9 @@
       loop: "{{ groups['all'] }}"
       loop_control:
         loop_var: hostname
-      when: hostvars[hostname].role=="instance" and "loadbalancer" in hostvars[hostname].scenarios and hostname not in groups['disabled']
+      when: >
+      hostvars[hostname].role=="instance" and "loadbalancer" in
+      hostvars[hostname].scenarios and hostname not in groups['disabled']
 
 - name: Wait for nodes to be up
   hosts: loadbalancer

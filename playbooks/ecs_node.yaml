@@ -4,7 +4,7 @@
 
 - name: Getting public ip of any existing watcher
   set_fact:
-     watcher_public_ip: "{{ hostvars[item].ansible_host }}"
+    watcher_public_ip: "{{ hostvars[item].ansible_host }}"
   loop: "{{ groups['all'] }}"
   when: hostvars[item].role=="watcher" and item not in groups['disabled']
 
