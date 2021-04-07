@@ -10,3 +10,4 @@ exclude_paths:
 skip_list:
   - '106'
   - '208'
+  - '306'
