@@ -1,0 +1,29 @@
+---
+- name: Create or delete vpc peering
+  opentelekomcloud.cloud.vpc_peering:
+    state: "{{ peering_state }}"
+    name: "{{ vpc_peering_name }}"
+    local_router: "{{ peering_local_router }}"
+    project_id_local: "{{ peering_project_id }}"
+    peer_router: "{{ peering_peer_router }}"
+    project_id_peer: "{{ peering_peer_id }}"
+  register: vpc_peering
+  ignore_errors: true
+
+- name: Create or delete vpc route
+  opentelekomcloud.cloud.vpc_route:
+    state: "{{ peering_state }}"
+    destination: "{{ peering_destination_local }}"
+    nexthop: "{{ vpc_peering.vpc_peering.id }}"
+    router: "{{ peering_peer_router }}"
+  register: vpc_route
+  ignore_errors: true
+
+- name: Create or delete vpc route
+  opentelekomcloud.cloud.vpc_route:
+    state: "{{ peering_state }}"
+    destination: "{{ peering_destination_peer }}"
+    nexthop: "{{ vpc_peering.vpc_peering.id }}"
+    router: "{{ peering_local_router }}"
+  register: vpc_route
+  ignore_errors: true

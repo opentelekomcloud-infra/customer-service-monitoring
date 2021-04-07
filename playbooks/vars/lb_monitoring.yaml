@@ -1,5 +1,4 @@
 scenario: "lb_monitoring"
-lb_keypair: "{{ scenario }}_keypair"
 loadbalancer_prefix: "loadbalancer"
 loadbalancer_protocol: "tcp"
 loadbalancer_protocol_port: 80
@@ -8,4 +7,4 @@ loadbalancer_monitor_timeout: 1
 loadbalancer_monitor_max_retries: 2
 loadbalancer_pool_lb_method: "round_robin"
 loadbalancer_members_count: 3
-loadbalancer_local_ip: "{{ az_1_subnet_cidr | ansible.netcommon.ipmath(5) }}"
+loadbalancer_local_ip: "{{ loadbalancer_private_ip }}"

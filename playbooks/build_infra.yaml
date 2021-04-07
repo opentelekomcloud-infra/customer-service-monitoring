@@ -3,59 +3,48 @@
   hosts: local
   roles:
     - prepare_build
-    - public_router
-  vars:
-    public_router_scenario: "VPC_A"
-    state: present
   tasks:
-    - name: Register build result
-      set_fact:
-        main_network_id: "{{ net.network.id }}"
-        main_subnet_id: "{{ subnet.subnet.id }}"
-        main_router_id: "{{ router.router.id }}"
-
-    - include_role:
-        name: bastion
+    - include: public_router.yaml
       vars:
         state: present
-        bastion_availability_zone: "{{ hostvars[item].az }}"
-        bastion_image: "{{ watcher_image }}"
-        bastion_network_id: "{{ net.network.id }}"
-        bastion_flavor: "{{ watcher_flavor }}"
-        bastion_key_pair_name: "{{ keypair.key.name }}"
-        bastion_volume_size: "{{ watcher_volume_size }}"
-        bastion_secgroup_tcp_ports: "{{ watcher_secgroup_tcp_ports }}"
-        bastion_secgroup_udp_ports: "{{ watcher_secgroup_udp_ports }}"
-        bastion_private_ip: "{{ hostvars[item].ansible_host }}"
-        bastion_name: "{{ hostvars[item].name }}"
-        bastion_local_private_key: "{{ local_private_key }}"
-      with_items:
-        - "{{ groups['watchers'] }}"
+        vpc_name: "{{ item.key }}"
+        subnet_cidr: "{{ item.value }}"
+      with_dict: "{{ vpcs }}"
 
-    - include_role:
-        name: ecs_node
+    - include: bastion.yaml
+      vars:
+        state: present
+        bastion_network_id: "{{ vpcs_info[hostvars[hostname].vpc]['network_id'] }}"
+        bastion_availability_zone: "{{ hostvars[hostname].az }}"
+        bastion_key_pair_name: "{{ keypair.key.name }}"
+        bastion_private_ip: "{{ hostvars[hostname].ansible_host }}"
+        bastion_name: "{{ hostvars[hostname].name }}"
+        bastion_image: "{{ watcher_image }}"
+        bastion_flavor: "{{ watcher_flavor }}"
+        bastion_volume_size: "{{ watcher_volume_size }}"
+        bastion_secgroup_tcp_ports: "{{ hostvars[hostname].secgroup_tcp_ports }}"
+        bastion_secgroup_udp_ports: "{{ hostvars[hostname].secgroup_udp_ports }}"
+      loop: "{{ groups['all'] }}"
+      loop_control:
+        loop_var: hostname
+      when: hostvars[hostname].role=="watcher" and hostname not in groups['disabled']
+
+    - include: ecs_node.yaml
       vars:
         ecs_key_pair_name: "{{ keypair.key.name }}"
         state: present
         ecs_name: "{{ hostvars[host_name].name }}"
-        ecs_network_id: "{{ main_network_id }}"
+        ecs_network_id: "{{ vpcs_info[hostvars[host_name].vpc]['network_id'] }}"
         ecs_ip_address: "{{ hostvars[host_name].ansible_host }}"
         ecs_availability_zone: "{{ hostvars[host_name].az }}"
-      loop: "{{ groups['nodes'] }}"
+        ecs_secgroup_ports: "{{ hostvars[host_name].secgroup_tcp_ports }}"
+      loop: "{{ groups['all'] }}"
       loop_control:
         loop_var: host_name
+      when: hostvars[host_name].role=="instance" and host_name not in groups['disabled']
 
-    - include_role:
-        name: ecs_node
-      vars:
-        state: absent
-        ecs_name: "{{ hostvars[host_name].name }}"
-      loop: "{{ groups['disabled'] }}"
-      loop_control:
-        loop_var: host_name
-
-- name: Install docker on Controller
-  hosts: bastions
+- name: Install docker and launch graphite on watcher in az eu-de-01
+  hosts: watcher_eu-de-01-vpc-a:!disabled
   become: yes
   roles:
     - role: geerlingguy.docker
@@ -69,6 +58,23 @@
         -p 8125:8125/udp \
         -p 8126:8126 \
         graphiteapp/graphite-statsd"
+      ignore_errors: true
+
+- name: Create peerings
+  hosts: local
+  tasks:
+    - include: vpc_peering.yaml
+      vars:
+        state: present
+        peering_state: present
+        vpc_peering_name: "{{ item.key }}_to_{{ item.value }}"
+        peering_local_router: "{{ item.key }}_router"
+        peering_project_id: "{{ project_name }}"
+        peering_peer_router: "{{ item.value }}_router"
+        peering_peer_id: "{{ project_name }}"
+        peering_destination_local: "{{ vpcs[item.key] }}"
+        peering_destination_peer: "{{ vpcs[item.value] }}"
+      with_dict: "{{ vpc_peerings }}"
       ignore_errors: true
 
 - name: Create a common swift container

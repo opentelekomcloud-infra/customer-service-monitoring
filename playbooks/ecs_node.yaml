@@ -1,0 +1,24 @@
+---
+- include_role:
+    name: ecs_node
+
+- name: Getting public ip of any existing watcher
+  set_fact:
+    watcher_public_ip: "{{ hostvars[item].ansible_host }}"
+  loop: "{{ groups['all'] }}"
+  when: hostvars[item].role=="watcher" and item not in groups['disabled']
+
+- name: Register hosts
+  add_host:
+    name: "{{ ecs_name }}"
+    groups: instances
+    ansible_ssh_common_args: >
+      -o UserKnownHostsFile=/dev/null
+      -o StrictHostKeyChecking=no
+      -o IdentityFile="{{ local_private_key }}"
+      -o User=linux
+      -o PasswordAuthentication=no
+      -o StrictHostKeyChecking=no
+      -o ProxyCommand='ssh -W %h:%p
+      -q linux@{{ watcher_public_ip }}
+      -i {{ local_private_key }}'

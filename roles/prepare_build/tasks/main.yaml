@@ -34,6 +34,6 @@
 
 - name: Create key pair
   openstack.cloud.keypair:
-    name: "{{ keypair }}"
+    name: "{{ keypair_name }}"
     public_key_file: "{{ local_private_key }}.pub"
   register: keypair
