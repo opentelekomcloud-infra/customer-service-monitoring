@@ -2,7 +2,8 @@
 - include_role:
     name: bastion
 
-- add_host:
+- name: Register watchers
+  add_host:
     name: "{{ bastion.openstack.name }}"
     groups: watchers
     ansible_host: "{{ bastion.openstack.interface_ip }}"

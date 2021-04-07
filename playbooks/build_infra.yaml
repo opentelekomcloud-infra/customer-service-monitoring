@@ -37,7 +37,7 @@
         ecs_network_id: "{{ vpcs_info[hostvars[host_name].vpc]['network_id'] }}"
         ecs_ip_address: "{{ hostvars[host_name].ansible_host }}"
         ecs_availability_zone: "{{ hostvars[host_name].az }}"
-        ecs_secgroup_ports: "{{ hostvars[hostname].secgroup_tcp_ports }}"
+        ecs_secgroup_ports: "{{ hostvars[host_name].secgroup_tcp_ports }}"
       loop: "{{ groups['all'] }}"
       loop_control:
         loop_var: host_name
