@@ -47,7 +47,7 @@ all:
       az: eu-de-01
       name: "watcher_eu-de-01-vpc-b"
       role: watcher
-      vpc: VPC_A
+      vpc: VPC_B
       scenarios: []
       secgroup_tcp_ports: ["22", "80", "443"]
       secgroup_udp_ports: []
@@ -58,6 +58,7 @@ all:
       role: instance
       vpc: VPC_A
       scenarios: ["loadbalancer"]
+      secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_2_eu-de-01:
       ansible_host: 192.168.1.11
       az: eu-de-01
@@ -65,6 +66,7 @@ all:
       role: instance
       vpc: VPC_A
       scenarios: []
+      secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_3_eu-de-01:
       ansible_host: 192.168.1.12
       az: eu-de-01
@@ -72,6 +74,7 @@ all:
       role: instance
       vpc: VPC_A
       scenarios: []
+      secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_1_eu-de-02:
       ansible_host: 192.168.2.10
       az: eu-de-02
@@ -79,6 +82,7 @@ all:
       role: instance
       vpc: VPC_A
       scenarios: ["loadbalancer"]
+      secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_2_eu-de-02:
       ansible_host: 192.168.2.11
       az: eu-de-02
@@ -86,6 +90,7 @@ all:
       role: instance
       vpc: VPC_A
       scenarios: []
+      secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_3_eu-de-02:
       ansible_host: 192.168.2.13
       az: eu-de-02
@@ -93,6 +98,7 @@ all:
       role: instance
       vpc: VPC_A
       scenarios: []
+      secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_1_eu-de-03:
       ansible_host: 192.168.3.10
       az: eu-de-03
@@ -100,6 +106,7 @@ all:
       role: instance
       vpc: VPC_A
       scenarios: ["loadbalancer"]
+      secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_2_eu-de-03:
       ansible_host: 192.168.3.11
       az: eu-de-03
@@ -107,6 +114,7 @@ all:
       role: instance
       vpc: VPC_A
       scenarios: []
+      secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_3_eu-de-03:
       ansible_host: 192.168.3.12
       az: eu-de-03
@@ -114,6 +122,7 @@ all:
       role: instance
       vpc: VPC_A
       scenarios: []
+      secgroup_tcp_ports: ["22", "80", "443", "3333"]
 
 disabled:
   hosts:
