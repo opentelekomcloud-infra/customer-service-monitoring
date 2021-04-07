@@ -14,7 +14,7 @@ all:
       az: eu-de-01
       name: "watcher_eu-de-01-vpc-a"
       role: watcher
-      vpc: vpc_a
+      vpc: VPC_A
       scenarios: []
       secgroup_tcp_ports: ["22", "80", "443", "2003", "2004", "2023", "2024", "8126"]
       secgroup_udp_ports: ["8126"]
@@ -25,7 +25,7 @@ all:
       az: eu-de-02
       name: "watcher_eu-de-02-vpc-a"
       role: watcher
-      vpc: vpc_a
+      vpc: VPC_A
       scenarios: []
       secgroup_tcp_ports: ["22", "80", "443"]
       secgroup_udp_ports: []
@@ -36,7 +36,7 @@ all:
       az: eu-de-03
       name: "watcher_eu-de-03-vpc-a"
       role: watcher
-      vpc: vpc_a
+      vpc: VPC_A
       scenarios: []
       secgroup_tcp_ports: ["22", "80", "443"]
       secgroup_udp_ports: []
@@ -47,7 +47,7 @@ all:
       az: eu-de-01
       name: "watcher_eu-de-01-vpc-b"
       role: watcher
-      vpc: vpc_b
+      vpc: VPC_A
       scenarios: []
       secgroup_tcp_ports: ["22", "80", "443"]
       secgroup_udp_ports: []
@@ -56,63 +56,63 @@ all:
       az: eu-de-01
       name: "instance_1_eu-de-01"
       role: instance
-      vpc: vpc_a
+      vpc: VPC_A
       scenarios: ["loadbalancer"]
     instance_2_eu-de-01:
       ansible_host: 192.168.1.11
       az: eu-de-01
       name: "instance_2_eu-de-01"
       role: instance
-      vpc: vpc_a
+      vpc: VPC_A
       scenarios: []
     instance_3_eu-de-01:
       ansible_host: 192.168.1.12
       az: eu-de-01
       name: "instance_3_eu-de-01"
       role: instance
-      vpc: vpc_a
+      vpc: VPC_A
       scenarios: []
     instance_1_eu-de-02:
       ansible_host: 192.168.2.10
       az: eu-de-02
       name: "instance_1_eu-de-02"
       role: instance
-      vpc: vpc_a
+      vpc: VPC_A
       scenarios: ["loadbalancer"]
     instance_2_eu-de-02:
       ansible_host: 192.168.2.11
       az: eu-de-02
       name: "instance_2_eu-de-02"
       role: instance
-      vpc: vpc_a
+      vpc: VPC_A
       scenarios: []
     instance_3_eu-de-02:
       ansible_host: 192.168.2.13
       az: eu-de-02
       name: "instance_3_eu-de-02"
       role: instance
-      vpc: vpc_a
+      vpc: VPC_A
       scenarios: []
     instance_1_eu-de-03:
       ansible_host: 192.168.3.10
       az: eu-de-03
       name: "instance_1_eu-de-03"
       role: instance
-      vpc: vpc_a
+      vpc: VPC_A
       scenarios: ["loadbalancer"]
     instance_2_eu-de-03:
       ansible_host: 192.168.3.11
       az: eu-de-03
       name: "instance_2_eu-de-03"
       role: instance
-      vpc: vpc_a
+      vpc: VPC_A
       scenarios: []
     instance_3_eu-de-03:
       ansible_host: 192.168.3.12
       az: eu-de-03
       name: "instance_3_eu-de-03"
       role: instance
-      vpc: vpc_a
+      vpc: VPC_A
       scenarios: []
 
 disabled:
