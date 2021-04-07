@@ -1,49 +1,34 @@
 ---
-- name: Prepare main network with the controller host
-  import_playbook: bastion_setup.yaml
+- name: Prepare the main network
+  import_playbook: build_infra.yaml
 
-- name: Create key pair for lb monitoring and including required variables
-  hosts: local
-  tasks:
-    - name: Include variables required for lm monitoring infra
-      include_vars: ./vars/lb_monitoring.yaml
-    - name: Create key pair for lb monitoring scenario
-      os_keypair:
-        name: "{{ lb_keypair }}"
-        public_key_file: "{{ local_private_key }}.pub"
-
-- name: Build infrastructure
-  hosts: local
-  roles:
-    - ecs_node
-    - loadbalancer
-  vars:
-    state: present
-    ecs_network_id: "{{ main_network_id }}"
-    ecs_subnet_cidr: "{{ network_cidr | ansible.netcommon.ipsubnet('24', 1) }}"
-    loadbalancer_subnet_id: "{{ main_subnet_id }}"
-    loadbalancer_instances: "{{ instances }}"
-
-- name: Register nodes
+- name: Register instances in order to set proxy command throught watchers
   hosts: local
   tasks:
     - name: Register nodes
       add_host:
-        name: "{{ item.openstack.private_v4 }}"
-        groups: gatewayed
+        name: "{{ hostvars[hostname].name }}"
+        groups: loadbalancer
         ansible_ssh_common_args: >
           -o UserKnownHostsFile=/dev/null
           -o StrictHostKeyChecking=no
           -o IdentityFile="{{ local_private_key }}"
           -o User=linux
           -o PasswordAuthentication=no
+          -o StrictHostKeyChecking=no
           -o ProxyCommand='ssh -W %h:%p
-          -q linux@{{ controller_public_ip }}
+          -q linux@{{ hostvars[groups['watchers'][0]].ansible_host }}
           -i {{ local_private_key }}'
-      loop: "{{ instances.results }}"
+      loop: "{{ groups['all'] }}"
+      loop_control:
+        loop_var: hostname
+      when: >
+        hostvars[hostname].role=="instance"
+        and "loadbalancer" in hostvars[hostname].scenarios
+        and hostname not in groups['disabled']
 
 - name: Wait for nodes to be up
-  hosts: gatewayed
+  hosts: loadbalancer
   gather_facts: no
   tasks:
     - name: Wait for nodes to be up
@@ -51,7 +36,7 @@
         timeout: 250
 
 - name: Install telegraf client on nodes
-  hosts: gatewayed
+  hosts: loadbalancer
   become: yes
   roles:
     - role: telegraf_client
@@ -75,12 +60,11 @@
                 - "ens3"
 
 - name: Setup nginx for TCP, HTTP, HTTPS connections
-  hosts: gatewayed
-  become: yes
+  hosts: loadbalancer
   vars_files:
     - "./vars/nginx_http.yaml"
-    - "./vars/nginx_https.yaml"
     - "./vars/nginx_tcp.yaml"
+  become: yes
   roles:
     - role: geerlingguy.nginx
       vars:
@@ -92,9 +76,29 @@
           - listen: "80"
             server_name: "http"
             extra_parameters: "{{ extra_parameters_http }}"
-          - listen: "443 ssl"
-            server_name: "https"
-            extra_parameters: "{{ extra_parameters_https }}"
+
+- name: Including required variables and getting ips of instances
+  hosts: local
+  tasks:
+    - name: Include variables required for lb monitoring infra
+      include_vars: ./vars/lb_monitoring.yaml
+
+    - name: Getting list of instances ips from inventory
+      set_fact:
+        list_ips: "{{ list_ips | default([]) + [hostvars[host_name].ansible_host] }}"
+      loop: "{{ groups['loadbalancer'] }}"
+      loop_control:
+        loop_var: host_name
+
+- name: Build loadbalancer
+  hosts: local
+  roles:
+    - loadbalancer
+  vars:
+    state: present
+    loadbalancer_subnet_id: "{{ vpcs_info[hostvars[groups['loadbalancer'][0]].vpc]['subnet_id'] }}"
+    loadbalancer_instances_ips: "{{ list_ips }}"
+    loadbalancer_lb_local_ip: "{{ loadbalancer_local_ip }}"
 
 - name: Create object with data about lb infra
   hosts: local
@@ -103,8 +107,8 @@
     - name: Getting data for swift object
       set_fact:
         nodes_ips: "{{ nodes_ips | default({}) |\
-         combine( {item.openstack.name: item.openstack.private_v4} ) }}"
-      with_items: "{{ instances.results }}"
+         combine( {hostvars[item].name: hostvars[item].ansible_host} ) }}"
+      loop: "{{ groups['loadbalancer'] }}"
 
     - name: Create object or overwrite existing object
       swift_client:
@@ -112,7 +116,6 @@
         object_name: "{{ scenario }}"
         content:
           loadbalancer_public_ip: "{{ loadbalancer.loadbalancer.public_vip_address }}"
-          lb_instances_ips: "{{ nodes_ips | to_json }}"
           loadbalancer_private_ip: "{{ loadbalancer.loadbalancer.vip_address }}"
-          loadbalancer_keypair: "{{ lb_keypair }}"
+          lb_instances_ips: "{{ nodes_ips | to_json }}"
         state: present

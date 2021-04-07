@@ -2,29 +2,45 @@
 - name: Build/Check the main infrastructure
   hosts: local
   tasks:
+
+    - include: vpc_peering.yaml
+      vars:
+        peering_state: absent
+        vpc_peering_name: "{{ item.key }}_to_{{ item.value }}"
+        peering_local_router: "{{ item.key }}_router"
+        peering_project_id: "{{ project_name }}"
+        peering_peer_router: "{{ item.value }}_router"
+        peering_peer_id: "{{ project_name }}"
+        peering_destination_local: "{{ vpcs[item.key] }}"
+        peering_destination_peer: "{{ vpcs[item.value] }}"
+      with_dict: "{{ vpc_peerings }}"
+      ignore_errors: true
+
     - include_role:
         name: ecs_node
       vars:
         state: absent
         ecs_name: "{{ hostvars[host_name].name }}"
-      loop: "{{ groups['nodes'] }}"
+      loop: "{{ groups['all'] }}"
       loop_control:
         loop_var: host_name
+      when: hostvars[host_name].role=="instance" and host_name not in groups['disabled']
 
     - include_role:
         name: bastion
       vars:
         state: absent
         bastion_name: "{{ hostvars[item].name }}"
-      with_items:
-        - "{{ groups['watchers'] }}"
-      register: watchers
+
+      loop: "{{ groups['all'] }}"
+      when: hostvars[item].role=="watcher" and item not in groups['disabled']
 
     - include_role:
         name: public_router
       vars:
         state: absent
-        public_router_scenario: "VPC_A"
+        public_router_scenario: "{{ item.key }}"
+      with_dict: "{{ vpcs }}"
 
 - name: Delete common container
   hosts: local

@@ -12,4 +12,4 @@
 - name: Delete bastion security group
   openstack.cloud.security_group:
     state: absent
-    name: bastion_group
+    name: "{{ bastion_name }}_secgroup"

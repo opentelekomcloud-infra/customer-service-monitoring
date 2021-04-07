@@ -2,7 +2,6 @@
 collections:
   - openstack.cloud
   - opentelekomcloud.cloud
-  - ansible.netcommon
 roles:
   - name: geerlingguy.docker
   - name: geerlingguy.nginx

@@ -1,8 +1,0 @@
----
-- name: Prepare variables
-  hosts: local
-  vars:
-    scenario_name: dns_monitoring
-    infra_state: absent
-  roles:
-    - build_infrastructure
