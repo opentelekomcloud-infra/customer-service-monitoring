@@ -7,34 +7,34 @@ all:
       ansible_python_interpreter: "/usr/bin/env python3"
       role: local
       scenarios: []
-    watcher_eu-de-01-vpc-a:
+    watcher_eu-de-01:
       ansible_host: 192.168.1.2
       ansible_ssh_user: linux
       ansible_ssh_private_key_file: "{{ local_private_key }}"
       az: eu-de-01
-      name: "watcher_eu-de-01-vpc-a"
+      name: "watcher_eu-de-01"
       role: watcher
       vpc: VPC_A
       scenarios: []
       secgroup_tcp_ports: ["22", "80", "443", "2003", "2004", "2023", "2024", "8126"]
       secgroup_udp_ports: ["8126"]
-    watcher_eu-de-02-vpc-a:
+    watcher_eu-de-02:
       ansible_host: 192.168.2.2
       ansible_ssh_user: linux
       ansible_ssh_private_key_file: "{{ local_private_key }}"
       az: eu-de-02
-      name: "watcher_eu-de-02-vpc-a"
+      name: "watcher_eu-de-02"
       role: watcher
       vpc: VPC_A
       scenarios: []
       secgroup_tcp_ports: ["22", "80", "443"]
       secgroup_udp_ports: []
-    watcher_eu-de-03-vpc-a:
+    watcher_eu-de-03:
       ansible_host: 192.168.3.2
       ansible_ssh_user: linux
       ansible_ssh_private_key_file: "{{ local_private_key }}"
       az: eu-de-03
-      name: "watcher_eu-de-03-vpc-a"
+      name: "watcher_eu-de-03"
       role: watcher
       vpc: VPC_A
       scenarios: []
@@ -126,8 +126,8 @@ all:
 
 disabled:
   hosts:
-    watcher_eu-de-02-vpc-a:
-    watcher_eu-de-03-vpc-a:
+    watcher_eu-de-02:
+    watcher_eu-de-03:
     instance_2_eu-de-01:
     instance_3_eu-de-01:
     instance_2_eu-de-02:
