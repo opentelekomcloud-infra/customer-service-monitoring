@@ -8,7 +8,7 @@ all:
       role: local
       scenarios: []
     watcher_eu-de-01:
-      ansible_host: 192.168.1.2
+      ansible_host: 192.168.200.2
       ansible_ssh_user: linux
       ansible_ssh_private_key_file: "{{ local_private_key }}"
       az: eu-de-01
@@ -19,7 +19,7 @@ all:
       secgroup_tcp_ports: ["22", "80", "443", "2003", "2004", "2023", "2024", "8126"]
       secgroup_udp_ports: ["8126"]
     watcher_eu-de-02:
-      ansible_host: 192.168.2.2
+      ansible_host: 192.168.200.3
       ansible_ssh_user: linux
       ansible_ssh_private_key_file: "{{ local_private_key }}"
       az: eu-de-02
@@ -30,7 +30,7 @@ all:
       secgroup_tcp_ports: ["22", "80", "443"]
       secgroup_udp_ports: []
     watcher_eu-de-03:
-      ansible_host: 192.168.3.2
+      ansible_host: 192.168.200.4
       ansible_ssh_user: linux
       ansible_ssh_private_key_file: "{{ local_private_key }}"
       az: eu-de-03
@@ -41,7 +41,7 @@ all:
       secgroup_tcp_ports: ["22", "80", "443"]
       secgroup_udp_ports: []
     watcher_eu-de-01-vpc-b:
-      ansible_host: 10.10.0.2
+      ansible_host: 192.168.201.2
       ansible_ssh_user: linux
       ansible_ssh_private_key_file: "{{ local_private_key }}"
       az: eu-de-01
@@ -52,7 +52,7 @@ all:
       secgroup_tcp_ports: ["22", "80", "443"]
       secgroup_udp_ports: []
     instance_1_eu-de-01:
-      ansible_host: 192.168.1.10
+      ansible_host: 192.168.200.10
       az: eu-de-01
       name: "instance_1_eu-de-01"
       role: instance
@@ -60,7 +60,7 @@ all:
       scenarios: ["loadbalancer"]
       secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_2_eu-de-01:
-      ansible_host: 192.168.1.11
+      ansible_host: 192.168.200.11
       az: eu-de-01
       name: "instance_2_eu-de-01"
       role: instance
@@ -68,7 +68,7 @@ all:
       scenarios: []
       secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_3_eu-de-01:
-      ansible_host: 192.168.1.12
+      ansible_host: 192.168.200.12
       az: eu-de-01
       name: "instance_3_eu-de-01"
       role: instance
@@ -76,7 +76,7 @@ all:
       scenarios: []
       secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_1_eu-de-02:
-      ansible_host: 192.168.2.10
+      ansible_host: 192.168.200.13
       az: eu-de-02
       name: "instance_1_eu-de-02"
       role: instance
@@ -84,7 +84,7 @@ all:
       scenarios: ["loadbalancer"]
       secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_2_eu-de-02:
-      ansible_host: 192.168.2.11
+      ansible_host: 192.168.200.14
       az: eu-de-02
       name: "instance_2_eu-de-02"
       role: instance
@@ -92,7 +92,7 @@ all:
       scenarios: []
       secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_3_eu-de-02:
-      ansible_host: 192.168.2.13
+      ansible_host: 192.168.200.15
       az: eu-de-02
       name: "instance_3_eu-de-02"
       role: instance
@@ -100,7 +100,7 @@ all:
       scenarios: []
       secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_1_eu-de-03:
-      ansible_host: 192.168.3.10
+      ansible_host: 192.168.200.16
       az: eu-de-03
       name: "instance_1_eu-de-03"
       role: instance
@@ -108,7 +108,7 @@ all:
       scenarios: ["loadbalancer"]
       secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_2_eu-de-03:
-      ansible_host: 192.168.3.11
+      ansible_host: 192.168.200.17
       az: eu-de-03
       name: "instance_2_eu-de-03"
       role: instance
@@ -116,7 +116,7 @@ all:
       scenarios: []
       secgroup_tcp_ports: ["22", "80", "443", "3333"]
     instance_3_eu-de-03:
-      ansible_host: 192.168.3.12
+      ansible_host: 192.168.200.18
       az: eu-de-03
       name: "instance_3_eu-de-03"
       role: instance
@@ -126,11 +126,3 @@ all:
 
 disabled:
   hosts:
-    watcher_eu-de-02:
-    watcher_eu-de-03:
-    instance_2_eu-de-01:
-    instance_3_eu-de-01:
-    instance_2_eu-de-02:
-    instance_3_eu-de-02:
-    instance_2_eu-de-03:
-    instance_3_eu-de-03:
