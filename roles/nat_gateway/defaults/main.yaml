@@ -1,0 +1,2 @@
+nat_gateway_subnet_cidr: "192.168.0.0/16"
+nat_gateway_scenario: "nat_gateway"
