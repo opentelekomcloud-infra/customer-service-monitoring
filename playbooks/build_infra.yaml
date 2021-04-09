@@ -84,3 +84,19 @@
       swift_client:
         container: "{{ container_name }}"
         state: present
+
+    - name: Getting infra eips
+      set_fact:
+        watchers_ips: "{{ watchers_ips | default({}) |\
+         combine( {hostvars[host_name].name: hostvars[host_name].ansible_host} ) }}"
+      loop: "{{ groups['watchers'] }}"
+      loop_control:
+        loop_var: host_name
+
+    - name: Create object with infra eips
+      swift_client:
+        container: "{{ container_name }}"
+        object_name: "{{ infra_eips_object }}"
+        content:
+          watchers_eips: "{{ watchers_ips }}"
+        state: present
