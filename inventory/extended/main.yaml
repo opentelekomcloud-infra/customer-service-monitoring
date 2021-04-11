@@ -123,6 +123,15 @@ all:
       vpc: VPC_A
       scenarios: []
       secgroup_tcp_ports: ["22", "80", "443", "3333"]
+    instance_vpc-c:
+      ansible_host: 192.168.201.2
+      az: eu-de-01
+      name: "instance_vpc-c"
+      role: instance
+      vpc: VPC_C
+      scenarios: []
+      secgroup_tcp_ports: ["22", "80", "443", "3333"]
+
 
 disabled:
   hosts:

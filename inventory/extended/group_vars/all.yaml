@@ -1,5 +1,5 @@
 project_name: eu-de_test_dmd
-vpcs: {VPC_A: "192.168.200.0/24", VPC_B: "192.168.201.0/24"}
+vpcs: {VPC_A: "192.168.200.0/24", VPC_B: "192.168.201.0/24", VPC_C: "192.168.202.0/24"}
 vpns: []
 vpc_peerings: {VPC_A: "VPC_B"}
 
