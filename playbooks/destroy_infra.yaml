@@ -45,6 +45,12 @@
 - name: Delete common container
   hosts: local
   tasks:
+    - name: Delete object with infra eips
+      swift_client:
+        container: "{{ container_name }}"
+        object_name: "{{ infra_eips_object }}"
+        state: absent
+
     - name: Delete container
       swift_client:
         container: "{{ container_name }}"

@@ -17,3 +17,5 @@ loadbalancer_private_ip: 192.168.200.5
 watcher_image: Standard_Debian_10_latest
 watcher_flavor: s2.medium.2
 watcher_volume_size: 10
+
+infra_eips_object: "infra_eips"
