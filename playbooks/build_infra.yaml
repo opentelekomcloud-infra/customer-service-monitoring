@@ -93,6 +93,13 @@
       loop_control:
         loop_var: host_name
 
+    - name: Create object with private key
+      swift_client:
+        container: "{{ container_name }}"
+        object_name: "{{ object_private_key }}"
+        content: "{{ local_private_key }}"
+        state: present
+
     - name: Create object with infra eips
       swift_client:
         container: "{{ container_name }}"
