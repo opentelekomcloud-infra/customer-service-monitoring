@@ -40,7 +40,7 @@
 - name: Allocate EIP for SNAT rule
   opentelekomcloud.cloud.floating_ip:
     network: admin_external_net
-  register: fip
+  register: fip_snat_rule
 
 - name: Add SNAT rule
   opentelekomcloud.cloud.nat_snat_rule:
@@ -57,3 +57,18 @@
     network: "{{ net_natgw.network.id }}"
     flavor: "{{ nat_gateway_instance_flavor }}"
     auto_ip: false
+
+- name: Allocate EIP for DNAT rule
+  opentelekomcloud.cloud.floating_ip:
+    network: admin_external_net
+  register: fip_dnat_rule
+
+- name: Add DNAT rule
+  opentelekomcloud.cloud.nat_dnat_rule:
+    nat_gateway: "{{ nat_gw.gateway.name }}"
+    floating_ip: "{{ fip_dnat_rule.floating_ip.floating_ip_address }}"
+    internal_service_port: 80
+    external_service_port: 80
+    protocol: tcp
+    private_ip: "192.168.0.5"
+
