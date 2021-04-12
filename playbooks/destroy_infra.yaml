@@ -45,6 +45,13 @@
 - name: Delete common container
   hosts: local
   tasks:
+
+    - name: Delete object with private key
+      swift_client:
+        container: "{{ container_name }}"
+        object_name: "{{ object_private_key }}"
+        state: absent
+
     - name: Delete object with infra eips
       swift_client:
         container: "{{ container_name }}"

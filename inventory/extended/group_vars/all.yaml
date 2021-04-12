@@ -18,4 +18,5 @@ watcher_image: Standard_Debian_10_latest
 watcher_flavor: s2.medium.2
 watcher_volume_size: 10
 
-infra_eips_object: "infra_eips"
+infra_eips_object: infra_eips
+object_private_key: machine_key
