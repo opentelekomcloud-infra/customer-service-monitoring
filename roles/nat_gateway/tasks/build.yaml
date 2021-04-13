@@ -26,8 +26,7 @@
     enable_snat: false
     network: "{{ ext_net.openstack_networks[0].id }}"
     interfaces:
-        - net: "{{ net_natgw.network.name }}"
-          subnet: "{{ subnet_natgw.subnet.name }}"
+      - "{{ subnet_natgw.subnet.name }}"
   register: router_natgw
 
 - name: Create NAT gateway
@@ -37,18 +36,24 @@
     router: "{{ router_natgw.router.name }}"
   register: nat_gw
 
+- name: List SNAT rules of gateway
+  opentelekomcloud.cloud.nat_snat_rule_info:
+    gateway: "{{ nat_gateway_scenario }}_nat_gateway"
+  register: snat_rules
+
 - name: Allocate EIP for SNAT rule
   opentelekomcloud.cloud.floating_ip:
     network: admin_external_net
+  when: (snat_rules.snat_rules | default([])) | length == 0
   register: fip_snat_rule
 
 - name: Add SNAT rule
   opentelekomcloud.cloud.nat_snat_rule:
     nat_gateway: "{{ nat_gw.gateway.name }}"
     network: "{{ net_natgw.network.name }}"
-    floating_ip: "{{ fip.floating_ip.floating_ip_address }}"
+    floating_ip: "{{ fip_snat_rule.floating_ip.floating_ip_address }}"
+  when: (snat_rules.snat_rules | default([])) | length == 0
   register: snat
-  ignore_errors: true
 
 - name: Launch a server instance
   openstack.cloud.server:
@@ -57,10 +62,21 @@
     network: "{{ net_natgw.network.id }}"
     flavor: "{{ nat_gateway_instance_flavor }}"
     auto_ip: false
+  register: server
+
+- name: List DNAT rules of gateway
+  opentelekomcloud.cloud.nat_dnat_rule_info:
+    gateway: "{{ nat_gateway_scenario }}_nat_gateway"
+  register: dnat_rules
+
+- name: List SNAT rules of gateway
+  debug:
+    var: "{{ dnat_rules.dnat_rules | length  }}"
 
 - name: Allocate EIP for DNAT rule
   opentelekomcloud.cloud.floating_ip:
     network: admin_external_net
+  when: (dnat_rules.dnat_rules | default([])) | length == 0
   register: fip_dnat_rule
 
 - name: Add DNAT rule
@@ -70,5 +86,5 @@
     internal_service_port: 80
     external_service_port: 80
     protocol: tcp
-    private_ip: "192.168.0.5"
-
+    private_ip: "{{ server.server.private_v4 }}"
+  when: (dnat_rules.dnat_rules | default([])) | length == 0

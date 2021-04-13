@@ -1,3 +1,4 @@
+nat_gateway_instance_ip: "192.168.0.2"
 nat_gateway_subnet_cidr: "192.168.0.0/24"
 nat_gateway_scenario: "nat_gateway"
 nat_gateway_instance_name: "nat_gateway_instance"

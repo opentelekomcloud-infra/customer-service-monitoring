@@ -1,35 +1,65 @@
+---
+- name: List SNAT rules of gateway
+  opentelekomcloud.cloud.nat_snat_rule_info:
+    gateway: "{{ nat_gateway_scenario }}_nat_gateway"
+  register: snat_rules
+
+- name: Drop SNAT rules
+  opentelekomcloud.cloud.nat_snat_rule:
+    id: "{{ item.id }}"
+    state: absent
+  loop: "{{ snat_rules.snat_rules }}"
+  register: snat
+
+- name: Drop EIP for snat rule
+  opentelekomcloud.cloud.floating_ip:
+    floating_ip_address: "{{ item.floating_ip_address }}"
+    purge: true
+    state: absent
+  loop: "{{ snat_rules.snat_rules }}"
+  register: snat
+
+- name: List DNAT rules of gateway
+  opentelekomcloud.cloud.nat_dnat_rule_info:
+    gateway: "{{ nat_gateway_scenario }}_nat_gateway"
+  register: dnat_rules
+
+- name: Drop DNAT rules
+  opentelekomcloud.cloud.nat_dnat_rule:
+    id: "{{ item.id }}"
+    state: absent
+  loop: "{{ dnat_rules.dnat_rules }}"
+  register: dnat
+
+- name: Drop EIP for dnat rule
+  opentelekomcloud.cloud.floating_ip:
+    floating_ip_address: "{{ item.floating_ip_address }}"
+    purge: true
+    state: absent
+  loop: "{{ dnat_rules.dnat_rules }}"
+  register: dnat
+
 - name: Delete a server instance
   openstack.cloud.server:
     name: "{{ nat_gateway_instance_name }}"
-    image: "{{ nat_gateway_instance_image }}"
-    network: "{{ net_natgw.network.id }}"
-    flavor: "{{ nat_gateway_instance_flavor }}"
-    auto_ip: false
     state: absent
 
-- name: Allocate EIP for SNAT rule
-  opentelekomcloud.cloud.floating_ip:
-    state: absent
-    server: "{{ nat_gateway_scenario }}_nat_gateway"
-
-- name: Create NAT gateway
+- name: Destroy NAT gateway
   opentelekomcloud.cloud.nat_gateway:
     name: "{{ nat_gateway_scenario }}_nat_gateway"
-    internal_network: "{{ net_natgw.network.name }}"
-    router: "{{ router_natgw.router.name }}"
     state: absent
 
-- name: Create router
+- name: Destroy router
   openstack.cloud.router:
     name: "{{ nat_gateway_scenario }}_router"
     state: absent
 
-- name: Create subnet
+- name: Destroy subnet
   openstack.cloud.subnet:
     name: "{{ nat_gateway_scenario }}_subnet"
     state: absent
 
-- name: Create main network
+- name: Destroy main network
   openstack.cloud.network:
     name: "{{ nat_gateway_scenario }}_network"
     state: absent
