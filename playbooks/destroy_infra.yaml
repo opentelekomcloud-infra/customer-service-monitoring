@@ -39,14 +39,6 @@
           and item not in groups['disabled']
           and hostvars[item].vpc != "VPC_C"
 
-    - include_role:
-        name: public_router
-      vars:
-        state: absent
-        public_router_scenario: "{{ item.key }}"
-      loop: "{{ vpcs | dict2items }}"
-      when: item.key != "VPC_C"
-
     - include: nat_gateway.yaml
       vars:
         state: absent
@@ -59,6 +51,15 @@
           hostvars[host_name].role=="instance"
           and host_name not in groups['disabled']
           and hostvars[host_name].vpc == "VPC_C"
+
+    - include_role:
+        name: public_router
+      vars:
+        state: absent
+        public_router_scenario: "{{ item.key }}"
+      loop: "{{ vpcs | dict2items }}"
+      when: item.key != "VPC_C"
+
 
 - name: Delete common container
   hosts: local

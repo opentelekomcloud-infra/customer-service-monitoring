@@ -44,6 +44,11 @@
     name: "{{ nat_gateway_instance_name }}"
     state: absent
 
+- name: Delete port for instance
+  openstack.cloud.port:
+    name: "{{ nat_gateway_scenario }}_port"
+    state: absent
+
 - name: Destroy NAT gateway
   opentelekomcloud.cloud.nat_gateway:
     name: "{{ nat_gateway_scenario }}_nat_gateway"

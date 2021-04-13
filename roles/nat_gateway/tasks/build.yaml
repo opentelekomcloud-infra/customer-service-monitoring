@@ -55,13 +55,21 @@
   when: (snat_rules.snat_rules | default([])) | length == 0
   register: snat
 
+- name: Create ports for nodes
+  openstack.cloud.port:
+    name: "{{ nat_gateway_scenario }}_port"
+    network: "{{ net_natgw.network.name }}"
+    fixed_ips:
+      - ip_address:  "{{ nat_gateway_instance_ip }}"
+
 - name: Launch a server instance
   openstack.cloud.server:
     name: "{{ nat_gateway_instance_name }}"
     image: "{{ nat_gateway_instance_image }}"
-    network: "{{ net_natgw.network.id }}"
     flavor: "{{ nat_gateway_instance_flavor }}"
     auto_ip: false
+    nics:
+      - port-name: "{{ nat_gateway_scenario }}_port"
   register: server
 
 - name: List DNAT rules of gateway
