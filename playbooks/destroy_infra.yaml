@@ -23,7 +23,10 @@
       loop: "{{ groups['all'] }}"
       loop_control:
         loop_var: host_name
-      when: hostvars[host_name].role=="instance" and host_name not in groups['disabled']  and hostvars[host_name].vpc != "VPC_C"
+      when: >
+          hostvars[host_name].role=="instance"
+          and host_name not in groups['disabled']
+          and hostvars[host_name].vpc != "VPC_C"
 
     - include_role:
         name: bastion
@@ -31,7 +34,10 @@
         state: absent
         bastion_name: "{{ hostvars[item].name }}"
       loop: "{{ groups['all'] }}"
-      when: hostvars[item].role=="watcher" and item not in groups['disabled'] and hostvars[item].vpc != "VPC_C"
+      when: >
+          hostvars[item].role=="watcher"
+          and item not in groups['disabled']
+          and hostvars[item].vpc != "VPC_C"
 
     - include_role:
         name: public_router
@@ -49,7 +55,10 @@
       loop: "{{ groups['all'] }}"
       loop_control:
         loop_var: host_name
-      when: hostvars[host_name].role=="instance" and host_name not in groups['disabled'] and hostvars[host_name].vpc == "VPC_C"
+      when: >
+          hostvars[host_name].role=="instance"
+          and host_name not in groups['disabled']
+          and hostvars[host_name].vpc == "VPC_C"
 
 - name: Delete common container
   hosts: local

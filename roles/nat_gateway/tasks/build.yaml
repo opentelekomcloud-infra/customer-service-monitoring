@@ -69,10 +69,6 @@
     gateway: "{{ nat_gateway_scenario }}_nat_gateway"
   register: dnat_rules
 
-- name: List SNAT rules of gateway
-  debug:
-    var: "{{ dnat_rules.dnat_rules | length  }}"
-
 - name: Allocate EIP for DNAT rule
   opentelekomcloud.cloud.floating_ip:
     network: admin_external_net
