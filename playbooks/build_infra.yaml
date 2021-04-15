@@ -106,13 +106,31 @@
         container: "{{ container_name }}"
         state: present
 
-    - name: Getting infra eips
+    - name: Setting default value for eips
       set_fact:
-        watchers_ips: "{{ watchers_ips | default({}) |\
+        watchers_eips_vpc_a: {}
+        watchers_eips_vpc_b: {}
+        watchers_eips_vpc_c: {}
+        fip_snat_rule: ""
+        fip_dnat_rule: ""
+
+    - name: Getting infra eips for vpc a
+      set_fact:
+        watchers_eips_vpc_a: "{{ watchers_eips_vpc_a |\
          combine( {hostvars[host_name].name: hostvars[host_name].ansible_host} ) }}"
       loop: "{{ groups['watchers'] }}"
       loop_control:
         loop_var: host_name
+      when: hostvars[host_name].vpc == "VPC_A"
+
+    - name: Getting infra eips for vpc b
+      set_fact:
+        watchers_eips_vpc_b: "{{ watchers_eips_vpc_b |\
+         combine( {hostvars[host_name].name: hostvars[host_name].ansible_host} ) }}"
+      loop: "{{ groups['watchers'] }}"
+      loop_control:
+        loop_var: host_name
+      when: hostvars[host_name].vpc == "VPC_B"
 
     - name: Create object with private key
       swift_client:
@@ -126,7 +144,9 @@
         container: "{{ container_name }}"
         object_name: "{{ infra_eips_object }}"
         content:
-          watchers_eips: "{{ watchers_ips }}"
-          nat_gateway_ip_snat: "{{ fip_snat_rule }}"
-          nat_gateway_ip_dnat: "{{ fip_dnat_rule }}"
+          vpc_a: "{{ watchers_eips_vpc_a }}"
+          vpc_b: "{{ watchers_eips_vpc_b }}"
+          vpc_c:
+            nat_gateway_ip_snat: "{{ fip_snat_rule }}"
+            nat_gateway_ip_dnat: "{{ fip_dnat_rule }}"
         state: present
