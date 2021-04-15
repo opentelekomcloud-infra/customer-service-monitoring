@@ -1,0 +1,75 @@
+---
+- name: List SNAT rules of gateway
+  opentelekomcloud.cloud.nat_snat_rule_info:
+    gateway: "{{ nat_gateway_scenario }}_nat_gateway"
+  register: snat_rules
+
+- name: Drop SNAT rules
+  opentelekomcloud.cloud.nat_snat_rule:
+    id: "{{ item.id }}"
+    state: absent
+  loop: "{{ snat_rules.snat_rules }}"
+  register: snat
+
+- name: Drop EIP for snat rule
+  opentelekomcloud.cloud.floating_ip:
+    floating_ip_address: "{{ item.floating_ip_address }}"
+    purge: true
+    state: absent
+  loop: "{{ snat_rules.snat_rules }}"
+  register: snat
+
+- name: List DNAT rules of gateway
+  opentelekomcloud.cloud.nat_dnat_rule_info:
+    gateway: "{{ nat_gateway_scenario }}_nat_gateway"
+  register: dnat_rules
+
+- name: Drop DNAT rules
+  opentelekomcloud.cloud.nat_dnat_rule:
+    id: "{{ item.id }}"
+    state: absent
+  loop: "{{ dnat_rules.dnat_rules }}"
+  register: dnat
+
+- name: Drop EIP for dnat rule
+  opentelekomcloud.cloud.floating_ip:
+    floating_ip_address: "{{ item.floating_ip_address }}"
+    purge: true
+    state: absent
+  loop: "{{ dnat_rules.dnat_rules }}"
+  register: dnat
+
+- name: Delete a server instance
+  openstack.cloud.server:
+    name: "{{ nat_gateway_instance_name }}"
+    state: absent
+
+- name: Delete port for instance
+  openstack.cloud.port:
+    name: "{{ nat_gateway_scenario }}_port"
+    state: absent
+
+- name: Delete security group
+  openstack.cloud.security_group:
+    name: "{{ nat_gateway_instance_name | default(nat_gateway_scenario) }}_ecs_group"
+    state: absent
+
+- name: Destroy NAT gateway
+  opentelekomcloud.cloud.nat_gateway:
+    name: "{{ nat_gateway_scenario }}_nat_gateway"
+    state: absent
+
+- name: Destroy router
+  openstack.cloud.router:
+    name: "{{ nat_gateway_scenario }}_router"
+    state: absent
+
+- name: Destroy subnet
+  openstack.cloud.subnet:
+    name: "{{ nat_gateway_scenario }}_subnet"
+    state: absent
+
+- name: Destroy main network
+  openstack.cloud.network:
+    name: "{{ nat_gateway_scenario }}_network"
+    state: absent

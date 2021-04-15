@@ -1,0 +1,114 @@
+---
+- name: Create main network
+  openstack.cloud.network:
+    name: "{{ nat_gateway_scenario }}_network"
+  register: net_natgw
+
+- name: Getting info about external network
+  openstack.cloud.networks_info:
+    name: "admin_external_net"
+  register: ext_net
+
+- name: Create subnet
+  openstack.cloud.subnet:
+    name: "{{ nat_gateway_scenario }}_subnet"
+    network_name: "{{ net_natgw.network.name }}"
+    cidr: "{{ nat_gateway_subnet_cidr }}"
+    dns_nameservers:
+          - 100.125.4.25
+          - 100.125.129.199
+          - 8.8.8.8
+  register: subnet_natgw
+
+- name: Create router
+  openstack.cloud.router:
+    name: "{{ nat_gateway_scenario }}_router"
+    enable_snat: false
+    network: "{{ ext_net.openstack_networks[0].id }}"
+    interfaces:
+      - "{{ subnet_natgw.subnet.name }}"
+  register: router_natgw
+
+- name: Create NAT gateway
+  opentelekomcloud.cloud.nat_gateway:
+    name: "{{ nat_gateway_scenario }}_nat_gateway"
+    internal_network: "{{ net_natgw.network.name }}"
+    router: "{{ router_natgw.router.name }}"
+  register: nat_gw
+
+- name: List SNAT rules of gateway
+  opentelekomcloud.cloud.nat_snat_rule_info:
+    gateway: "{{ nat_gateway_scenario }}_nat_gateway"
+  register: snat_rules
+
+- name: Allocate EIP for SNAT rule
+  opentelekomcloud.cloud.floating_ip:
+    network: admin_external_net
+  when: (snat_rules.snat_rules | default([])) | length == 0
+  register: fip_snat_rule
+
+- name: Add SNAT rule
+  opentelekomcloud.cloud.nat_snat_rule:
+    nat_gateway: "{{ nat_gw.gateway.name }}"
+    network: "{{ net_natgw.network.name }}"
+    floating_ip: "{{ fip_snat_rule.floating_ip.floating_ip_address }}"
+  when: (snat_rules.snat_rules | default([])) | length == 0
+  register: snat
+
+- name: Create security group
+  openstack.cloud.security_group:
+    name: "{{ nat_gateway_instance_name | default(nat_gateway_scenario) }}_ecs_group"
+    description: Allow external connections to ssh, http, https and icmp
+  register: secur_group
+
+- name: Add rules for tcp connection to the security group
+  openstack.cloud.security_group_rule:
+    security_group: "{{ secur_group.secgroup.name }}"
+    protocol: tcp
+    port_range_min: "{{ item }}"
+    port_range_max: "{{ item }}"
+    remote_ip_prefix: 0.0.0.0/0
+  loop: "{{ nat_gateway_secgroup_ports }}"
+
+- name: Create ports for nodes
+  openstack.cloud.port:
+    name: "{{ nat_gateway_scenario }}_port"
+    network: "{{ net_natgw.network.name }}"
+    security_groups:
+      - "{{ secur_group.secgroup.name }}"
+    fixed_ips:
+      - ip_address:  "{{ nat_gateway_instance_ip }}"
+
+- name: Launch a server instance
+  openstack.cloud.server:
+    name: "{{ nat_gateway_instance_name }}"
+    image: "{{ nat_gateway_instance_image }}"
+    flavor: "{{ nat_gateway_instance_flavor }}"
+    auto_ip: false
+    key_name: "{{ nat_gateway_keypair }}"
+    security_groups:
+      - "{{ secur_group.secgroup.name }}"
+    nics:
+      - port-name: "{{ nat_gateway_scenario }}_port"
+  register: server
+
+- name: List DNAT rules of gateway
+  opentelekomcloud.cloud.nat_dnat_rule_info:
+    gateway: "{{ nat_gateway_scenario }}_nat_gateway"
+  register: dnat_rules
+
+- name: Allocate EIP for DNAT rule
+  opentelekomcloud.cloud.floating_ip:
+    network: admin_external_net
+  when: (dnat_rules.dnat_rules | default([])) | length == 0
+  register: fip_dnat_rule
+
+- name: Add DNAT rule
+  opentelekomcloud.cloud.nat_dnat_rule:
+    nat_gateway: "{{ nat_gw.gateway.name }}"
+    floating_ip: "{{ fip_dnat_rule.floating_ip.floating_ip_address }}"
+    protocol: tcp
+    port: "{{ nat_gateway_scenario }}_port"
+    internal_service_port: 22
+    external_service_port: 22
+  when: (dnat_rules.dnat_rules | default([])) | length == 0

@@ -1,0 +1,8 @@
+---
+- include_role:
+    name: nat_gateway
+
+- name: Register hosts
+  add_host:
+    name: "{{ nat_gateway_instance_name }}"
+    groups: instances

@@ -1,0 +1,8 @@
+---
+- name: Build network with nat gateway
+  include_tasks: build.yaml
+  when: state == "present"
+
+- name: Destroy network with nat gateway
+  include_tasks: destroy.yaml
+  when: state == "absent"

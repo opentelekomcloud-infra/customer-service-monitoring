@@ -9,7 +9,8 @@
         state: present
         vpc_name: "{{ item.key }}"
         subnet_cidr: "{{ item.value }}"
-      with_dict: "{{ vpcs }}"
+      loop: "{{ vpcs | dict2items }}"
+      when: item.key != "VPC_C"
 
     - include: bastion.yaml
       vars:
@@ -41,7 +42,27 @@
       loop: "{{ groups['all'] }}"
       loop_control:
         loop_var: host_name
-      when: hostvars[host_name].role=="instance" and host_name not in groups['disabled']
+      when: >
+          hostvars[host_name].role=="instance"
+          and host_name not in groups['disabled']
+          and hostvars[host_name].vpc != "VPC_C"
+
+    - include: nat_gateway.yaml
+      vars:
+        nat_gateway_subnet_cidr: "{{ vpcs['VPC_C'] }}"
+        state: present
+        nat_gateway_scenario: "VPC_C"
+        nat_gateway_instance_name: "{{ hostvars[host_name].name }}"
+        nat_gateway_instance_ip: "{{ hostvars[host_name].ansible_host }}"
+        nat_gateway_keypair: "{{ keypair.key.name }}"
+        nat_gateway_secgroup_ports: "{{ hostvars[host_name].secgroup_tcp_ports }}"
+      loop: "{{ groups['all'] }}"
+      loop_control:
+        loop_var: host_name
+      when: >
+          hostvars[host_name].role=="instance"
+          and host_name not in groups['disabled']
+          and hostvars[host_name].vpc == "VPC_C"
 
 - name: Install docker and launch graphite on watcher in az eu-de-01
   hosts: watcher_eu-de-01-vpc-a:!disabled
@@ -106,4 +127,6 @@
         object_name: "{{ infra_eips_object }}"
         content:
           watchers_eips: "{{ watchers_ips }}"
+          nat_gateway_ip_snat: "{{ fip_snat_rule }}"
+          nat_gateway_ip_dnat: "{{ fip_dnat_rule }}"
         state: present

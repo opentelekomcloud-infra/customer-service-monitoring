@@ -170,6 +170,7 @@ class SwiftClient(SwiftModule):
                 container=container,
                 obj=object_name
             )
+            self.exit(changed=True)
 
         self.client.delete_container(container=container)
         self.exit(changed=True)
