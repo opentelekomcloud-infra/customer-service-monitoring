@@ -49,6 +49,11 @@
     name: "{{ nat_gateway_scenario }}_port"
     state: absent
 
+- name: Delete security group
+  openstack.cloud.security_group:
+    name: "{{ nat_gateway_instance_name | default(nat_gateway_scenario) }}_ecs_group"
+    state: absent
+
 - name: Destroy NAT gateway
   opentelekomcloud.cloud.nat_gateway:
     name: "{{ nat_gateway_scenario }}_nat_gateway"

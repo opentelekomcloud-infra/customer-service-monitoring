@@ -54,6 +54,8 @@
         nat_gateway_scenario: "VPC_C"
         nat_gateway_instance_name: "{{ hostvars[host_name].name }}"
         nat_gateway_instance_ip: "{{ hostvars[host_name].ansible_host }}"
+        nat_gateway_keypair: "{{ keypair.key.name }}"
+        nat_gateway_secgroup_ports: "{{ hostvars[host_name].secgroup_tcp_ports }}"
       loop: "{{ groups['all'] }}"
       loop_control:
         loop_var: host_name

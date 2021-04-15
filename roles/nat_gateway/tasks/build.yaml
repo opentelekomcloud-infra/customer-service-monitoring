@@ -55,10 +55,27 @@
   when: (snat_rules.snat_rules | default([])) | length == 0
   register: snat
 
+- name: Create security group
+  openstack.cloud.security_group:
+    name: "{{ nat_gateway_instance_name | default(nat_gateway_scenario) }}_ecs_group"
+    description: Allow external connections to ssh, http, https and icmp
+  register: secur_group
+
+- name: Add rules for tcp connection to the security group
+  openstack.cloud.security_group_rule:
+    security_group: "{{ secur_group.secgroup.name }}"
+    protocol: tcp
+    port_range_min: "{{ item }}"
+    port_range_max: "{{ item }}"
+    remote_ip_prefix: 0.0.0.0/0
+  loop: "{{ nat_gateway_secgroup_ports }}"
+
 - name: Create ports for nodes
   openstack.cloud.port:
     name: "{{ nat_gateway_scenario }}_port"
     network: "{{ net_natgw.network.name }}"
+    security_groups:
+      - "{{ secur_group.secgroup.name }}"
     fixed_ips:
       - ip_address:  "{{ nat_gateway_instance_ip }}"
 
@@ -68,6 +85,9 @@
     image: "{{ nat_gateway_instance_image }}"
     flavor: "{{ nat_gateway_instance_flavor }}"
     auto_ip: false
+    key_name: "{{ nat_gateway_keypair }}"
+    security_groups:
+      - "{{ secur_group.secgroup.name }}"
     nics:
       - port-name: "{{ nat_gateway_scenario }}_port"
   register: server
@@ -87,8 +107,8 @@
   opentelekomcloud.cloud.nat_dnat_rule:
     nat_gateway: "{{ nat_gw.gateway.name }}"
     floating_ip: "{{ fip_dnat_rule.floating_ip.floating_ip_address }}"
-    internal_service_port: 80
-    external_service_port: 80
     protocol: tcp
-    private_ip: "{{ server.server.private_v4 }}"
+    port: "{{ nat_gateway_scenario }}_port"
+    internal_service_port: 22
+    external_service_port: 22
   when: (dnat_rules.dnat_rules | default([])) | length == 0
