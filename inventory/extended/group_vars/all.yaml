@@ -4,6 +4,7 @@ vpns: []
 vpc_peerings: {VPC_A: "VPC_B"}
 
 tmp_dir: /tmp
+home_dir: /home/linux
 local_private_key: "{{ tmp_dir }}/{{ key_name }}"
 key_name: infra-key
 requirements: requirements.txt
@@ -20,3 +21,26 @@ watcher_volume_size: 10
 
 infra_eips_object: infra_eips
 object_private_key: machine_key
+
+#vpc a nodes list excluded lb monitoring
+vpc_a_nodes: [
+  {ip: 192.168.200.11, name: instance_2_eu-de-01},
+  {ip: 192.168.200.12, name: instance_3_eu-de-01},
+  {ip: 192.168.200.14, name: instance_2_eu-de-02},
+  {ip: 192.168.200.15, name: instance_3_eu-de-02},
+  {ip: 192.168.200.17, name: instance_2_eu-de-03},
+  {ip: 192.168.200.18, name: instance_3_eu-de-03}]
+
+#vpc a watchers list
+vpc_a_watchers: [
+  {ip: 192.168.200.2, name: watcher_eu-de-01},
+  {ip: 192.168.200.3, name: watcher_eu-de-02},
+  {ip: 192.168.200.4, name: watcher_eu-de-03}]
+
+#vpc b watchers list
+vpc_b_watchers: [
+  {ip: 192.168.201.2, name: watcher_eu-de-01-vpc-b}]
+
+#vpc c nodes list
+vpc_c_nodes: [
+  {ip: 192.168.202.2, name: instance_vpc-c}]
