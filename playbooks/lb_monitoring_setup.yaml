@@ -45,7 +45,6 @@
         telegraf_graphite_urls:
           - "{{ telegraf_graphite_url }}"
         telegraf_graphite_prefix: "stats.system.csm.{{ telegraf_graphite_env }}"
-        telegraf_graphite_template: host.tags.measurement.field
         telegraf_plugins_base:
           - name: cpu
             options:

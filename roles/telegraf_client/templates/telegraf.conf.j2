@@ -68,10 +68,10 @@
 
   # Graphite output template
   # see https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_OUTPUT.md
-{% if telegraf_graphite_template is defined and telegraf_graphite_template != None %}
+{% if telegraf_graphite_template is defined and telegraf_graphite_template | length %}
   template = "{{ telegraf_graphite_template }}"
 {% else %}
-  template = "host.tags.measurement.field"
+  template = "measurement.field"
 {% endif %}
 
   # Graphite templates patterns
@@ -83,11 +83,11 @@
   templates = "{{ telegraf_graphite_templates }}"
 {% else %}
   templates = [
-   "cpu host.measurement.field",
-   "disk* host.measurement.tags.field",
-   "net host.measurement.tags.field",
-   "mem host.tags.measurement.field",
-   "host.tags.measurement.field"
+   "cpu {{ telegraf_graphite_prefix }}.host.measurement.field",
+   "disk* {{ telegraf_graphite_prefix }}.host.measurement.tags.field",
+   "net {{ telegraf_graphite_prefix }}.host.measurement.tags.field",
+   "mem {{ telegraf_graphite_prefix }}.host.tags.measurement.field"
+   measurement.field
   ]
 {% endif %}
 
