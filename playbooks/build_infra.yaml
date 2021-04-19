@@ -147,6 +147,6 @@
           vpc_a: "{{ watchers_eips_vpc_a }}"
           vpc_b: "{{ watchers_eips_vpc_b }}"
           vpc_c:
-            nat_gateway_ip_snat: "{{ fip_snat_rule }}"
-            nat_gateway_ip_dnat: "{{ fip_dnat_rule }}"
+            nat_gateway_ip_snat: "{{ nat_snat_rule_ip }}"
+            nat_gateway_ip_dnat: "{{ nat_dnat_rule_ip }}"
         state: present

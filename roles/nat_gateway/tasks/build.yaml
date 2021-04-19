@@ -112,3 +112,18 @@
     internal_service_port: 22
     external_service_port: 22
   when: (dnat_rules.dnat_rules | default([])) | length == 0
+
+- name: List DNAT rules of gateway
+  opentelekomcloud.cloud.nat_dnat_rule_info:
+    gateway: "{{ nat_gateway_scenario }}_nat_gateway"
+  register: dnat_rules
+
+- name: List SNAT rules of gateway
+  opentelekomcloud.cloud.nat_snat_rule_info:
+    gateway: "{{ nat_gateway_scenario }}_nat_gateway"
+  register: snat_rules
+
+- name: Setting public ips
+  set_fact:
+    nat_snat_rule_ip: "{{ snat_rules.snat_rules[0].floating_ip_address }}"
+    nat_dnat_rule_ip: "{{ dnat_rules.dnat_rules[0].floating_ip_address }}"
