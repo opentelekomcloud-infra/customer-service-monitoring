@@ -53,3 +53,10 @@ vpc_b_watchers: [
 # vpc c nodes list
 vpc_c_nodes: [
   {ip: 192.168.202.2, name: instance_vpc-c}]
+
+# sites list
+snat_dnat: [
+  {ip: 'http://kremlin.ru/', name: ru},
+  {ip: 'https://www.deutschland.de/', name: eu},
+  {ip: 'http://www.cnsa.gov.cn/', name: cn},
+  {ip: 'https://www.state.gov/', name: us}]
