@@ -19,7 +19,6 @@ def serialize_metric(msg):
 def main():
     with open('ping.yaml') as file:
         args = yaml.safe_load(file)
-    metrics = []
     client = statsd.StatsClient(args["host"], args["port"])
     while True:
         for host in args["nodes"]:
