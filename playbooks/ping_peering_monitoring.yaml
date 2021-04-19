@@ -59,13 +59,13 @@
     - name: Write configuration
       template:
         src: files/ping/ping.service.j2
-        dest: "/etc/systemd/system/{{ hostvars.watcher_eu-de-01-vpc-b.service_name }}"
+        dest: "/etc/systemd/system/{{ hostvars['watcher_eu-de-01-vpc-b']['service_name'] }}"
         owner: root
         group: root
 
     - name: Start service
       systemd:
-        name: "{{ hostvars.watcher_eu-de-01-vpc-b.service_name }}"
+        name: "{{ hostvars['watcher_eu-de-01-vpc-b']['service_name'] }}"
         state: started
         enabled: yes
 
@@ -126,12 +126,12 @@
     - name: Write configuration
       template:
         src: files/ping/ping.service.j2
-        dest: "/etc/systemd/system/{{ hostvars.watcher_eu-de-01-vpc-b.service_name }}"
+        dest: "/etc/systemd/system/{{ hostvars['watcher_eu-de-01-vpc-b']['service_name'] }}"
         owner: root
         group: root
 
     - name: Start service
       systemd:
-        name: "{{ hostvars.watcher_eu-de-01-vpc-b.service_name }}"
+        name: "{{ hostvars['watcher_eu-de-01-vpc-b']['service_name'] }}"
         state: started
         enabled: yes
