@@ -1,0 +1,69 @@
+---
+- name: Prepare the main network
+  import_playbook: build_infra.yaml
+
+- name: Copy first script to machine
+  hosts: instance_vpc-c
+  vars:
+    test_nodes: "{{ snat_dnat }}"
+    metric_name: ping.natgw
+  tasks:
+    - name: Set facts for service register
+      set_fact:
+        service_name: "{{ metric_name | replace('.','') }}.service"
+        script_path: "{{ home_dir }}/{{ metric_name }}"
+        script_name: get_url.py
+
+    - name: Install required packages
+      become: yes
+      apt:
+        name:
+          - python3-pip
+          - python3-venv
+
+    - name: Create venv
+      pip:
+        name: pip
+        virtualenv: "{{ script_path }}/venv"
+        virtualenv_command: '/usr/bin/python3 -m venv'
+
+    - name: Install statsd
+      pip:
+        name:
+          - statsd
+          - pyyaml
+          - requests
+        virtualenv: "{{ script_path }}/venv"
+
+    - name: Ensures {{ home_dir }}/{{ metric_name }} dir exists
+      file:
+        path: "{{ home_dir }}/{{ metric_name }}"
+        state: directory
+
+    - name: Write configuration
+      template:
+        src: files/get_url/get_url.yaml.j2
+        dest: "{{ home_dir }}/{{ metric_name }}/get_url.yaml"
+        force: yes
+
+    - name: Copy script
+      copy:
+        src: "files/get_url/{{ script_name }}"
+        dest: "{{ home_dir }}/{{ metric_name }}/{{ script_name }}"
+
+- name: Create systemd service
+  hosts: instance_vpc-c
+  become: yes
+  tasks:
+    - name: Write configuration
+      template:
+        src: files/get_url/get_url.service.j2
+        dest: "/etc/systemd/system/{{ hostvars['instance_vpc-c']['service_name'] }}"
+        owner: root
+        group: root
+
+    - name: Start service
+      systemd:
+        name: "{{ hostvars['instance_vpc-c']['service_name'] }}"
+        state: started
+        enabled: yes
