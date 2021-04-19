@@ -1,0 +1,137 @@
+---
+- name: Prepare the main network
+  import_playbook: build_infra.yaml
+
+# Prepare ping.vpc.64
+- name: Copy first script to machine
+  hosts: watcher_eu-de-01-vpc-b
+  vars:
+    test_nodes: "{{ vpc_a_watchers }}"
+    metric_name: ping.peering.64
+    packet_size: 56
+  tasks:
+    - name: Set facts for service register
+      set_fact:
+        service_name: "{{ metric_name | replace('.','') }}.service"
+        script_path: "{{ home_dir }}/{{ metric_name }}"
+        script_name: peeringping64.py
+
+    - name: Install required packages
+      become: yes
+      apt:
+        name:
+          - python3-pip
+          - python3-venv
+
+    - name: Create venv
+      pip:
+        name: pip
+        virtualenv: "{{ script_path }}/venv"
+        virtualenv_command: '/usr/bin/python3 -m venv'
+
+    - name: Install statsd
+      pip:
+        name:
+          - statsd
+          - pyyaml
+        virtualenv: "{{ script_path }}/venv"
+
+    - name: Ensures {{ home_dir }}/{{ metric_name }} dir exists
+      file:
+        path: "{{ home_dir }}/{{ metric_name }}"
+        state: directory
+
+    - name: Write configuration
+      template:
+        src: files/ping/ping.yaml.j2
+        dest: "{{ home_dir }}/{{ metric_name }}/ping.yaml"
+        force: yes
+
+    - name: Copy script
+      copy:
+        src: files/ping/ping.py
+        dest: "{{ home_dir }}/{{ metric_name }}/{{ script_name }}"
+
+- name: Create systemd service
+  hosts: watcher_eu-de-01-vpc-b
+  become: yes
+  tasks:
+    - name: Write configuration
+      template:
+        src: files/ping/ping.service.j2
+        dest: "/etc/systemd/system/{{ hostvars['watcher_eu-de-01-vpc-b']['service_name'] }}"
+        owner: root
+        group: root
+
+    - name: Start service
+      systemd:
+        name: "{{ hostvars['watcher_eu-de-01-vpc-b']['service_name'] }}"
+        state: started
+        enabled: yes
+
+# Prepare ping.vpc.1492
+- name: Copy first script to machine
+  hosts: watcher_eu-de-01-vpc-b
+  vars:
+    test_nodes: "{{ vpc_a_watchers }}"
+    metric_name: ping.peering.1500
+    packet_size: 1492
+  tasks:
+    - name: Set facts for service register
+      set_fact:
+        service_name: "{{ metric_name | replace('.','') }}.service"
+        script_path: "{{ home_dir }}/{{ metric_name }}"
+        script_name: peeringping1500.py
+
+    - name: Install required packages
+      become: yes
+      apt:
+        name:
+          - python3-pip
+          - python3-venv
+
+    - name: Create venv
+      pip:
+        name: pip
+        virtualenv: "{{ script_path }}/venv"
+        virtualenv_command: '/usr/bin/python3 -m venv'
+
+    - name: Install statsd
+      pip:
+        name:
+          - statsd
+          - pyyaml
+        virtualenv: "{{ script_path }}/venv"
+
+    - name: Ensures {{ home_dir }}/{{ metric_name }} dir exists
+      file:
+        path: "{{ home_dir }}/{{ metric_name }}"
+        state: directory
+
+    - name: Write configuration
+      template:
+        src: files/ping/ping.yaml.j2
+        dest: "{{ home_dir }}/{{ metric_name }}/ping.yaml"
+        force: yes
+
+    - name: Copy script
+      copy:
+        src: files/ping/ping.py
+        dest: "{{ home_dir }}/{{ metric_name }}/{{ script_name }}"
+
+- name: Create systemd service
+  hosts: watcher_eu-de-01-vpc-b
+  become: yes
+  tasks:
+    - name: Write configuration
+      template:
+        src: files/ping/ping.service.j2
+        dest: "/etc/systemd/system/{{ hostvars['watcher_eu-de-01-vpc-b']['service_name'] }}"
+        owner: root
+        group: root
+
+    - name: Start service
+      systemd:
+        name: "{{ hostvars['watcher_eu-de-01-vpc-b']['service_name'] }}"
+        state: started
+        enabled: yes
