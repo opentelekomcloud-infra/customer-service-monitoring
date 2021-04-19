@@ -2,7 +2,7 @@
 - name: Prepare the main network
   import_playbook: build_infra.yaml
 
-  # Prepare ping.vpc.64
+# Prepare ping.vpc.64
 - name: Copy first script to machine
   hosts: watcher_eu-de-01-vpc-b
   vars:
@@ -69,7 +69,7 @@
         state: started
         enabled: yes
 
-  # Prepare ping.vpc.1492
+# Prepare ping.vpc.1492
 - name: Copy first script to machine
   hosts: watcher_eu-de-01-vpc-b
   vars:
