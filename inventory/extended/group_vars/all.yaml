@@ -22,12 +22,21 @@ watcher_volume_size: 10
 infra_eips_object: infra_eips
 object_private_key: machine_key
 
-#vpc a nodes list excluded lb monitoring
+# variables for ping script
+statsd_host: localhost
+statsd_port: 8125
+deploy_environment: production_eu-de
+runner_environment: production_eu-de
+
+#vpc a nodes list
 vpc_a_nodes: [
+  {ip: 192.168.200.10, name: instance_1_eu-de-01},
   {ip: 192.168.200.11, name: instance_2_eu-de-01},
   {ip: 192.168.200.12, name: instance_3_eu-de-01},
+  {ip: 192.168.200.13, name: instance_1_eu-de-02},
   {ip: 192.168.200.14, name: instance_2_eu-de-02},
   {ip: 192.168.200.15, name: instance_3_eu-de-02},
+  {ip: 192.168.200.16, name: instance_1_eu-de-03},
   {ip: 192.168.200.17, name: instance_2_eu-de-03},
   {ip: 192.168.200.18, name: instance_3_eu-de-03}]
 
