@@ -5,6 +5,7 @@
 - name: Register host
   add_host:
     name: "{{ nat_gateway_instance_name }}"
-    ansible_host: "{{ fip_dnat_rule }}"
+    groups: instances
+    ansible_host: "{{ nat_dnat_rule_ip }}"
     ansible_ssh_user: linux
     ansible_ssh_private_key_file: "{{ local_private_key }}"
