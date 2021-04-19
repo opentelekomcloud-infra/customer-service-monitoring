@@ -14,7 +14,6 @@ def main():
     while True:
         for host in args["nodes"]:
             metric_name = f'{args["statsd_prefix"]}.{args["metric_name"]}.{host["name"]}'
-            duration = -1
             try:
                 res = requests.get(host["ip"], headers={'Connection': 'close'}, timeout=5)
                 client.timing(f'{metric_name}', int(res.elapsed.total_seconds() * 1000))
