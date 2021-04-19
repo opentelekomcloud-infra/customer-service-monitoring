@@ -56,7 +56,7 @@ vpc_c_nodes: [
 
 # sites list
 snat_dnat: [
-  {ip: 'http://kremlin.ru/', name: ru},
+  {ip: 'https://digital.gov.ru/', name: ru},
   {ip: 'https://www.deutschland.de/', name: eu},
-  {ip: 'http://www.cnsa.gov.cn/', name: cn},
+  {ip: 'https://www.gov.cn/', name: cn},
   {ip: 'https://www.state.gov/', name: us}]

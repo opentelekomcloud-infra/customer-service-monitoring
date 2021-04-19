@@ -21,7 +21,7 @@ def main():
             except Exception as ex:
                 client.incr(f'counters.{metric_name}.failed')
                 print(f'{host["name"]} caused {ex} by invalid response')
-        sleep(5)
+        sleep(10)
 
 
 if __name__ == '__main__':
