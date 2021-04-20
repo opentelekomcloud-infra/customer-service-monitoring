@@ -31,7 +31,7 @@ def main():
                     universal_newlines=True
                 )
                 duration = re.search(r'time=(\d+)', rsp).group(1)
-                client.timing(f'{metric_name}', int(duration))
+                client.timing(f'{metric_name}', float(duration))
             except Exception as ex:
                 client.incr(f'counters.{metric_name}.failed')
                 print(f'{host["name"]} caused {ex} by invalid response')

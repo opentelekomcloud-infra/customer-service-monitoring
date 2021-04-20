@@ -16,7 +16,7 @@ def main():
             metric_name = f'{args["statsd_prefix"]}.{args["metric_name"]}.{host["name"]}'
             try:
                 res = requests.get(host["ip"], headers={'Connection': 'close'}, timeout=5)
-                client.timing(f'{metric_name}', int(res.elapsed.total_seconds() * 1000))
+                client.timing(f'{metric_name}', res.elapsed.total_seconds() * 1000)
             except Exception as ex:
                 client.incr(f'counters.{metric_name}.failed')
                 print(f'{host["name"]} caused {ex} by invalid response')
