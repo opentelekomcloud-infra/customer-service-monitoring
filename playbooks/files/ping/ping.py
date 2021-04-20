@@ -21,6 +21,7 @@ def main():
         args = yaml.safe_load(file)
     client = statsd.StatsClient(args["host"], args["port"])
     while True:
+        metric_name = args["metric_name"]
         for host in args["nodes"]:
             metric_name = f'{args["statsd_prefix"]}.{args["metric_name"]}.{host["name"]}'
             duration = -1
@@ -33,9 +34,9 @@ def main():
                 duration = re.search(r'time=(\d+)', rsp).group(1)
                 client.timing(f'{metric_name}', float(duration))
             except Exception as ex:
-                client.incr(f'counters.{metric_name}.failed')
+                client.incr(f'counters.{metric_name}.failed', 10)
                 print(f'{host["name"]} caused {ex} by invalid response')
-        sleep(5)
+        sleep(10)
 
 
 if __name__ == '__main__':
