@@ -13,62 +13,62 @@
   tasks:
     - name: Copy first script to machine
       block:
-      - name: Set facts for service register
-        set_fact:
-          service_name: "{{ metric_name | replace('.','') }}.service"
-          script_path: "{{ home_dir }}/{{ metric_name }}"
-          script_name: ping64.py
+        - name: Set facts for service register
+          set_fact:
+            service_name: "{{ metric_name | replace('.','') }}.service"
+            script_path: "{{ home_dir }}/{{ metric_name }}"
+            script_name: ping64.py
 
-      - name: Install required packages
-        become: yes
-        apt:
-          name:
-            - python3-pip
-            - python3-venv
+        - name: Install required packages
+          become: yes
+          apt:
+            name:
+              - python3-pip
+              - python3-venv
 
-      - name: Create venv
-        pip:
-          name: pip
-          virtualenv: "{{ script_path }}/venv"
-          virtualenv_command: '/usr/bin/python3 -m venv'
+        - name: Create venv
+          pip:
+            name: pip
+            virtualenv: "{{ script_path }}/venv"
+            virtualenv_command: '/usr/bin/python3 -m venv'
 
-      - name: Install statsd
-        pip:
-          name:
-            - statsd
-            - pyyaml
-          virtualenv: "{{ script_path }}/venv"
+        - name: Install statsd
+          pip:
+            name:
+              - statsd
+              - pyyaml
+            virtualenv: "{{ script_path }}/venv"
 
-      - name: Ensures {{ home_dir }}/{{ metric_name }} dir exists
-        file:
-          path: "{{ home_dir }}/{{ metric_name }}"
-          state: directory
+        - name: Ensures {{ home_dir }}/{{ metric_name }} dir exists
+          file:
+            path: "{{ home_dir }}/{{ metric_name }}"
+            state: directory
 
-      - name: Write configuration
-        template:
-          src: files/ping/ping.yaml.j2
-          dest: "{{ home_dir }}/{{ metric_name }}/ping.yaml"
-          force: yes
+        - name: Write configuration
+          template:
+            src: files/ping/ping.yaml.j2
+            dest: "{{ home_dir }}/{{ metric_name }}/ping.yaml"
+            force: yes
 
-      - name: Copy script
-        copy:
-          src: files/ping/ping.py
-          dest: "{{ home_dir }}/{{ metric_name }}/{{ script_name }}"
+        - name: Copy script
+          copy:
+            src: files/ping/ping.py
+            dest: "{{ home_dir }}/{{ metric_name }}/{{ script_name }}"
 
-      - name: Write configuration
-        become: yes
-        template:
-          src: files/ping/ping.service.j2
-          dest: "/etc/systemd/system/{{ hostvars[current_hostname]['service_name'] }}"
-          owner: root
-          group: root
+        - name: Write configuration
+          become: yes
+          template:
+            src: files/ping/ping.service.j2
+            dest: "/etc/systemd/system/{{ hostvars[current_hostname]['service_name'] }}"
+            owner: root
+            group: root
 
-      - name: Start service
-        become: yes
-        systemd:
-          name: "{{ hostvars[current_hostname]['service_name'] }}"
-          state: started
-          enabled: yes
+        - name: Start service
+          become: yes
+          systemd:
+            name: "{{ hostvars[current_hostname]['service_name'] }}"
+            state: started
+            enabled: yes
       when: hostvars[current_hostname].vpc == "VPC_A"
 
 # Prepare ping.vpc.1492
@@ -82,60 +82,60 @@
   tasks:
     - name: Copy first script to machine
       block:
-      - name: Set facts for service register
-        set_fact:
-          service_name: "{{ metric_name | replace('.','') }}.service"
-          script_path: "{{ home_dir }}/{{ metric_name }}"
-          script_name: ping1500.py
+        - name: Set facts for service register
+          set_fact:
+            service_name: "{{ metric_name | replace('.','') }}.service"
+            script_path: "{{ home_dir }}/{{ metric_name }}"
+            script_name: ping1500.py
 
-      - name: Install required packages
-        become: yes
-        apt:
-          name:
-            - python3-pip
-            - python3-venv
+        - name: Install required packages
+          become: yes
+          apt:
+            name:
+              - python3-pip
+              - python3-venv
 
-      - name: Create venv
-        pip:
-          name: pip
-          virtualenv: "{{ script_path }}/venv"
-          virtualenv_command: '/usr/bin/python3 -m venv'
+        - name: Create venv
+          pip:
+            name: pip
+            virtualenv: "{{ script_path }}/venv"
+            virtualenv_command: '/usr/bin/python3 -m venv'
 
-      - name: Install statsd
-        pip:
-          name:
-            - statsd
-            - pyyaml
-          virtualenv: "{{ script_path }}/venv"
+        - name: Install statsd
+          pip:
+            name:
+              - statsd
+              - pyyaml
+            virtualenv: "{{ script_path }}/venv"
 
-      - name: Ensures {{ home_dir }}/{{ metric_name }} dir exists
-        file:
-          path: "{{ home_dir }}/{{ metric_name }}"
-          state: directory
+        - name: Ensures {{ home_dir }}/{{ metric_name }} dir exists
+          file:
+            path: "{{ home_dir }}/{{ metric_name }}"
+            state: directory
 
-      - name: Write configuration
-        template:
-          src: files/ping/ping.yaml.j2
-          dest: "{{ home_dir }}/{{ metric_name }}/ping.yaml"
-          force: yes
+        - name: Write configuration
+          template:
+            src: files/ping/ping.yaml.j2
+            dest: "{{ home_dir }}/{{ metric_name }}/ping.yaml"
+            force: yes
 
-      - name: Copy script
-        copy:
-          src: files/ping/ping.py
-          dest: "{{ home_dir }}/{{ metric_name }}/{{ script_name }}"
+        - name: Copy script
+          copy:
+            src: files/ping/ping.py
+            dest: "{{ home_dir }}/{{ metric_name }}/{{ script_name }}"
 
-      - name: Write configuration
-        become: yes
-        template:
-          src: files/ping/ping.service.j2
-          dest: "/etc/systemd/system/{{ hostvars[current_hostname]['service_name'] }}"
-          owner: root
-          group: root
+        - name: Write configuration
+          become: yes
+          template:
+            src: files/ping/ping.service.j2
+            dest: "/etc/systemd/system/{{ hostvars[current_hostname]['service_name'] }}"
+            owner: root
+            group: root
 
-      - name: Start service
-        become: yes
-        systemd:
-          name: "{{ hostvars[current_hostname]['service_name'] }}"
-          state: started
-          enabled: yes
+        - name: Start service
+          become: yes
+          systemd:
+            name: "{{ hostvars[current_hostname]['service_name'] }}"
+            state: started
+            enabled: yes
       when: hostvars[current_hostname].vpc == "VPC_A"
