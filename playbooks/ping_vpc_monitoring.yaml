@@ -6,7 +6,8 @@
 - name: Install dependencies and copy script
   hosts: watchers
   vars:
-    test_nodes: "{{ vpc_a_nodes[ansible_hostname] }}"
+    current_hostname: "{{ ansible_hostname | replace('-', '_', 1) }}"
+    test_nodes: "{{ vpc_a_nodes[current_hostname] }}"
     metric_name: ping.vpc.64
     packet_size: 56
   tasks:
@@ -58,23 +59,24 @@
         become: yes
         template:
           src: files/ping/ping.service.j2
-          dest: "/etc/systemd/system/{{ hostvars[ansible_hostname]['service_name'] }}"
+          dest: "/etc/systemd/system/{{ hostvars[current_hostname]['service_name'] }}"
           owner: root
           group: root
 
       - name: Start service
         become: yes
         systemd:
-          name: "{{ hostvars[ansible_hostname]['service_name'] }}"
+          name: "{{ hostvars[current_hostname]['service_name'] }}"
           state: started
           enabled: yes
-      when: hostvars[ansible_hostname].vpc == "VPC_A"
+      when: "{{ hostvars[current_hostname].vpc }}" == "VPC_A"
 
 # Prepare ping.vpc.1492
 - name: Install dependencies and copy script
   hosts: watchers
   vars:
-    test_nodes: "{{ vpc_a_nodes[ansible_hostname] }}"
+    current_hostname: "{{ ansible_hostname | replace('-', '_', 1) }}"
+    test_nodes: "{{ vpc_a_nodes[current_hostname] }}"
     metric_name: ping.vpc.1500
     packet_size: 1492
   tasks:
@@ -126,14 +128,14 @@
         become: yes
         template:
           src: files/ping/ping.service.j2
-          dest: "/etc/systemd/system/{{ hostvars[ansible_hostname]['service_name'] }}"
+          dest: "/etc/systemd/system/{{ hostvars[current_hostname]['service_name'] }}"
           owner: root
           group: root
 
       - name: Start service
         become: yes
         systemd:
-          name: "{{ hostvars[ansible_hostname]['service_name'] }}"
+          name: "{{ hostvars[current_hostname]['service_name'] }}"
           state: started
           enabled: yes
-      when: hostvars[ansible_hostname].vpc == "VPC_A"
+      when: hostvars[current_hostname].vpc == "VPC_A"
