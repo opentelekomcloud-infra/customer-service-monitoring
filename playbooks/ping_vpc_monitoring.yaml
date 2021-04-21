@@ -69,7 +69,7 @@
           name: "{{ hostvars[current_hostname]['service_name'] }}"
           state: started
           enabled: yes
-      when: "{{ hostvars[current_hostname].vpc }}" == "VPC_A"
+      when: hostvars[current_hostname].vpc == "VPC_A"
 
 # Prepare ping.vpc.1492
 - name: Install dependencies and copy script
