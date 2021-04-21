@@ -29,16 +29,19 @@ deploy_environment: production_eu-de
 runner_environment: production_eu-de
 
 # vpc a nodes list
-vpc_a_nodes: [
+vpc_a_nodes:
+  watcher_eu-de-01: [
   {ip: 192.168.200.10, name: eu-de-01_to_eu-de-01},
-  {ip: 192.168.200.11, name: eu-de-01_to_eu-de-01},
-  {ip: 192.168.200.12, name: eu-de-01_to_eu-de-01},
   {ip: 192.168.200.13, name: eu-de-01_to_eu-de-02},
-  {ip: 192.168.200.14, name: eu-de-01_to_eu-de-02},
-  {ip: 192.168.200.15, name: eu-de-01_to_eu-de-02},
-  {ip: 192.168.200.16, name: eu-de-01_to_eu-de-03},
-  {ip: 192.168.200.17, name: eu-de-01_to_eu-de-03},
-  {ip: 192.168.200.18, name: eu-de-01_to_eu-de-03}]
+  {ip: 192.168.200.16, name: eu-de-01_to_eu-de-03}]
+  watcher_eu-de-02: [
+  {ip: 192.168.200.11, name: eu-de-02_to_eu-de-01},
+  {ip: 192.168.200.14, name: eu-de-02_to_eu-de-02},
+  {ip: 192.168.200.17, name: eu-de-02_to_eu-de-03}]
+  watcher_eu-de-03: [
+  {ip: 192.168.200.12, name: eu-de-03_to_eu-de-01},
+  {ip: 192.168.200.15, name: eu-de-03_to_eu-de-02},
+  {ip: 192.168.200.18, name: eu-de-03_to_eu-de-03}]
 
 # vpc a watchers list
 vpc_a_watchers: [
