@@ -1,0 +1,9 @@
+[Unit]
+Description={{ service_name }}
+
+[Service]
+WorkingDirectory={{ script_path }}
+User=linux
+Group=linux
+ExecStart={{ script_path }}/venv/bin/python3 {{ script_path }}/{{ script_name }}
+Restart=always

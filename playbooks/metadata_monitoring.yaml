@@ -1,0 +1,66 @@
+---
+- name: Prepare the main network
+  import_playbook: build_infra.yaml
+
+- name: Copy script to machine
+  hosts: watcher_eu-de-01-vpc-b
+  vars:
+    metric_name: metadata.get
+  tasks:
+    - name: Set facts for service register
+      set_fact:
+        service_name: "{{ metric_name | replace('.','') }}.service"
+        script_path: "{{ home_dir }}/{{ metric_name }}"
+        script_name: get_metadata.py
+
+    - name: Install required packages
+      become: yes
+      apt:
+        name:
+          - python3-pip
+          - python3-venv
+
+    - name: Create venv
+      pip:
+        name: pip
+        virtualenv: "{{ script_path }}/venv"
+        virtualenv_command: '/usr/bin/python3 -m venv'
+
+    - name: Install statsd
+      pip:
+        name:
+          - statsd
+          - pyyaml
+          - requests
+        virtualenv: "{{ script_path }}/venv"
+
+    - name: Ensures {{ home_dir }}/{{ metric_name }} dir exists
+      file:
+        path: "{{ home_dir }}/{{ metric_name }}"
+        state: directory
+
+    - name: Write configuration
+      template:
+        src: files/metadata/get_metadata.yaml.j2
+        dest: "{{ home_dir }}/{{ metric_name }}/get_metadata.yaml"
+        force: yes
+
+    - name: Copy script
+      copy:
+        src: "files/metadata/{{ script_name }}"
+        dest: "{{ home_dir }}/{{ metric_name }}/{{ script_name }}"
+
+    - name: Write configuration
+      become: yes
+      template:
+        src: files/metadata/get_metadata.service.j2
+        dest: "/etc/systemd/system/{{ service_name }}"
+        owner: root
+        group: root
+
+    - name: Start service
+      become: yes
+      systemd:
+        name: "{{ service_name }}"
+        state: started
+        enabled: yes
