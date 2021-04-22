@@ -6,6 +6,8 @@ import requests
 import statsd
 import yaml
 
+METADATA_URL = 'http://169.254.169.254/openstack'
+
 
 def main():
     with open('get_metadata.yaml') as file:
@@ -15,7 +17,7 @@ def main():
         metric_name = args["metric_name"]
         metric_name = f'{args["statsd_prefix"]}.{args["metric_name"]}.{socket.gethostname()}'
         try:
-            res = requests.get('http://169.254.169.254/openstack', headers={'Connection': 'close'}, timeout=5)
+            res = requests.get(METADATA_URL, headers={'Connection': 'close'}, timeout=5)
             client.timing(f'{metric_name}.{res.status_code}', res.elapsed.total_seconds() * 1000)
         except Exception as ex:
             client.incr(f'counters.{metric_name}.failed', 10)
