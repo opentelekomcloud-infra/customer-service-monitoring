@@ -1,0 +1,12 @@
+metric_name: {{ metric_name }}
+statsd_prefix: "apimon.metric.{{ deploy_environment }}.{{ runner_environment }}"
+{% if statsd_host is defined and statsd_host != None %}
+host: "{{ statsd_host }}"
+{% else %}
+host: localhost
+{% endif %}
+{% if statsd_port is defined and statsd_port != None %}
+port: "{{ statsd_port }}"
+{% else %}
+port: 8125
+{% endif %}
