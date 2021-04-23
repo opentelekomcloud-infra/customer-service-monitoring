@@ -23,7 +23,8 @@ def main():
     while True:
         try:
             res = requests.get(METADATA_URL, headers={'Connection': 'close'}, timeout=5)
-            client.timing(f'{metric_name}.{res.status_code}.{az}', res.elapsed.total_seconds() * 1000)
+            elapsed = res.elapsed.total_seconds() * 1000
+            client.timing(f'{metric_name}.{res.status_code}.{az}', elapsed)
         except Exception as ex:
             client.incr(f'counters.{metric_name}.failed', 10)
             print(f'{socket.gethostname()} caused {ex} by invalid response')
