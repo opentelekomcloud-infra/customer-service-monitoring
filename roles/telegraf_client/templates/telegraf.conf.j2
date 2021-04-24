@@ -68,7 +68,7 @@
 
   # Graphite output template
   # see https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_OUTPUT.md
-{% if telegraf_graphite_template is defined and telegraf_graphite_template | length %}
+{% if telegraf_graphite_template is defined and telegraf_graphite_template != None %}
   template = "{{ telegraf_graphite_template }}"
 {% else %}
   template = "measurement.field"
