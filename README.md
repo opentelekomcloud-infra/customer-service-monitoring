@@ -30,6 +30,7 @@ Collections will be installed automatically once any playbook is executed, but i
 ```
 ansible-galaxy collection install openstack.cloud
 ansible-galaxy collection install opentelekomcloud.cloud
+ansible-galaxy collection install ansible.netcommon
 ```
 
 ### Build
