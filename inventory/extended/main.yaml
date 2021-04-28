@@ -134,13 +134,3 @@ all:
 
 disabled:
   hosts:
-    watcher_eu-de-02:
-    watcher_eu-de-03:
-    instance_2_eu-de-01:
-    instance_3_eu-de-01:
-    instance_2_eu-de-02:
-    instance_3_eu-de-02:
-    instance_2_eu-de-03:
-    instance_3_eu-de-03:
-    instance_vpc-c:
-    watcher_eu-de-01-vpc-b:
