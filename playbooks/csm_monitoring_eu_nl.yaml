@@ -1,0 +1,15 @@
+---
+- name: Prepare the main infra
+  import_playbook: build_infra.yaml
+
+- name: Create natgw monitoring
+  import_playbook: ping_natgw_monitoring.yaml
+
+- name: Create peering monitoring
+  import_playbook: ping_peering_monitoring.yaml
+
+- name: Create snat monitoring
+  import_playbook: ping_snat_monitoring.yaml
+
+- name: Create vpc monitoring
+  import_playbook: ping_vpc_monitoring.yaml

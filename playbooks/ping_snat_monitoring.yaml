@@ -1,7 +1,4 @@
 ---
-- name: Prepare the main network
-  import_playbook: build_infra.yaml
-
 - name: Copy first script to machine
   hosts: watcher_eu-de-01-vpc-b
   vars:
