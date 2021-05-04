@@ -65,7 +65,7 @@
           and hostvars[host_name].vpc == "VPC_C"
 
 - name: Install docker and launch graphite on watcher in az eu-de-01
-  hosts: watcher_eu-de-01:!disabled
+  hosts: watcher_eu-*-01:!disabled
   become: yes
   roles:
     - role: geerlingguy.docker
